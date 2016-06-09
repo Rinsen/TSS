@@ -1,0 +1,526 @@
+﻿<row>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="crm-select-user">Inhabitant level:</label>
+            <select name="user" id="inhabitant-select" class="form-control">
+                @foreach (float inhabitantLevel in ViewBag.InhabitantLevel)
+                {
+                    <option value="@inhabitantLevel" selected>@inhabitantLevel</option>
+                }
+                <option selected> - </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="crm-select-customer">Price category:</label>
+            <select name="customer" id="price-select" class="form-control">
+                @foreach (float priceCategory in ViewBag.PriceCategory)
+                {
+                    <option value="@priceCategory" selected>@priceCategory</option>
+                }
+                <option selected> - </option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="tariff-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="#" data-sortable="false">#</th>
+                    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+                    {
+                        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                        if (@PropertyName != "SSMA timestamp")
+                        {
+                            <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                        }
+
+                    }
+                </tr>
+            </thead>
+        </table>
+    </div>
+</row>
+
+        <div class="modal fade bs-example-modal-lg" id="tariffModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog contact-modal" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Edit Tariff</h4>
+                    </div>
+                    <div id="tariff-modal" class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="inhabitant-level-text" class="col-sm-2 control-label">Inhabitant level</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="inhabitant-level-text" name="Inhabitant_level" placeholder="Inhabitant level">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="price-category-text" class="col-sm-2 control-label">Price category</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="price-category-text" name="Price_category" placeholder="Price category">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="license-text" class="col-sm-2 control-label">License</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="license-text" name="License" placeholder="License">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Maintenance-text" class="col-sm-2 control-label">Maintenance</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" id="Maintenance-text" name="Maintenance" placeholder="Maintenance">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="valid-through-date" class="col-sm-2 control-label">Valid through</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="date" id="valid-through-date" name="Valid_through" value="@DateTime.Now.ToShortDateString()">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" id="save-tariff-changes" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var uploadToServer = function () {
+                if (typeof $("#save-tariff-changes").attr("data-tariff") != "undefined") {
+
+                    var oldTariff = $("#save-tariff-changes").attr("data-tariff");
+
+                    var tariff = {}
+
+                    var $formInputs = $("#tariffModal form").find(":input");
+                    console.log($formInputs);
+                    var frmInpLen = $formInputs.length;
+                    for (var i = 0; i < frmInpLen; i++) {
+                        var $currInput = $($formInputs[i]);
+                        tariff[$currInput.attr("name")] = $currInput.val();
+                    }
+                    $.ajax({
+                        "url": "/Tariff/SaveTariff/",
+                        "type": "POST",
+                        "data": {
+                            "json": JSON.stringify(tariff),
+                            "ssma_timestamp": oldTariff,
+                        },
+                        "success": function (data) {
+                            if (data > 0) {
+                                updateDataTable();
+                                console.log("success");
+                                $("#tariffModal").modal("hide");
+                                triggerAlert("Successfully updated this tariff row", "success");
+                            }
+                            else {
+                                console.log("failure");
+                                triggerAlert("Something went wrong when trying to update this on the server", "warning");
+                            }
+                        }
+                    });
+                }
+                else {
+                    var tariff = {}
+
+                    var $formInputs = $("#tariff-modal form").find(":input");
+                    console.log($formInputs);
+                    var frmInpLen = $formInputs.length;
+                    for (var i = 0; i < frmInpLen; i++) {
+                        var $currInput = $($formInputs[i]);
+                        tariff[$currInput.attr("name")] = $currInput.val();
+                    }
+                    $.ajax({
+                        "url": "/Tariff/InsertTariff/",
+                        "type": "POST",
+                        "data": {
+                            "json": JSON.stringify(tariff),
+                        },
+                        "success": function (data) {
+                            if (data > 0) {
+                                updateDataTable();
+                                console.log("success");
+                                $("#tariffModal").modal("hide");
+                                triggerAlert("Successfully inserted the new tariff row", "success");
+                            }
+                            else {
+                                console.log("failure");
+                                triggerAlert("Something went wrong when trying to insert this to the server", "warning");
+                            }
+                        }
+                    });
+                }
+            }
+
+            $(document).ready(function () {
+                $("#save-tariff-changes").click(function () {
+                    if ($("#tariff-modal form").valid()) {
+                        uploadToServer();
+                    }
+                });
+
+                $formValidation = $("#tariffModal form").validate({
+                    ignore: ".ignore",
+                    rules: {
+                        "Inhabitant_level": {
+                            required: true,
+                            digits: true
+                        },
+                        "Price_category": {
+                            required: true,
+                            digits: true
+                        },
+                        "License": {
+                            required: true,
+                            digits: true
+                        },
+                        "Maintenance": {
+                            required: true,
+                            digits: true
+                        },
+                        "Valid_through": {
+                            date: true
+                        }
+                    },
+                    errorElement: "span",
+                    wrapper: "a",  // a wrapper around the error message
+                    errorPlacement: function (error, element) {
+                        error.next().addClass("tooltips");
+                        error.addClass("tooltips");
+                        error.insertAfter(element);
+                    }
+                });
+            });
+        </script>
+
+
+
+        <script>
+            var selectedId = null;
+
+            var selectRow = function (element) {
+                var $td = $(element);
+                var $row = $(element).parent();
+                var $table = $("#tariff-table");
+
+                $td.find("input").prop("checked", true);
+
+                selectedId = $td.find("input").val();
+
+                $table.find("tr.selected").removeClass("selected");
+
+                $row.addClass("selected");
+            }
+
+            @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (@PropertyName != "SSMA timestamp")
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+            @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+            var updateDataTable = function (onSuccess) {
+                $('#tariff-table').DataTable({
+                    "destroy": true,
+                    "processing": true,
+                    "ajax": {
+                        "url": "/Tariff/TariffJsonData/",
+                    },
+                    "initComplete": function (settings, json) {
+                        if (typeof onSuccess != "undefined")
+                            onSuccess();
+                        drawButtons();
+                    },
+                    "defaultContent": "",
+                    "iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+                    "columns": [@Html.Raw(DataObject)
+                    ],
+                    "columnDefs": [
+                        {
+                            "data": null,
+                            "defaultContent": "",
+                            "targets": 0
+                        }
+                    ],
+                    "scrollY": ($("#page-content-wrapper").height() - 170),
+                    "scrollX": true,
+                    "fnRowCallback": drawCallBack
+                });
+                var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+                //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+                //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+                //$('#crm-save-btn').on('click', save);
+            }
+
+            function drawButtons() {
+                var $selRowContainer = $("#tariff-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+                $selRowContainer.append("<div id='crm-edit-tariff' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+                $("#crm-edit-tariff").bind("click", function () {
+                    if (selectedId != null) {
+                        $("#save-tariff-changes").attr("data-tariff", selectedId);
+                        var $selectedTds = $("#tariff-table tr.selected td").not(".radios");
+                        var tdLen = $selectedTds.length;
+
+                        var $formInputs = $("#tariffModal form").find(":input");
+
+                        var frmInpLen = $formInputs.length;
+                        for (var i = 0; i < frmInpLen; i++) {
+                            var $currInput = $($formInputs[i]);
+                            for (var j = 0; j < tdLen; j++) {
+                                var $currTD = $($selectedTds[j]);
+                                if ($currTD.data("property") == $currInput.attr("name")) {
+                                    $currInput.val($currTD.html());
+                                }
+                            }
+                        }
+                        $("#save-tariff-changes").attr("data-tariff", selectedId);
+                        $("#tariffModal").appendTo("body").modal("show");
+                    }
+                    else
+                        triggerAlert("You have to select a row to edit first.", "info");
+                });
+
+                $selRowContainer.append("<div id='create-tariff-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+                $("#create-tariff-button").bind("click", function () {
+                    $("#tariffModal").appendTo("body").modal("show");
+                    $("#save-tariff-changes").removeAttr("data-tariff");
+                    var $selectedTds = $("#tariff-table tr.selected td").not(".radios");
+                    var tdLen = $selectedTds.length;
+
+                    var $formInputs = $("#tariffModal form").find(":input");
+
+                    var frmInpLen = $formInputs.length;
+                    for (var i = 0; i < frmInpLen; i++) {
+                        var $currInput = $($formInputs[i]);
+                        for (var j = 0; j < tdLen; j++) {
+                            var $currTD = $($selectedTds[j]);
+                            if ($currTD.data("property") == $currInput.attr("name")) {
+                                $currInput.val("");
+                            }
+                        }
+                    }
+                });
+
+                $selRowContainer.append("<div id='delete-tariff-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
+                $("#delete-tariff-button").bind("click", function () {
+                    if (selectedId != null) {
+                        bootbox.dialog({
+                            title: 'Do you want to delete?',
+                            className: "crm-delete-confirm",
+                            message: "You are about to delete the selected tariff row, are you sure you want to delete it?",
+                            buttons: {
+                                'cancel': {
+                                    label: 'Cancel',
+                                    className: 'btn-default'
+                                },
+                                'yes': {
+                                    label: 'Yes',
+                                    className: 'btn-danger pull-right',
+                                    callback: function () {
+                                        $.ajax({
+                                            "url": "/Tariff/DeleteTariff/",
+                                            "type": "POST",
+                                            "data": {
+                                                "ssma_timestamp": selectedId,
+                                            },
+                                            "success": function (data) {
+                                                if (data > 0) {
+                                                    updateDataTable();
+                                                    console.log("success");
+                                                    triggerAlert("Successfully deleted row", "success");
+                                                }
+                                                else {
+                                                    console.log("failure");
+                                                    triggerAlert("Something went wrong when trying to delete this row", "warning");
+                                                }
+                                            }
+                                        });
+                                    }
+                                },
+                                'no': {
+                                    label: 'No',
+                                    className: 'pull-right',
+                                }
+                            },
+                        });
+                    }
+                    else {
+                        triggerAlert("You have to select a row to delete first.", "info");
+                    }
+
+                });
+
+            }
+
+            var triggerAlert = function (msg, priorty) {
+                $(document).trigger("clear-alerts");
+                $(document).trigger("add-alerts", [
+                  {
+                      'message': msg,
+                      'priority': priorty
+                  }
+                ]);
+            }
+
+            var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                var i = 0, j = 0;
+                var insertValue;
+                for (var name in aData) {
+
+                    var i = 0;
+                    var insertValue;
+
+                    for (var name in aData) {
+                        var $td;
+
+
+                        if (i == 0) {
+                            $td = $('td:eq(' + i + ')', nRow);
+
+                            $td.parent().click(function () {
+
+                                selectRow(this.firstChild);
+
+                            });
+                            $td.html("<input type='radio' value='" + aData["SSMA_timestamp"] + "' name='selected-contact' onClick=''/>");
+                            $td.addClass("radios");
+                            if ($td.find("input").val() == selectedId) {
+                                selectRow($td);
+                            }
+                            else if ($td.find("input").val() != selectedId) {
+                                $td.parent().removeClass("selected");
+                            }
+                            i++;
+                        }
+
+                        if (i < 6) {
+                            $td = $('td:eq(' + i + ')', nRow);
+                            $td.attr("data-property", name);
+                            $td.html(aData[name]);
+                        }
+
+                        i++;
+                    }
+                }
+            }
+
+            selected = "";
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    if (selected == "")
+                        return true;
+                    else {
+                        if (selected == "inhabitant")
+                        {
+                            var inhabitantSelect = parseFloat($('#inhabitant-select').val());
+                            var inhabitant = parseFloat(data[1]);
+                            if(inhabitant == inhabitantSelect)
+                                return true
+                            else 
+                                return false
+                        }
+                        else if (selected == "price")
+                        {
+                            var priceSelect = parseFloat($('#price-select').val());
+                            var price = parseFloat(data[2]);
+                            console.log($('#price-select').val());
+                            if (price == priceSelect)
+                                return true
+                            else
+                                return false
+                        }
+                        return false;
+                    }
+
+                }
+            );
+
+            $('document').ready(function () {
+
+                $datatable = $('#tariff-table').DataTable({
+                    "destroy": true,
+                    "processing": true,
+                    "ajax": {
+                        "url": "/Tariff/TariffJsonData/",
+                    },
+                    "initComplete": function (settings, json) {
+                        drawButtons();
+                    },
+                    "defaultContent": "",
+                    // "iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+                    "order": [[1, "asc"]],
+                    "columns": [@Html.Raw(DataObject)],
+                    "columnDefs": [
+                        {
+                            "data": null,
+                            "defaultContent": "",
+                            "targets": 0
+                        }
+                    ],
+                    "scrollY": ($("#page-content-wrapper").height() - 170),
+                    "scrollX": true,
+                    "fnRowCallback": drawCallBack
+                });
+
+
+                $("#inhabitant-select").change(function () {
+                    if (isNaN($(this).val()))
+                        selected = "";
+                    else
+                        selected = "inhabitant";
+
+                    $datatable.draw();
+                });
+
+                $("#price-select").change(function () {
+                    if (isNaN($(this).val()))
+                        selected = "";
+                    else
+                        selected = "price";
+                    $datatable.draw();
+                });
+
+                function get_browser() {
+                    var ua = navigator.userAgent,
+                        tem,
+                        M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+                    if (/trident/i.test(M[1])) {
+                        tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+                        return 'IE';
+                    }
+                    if (M[1] === 'Chrome') {
+                        tem = ua.match(/\bOPR\/(\d+)/)
+                        if (tem != null) {
+                            return 'Opera'
+                        }
+                    }
+                    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+                    if ((tem = ua.match(/version\/(\d+)/i)) != null) {
+                        M.splice(1, 1, tem[1]);
+                    }
+                    return M[0];
+                }
+
+                console.log(get_browser());
+
+                var webkit = get_browser() == "Chrome" ||
+                    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                    get_browser() == "Opera";
+
+                if (!webkit)
+                    $("#valid-through-date").datepicker();
+            });
+
+
+        </script>

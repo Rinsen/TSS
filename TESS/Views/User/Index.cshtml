@@ -1,0 +1,423 @@
+﻿@*<table draggable="true" id="user-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">*@
+<div >
+    <table draggable="true" id="user-table" style="vertical-align: text-top; font-size: 13px" class="ExplizitTable">
+        <thead>
+            <tr>
+                <th data-field="#" data-sortable="false" style="border-bottom: 1px solid gray; padding: 5px; height: 45px; vertical-align: bottom">#</th>
+                @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+                {
+                    String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                    if (@PropertyName != "SSMA timestamp")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true" style="border-bottom: 1px solid gray; padding: 5px; height: 45px; vertical-align: bottom">@PropertyName</th>
+                    }
+                }
+            </tr>
+        </thead>
+    </table>
+</div> 
+@* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
+<div class="modal fade bs-example-modal-lg" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit user</h4>
+            </div>
+            <div id="user-modal" class="modal-body">
+                <form class="form-horizontal">
+                    @{
+                        foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
+                        {
+                            if (pi.Name != "User_level")
+                            {
+                                
+                                String pName = pi.Name.Replace("_", " ");
+
+                                <div class="form-group">
+                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-user-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Slut på Modal*@
+
+<script>
+    var uploadToServer = function () {
+        if (typeof $("#save-user-changes").attr("data-user") != "undefined") {
+
+            var oldUser = $("#save-user-changes").attr("data-user");
+
+            var user = {}
+
+            var $formInputs = $("#userModal form").find(":input");
+            console.log($formInputs);
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                user[$currInput.attr("name")] = $currInput.val();
+            }
+            $.ajax({
+                "url": "/User/SaveUser/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(user),
+                    "sign": oldUser,
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#userModal").modal("hide");
+                        triggerAlert("Successfully updated this user", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to update the user on the server", "warning");
+                    }
+                }
+            });
+        }
+        else {
+            var user = {}
+
+            var $formInputs = $("#user-modal form").find(":input");
+            console.log($formInputs);
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                user[$currInput.attr("name")] = $currInput.val();
+            }
+            $.ajax({
+                "url": "/User/InsertUser/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(user),
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#userModal").modal("hide");
+                        triggerAlert("Successfully inserted the new user", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to insert the user to the server", "warning");
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $("#save-user-changes").click(function () {
+            if ($("#user-modal form").valid()) {
+                uploadToServer();
+            }
+        });
+
+        $formValidation = $("#userModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Sign": {
+                    required: true,
+                    maxlength: 3,
+                },
+                "Name": {
+                    required: true,
+                    maxlength: 50,
+                },
+                "Default_system": {
+                    required: true,
+                    maxlength: 3,
+                },
+                "Windows_user": {
+                    required: true,
+                    maxlength: 50,
+                },
+                "Offer_file_location": {
+                    maxlength: 100,
+                },
+                "File_format": {
+                    maxlength: 20,
+                },
+                "Address": {
+                    maxlength: 40,
+                },
+                "City": {
+                    maxlength: 55,
+                },
+                "Telephone": {
+                    maxlength: 15,
+                },
+                "Mobile": {
+                    maxlength: 15,
+                },
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    var selectedId = null;
+
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#user-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+
+    @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (@PropertyName != "SSMA timestamp")
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function (onSuccess) {
+        $('#user-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "/User/UserJsonData/",
+            },
+            "initComplete": function (settings, json) {
+                if (typeof onSuccess != "undefined")
+                    onSuccess();
+                drawButtons();
+            },
+            "defaultContent": "",
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+            //"scrollY": ($("#page-content-wrapper").height() - 170),
+            //"scrollY": "600px",
+            "scrollX": "1200px",
+            "fnRowCallback": drawCallBack
+        });
+        var $selRowContainer = $("#user-table_length");
+        //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+        //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+        //$('#crm-save-btn').on('click', save);
+    }
+
+    function drawButtons() {
+        var $selRowContainer = $("#user-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-edit-user' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        $("#crm-edit-user").bind("click", function () {
+            if (selectedId != null) {
+                $("#sign-text").prop("readonly", true);
+                $("#save-user-changes").attr("data-user", selectedId);
+                var $selectedTds = $("#user-table tr.selected td").not(".radios");
+                var tdLen = $selectedTds.length;
+
+                var $formInputs = $("#userModal form").find(":input");
+
+                var frmInpLen = $formInputs.length;
+                for (var i = 0; i < frmInpLen; i++) {
+                    var $currInput = $($formInputs[i]);
+                    for (var j = 0; j < tdLen; j++) {
+                        var $currTD = $($selectedTds[j]);
+                        if ($currTD.data("property") == $currInput.attr("name")) {
+                            $currInput.val($currTD.html());
+                        }
+                    }
+                }
+                $("#save-user-changes").attr("data-user", selectedId);
+                $("#userModal").appendTo("body").modal("show");
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+        });
+
+        $selRowContainer.append("<div id='create-user-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-user-button").bind("click", function () {
+            $("#sign-text").removeAttr("readonly");
+            $("#userModal").appendTo("body").modal("show");
+            $("#save-user-changes").removeAttr("data-user");
+            var $selectedTds = $("#user-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#userModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                for (var j = 0; j < tdLen; j++) {
+                    var $currTD = $($selectedTds[j]);
+                    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "Sign") {
+                        $currInput.val("");
+                    }
+                }
+            }
+        });
+
+        $selRowContainer.append("<div id='delete-user-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
+        $("#delete-user-button").bind("click", function () {
+            bootbox.dialog({
+                title: 'Do you want to delete?',
+                className: "crm-delete-confirm",
+                message: "You are about to delete the selected user, are you sure you want to delete it?",
+                buttons: {
+                    'cancel': {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    },
+                    'yes': {
+                        label: 'Yes',
+                        className: 'btn-danger pull-right',
+                        callback: function () {
+                            $.ajax({
+                                "url": "/User/DeleteUser/",
+                                "type": "POST",
+                                "data": {
+                                    "sign": selectedId,
+                                },
+                                "success": function (data) {
+                                    if (data > 0) {
+                                        updateDataTable();
+                                        console.log("success");
+                                        triggerAlert("Successfully deleted row", "success");
+                                    }
+                                    else {
+                                        console.log("failure");
+                                        triggerAlert("Something went wrong when trying to delete this row", "warning");
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    'no': {
+                        label: 'No',
+                        className: 'pull-right',
+                    }
+                },
+            });
+        });
+
+    }
+
+    var triggerAlert = function (msg, priorty) {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+        var insertValue;
+        for (var name in aData) {
+
+            var i = 0;
+            var insertValue;
+
+            for (var name in aData) {
+                var $td;
+
+
+                if (i == 0) {
+                    $td = $('td:eq(' + i + ')', nRow);
+
+                    $td.parent().click(function () {
+
+                        selectRow(this.firstChild);
+
+                    });
+                    $td.html("<input type='radio' value='" + aData["Sign"] + "' name='selected-contact' onClick=''/>");
+                    $td.addClass("radios");
+                    if ($td.find("input").val() == selectedId) {
+                        selectRow($td);
+                    }
+                    else if ($td.find("input").val() != selectedId) {
+                        $td.parent().removeClass("selected");
+                    }
+                    i++;
+                }
+
+                if (i < 11) {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                }
+
+                i++;
+            }
+        }
+    }
+
+    $('document').ready(function () {
+
+        $('#user-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "/User/UserJsonData/",
+            },
+            "initComplete": function (settings, json) {
+                drawButtons();
+            },
+            "defaultContent": "",
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)],
+            "columnDefs": [
+                { "data": null, "defaultContent": "", "targets": 0 },
+
+            ],
+            //"scrollY": ($("#page-content-wrapper").height() - 170),
+            //"scrollY": "600px",
+            "scrollX": "1200px",
+            "fnRowCallback": drawCallBack
+        });
+    });
+
+
+</script>

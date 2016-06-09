@@ -1,0 +1,93 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12" style="margin-bottom:5px">
+        <form method="get" target="_blank" class="form-inline">
+            <select id="user-select" class="form-control">
+                @foreach (TietoCRM.Models.view_User user in ViewBag.Users)
+                {
+                    <option value="@user.Sign">@user.Name</option>
+                }
+            </select>
+            <button class="btn btn-default" id="contracts-generate-pdf" type="button">PDF</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+                    {
+                        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                      
+                            <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                        
+                    }
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script>
+    @{String DataObject = "\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+
+            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(sign)
+    {
+        $.ajaxSetup({
+            // Disable caching of AJAX responses
+            cache: false
+        })
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "bFilter": false,
+            "bPaginate": false,
+            "ajax": {
+                "url": "@Url.Content("~/ContractSupervision/GetData/")",
+                "type": "POST",
+                "data": {
+                    "sign": sign
+                }
+            },
+            "defaultContent": "",
+            "order": [[6, "asc"]],
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 50)),
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+
+        });
+
+    }
+
+    $('document').ready(function () {
+
+        $userSelect = $("#user-select");
+
+        $userSelect.change(function () {
+            updateDataTable(this.value);
+        });
+
+        $("#contracts-generate-pdf").click(function () {
+            window.open("Pdf?sign=" + $userSelect.val());
+        })
+
+        $userSelect.val("@System.Web.HttpContext.Current.GetUser().Sign");
+        updateDataTable("@System.Web.HttpContext.Current.GetUser().Sign");
+
+
+    });
+
+</script>
+</row>

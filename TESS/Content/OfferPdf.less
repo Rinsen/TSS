@@ -1,0 +1,367 @@
+﻿@row-color: #D7D7D7;
+.crm-pdf {
+    position: relative;
+    height: 100%;
+    margin: 0 0.5cm;
+    img {
+        max-width: 100%;
+    }
+    div {
+        width: 100%;
+        display: block;
+        //border: 1px solid black;
+        vertical-align: top;
+        color: black;
+    }
+    p {
+        margin: 0;
+    }
+    .small-divider {
+        width: 20%;
+        border-bottom: 1px solid black;
+        margin: 2em 0;
+        display: block;
+    }
+    .large-divider {
+        width: 100%;
+        display: block;
+        border-bottom: 1px solid black;
+    }
+    .crm-pdf-30 {
+        width: 30%;
+        display: inline-block;
+    }
+    .crm-pdf-50 {
+        width: 50%;
+        display: inline-block;
+    }
+    .crm-pdf-70 {
+        width: 70%;
+        display: inline-block;
+    }
+    span.crm-signing-line{
+        margin-top: 30px;
+        border-bottom: 1px solid black;
+        width: 200px;
+        display:block;
+        margin-bottom: 0.5em;
+    }
+    div.crm-pdf-head {
+        height: 50px;
+        border: none;
+        span#crm-pdf-todays-date {
+            font-size: 12px;
+            float: left;
+        }
+        span#crm-pdf-tieto-logo-com {
+            width: 110px;
+            float: right;
+            margin-top: -5px;
+        }
+    }
+    div.crm-pdf-header-section {
+        table {
+            width: 100%;
+        }
+        #crm-pdf-offer-info {
+        }
+        #crm-pdf-tieto-info {
+            text-align: right;
+        }
+        div#crm-pdf-valid-info {
+            padding: 2em 0;
+        }
+        #crm-pdf-representative-info {
+            text-align: right;
+        }
+    }
+    .crm-pdf-offer-row:nth-child(even), .crm-pdf-educational-portal-row:nth-child(even), .crm-pdf-service-row:nth-child(even) {
+        //background: @row-color none repeat scroll 0 0;
+    }
+    div.crm-pdf-offer-section {
+        //height: 300px;
+        div#crm-pdf-offer-rows-title.educational-portal {
+            margin-top: 1em;
+        }
+        /*-----Offer rows------*/
+        div#crm-pdf-offer-rows {
+            page-break-before: auto;
+            margin-top: 1em;
+            div.price-headings {
+                width: 36%;
+                text-align: right;
+                float: right;
+                table {
+                    width: 100%;
+                    td.pull-right {
+                        text-align: right;
+                    }
+                }
+            }
+            div.crm-pdf-offer-row {
+                table {
+                    width: 100%;
+                }
+                table.crm-pdf-offer-row-info {
+                    margin-left: 0.6em;
+                    td {
+                        padding: 0.2em;
+                    }
+                }
+                div.crm-pdf-30 {
+                    table {
+                        td:nth-child(1) {
+                            width: 4.5em;
+                            padding-right: 3em;
+                            text-align: right;
+                        }
+                        td:nth-child(2) {
+                            width: 3.5em;
+                            text-align: right;
+                            padding-right: 1em;
+                        }
+                    }
+                }
+            }
+            div.crm-pdf-offer-row-sum {
+                margin-top: 0.2em;
+                width: 100%;
+                div span.pull-right {
+                    margin-right: 2.5em;
+                }
+                table {
+                    td:nth-child(1) {
+                        width: 4.5em;
+                        padding-right: 3em;
+                        text-align: right;
+                    }
+                    td:nth-child(2) {
+                        width: 3.5em;
+                        text-align: right;
+                        padding-right: 1em;
+                    }
+                }
+            }
+        }
+        div#crm-pdf-educational-portal-rows {
+            page-break-before: auto;
+            margin-top: 1em;
+            div.price-headings {
+                width: 36%;
+                text-align: right;
+                float: right;
+                table {
+                    width: 100%;
+                    td.pull-right {
+                        text-align: right;
+                    }
+                    td{
+                        span{
+                            margin-right: 1em;
+                        }
+                        
+                    }
+                }
+            }
+            div.crm-pdf-educational-portal-row {
+                table {
+                    width: 100%;
+                }
+                table.crm-pdf-educational-portal-row-info {
+                    margin-left: 0.6em;
+                    td {
+                        padding: 0.2em;
+                    }
+                }
+                div.crm-pdf-30 {
+                    table {
+                        td:nth-child(1) {
+                            width: 4.5em;
+                            padding-right: 3em;
+                            text-align: right;
+                        }
+                        td:nth-child(2) {
+                            width: 3.5em;
+                            text-align: right;
+                            padding-right: 1em;
+                        }
+                    }
+                }
+            }
+            div.crm-pdf-educational-portal-row-sum {
+                margin-top: 0.2em;
+                width: 100%;
+                div span.pull-right {
+                    margin-right: 2.5em;
+                }
+                table {
+                    td:nth-child(1) {
+                        width: 4.5em;
+                        padding-right: 3em;
+                        text-align: right;
+                    }
+                    td:nth-child(2) {
+                        width: 3.5em;
+                        text-align: right;
+                        padding-right: 1em;
+                    }
+                }
+            }
+        }
+
+        div#crm-pdf-service-rows {
+            page-break-before: auto;
+            margin-top: 1em;
+            div.price-headings {
+                width: 36%;
+                text-align: right;
+                float: right;
+                table {
+                    width: 100%;
+                    td.pull-right {
+                        text-align: right;
+                    }
+                   td:nth-child(1) {
+                        width: 30%;
+                        text-align: center;
+                    }
+                    td:nth-child(2) {
+                        text-align: center;
+                        width: 33%;     
+                    }
+                    td:nth-child(3) {
+                        text-align: center;
+                        width: 33%;
+                    }
+                }
+            }
+            div.crm-pdf-service-row {
+                table {
+                    width: 100%;
+                }
+                table.crm-pdf-service-row-info {
+                    margin-left: 0.6em;
+                    td {
+                        padding: 0.2em;
+                    }
+                }
+                div.crm-pdf-30 {
+                    table {
+                        td:nth-child(1) {
+                         width: 20%;
+                        }
+                        td:nth-child(2) {
+                            text-align: right;
+                             width: 40%;
+                             padding-right: 1em;
+                        }
+                        td:nth-child(3) {
+                            text-align: right;
+                            padding-right: 1em;
+                            width: 40%;
+                        }
+                    }
+                }
+            } 
+            div.crm-pdf-service-row-sum {
+                margin-top: 0.2em;
+                width: 100%;
+                div span.pull-right {
+                    margin-right: 2.5em;
+                }
+                table {
+                    td:nth-child(1) {
+                        width: 4.5em;
+                        padding-right: 3em;
+                        text-align: right;
+                    }
+                    td:nth-child(2) {
+                        width: 3.5em;
+                        text-align: right;
+                        padding-right: 1em;
+                    }
+                }
+            }
+        }
+    }
+    div.crm-pdf-footer-section {
+        page-break-before: auto;
+        div#crm-pdf-footer-info {
+            margin-top: 1.5em;
+        }
+        div#crm-pdf-footer-regards {
+            margin-top: 1em;
+            .signature-container{
+                //width: 20%;
+            }
+        }
+    }
+    div.crm-pdf-foot {
+        width: 100%;
+        display: block;
+        height: 80px;
+        div.crm-pdf-foot-logo {
+            width: 10%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            display: block;
+        }
+    }
+}
+.area-newline {
+    white-space:pre-wrap;
+}
+
+/* ViewPDF styles */
+.navbar .nav,
+        .navbar .nav > li {
+            float: none;
+            display: inline-block;
+            *display: inline; /* ie7 fix */
+            *zoom: 1; /* hasLayout ie7 trigger */
+            vertical-align: top;
+        }
+
+        .navbar-inner {
+            text-align: center;
+        }
+
+        body {
+            background: rgb(204,204,204);
+        }
+
+        #page-content-wrapper{
+            padding-top: 0;
+        }
+
+        page[size="A4"] {
+            background: white;
+            width: 21cm;
+            /*height: 59.4cm;*/
+            min-height: 29.7cm;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+            padding: 2cm 1cm 2cm 1.2cm;
+        }
+
+        page.A4-scaled {
+            -ms-transform: scale(0.8); /* IE 9 */
+            -webkit-transform: scale(0.8); /* Safari */
+            transform: scale(0.8);
+            -webkit-transform-origin: 0 0 0;
+            transform-origin: top left;
+            margin-bottom: -300px;
+        }
+
+        @media print {
+            body, page[size="A4"] {
+                margin: 0;
+                box-shadow: 0;
+                padding: 0;
+            }
+        }
+
+ 

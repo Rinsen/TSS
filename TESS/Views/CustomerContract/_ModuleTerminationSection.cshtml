@@ -1,0 +1,152 @@
+﻿@{
+    Layout = null;
+    string currentDate = DateTime.Now.Date.ToShortDateString();
+    @functions{
+
+        bool IsPdf()
+        {
+            if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        String GetWorkingUrl(string url)
+        {
+            if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "ViewPdf")
+            {
+                return url;
+            }
+            else if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+            {
+                String retVal = Server.MapPath(url);
+                return retVal;
+            }
+            else
+            {
+                return "";
+            }
+        }
+    }
+}
+@using TietoCRM.Models;
+@using System.Globalization;
+<div class="crm-pdf">
+ @*@if (!IsPdf())
+    {*@
+        <div class="crm-pdf-head">
+            <table>
+                <tr>
+                    <td style="width:30%">
+                        <span id="crm-pdf-todays-date">@currentDate</span>
+                    </td>
+                    <td style="width: 40%; font-size: 20px; text-align: center">
+                        <span><strong>Avslutade moduler</strong></span>
+                    </td>
+                    <td style="width:30%">
+                        <span id="crm-pdf-tieto-logo-com">
+                            <img src="@GetWorkingUrl("/Content/img/tieto-logo-com.png")" alt="" />
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    @*}*@
+    <div class="crm-pdf-header-section">
+        <table>
+            <tr>
+                <td id="crm-pdf-offer-info">
+                    <p><strong>@ViewBag.ContractHead.Buyer</strong></p>
+                    <p>@ViewBag.ContractHead.Contact_person</p>
+                    <p></p>
+                </td>
+                <td id="crm-pdf-tieto-info">
+                    <p>Tieto Sweden Healthcare & Welfare AB</p>
+                    <p>@ViewBag.Representative.Address</p>
+                    <p>@ViewBag.Representative.City</p>
+                </td>
+            </tr>
+        </table>
+        <span class="small-divider pull-right"></span>
+        <span class="clearfix"></span>
+        <table>
+            <tr>
+                <td></span> </span></td>
+                <td id="crm-pdf-representative-info">
+                    <p><strong>@ViewBag.Representative.Name</strong></p>
+                    <p>@ViewBag.Representative.Telephone</p>
+                    <p>@ViewBag.Representative.Mobile</p>
+                </td>
+            </tr>
+        </table>
+        <div id="template-Page_head" class="area-newline">@ViewBag.ContractText.Page_head</div>
+   </div>
+
+@*-------------------------------------
+    Produkter
+    -------------------------------------*@
+<div id="crm-pdf-module-rows" class="">
+    <div class="crm-pdf-subheader_terminate" id="crm-pdf-module-rows-title">
+        <table>
+            <tr>
+                <td>Produkter</td>
+                <td>Verksamhet</td>
+                <td>Produktgrupp</td>
+                <td>Datum</td>
+            </tr>
+        </table>
+    </div>
+    <div class="large-divider"></div>
+    @foreach (dynamic article in ViewBag.Articles)
+    {
+        <div class="crm-pdf-subrows_terminate">
+            <table>
+                <tr>
+                    <td>@article.Article_number</td>
+                    <td>@article.Module</td>
+                    <td>@article.System</td>
+                    <td>@article.Classification</td>
+                    <td>@ViewBag.CustomerContract.Valid_from.ToString("d")</td>
+                </tr>
+            </table>
+        </div>
+    }
+
+    <div class="crm-print-block">
+        <div class="crm-pdf-footer-section">
+            <div id="crm-pdf-footer-regards">
+                <br /><br /><p>Med vänlig hälsning</p>
+                <p>Tieto Sweden Healthcare & Wellfare AB</p>
+                <div class="signature-container">
+                    @{
+                        String url = "~/Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
+                        if (System.IO.File.Exists(Request.MapPath(url)))
+                        {
+                            <img src="@GetWorkingUrl(url.Remove(0,1))" alt="" />
+                        }
+                        else
+                        {
+                            <span class="crm-signing-line"></span>
+                        }
+                    }
+
+                </div>
+                <p>@ViewBag.Representative.Name</p>
+                <p>Affärsansvarig</p>
+            </div>
+        </div>
+        @if (!IsPdf())
+        {
+            <div class="crm-pdf-foot">
+                <div class="crm-pdf-foot-logo">
+                    <img src="@GetWorkingUrl(Url.Content("~/Content/img/tieto-logo.png"))" alt="tieto-logo" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

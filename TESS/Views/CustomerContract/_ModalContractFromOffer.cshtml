@@ -1,0 +1,97 @@
+﻿<div class="modal fade bs-example-modal-lg" id="contractFromOfferModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contractFromOffer-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Articles and services from offer</h4>
+            </div>
+            <div id="contractFromOffer-modal" class="modal-body">
+                <form class="form-inline modal-select-items" id="service-form">
+                    <table>
+                        <tr>
+                            <td style=" width:50%;">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-modules">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Articles from open offer</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="modules-from-open-offer" class="list-group">
+                                            @{
+                                                foreach (view_OfferRow module in ViewBag.OpenOfferModules)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:96%; display:inline-block">
+                                                            @{ view_Module article = new view_Module();
+                                                             article.Select("Article_number = " + module.Article_number);
+                                                            }
+                                                            @article.Article_number   -   @article.Module
+                                                        </span>
+                                                        <!--
+                                                        -->
+                                                        <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-id="@module.Article_number" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
+                                                    </li>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td valign="top">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-services">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Services from open offer</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="services-from-open-offer" class="list-group">
+                                            @{
+                                                foreach (view_ConsultantRow service in ViewBag.OpenOfferServices)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:95%; display:inline-block">
+                                                            @{  view_Service s = new view_Service();
+                                                              s.Select("Code = " + service.Code);
+                                                              String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + " }";
+                                                            }
+                                                            @s.Description
+                                                        </span>
+                                                        <!--
+                                                        -->
+                                                        <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
+                                                    </li>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="clearfix"></div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="choose-selected-things" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+

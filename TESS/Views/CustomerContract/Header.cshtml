@@ -1,0 +1,59 @@
+﻿@{
+    Layout = null;
+    string currentDate = DateTime.Now.Date.ToShortDateString();
+    bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
+}
+@using TietoCRM.Models;
+@using System.Text;
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+    <meta charset="utf-8" />
+    <style>
+         @{
+            // Custom code to render css code for PDF rendering
+             StringBuilder OfferCssInclude = new StringBuilder(File.ReadAllText(Server.MapPath("~/Content/ContractPdf.css")));
+            @Html.Raw(OfferCssInclude)
+        }
+    </style>
+    <style>
+        body{
+            font-family: Arial;
+        }
+        #crm-pdf-head-contract-info{
+            font-size: 12px !important;
+        }
+        .crm-contract-title span{
+            font-size: 15px !important;
+        }
+        #template-Title{
+            font-size: 17px !important;
+        }
+        .crm-pdf{
+            margin: 0 1.4cm 0 2.1cm !important;
+            padding-top: 1.6cm;
+        }
+        #crm-pdf-todays-date{
+            font-size: 12px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="crm-pdf">
+        @{
+            try
+            {
+                if (!isModuleTermination)
+                {
+                    Html.RenderPartial("_HeadSection", null, new ViewDataDictionary(ViewData));
+                }
+            }
+            catch (Exception ex)
+            {
+                @Html.Raw(ex);
+            }
+        }
+    </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+}
+
+@foreach (TietoCRM.FeatureService.Product prod in ViewBag.Products)
+{
+    if (prod.IsSelected)
+    {
+        <h1>@prod.Name</h1>
+        <table class=" table table-striped table-bordered features-table">
+            <th>Feature</th>
+            <th>ID</th>
+            <th>Article number</th>
+
+            @foreach (TietoCRM.FeatureService.Features feature in ViewBag.Features)
+            {
+                if (feature.ProdID == prod.ID)
+                {
+                    <tr class="">
+
+                        <td>@feature.Text</td>
+                        <td>@feature.ID</td>
+                        <td>@feature.ArticleNumber</td>
+
+                    </tr>
+                }
+                else
+                {
+                    // break;
+                }
+            }
+
+        </table>
+    }
+
+}
+
+

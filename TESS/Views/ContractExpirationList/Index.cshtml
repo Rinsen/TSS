@@ -1,0 +1,228 @@
+﻿@using TietoCRM.Extensions;
+    <div class="col-md-12" style="margin-bottom:20px">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-user">User:</label>
+                <select name="user" id="crm-select-user" class="form-control">
+                    @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
+                    {
+                        if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
+                        {
+                            <option value="@User.Sign" selected>@User.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@User.Sign">@User.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            @*<div class="form-group" style="float:right">
+                    <label for="crm-select-viewmode">View mode:</label>
+                    <select name="viewmode" id="crm-select-viewmode" class="form-control">
+
+                        <option value="0">Offert</option>
+                        <option value="1">Tilläggsavtal</option>
+
+                    </select>
+                </div>*@
+        </form>
+
+    </div>
+    <table draggable="true" id="ContractExpirationList-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+        <thead>
+            <tr>
+ @*               <th data-field="#" data-sortable="false">#</th>*@
+                @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
+                {
+                    //if (property.Name != "CanExtend")
+                    //{
+                    if (@property.Name != "SSMA_timestamp" && @property.Name != "CanExtend" && @property.Name != "Representative" && !property.Name.StartsWith("_"))
+                        {
+                            String PropertyName = property.Name.Replace("_", " ");
+                            <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
+                        }
+                    @*}*@
+                }
+            </tr>
+        </thead>
+    </table>
+
+
+<script>
+
+    var selectedId = null;
+    var selectedNo = 0;
+
+    @{String DataObject = "";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        //Console.log(PropertyInfo.Name);
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (@PropertyName != "SSMA timestamp" && @PropertyName != "CanExtend" && @PropertyName != "Representative")
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+
+    var updateDataTable = function (onSuccess) {
+        var sign = $("#crm-select-user").val();
+        $('#ContractExpirationList-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "paging": false,
+            "ajax": {
+                "url": "/ContractExpirationList/JsonData/",
+                "type": "POST",
+                "data": {
+                    "sign": sign
+                }
+            },
+            "initComplete": function (settings, json) {
+                if (typeof onSuccess != "undefined")
+                    onSuccess();
+                //drawButtons();
+            },
+            "defaultContent": "",
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[4, "asc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                { "orderable": false, "targets": 0 }
+            ],
+            "scrollX": "1200px",
+            "fnRowCallback": drawCallBack
+        });
+        var $selRowContainer = $("#ContractExpirationList-table_length");
+        //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+        //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+        //$('#crm-save-btn').on('click', save);
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+        var insertValue;
+        for (var name in aData) {
+            j++;
+            var i = 0;
+            var insertValue;
+
+            for (var name in aData) {
+                var $td;
+
+
+                if (i == 0) {
+                    $td = $('td:eq(' + i + ')', nRow);
+
+                    if (aData["CanExtend"] == 1) {
+                        $td.html("<input style='margin-top: -1px; vertical-align: top' type='checkbox' value=" + aData["Extend"] + " name='selected-contact' \
+                                data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' onClick='cbClicked(this);'/>");
+                    } else {
+                        $td.html("<input style='margin-top: -1px; vertical-align: top' type='checkbox' value=" + aData["Extend"] + " name='selected-contact' \
+                                data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' disabled onClick='cbClicked(this);'/>");
+                        $td.prop("title", "Cannot be extended, observation date not yet reached or extension eq zero");
+                    }
+                    $td.addClass("checkbox");
+                    i++;
+                }
+
+                if (name != "Extend" && name != "CanExtend") {
+                    if (i < 11) {
+                        $td = $('td:eq(' + i + ')', nRow);
+                        $td.attr("data-property", name);
+                        $td.html(aData[name]);
+                    }
+
+                    i++;
+                }
+            }
+        }
+    }
+
+    var cbClicked = function (cb) {
+        if (cb.checked) {
+            selectedNo += 1;
+        }
+        else {
+            selectedNo -= 1;
+        }
+    }
+    function drawButtons() {
+        var $selRowContainer = $("#ContractExpirationList-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-extend-contract' class='crm-table-btn'><button type='button' class='btn btn-default' data-toggle='modal' id='extend-contract-modal-button' >Extend checked contracts</button></div>");
+
+        $("#extend-contract-modal-button").click(function () {
+            if (selectedNo > 0) {
+                console.log("asdasd");
+                bootbox.confirm({
+                    className: "crm-delete-confirm",
+                    title: 'Do you want to extend?',
+                    message: "Are you sure you want to extend checked contracts?",
+                    buttons: {
+                        'cancel': {
+                            label: 'Cancel',
+                            className: 'btn-default'
+                        },
+                        'confirm': {
+                            label: 'Extend',
+                            className: 'btn-danger pull-right'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            extendContracts();
+                        }
+                    }
+                });
+            }
+            else
+                triggerAlert("You have to select at least one contract to extend.", "info");
+        });
+    }
+
+    function extendContracts() {
+        var $inputs = $("#ContractExpirationList-table").find("input:checked");
+        var length = $inputs.length;
+        var contractList = [];
+        for (var i = 0; i < length; i++) {
+            var obj = {}
+            $input = $($inputs[i]);
+            obj.Contract_id = $input.attr("data-avtalsid");
+            obj.Customer = $input.attr("data-kund");
+
+            contractList.push(obj);
+        }
+        $.ajax({
+            "url": "/ContractExpirationList/ExtendContracts/",
+            "type": "POST",
+            "data": {
+                "contracts": JSON.stringify(contractList),
+            },
+            "success": function (data) {
+                if (data > 0) {
+                    updateDataTable();
+                    drawButtons();
+                }
+                else {
+                    triggerAlert("Failed to extend contracts.", "warning");
+                    console.log("failure");
+                }
+            }
+        });
+
+    }
+
+    $('document').ready(function () {
+        $("#crm-select-user").change(function () {
+            updateDataTable();
+            drawButtons();
+        });
+
+        updateDataTable();
+        drawButtons();
+    })
+</script>

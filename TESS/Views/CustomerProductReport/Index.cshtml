@@ -1,0 +1,128 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12">
+        <form method="get" action="~/CustomerProductReport/Pdf" target="_blank" class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-user">Representative:</label>
+                <select name="user" id="crm-select-user" class="form-control">
+                    @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
+                    {
+                        if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
+                        {
+                            <option value="@User.Sign" selected>@User.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@User.Sign">@User.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="crm-select-customer">Customer:</label>
+                <select name="customer" id="crm-select-customer" class="form-control">
+                    @foreach (String Customer in ViewBag.CustomerNames)
+                    {
+                        <option value="@Customer">@Customer</option>
+                    }
+                </select>
+            </div>
+            <button class="btn btn-default" type="submit">PDF</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+                    {
+                        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                        if (PropertyName != "SSMA timestamp" && PropertyName != "Customer" && PropertyName != "Sign")
+                        {
+                            <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                        }
+                    }
+                </tr>
+            </thead>
+        </table>
+    </div>
+<script>
+    @{String DataObject = "\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (PropertyName != "SSMA timestamp" && PropertyName != "Customer" && PropertyName != "Sign")
+        {
+            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(customer)
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bFilter": false,
+            "bPaginate": false,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": "/CustomerProductReport/Customer/",
+                "type": "POST",
+                "data": {
+                    "customer": customer,
+                }
+            },
+            "defaultContent": "",
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+    var getData = function (target, $container, value) {
+        $.ajax({
+            "url": "/CustomerProductReport/" + target,
+            "type": "POST",
+            "data": {
+                "key": value
+            },
+            "success": function (data) {
+                if (typeof data != "undefined") {
+
+                    $container.empty();
+                    var contractIDs = JSON.parse(data);
+                    for (var i = 0; i < contractIDs.length; i++) {
+                        $container.append("<option value='" + contractIDs[i] + "'>" + contractIDs[i] + "</option>")
+                    }
+                    if(target == "CustomerNames")
+                    {
+                        updateDataTable($("#crm-select-customer").val());
+                    }
+                }
+            }
+        });
+    }
+    $('document').ready(function () {
+        
+        $userContainer = $("#crm-select-user");
+        $customerContainer = $("#crm-select-customer");
+
+        updateDataTable($customerContainer.val());
+        
+        $userContainer.change(function () {
+            getData("CustomerNames", $customerContainer, this.value);
+
+        });
+        $customerContainer.change(function () {
+            updateDataTable(this.value)
+        });
+        
+    });
+
+</script>
+</row>

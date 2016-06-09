@@ -1,0 +1,175 @@
+﻿@section Styles {
+    <link href="@Url.Content("~/Content/tree.css")" rel="stylesheet" type="text/css" />
+}
+
+<div id="features-wrapper">
+    
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="product-list">Products:</label>
+                <select class="form-control" id="product-list">
+                    @foreach (TietoCRM.FeatureService.Product product in ViewBag.Products)
+                    {
+
+                            <option value="@product.ID">@product.ShortName</option>
+
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group ">
+                <label for="client-list">Clients:</label>
+                <select class="form-control" id="client-list">
+                    @foreach (TietoCRM.FeatureService.Client client in ViewBag.Clients)
+                    {
+
+                        <option value="@client.clientID">@client.name</option>
+
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6 feature-filter-wrapper">
+            <form class="form-group">
+                <label for="feature-filter" class="filter-label">Filter:</label>
+                <div class="form-inline">
+                    <div style="display:inline-block">
+                        <input type="text" class="form-control" placeholder="Filter features" id="feature-filter">
+                        <select class="form-control" id="filter-mode">
+                            <option value="0">Name</option>
+                            <option value="1">ID</option>
+                            <option value="2">Article nr</option>
+                            <option value="3">TSS-Script</option>
+                            <option value="4">DB-Script</option>
+                            <option value="5">META-Script</option>
+                            <option value="6">INI-Script</option>
+
+                        </select>
+                        <button class="btn btn-primary features-pdf-button" id="generate-pdf-btn">PDF </button>
+                    </div>
+                </div>
+                
+            </form>
+       
+        </div>
+
+    </div>
+    
+    
+    <div class="row features-table form-inline">
+        <div class="col-md-12 row">
+            <h5 style="float:left">Feature</h5>
+            <table class="features-header">
+                <tr>
+                    <td>
+                        <h5 style="float:right">ID</h5>
+                    </td>
+                    <td style="width:120px; text-align:right">
+                        <h5 style="float:right">Article number</h5>
+                    </td>
+                </tr>
+            </table>
+            
+           
+        </div>
+        <div class="col-md-12 tree-wrapper">
+
+            <ul id="tree1">
+                @Html.Raw(ViewBag.Features)
+
+
+
+            </ul>
+        </div>
+        
+</div>
+<script>
+    $('document').ready(function () {
+        var $productList = $("#product-list");
+        var $clientList = $("#client-list");
+        var $tree = $("#tree1");
+        var $filter = $("#feature-filter");
+        var $filterMode = $("#filter-mode");
+        var updateTree = function (prodID,clientID) {
+            $.ajax({
+                "url": "/Features/Data/",
+                "type": "POST",
+                "data": {
+                    "productID": prodID,
+                    "clientID": clientID
+                },
+                success: function (data) {
+                    $tree.html(data);
+                    $tree.treed();
+                    
+                }
+
+            });
+        }
+        var filterTree = function (prodID, filter, mode, clientID) {
+            var $expandedItems = $(".feature-item-expanded");
+            var expandedItemsLen = $expandedItems.length;
+            var expandedIDs = [];
+            for (var i = 0; i < expandedItemsLen; i++) {
+                expandedIDs.push($($expandedItems[i]).data("feature-id"));
+            }
+            
+            $.ajax({
+                "url": "/Features/SearchResults/",
+                "type": "POST",
+                "data": {
+                    "prodID": prodID,
+                    "filter": filter,
+                    "mode": mode,
+                    "clientID": clientID,
+                    "expandedIDs": JSON.stringify(expandedIDs)
+                },
+                success: function (data) {
+                    $tree.html(data);
+                    $tree.treed();
+
+                }
+
+            });
+        }
+        updateTree($productList.val(), $clientList.val());
+
+        $productList.change(function () {
+
+            updateTree(this.value, $clientList.val());
+
+        });
+        $clientList.change(function () {
+
+            updateTree($productList.val(),this.value );
+
+        });
+
+        $filter.on("keyup",function () {
+            filterTree($productList.val(), this.value, $filterMode.val(), $clientList.val());
+        });
+
+        $filterMode.change(function () {
+            filterTree($productList.val(), $filter.val(),this.value , $clientList.val());
+        });
+
+        $("#generate-pdf-btn").bind("click", function (e) {
+            e.preventDefault();
+            //window.location = "Pdf?client-id=" + $clientList.val() + "&client=" + $clientList.find("option:selected").text();
+            window.open("Pdf?client-id=" + $clientList.val() + "&client=" + $clientList.find("option:selected").text(), "_blank");
+            
+        });
+    });
+    
+</script>
+@Scripts.Render("~/Scripts/tree.js")
+
+
+
+
+
+
+
+

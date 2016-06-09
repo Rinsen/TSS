@@ -1,0 +1,587 @@
+﻿@*@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12" style="margin-bottom:20px">
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-user">User:</label>
+                <select name="user" id="crm-select-user" class="form-control">
+                    @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
+                    {
+                        if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
+                        {
+                            <option value="@User.Sign" selected>@User.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@User.Sign">@User.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            @*<div class="form-group" style="float:right">
+                <label for="crm-select-viewmode">View mode:</label>
+                <select name="viewmode" id="crm-select-viewmode" class="form-control">
+
+                    <option value="0">Offert</option>
+                    <option value="1">Tilläggsavtal</option>
+
+                </select>
+            </div>*@
+        </form>
+
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    @foreach (String ColumnName in ViewBag.Properties)
+                    {
+                        String PropertyName = ColumnName.Replace("_", " ");
+                        if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "ID PK")
+                        {
+                            <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                        }
+                        else if (@PropertyName != "SSMA timestamp" && @PropertyName != "ID PK")
+                        {
+                            <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
+                        }
+
+                    }
+
+                </tr>
+            </thead>
+        </table>
+        <div id='crm-delete-template' class='crm-table-btn'><button type='button' class='btn btn-primary' style="margin-top:15px" id='main-contract-template-button'>Main Contract Template</button></div>
+    </div>
+</row>
+<div class="modal fade bs-example-modal-lg" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog-modal" role="document">
+        <div class="modal-content edit-template-modal">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit template</h4>
+            </div>
+            <div id="template-modal" class="modal-body">
+
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="crm-type-select5" class="col-sm-2 control-label">Document type</label>
+                        <div class="col-sm-2">
+                            <select id="crm-type-select5" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="short_descr5" class="col-sm-2 control-label">Short description</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Short_descr" id="short_descr5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title5" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Title" id="title5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="opening5" class="col-sm-2 control-label">Opening</label>
+                        <div class="col-sm-10">
+                            <textarea rows="2" class="form-control" name="Opening" id="opening5"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deluhtitle5" class="col-sm-2 control-label">Delivery/Maintanance title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="DeluhTitle" id="deluhtitle5"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deluhtext5" class="col-sm-2 control-label">Delivery/Maintanance text</label>
+                        <div class="col-sm-10">
+                            <textarea rows="2" class="form-control" name="DeluhText" id="deluhtext5"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bodytitle5" class="col-sm-2 control-label">Text body title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="BodyTitle" id="bodytitle5"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="body5" class="col-sm-2 control-label">Text body</label>
+                        <div class="col-sm-10">
+                            <textarea rows="4" class="form-control" name="Text" id="body5"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type='button' id="save-template-btn" class='btn btn-success'>Save</button>
+                <button type='button' class='btn btn-default' data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $deluhTitleObj = $("#deluhtitle5");
+    $deluhTextObj = $("#deluhtext5");
+    $bodytitleObj = $("#bodytitle5");
+    $short_descrObj = $("#short_descr5");
+    $titleObj = $("#title5");
+    $openingObj = $("#opening5");
+    $bodyObj = $("#body5");
+
+    $selectType = $("#crm-type-select5");
+
+    //Start - triggerAlert function Visar meddelande högst upp 2-3 sekunder
+    var triggerAlert = function (msg, priorty) {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+    //End - triggerAlert function
+
+    var selectedId = null;
+
+    var setFields5 = function (docTyp) {
+        if (docTyp == "Offert") {
+            //$selectType.append($("<option></option>").attr("value", textTemplate.Document_type).html(textTemplate.Document_type));
+            $deluhTitleObj.prop("disabled", true);
+            $deluhTextObj.prop("disabled", true);
+            $bodytitleObj.prop("disabled", true);
+            $short_descrObj.prop("disabled", false);
+            $titleObj.prop("disabled", false);
+            $openingObj.prop("disabled", false);
+            $bodyObj.prop("disabled", false);
+        }
+        if (docTyp == "Tilläggsavtal" || docTyp == "Tjänsteavtal") {
+            //$selectType.append($("<option></option>").attr("value", "Tjänsteavtal").html("Tjänsteavtal"));
+            //$selectType.append($("<option></option>").attr("value", "Tilläggsavtal").html("Tilläggsavtal"));
+            $deluhTitleObj.prop("disabled", false);
+            $deluhTextObj.prop("disabled", false);
+            $bodytitleObj.prop("disabled", false);
+            $short_descrObj.prop("disabled", false);
+            $titleObj.prop("disabled", false);
+            $openingObj.prop("disabled", false);
+            $bodyObj.prop("disabled", false);
+        }
+        if (docTyp == "Modulavslut") {
+            //$selectType.append($("<option></option>").attr("value", "Modulavslut").html("Modulavslut"));
+            $deluhTitleObj.prop("disabled", true);
+            $deluhTextObj.prop("disabled", true);
+            $bodytitleObj.prop("disabled", true);
+            $short_descrObj.prop("disabled", false);
+            $titleObj.prop("disabled", true);
+            $openingObj.prop("disabled", false);
+            $bodyObj.prop("disabled", true);
+        }
+    };
+
+    //Start - selectRow function Aktiveras när man markerar en rad/klickar i en radiobutton
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#Template-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+    //End - selectRow function
+
+
+    //Start - DrawCallBack function when DataTables performs a draw BUT it's called by a fnRowCallback OBS!!!
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+        var insertValue;
+
+        for (var name in aData) {
+            var $td;
+
+            if (name == "ID_PK" || name == "Document_type" || name == "Short_descr" || name == "Title" || name == "Title") {
+                if (i == 0) {
+                    $td = $('td:eq(' + i + ')', nRow);
+
+                    $td.parent().click(function () {
+
+                        selectRow(this.firstChild);
+
+                    });
+                    $td.html("<input type='radio' value='" + aData["ID_PK"] + "' name='selected-template' onClick=''/>");
+                    if ($td.parent().hasClass("selected") && $td.find("input").val() == selectedId) {
+                        selectRow($td);
+                    }
+                    else if ($td.parent().hasClass("selected") && $td.find("input").val() != selectedId) {
+                        $td.parent().removeClass("selected");
+                    }
+                    i++;
+                    j++;
+                }
+
+                if (name != "ID_PK") {
+
+                    $td = $('td:eq(' + j + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                    j++;
+                    i++;
+                }
+            }
+        }
+    }
+    //End - DrawCallBack function
+
+    @{String DataObject = "\r\n";}
+    @foreach (String ColumnName in ViewBag.Properties)
+    {
+            if (ColumnName != "SSMA_timestamp" && ColumnName != "ID_PK")
+    {
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @ColumnName + "\"  },\r\n";
+    }
+    }
+
+    //Start - UpdateDataTable function, is called everytime DataTable is to be rewritten
+    var updateDataTable = function (sign) {
+
+        selectedId = null;
+        $('#@ViewBag.ControllerName-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": "/Template/TemplateJsonData/",
+                "type": "POST",
+                "data": {
+                    "sign": sign
+                }
+            },
+            "defaultContent": "",
+            "bPaginate": false,
+            "bInfo": false,
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+
+    }
+    //End - UpdateDataTable function
+
+
+    //Start - DrawButtons function including functions for the buttons 
+    function drawButtons() {
+        var $selRowContainer = $("#Template-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-new-template' class='crm-table-btn'><button type='button' class='btn btn-default' data-toggle='modal' id='new-template-modal-button' >Create</button></div>");
+        $selRowContainer.append("<div id='crm-edit-template' class='crm-table-btn'><button type='button' class='btn btn-default' data-toggle='modal' id='edit-template-modal-button'>Edit</button></div>");
+        $selRowContainer.append("<div id='crm-delete-template' class='crm-table-btn'><button type='button' class='btn btn-danger' id='delete-template-modal-button'>Delete</button></div>");
+
+        $("#delete-template-modal-button").click(function () {
+            if (selectedId != null) {
+                bootbox.confirm({
+                    className: "crm-delete-confirm",
+                    title: 'Do you want to delete?',
+                    message: "Are you sure you want to delete this Template?",
+                    buttons: {
+                        'cancel': {
+                            label: 'Cancel',
+                            className: 'btn-default'
+                        },
+                        'confirm': {
+                            label: 'Delete',
+                            className: 'btn-danger pull-right'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            deleteTemplate();
+                        }
+                    }
+                });
+            }
+            else
+                triggerAlert("You have to select a row to delete.", "info");
+        });
+
+        $("#edit-template-modal-button").click(function () {
+            if (selectedId != null) {
+                $("#templateModal").appendTo("body").modal("show");
+                $("#save-template-btn").attr("onclick", "save('update');");
+                getTemplate();
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+        });
+
+        $("#main-contract-template-button").click(function () {
+            window.location = "MainContractTemplate";
+        });
+        
+        $("#new-template-modal-button").click(function () {
+            //$selectType = $("#crm-type-select5");
+            $("#title5").val("");
+            $selectType.prop("disabled", false);
+            $selectType.html("");
+            $selectType.append($("<option></option>").attr("value", "Offert").html("Offert"));
+            $selectType.append($("<option></option>").attr("value", "Tjänsteavtal").html("Tjänsteavtal"));
+            $selectType.append($("<option></option>").attr("value", "Tilläggsavtal").html("Tilläggsavtal"));
+            $selectType.append($("<option></option>").attr("value", "Modulavslut").html("Modulavslut"));
+
+            $("#short_descr5").val("");
+            $("#opening5").val("");
+            $("#body5").val("");
+            $("#bodytitle5").val("");
+            $("#deluhtitle5").val("");
+            $("#deluhtext5").val("");
+
+            $("#templateModal").appendTo("body").modal("show");
+
+            setFields5("Offert");
+
+            $("#save-template-btn").attr("onclick", "save('insert');");
+        });
+    }
+    //End - DrawButtons function
+
+    $("#crm-type-select5").change(function () {
+        $select = $("#crm-type-select5");
+        setFields5($select.val());
+    });
+
+    //Start - Get Templates function - anropas från Edit-knappen.
+    var getTemplate = function () {
+        var $row = $(".selected");
+        var templateNumber = $row.find("td[data-property='Template_number']").html();
+        //var sign = $("#crm-select-user").val();
+        var pk_id = selectedId;
+       $.ajax({
+            "url": "/Template/SpecificTemplateData/",
+            "type": "POST",
+            "data": {
+                "ID": pk_id,
+            },
+            "success": function (data) {
+                if (data.length > 0) {
+                    var textTemplate = JSON.parse(data);
+                    //$selectType = $("#crm-type-select5");
+                    console.log(textTemplate.Document_type);
+                    $("#crm-type-select5").html("");
+
+                    setFields5(textTemplate.Document_type);
+
+                    $("#crm-type-select5").append($("<option></option>").attr("value", textTemplate.Document_type).html(textTemplate.Document_type));;
+                    $("#crm-type-select5").prop("disabled", true);
+                    $("#short_descr5").val(textTemplate.Short_descr);
+                    $("#title5").val(textTemplate.Title);
+                    $("#opening5").val(textTemplate.Page_head);
+                    $("#body5").val(textTemplate.Document_foot);
+                    $bodytitleObj.val(textTemplate.Document_foot_title);
+                    $deluhTitleObj.val(textTemplate.Delivery_maint_title);
+                    $deluhTextObj.val(textTemplate.Delivery_maint_text);
+                }
+            }
+        });
+    }
+    //End Get Template function
+
+    //Start - Delete function
+    var deleteTemplate = function()
+    {
+        var $row = $(".selected");
+        //var templateNumber = $row.find("td[data-property='Template_number']").html();
+        var sign = $("#crm-select-user").val();
+        var ID = selectedId;
+
+        $.ajax({
+            "url": "/Template/SaveTemplate/",
+            "type": "POST",
+            "data": {
+                "method": "delete",
+                "ID": ID
+            },
+            "success": function (data) {
+                if (data != -1) {
+                    updateDataTable(sign);
+                    triggerAlert("Succesfully deleted.", "success");
+                    drawButtons();
+                }
+                else {
+                    triggerAlert("Failed to delete from database.", "warning");
+                }
+            }
+        });
+    }
+    //End - Delete function
+
+    //Start - Save function
+    var save = function (method)
+    {
+        if ($("#template-modal form").valid()) {
+
+
+            var $row = $(".selected");
+            //var templateNumber = $row.find("td[data-property='Template_number']").html();
+            var sign = $("#crm-select-user").val();
+            //$selectType = $("#crm-type-select5");
+            var docType = $selectType.val();
+            var data;
+
+            if (docType == "Offert") {
+                data = {
+                    ID: selectedId,
+                    Sign: sign,
+                    //Template_number: templateNumber,
+                    Document_type: $selectType.val(),
+                    Short_descr: $("#short_descr5").val(),
+                    Document_head: $("#title5").val(),
+                    Page_head: $("#opening5").val(),
+                    Document_foot: $("#body5").val(),
+                    Document_foot_title: "",
+                    Delivery_maint_title: "",
+                    Delivery_maint_text: ""
+                }
+            }
+            if (docType == "Tilläggsavtal" || docType == "Tjänsteavtal") {
+                data = {
+                    ID: selectedId,
+                    Sign: sign,
+                    //Template_number: templateNumber,
+                    Document_type: $selectType.val(),
+                    Short_descr: $("#short_descr5").val(),
+                    Title: $("#title5").val(),
+                    Page_head: $("#opening5").val(),
+                    Document_foot: $("#body5").val(),
+                    Document_foot_title: $("#bodytitle5").val(),
+                    Delivery_maint_title: $("#deluhtitle5").val(),
+                    Delivery_maint_text: $("#deluhtext5").val()
+                }
+            }
+
+            if (docType == "Modulavslut") {
+                data = {
+                    ID: selectedId,
+                    Sign: sign,
+                    //Template_number: templateNumber,
+                    Document_type: $selectType.val(),
+                    Short_descr: $("#short_descr5").val(),
+                    Document_head: "",
+                    Page_head: $("#opening5").val(),
+                    Document_foot: "",
+                    Document_foot_title: "",
+                    Delivery_maint_title: "",
+                    Delivery_maint_text: ""
+                }
+            }
+
+
+            $.ajax({
+                "url": "/Template/SaveTemplate/",
+                "type": "POST",
+                "data": {
+                    "method": method,
+                    "data": JSON.stringify(data),
+                },
+                "success": function (data) {
+                    if (data != -1) {
+                        updateDataTable(sign);
+                        drawButtons();
+                        triggerAlert("Successfully saved.", "success");
+                        $("#templateModal").modal("toggle");
+                    }
+                    else {
+                        triggerAlert("Failed to save to database.", "warning");
+                    }
+                }
+            });
+        }
+    }
+    //End - Save function
+
+    $(document).ready(function () {
+
+        $("#crm-select-user").change(function () {
+            updateDataTable(this.value);
+            drawButtons();
+        });
+
+        $("#crm-select-viewmode").change(function () {
+            updateDataTable($("#crm-select-user").val());
+            drawButtons();
+        });
+
+        // Filter columns DISABLED for now.
+
+        //var colvis = new $.fn.dataTable.ColVis($@{@ViewBag.ControllerName}Table);
+        //var $colvisBtn = $(colvis.button());
+
+        //$('.dataTables_filter').append($colvisBtn);
+        $formValidation = $("#templateModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Short_descr": {
+
+                    required: true,
+                    maxlength: 25
+                },
+                "Title": {
+                    
+                    required: true,
+                    maxlength: 255
+                },
+                "Opening": {
+                    required: true,
+
+                },
+                "Text": {
+                    required: true,
+                    
+                },
+                
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+
+        var editState = false;
+
+        $("#crm-edit-contact").bind("click", function () {
+
+        });
+        // @Html.Raw("$customerSelect.val(\"" + @ViewBag.OfferNumber + "\");")
+        //updateDataTable($("#crm-select-user").val(), $("#crm-select-viewmode").val());
+
+        updateDataTable($("#crm-select-user").val());
+        drawButtons();
+
+    });
+    
+</script>

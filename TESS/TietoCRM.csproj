@@ -1,0 +1,1194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{31385F40-5C95-465F-BF60-C55ECFD0B2FA}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TietoCRM</RootNamespace>
+    <AssemblyName>TietoCRM</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\TietoCRM.XML</DocumentationFile>
+    <ExcludeFoldersFromDeployment>Documenation</ExcludeFoldersFromDeployment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExcludeFoldersFromDeployment>Documenation</ExcludeFoldersFromDeployment>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="dotless.Core">
+      <HintPath>packages\dotless.1.5.0\lib\dotless.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Rotativa.Core">
+      <HintPath>packages\Rotativa.Core.2.0.0\lib\net45\Rotativa.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Rotativa.MVC">
+      <HintPath>packages\Rotativa.MVC.2.0.3\lib\net45\Rotativa.MVC.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization.Less">
+      <HintPath>packages\System.Web.Optimization.Less.1.3.3\lib\net40\System.Web.Optimization.Less.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=__MvcPagesVersion__, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccessController.cs" />
+    <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
+    <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
+    <Compile Include="Controllers\List Management\CustomerContactController.cs" />
+    <Compile Include="Controllers\List Management\CustomerController.cs" />
+    <Compile Include="Controllers\List Management\PopulationController.cs" />
+    <Compile Include="Controllers\List Management\PriceController.cs" />
+    <Compile Include="Controllers\List Management\ReminderController.cs" />
+    <Compile Include="Controllers\List Management\SectorController.cs" />
+    <Compile Include="Controllers\List Management\ServiceController.cs" />
+    <Compile Include="Controllers\List Management\TemplateController.cs" />
+    <Compile Include="Controllers\List Management\UserController.cs" />
+    <Compile Include="Controllers\Offers\CustomerOfferController.cs" />
+    <Compile Include="Controllers\Reports\CustomerMissingProductReportController.cs" />
+    <Compile Include="Controllers\Reports\CustomerProductReportController.cs" />
+    <Compile Include="Controllers\Installations\FeaturesController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\List Management\ModuleController.cs" />
+    <Compile Include="Controllers\List Management\TariffController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\view_CustomerMissingProductReport.cs" />
+    <Compile Include="Models\Cloner.cs" />
+    <Compile Include="Models\Contract\view_ContractExpirationList.cs" />
+    <Compile Include="Models\FeatureObservableCollection.cs" />
+    <Compile Include="Models\MainContractText.cs" />
+    <Compile Include="Models\view_ConsultantRow.cs" />
+    <Compile Include="Models\Contract\view_Contract.cs" />
+    <Compile Include="Models\Contract\view_ContractConsultantRow.cs" />
+    <Compile Include="Models\Contract\view_ContractHead.cs" />
+    <Compile Include="Models\Contract\view_ContractRow.cs" />
+    <Compile Include="Models\Contract\view_ContractTemplate.cs" />
+    <Compile Include="Models\Contract\view_ContractText.cs" />
+    <Compile Include="Models\Contract\View_ContractOption.cs" />
+    <Compile Include="Models\view_CustomerContact.cs" />
+    <Compile Include="Models\view_CustomerOffer.cs" />
+    <Compile Include="Models\view_CustomerProductRow.cs" />
+    <Compile Include="Models\view_Module.cs" />
+    <Compile Include="Models\view_OfferRow.cs" />
+    <Compile Include="Models\view_Reminder.cs" />
+    <Compile Include="Models\view_Sector.cs" />
+    <Compile Include="Models\view_Population.cs" />
+    <Compile Include="Models\view_Price.cs" />
+    <Compile Include="Models\view_Service.cs" />
+    <Compile Include="Models\view_TextTemplate.cs" />
+    <Compile Include="Models\view_User.cs" />
+    <Compile Include="Models\GlobalVariables.cs" />
+    <Compile Include="Models\view_Customer.cs" />
+    <Compile Include="Models\SQLBaseClass.cs" />
+    <Compile Include="Models\view_Tariff.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\FeatureService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\Contracts\CustomerContractController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-table.css" />
+    <Content Include="Content\bootstrap-table.js" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="App_Browsers\qt.browser" />
+    <Content Include="Content\bootstrap.table.css" />
+    <Content Include="Content\ContractPdf.css" />
+    <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
+    <Content Include="Content\DataTables\css\autoFill.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.dataTables.css" />
+    <Content Include="Content\DataTables\css\autoFill.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.foundation.css" />
+    <Content Include="Content\DataTables\css\autoFill.foundation.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.jqueryui.css" />
+    <Content Include="Content\DataTables\css\autoFill.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap4.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap4.min.css" />
+    <Content Include="Content\DataTables\css\buttons.dataTables.css" />
+    <Content Include="Content\DataTables\css\buttons.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\buttons.foundation.css" />
+    <Content Include="Content\DataTables\css\buttons.foundation.min.css" />
+    <Content Include="Content\DataTables\css\buttons.jqueryui.css" />
+    <Content Include="Content\DataTables\css\buttons.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.bootstrap.css" />
+    <Content Include="Content\DataTables\css\colReorder.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.dataTables.css" />
+    <Content Include="Content\DataTables\css\colReorder.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.foundation.css" />
+    <Content Include="Content\DataTables\css\colReorder.foundation.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.jqueryui.css" />
+    <Content Include="Content\DataTables\css\colReorder.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap4.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap4.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.foundation.css" />
+    <Content Include="Content\DataTables\css\dataTables.foundation.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.jqueryui.css" />
+    <Content Include="Content\DataTables\css\dataTables.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.material.css" />
+    <Content Include="Content\DataTables\css\dataTables.material.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.semanticui.css" />
+    <Content Include="Content\DataTables\css\dataTables.semanticui.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.uikit.css" />
+    <Content Include="Content\DataTables\css\dataTables.uikit.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.bootstrap.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.dataTables.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.foundation.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.foundation.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.jqueryui.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.bootstrap.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.dataTables.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.foundation.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.foundation.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.jqueryui.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\DataTables\css\keyTable.bootstrap.css" />
+    <Content Include="Content\DataTables\css\keyTable.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.dataTables.css" />
+    <Content Include="Content\DataTables\css\keyTable.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.foundation.css" />
+    <Content Include="Content\DataTables\css\keyTable.foundation.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.jqueryui.css" />
+    <Content Include="Content\DataTables\css\keyTable.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\responsive.bootstrap.css" />
+    <Content Include="Content\DataTables\css\responsive.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\responsive.dataTables.css" />
+    <Content Include="Content\DataTables\css\responsive.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\responsive.foundation.css" />
+    <Content Include="Content\DataTables\css\responsive.foundation.min.css" />
+    <Content Include="Content\DataTables\css\responsive.jqueryui.css" />
+    <Content Include="Content\DataTables\css\responsive.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.bootstrap.css" />
+    <Content Include="Content\DataTables\css\rowReorder.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.dataTables.css" />
+    <Content Include="Content\DataTables\css\rowReorder.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.foundation.css" />
+    <Content Include="Content\DataTables\css\rowReorder.foundation.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.jqueryui.css" />
+    <Content Include="Content\DataTables\css\rowReorder.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\scroller.bootstrap.css" />
+    <Content Include="Content\DataTables\css\scroller.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\scroller.dataTables.css" />
+    <Content Include="Content\DataTables\css\scroller.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\scroller.foundation.css" />
+    <Content Include="Content\DataTables\css\scroller.foundation.min.css" />
+    <Content Include="Content\DataTables\css\scroller.jqueryui.css" />
+    <Content Include="Content\DataTables\css\scroller.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\select.bootstrap.css" />
+    <Content Include="Content\DataTables\css\select.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\select.dataTables.css" />
+    <Content Include="Content\DataTables\css\select.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\select.foundation.css" />
+    <Content Include="Content\DataTables\css\select.foundation.min.css" />
+    <Content Include="Content\DataTables\css\select.jqueryui.css" />
+    <Content Include="Content\DataTables\css\select.jqueryui.min.css" />
+    <Content Include="Content\DataTables\images\details_close.png" />
+    <Content Include="Content\DataTables\images\details_open.png" />
+    <Content Include="Content\DataTables\images\sort_asc.png" />
+    <Content Include="Content\DataTables\images\sort_asc_disabled.png" />
+    <Content Include="Content\DataTables\images\sort_both.png" />
+    <Content Include="Content\DataTables\images\sort_desc.png" />
+    <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
+    <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\ExpPdfStyle.css" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\img\Signatures\AHD.png" />
+    <Content Include="Content\img\Signatures\JAA.png" />
+    <Content Include="Content\img\Signatures\CWB.png" />
+    <Content Include="Content\img\Signatures\LSJ.png" />
+    <Content Include="Content\img\Signatures\ACL.png" />
+    <Content Include="Content\img\Signatures\MAT.png" />
+    <Content Include="Content\img\Signatures\ESM.png" />
+    <Content Include="Content\img\Signatures\JAJ.png" />
+    <Content Include="Content\img\Signatures\MLO.png" />
+    <Content Include="Content\img\Signatures\SLT.png" />
+    <Content Include="Content\img\tieto-logo-com.png" />
+    <Content Include="Content\img\tieto-logo.png" />
+    <Content Include="Content\OfferPdf.css" />
+    <Content Include="Content\OfferPdf.less" />
+    <Content Include="Content\ContractPdf.less" />
+    <Content Include="ClassDiagram1.cd" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\DataTables\css\mixins.scss" />
+    <Content Include="Content\DataTables\css\common.scss" />
+    <None Include="Content\sidebar.less" />
+    <Content Include="Content\img\overlay-bg-2.jpg" />
+    <Content Include="Content\img\overlay-bg.jpg" />
+    <Content Include="Content\Lifecare.css" />
+    <Content Include="Content\sidebar.css" />
+    <None Include="Content\ExpPdfStyle.less" />
+    <Content Include="Content\tinymce\license.txt" />
+    <Content Include="Content\tinymce\plugins\advlist\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\anchor\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\autolink\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\autoresize\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\autosave\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\bbcode\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\charmap\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\code\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\colorpicker\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\contextmenu\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\directionality\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-cool.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-cry.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-embarassed.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-foot-in-mouth.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-frown.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-innocent.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-kiss.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-laughing.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-money-mouth.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-sealed.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-smile.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-surprised.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-tongue-out.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-undecided.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-wink.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\img\smiley-yell.gif" />
+    <Content Include="Content\tinymce\plugins\emoticons\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\example\dialog.html" />
+    <Content Include="Content\tinymce\plugins\example\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\example_dependency\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\fullpage\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\fullscreen\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\hr\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\imagetools\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\image\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\importcss\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\insertdatetime\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\layer\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\legacyoutput\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\link\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\lists\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\media\moxieplayer.swf" />
+    <Content Include="Content\tinymce\plugins\media\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\nonbreaking\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\noneditable\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\pagebreak\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\paste\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\preview\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\print\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\save\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\searchreplace\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\spellchecker\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\tabfocus\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\table\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\template\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\textcolor\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\textpattern\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\visualblocks\css\visualblocks.css" />
+    <Content Include="Content\tinymce\plugins\visualblocks\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\visualchars\plugin.min.js" />
+    <Content Include="Content\tinymce\plugins\wordcount\plugin.min.js" />
+    <Content Include="Content\tinymce\skins\lightgray\content.inline.min.css" />
+    <Content Include="Content\tinymce\skins\lightgray\content.min.css" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce-small.svg" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.svg" />
+    <Content Include="Content\tinymce\skins\lightgray\img\anchor.gif" />
+    <Content Include="Content\tinymce\skins\lightgray\img\loader.gif" />
+    <Content Include="Content\tinymce\skins\lightgray\img\object.gif" />
+    <Content Include="Content\tinymce\skins\lightgray\img\trans.gif" />
+    <Content Include="Content\tinymce\skins\lightgray\skin.ie7.min.css" />
+    <Content Include="Content\tinymce\skins\lightgray\skin.min.css" />
+    <Content Include="Content\tinymce\themes\modern\theme.min.js" />
+    <Content Include="Content\tinymce\tinymce.min.js" />
+    <Content Include="Content\tree.css" />
+    <Content Include="Documentation\Doxyfile" />
+    <Content Include="Documentation\doxygen_objdb_8152.tmp" />
+    <Content Include="Documentation\html\annotated.html" />
+    <Content Include="Documentation\html\arrowdown.png" />
+    <Content Include="Documentation\html\arrowright.png" />
+    <Content Include="Documentation\html\bc_s.png" />
+    <Content Include="Documentation\html\bdwn.png" />
+    <Content Include="Documentation\html\classes.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___consultant_row-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___consultant_row.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___consultant_row.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_consultant_row-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_consultant_row.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_consultant_row.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_head-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_head.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_head.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_option-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_option.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_option.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_row-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_row.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_row.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_template-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_template.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_template.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_text-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_text.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___contract_text.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_contact-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_contact.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_contact.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_offer-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_offer.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_offer.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_product_row-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_product_row.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___customer_product_row.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___module-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___module.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___module.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___offer_row-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___offer_row.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___offer_row.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___service-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___service.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___service.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___tariff-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___tariff.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___tariff.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___text_template-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___text_template.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___text_template.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___user-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___user.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1view___user.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_feature_observable_collection-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_feature_observable_collection.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_feature_observable_collection.png" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_main_contract_text-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_main_contract_text.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_s_q_l_base_class-members.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_s_q_l_base_class.html" />
+    <Content Include="Documentation\html\class_tieto_c_r_m_1_1_models_1_1_s_q_l_base_class.png" />
+    <Content Include="Documentation\html\closed.png" />
+    <Content Include="Documentation\html\dir_22305cb0964bbe63c21991dd2265ce48.html" />
+    <Content Include="Documentation\html\dir_f13bd3331d570657cacee463b58e03f3.html" />
+    <Content Include="Documentation\html\doc.png" />
+    <Content Include="Documentation\html\doxygen.css" />
+    <Content Include="Documentation\html\doxygen.png" />
+    <Content Include="Documentation\html\dynsections.js" />
+    <Content Include="Documentation\html\folderclosed.png" />
+    <Content Include="Documentation\html\folderopen.png" />
+    <Content Include="Documentation\html\functions.html" />
+    <Content Include="Documentation\html\functions_func.html" />
+    <Content Include="Documentation\html\hierarchy.html" />
+    <Content Include="Documentation\html\index.html" />
+    <Content Include="Documentation\html\jquery.js" />
+    <Content Include="Documentation\html\namespaces.html" />
+    <Content Include="Documentation\html\namespace_tieto_c_r_m.html" />
+    <Content Include="Documentation\html\namespace_tieto_c_r_m_1_1_models.html" />
+    <Content Include="Documentation\html\nav_f.png" />
+    <Content Include="Documentation\html\nav_g.png" />
+    <Content Include="Documentation\html\nav_h.png" />
+    <Content Include="Documentation\html\open.png" />
+    <Content Include="Documentation\html\search\all_0.html" />
+    <Content Include="Documentation\html\search\all_0.js" />
+    <Content Include="Documentation\html\search\all_1.html" />
+    <Content Include="Documentation\html\search\all_1.js" />
+    <Content Include="Documentation\html\search\all_2.html" />
+    <Content Include="Documentation\html\search\all_2.js" />
+    <Content Include="Documentation\html\search\all_3.html" />
+    <Content Include="Documentation\html\search\all_3.js" />
+    <Content Include="Documentation\html\search\all_4.html" />
+    <Content Include="Documentation\html\search\all_4.js" />
+    <Content Include="Documentation\html\search\all_5.html" />
+    <Content Include="Documentation\html\search\all_5.js" />
+    <Content Include="Documentation\html\search\all_6.html" />
+    <Content Include="Documentation\html\search\all_6.js" />
+    <Content Include="Documentation\html\search\all_7.html" />
+    <Content Include="Documentation\html\search\all_7.js" />
+    <Content Include="Documentation\html\search\all_8.html" />
+    <Content Include="Documentation\html\search\all_8.js" />
+    <Content Include="Documentation\html\search\all_9.html" />
+    <Content Include="Documentation\html\search\all_9.js" />
+    <Content Include="Documentation\html\search\all_a.html" />
+    <Content Include="Documentation\html\search\all_a.js" />
+    <Content Include="Documentation\html\search\classes_0.html" />
+    <Content Include="Documentation\html\search\classes_0.js" />
+    <Content Include="Documentation\html\search\classes_1.html" />
+    <Content Include="Documentation\html\search\classes_1.js" />
+    <Content Include="Documentation\html\search\classes_2.html" />
+    <Content Include="Documentation\html\search\classes_2.js" />
+    <Content Include="Documentation\html\search\classes_3.html" />
+    <Content Include="Documentation\html\search\classes_3.js" />
+    <Content Include="Documentation\html\search\close.png" />
+    <Content Include="Documentation\html\search\functions_0.html" />
+    <Content Include="Documentation\html\search\functions_0.js" />
+    <Content Include="Documentation\html\search\functions_1.html" />
+    <Content Include="Documentation\html\search\functions_1.js" />
+    <Content Include="Documentation\html\search\functions_2.html" />
+    <Content Include="Documentation\html\search\functions_2.js" />
+    <Content Include="Documentation\html\search\functions_3.html" />
+    <Content Include="Documentation\html\search\functions_3.js" />
+    <Content Include="Documentation\html\search\functions_4.html" />
+    <Content Include="Documentation\html\search\functions_4.js" />
+    <Content Include="Documentation\html\search\functions_5.html" />
+    <Content Include="Documentation\html\search\functions_5.js" />
+    <Content Include="Documentation\html\search\functions_6.html" />
+    <Content Include="Documentation\html\search\functions_6.js" />
+    <Content Include="Documentation\html\search\functions_7.html" />
+    <Content Include="Documentation\html\search\functions_7.js" />
+    <Content Include="Documentation\html\search\functions_8.html" />
+    <Content Include="Documentation\html\search\functions_8.js" />
+    <Content Include="Documentation\html\search\mag_sel.png" />
+    <Content Include="Documentation\html\search\namespaces_0.html" />
+    <Content Include="Documentation\html\search\namespaces_0.js" />
+    <Content Include="Documentation\html\search\nomatches.html" />
+    <Content Include="Documentation\html\search\search.css" />
+    <Content Include="Documentation\html\search\search.js" />
+    <Content Include="Documentation\html\search\searchdata.js" />
+    <Content Include="Documentation\html\search\search_l.png" />
+    <Content Include="Documentation\html\search\search_m.png" />
+    <Content Include="Documentation\html\search\search_r.png" />
+    <Content Include="Documentation\html\splitbar.png" />
+    <Content Include="Documentation\html\sync_off.png" />
+    <Content Include="Documentation\html\sync_on.png" />
+    <Content Include="Documentation\html\tabs.css" />
+    <Content Include="Documentation\html\tab_a.png" />
+    <Content Include="Documentation\html\tab_b.png" />
+    <Content Include="Documentation\html\tab_h.png" />
+    <Content Include="Documentation\html\tab_s.png" />
+    <Content Include="Documentation\html\tieto-logo-com.png" />
+    <Content Include="Documentation\latex\annotated.tex" />
+    <Content Include="Documentation\latex\classjinplace.tex" />
+    <Content Include="Documentation\latex\class_options.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_bundle_config.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_access_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_access_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_contracts_1_1_contract_supervision_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_contracts_1_1_contract_supervision_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_contracts_1_1_customer_contract_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_contracts_1_1_customer_contract_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_contact_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_contact_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_offer_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_offer_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_product_report_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_customer_product_report_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_features_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_features_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_home_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_home_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_list___management_1_1_service_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_list___management_1_1_service_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_list___management_1_1_template_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_list___management_1_1_template_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_list___management_1_1_user_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_list___management_1_1_user_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_module_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_module_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_tariff_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_controllers_1_1_tariff_controller.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_applications.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_applications.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_applications_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_applications_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_client_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_client_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_features.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_features.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_features_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_features_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_license_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_license_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_logg.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_logg.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_logg_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_logg_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_my_version.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_my_version.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_product.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_product.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_product_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_product_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_script.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_script.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_script_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_script_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_user.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_user.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_user_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_user_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_version_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_version_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_writer_client.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_feature_service_1_1_writer_client.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_filter_config.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1dbo_konsult.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1dbo_konsult.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___consultant_row.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___consultant_row.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_consultant_row.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_consultant_row.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_head.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_head.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_option.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_option.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_row.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_row.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_template.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_template.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_text.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___contract_text.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer_contact.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer_contact.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer_offer.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer_offer.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer_product_row.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___customer_product_row.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___module.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___module.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___offer_row.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___offer_row.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___service.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___service.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___tariff.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___tariff.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___text_template.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___text_template.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___user.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1view___user.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1_feature_observable_collection.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1_feature_observable_collection.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1_main_contract_text.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1_s_q_l_base_class.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_models_1_1_s_q_l_base_class.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_mvc_application.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_mvc_application.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_route_config.tex" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_views_1_1_contracts_1_1_customer_contract_controller.eps" />
+    <Content Include="Documentation\latex\class_tieto_c_r_m_1_1_views_1_1_contracts_1_1_customer_contract_controller.tex" />
+    <Content Include="Documentation\latex\dir_006203a4a6950009edb527450593eeb8.tex" />
+    <Content Include="Documentation\latex\dir_013d8e95a9ad240961fb2b00e1066761.tex" />
+    <Content Include="Documentation\latex\dir_01cd4592b9aa347789822013f4b16ceb.tex" />
+    <Content Include="Documentation\latex\dir_033cf3286f141e45f24c5f1fef47f7bd.tex" />
+    <Content Include="Documentation\latex\dir_0450d23166a9f89c102204a524e3d6a4.tex" />
+    <Content Include="Documentation\latex\dir_0576e833016ddfa3ed8b90081bb7991c.tex" />
+    <Content Include="Documentation\latex\dir_05849d19ab5ef5bd4f8afb87e634a43e.tex" />
+    <Content Include="Documentation\latex\dir_06a2cb18dbfa70a39b0cbc920ff5bc6c.tex" />
+    <Content Include="Documentation\latex\dir_06c6db44ab585a51f24cebf255d079aa.tex" />
+    <Content Include="Documentation\latex\dir_0940af87b06e77a6eb065b5d7964b7e3.tex" />
+    <Content Include="Documentation\latex\dir_0996208330e2e1bed05e1ff0e35f4f7a.tex" />
+    <Content Include="Documentation\latex\dir_0b17441b79c9c7c32cf0d5f986914bc1.tex" />
+    <Content Include="Documentation\latex\dir_0f773e2fb4c54453954dbcb36f20104b.tex" />
+    <Content Include="Documentation\latex\dir_10c2bddc9b367e20b28267dfd1f64cb0.tex" />
+    <Content Include="Documentation\latex\dir_1228a11470cf160ab1723947e690ac30.tex" />
+    <Content Include="Documentation\latex\dir_143fa760fb422e4d1137dacb38723fc7.tex" />
+    <Content Include="Documentation\latex\dir_15c36728824bce63cc27fe1e5d574283.tex" />
+    <Content Include="Documentation\latex\dir_15c435f47477d638f716a3e23cc31908.tex" />
+    <Content Include="Documentation\latex\dir_164a28703e0bf4202ff11eb3c23087b7.tex" />
+    <Content Include="Documentation\latex\dir_1664ba8084c11eef54fb59e7e1d41557.tex" />
+    <Content Include="Documentation\latex\dir_178f45943f96e44d5f0f8f413c669686.tex" />
+    <Content Include="Documentation\latex\dir_18fbbc96aef99928fff34c56a2d0424a.tex" />
+    <Content Include="Documentation\latex\dir_1a0376f9657500d6dc6c836b8af614cf.tex" />
+    <Content Include="Documentation\latex\dir_1f8f46e44c45aeb561aeff8b7dd00e9a.tex" />
+    <Content Include="Documentation\latex\dir_1f9b18973c3cf4200c466393049f4c3e.tex" />
+    <Content Include="Documentation\latex\dir_22e9bd869e2068123651984ddce8acdf.tex" />
+    <Content Include="Documentation\latex\dir_24d6fb34622795fc6771dae740ae8f33.tex" />
+    <Content Include="Documentation\latex\dir_2b28079de548cba4a53560d42db38cc9.tex" />
+    <Content Include="Documentation\latex\dir_2bb37095f5a0ce7093ef9f31f751c500.tex" />
+    <Content Include="Documentation\latex\dir_2d8fac32e41ad654b0397e1bc3a2452a.tex" />
+    <Content Include="Documentation\latex\dir_353e7decf72dfb59d9ca7c9830c99135.tex" />
+    <Content Include="Documentation\latex\dir_37069de3474c2ad96f7406790497c0ce.tex" />
+    <Content Include="Documentation\latex\dir_3e924cd7b562ada5a80e0078a7e66258.tex" />
+    <Content Include="Documentation\latex\dir_3f601085c646f2383477706ed50f0afb.tex" />
+    <Content Include="Documentation\latex\dir_3f74227504bf5a63236e0fd33e01fff9.tex" />
+    <Content Include="Documentation\latex\dir_433902ded933826052666d75f69b6b3a.tex" />
+    <Content Include="Documentation\latex\dir_439454c2dee67d5020d2b0409b740ed4.tex" />
+    <Content Include="Documentation\latex\dir_43a805df6536b7e9379487906f33f10f.tex" />
+    <Content Include="Documentation\latex\dir_44c505f40545a7c2993ebc05bf896a03.tex" />
+    <Content Include="Documentation\latex\dir_45514b6b65f5ce6529e6601755a603dd.tex" />
+    <Content Include="Documentation\latex\dir_47eb520263c78630e8b97aef7e2e45a4.tex" />
+    <Content Include="Documentation\latex\dir_4a0b016f877d888c10ad0bf79b53d750.tex" />
+    <Content Include="Documentation\latex\dir_5289fa91e1d1c350abc6ceabbba76586.tex" />
+    <Content Include="Documentation\latex\dir_53d7284d9387e8edc76a76bdacffc31e.tex" />
+    <Content Include="Documentation\latex\dir_559707c65890446b6554c92bc9ff3e7a.tex" />
+    <Content Include="Documentation\latex\dir_57636b4b6c81069322c2cbc9500bc356.tex" />
+    <Content Include="Documentation\latex\dir_5840e652f7a9aa5cdbd83b432d6a15a8.tex" />
+    <Content Include="Documentation\latex\dir_5878b0c577b05799034e973ec6b07a45.tex" />
+    <Content Include="Documentation\latex\dir_629d5b0625a5d631b18dc3f1265cde6f.tex" />
+    <Content Include="Documentation\latex\dir_62f0a80bbbb2fbaba33551f527dcf3c7.tex" />
+    <Content Include="Documentation\latex\dir_645dfcf46e66c64b330291a3cf0bdb10.tex" />
+    <Content Include="Documentation\latex\dir_6566a7f3cd8503301d5eb9af1751c177.tex" />
+    <Content Include="Documentation\latex\dir_6655d1f161d40e35f63b84f2f7689664.tex" />
+    <Content Include="Documentation\latex\dir_67b7978e35f9a58f1f4d96ffa66cd2ed.tex" />
+    <Content Include="Documentation\latex\dir_69547f697f6ee1ae5cac86af9291f08b.tex" />
+    <Content Include="Documentation\latex\dir_6c166975ffacfa4be85a2a89214bbe6e.tex" />
+    <Content Include="Documentation\latex\dir_70c149a1d5b435578afeb5390189c83e.tex" />
+    <Content Include="Documentation\latex\dir_797f5141ff7beee97305d6da91ac5cd5.tex" />
+    <Content Include="Documentation\latex\dir_7b5976cae9ab80e01bfd95512f01cf96.tex" />
+    <Content Include="Documentation\latex\dir_7cf4cdb3b20b86d695ec85b248bce56e.tex" />
+    <Content Include="Documentation\latex\dir_7d945b62a917308bef69a4a6e3eb90ce.tex" />
+    <Content Include="Documentation\latex\dir_80c2ea01e7d808194ad37647c472dae1.tex" />
+    <Content Include="Documentation\latex\dir_831709cda86cae2f3f46f20745b90de8.tex" />
+    <Content Include="Documentation\latex\dir_8ad340ca3c7bc05d79b2b2d237ada22c.tex" />
+    <Content Include="Documentation\latex\dir_8af26dcdb9d4489348099540bb1d497b.tex" />
+    <Content Include="Documentation\latex\dir_8af2ff678f914ffefcd1a4092e83fa3e.tex" />
+    <Content Include="Documentation\latex\dir_93f08705affb18359c35d2a0221fe72c.tex" />
+    <Content Include="Documentation\latex\dir_956dde200630093332cd74b0c4731c79.tex" />
+    <Content Include="Documentation\latex\dir_9c67809ebe5b9ff0088c07e61234c0d1.tex" />
+    <Content Include="Documentation\latex\dir_9d6ba41787f96d60ac8aba0bf55a4270.tex" />
+    <Content Include="Documentation\latex\dir_a2154a8e558e5630bec201762e3ceb4a.tex" />
+    <Content Include="Documentation\latex\dir_a5ef6c070087b184a136f24ca335a4b7.tex" />
+    <Content Include="Documentation\latex\dir_af139cd3923d3824d4d65c4ee79e989f.tex" />
+    <Content Include="Documentation\latex\dir_b006b9d1d1c7974c862cbea1abac3704.tex" />
+    <Content Include="Documentation\latex\dir_b0928f40f8703b1c7b5d5a5dad29631a.tex" />
+    <Content Include="Documentation\latex\dir_b1e64e9d995e64b3047a60404c874038.tex" />
+    <Content Include="Documentation\latex\dir_b337aa164cd9f4f22853d54d7f5bd71a.tex" />
+    <Content Include="Documentation\latex\dir_b4d47e597da514c143038e7535056353.tex" />
+    <Content Include="Documentation\latex\dir_b61cf9fc93e8dc96272313d43434721e.tex" />
+    <Content Include="Documentation\latex\dir_b6f9308336fef03bc1c8de9072ede2a1.tex" />
+    <Content Include="Documentation\latex\dir_b789f79ca077049bac70510c93ca815f.tex" />
+    <Content Include="Documentation\latex\dir_b994ad375c73372a39b8200c10192d7c.tex" />
+    <Content Include="Documentation\latex\dir_bb264b8480d6cd34821c07cf6dda2fce.tex" />
+    <Content Include="Documentation\latex\dir_bd3c6876cb17d0af754f6860208b3d32.tex" />
+    <Content Include="Documentation\latex\dir_be13340a1a23d08ac14b14942aee80dd.tex" />
+    <Content Include="Documentation\latex\dir_be7492e10bad973d77f594dfc246410d.tex" />
+    <Content Include="Documentation\latex\dir_be978d8772458c5c56ed4553f83e6f02.tex" />
+    <Content Include="Documentation\latex\dir_c1d24ab0cc361020b5657f1df7e586e1.tex" />
+    <Content Include="Documentation\latex\dir_c23f8c7ede42f726fd6deac99d761ecf.tex" />
+    <Content Include="Documentation\latex\dir_c2b756e05649483b1f95240397251d6b.tex" />
+    <Content Include="Documentation\latex\dir_c3434c9ba3ff436ea1cfc3e0597d5bec.tex" />
+    <Content Include="Documentation\latex\dir_cbb30491e3f3be6f1e81ef1f80946d41.tex" />
+    <Content Include="Documentation\latex\dir_cddf1054140f5e299812f700071463c0.tex" />
+    <Content Include="Documentation\latex\dir_cea0e427bbac4a3594c99825fbbca1c0.tex" />
+    <Content Include="Documentation\latex\dir_ceaa7ec9e96b4d8ed3c461392b48f8dd.tex" />
+    <Content Include="Documentation\latex\dir_cf7e690d40cbe6c5c7171079c029bb5b.tex" />
+    <Content Include="Documentation\latex\dir_cf8d5520d63d453bcaca51899520c964.tex" />
+    <Content Include="Documentation\latex\dir_d4a7b08677dc564eb95f65e6255c5967.tex" />
+    <Content Include="Documentation\latex\dir_d56093c9d69b12b58a59edb9dfee5a45.tex" />
+    <Content Include="Documentation\latex\dir_d6784b8c1aa03817f72eb8b28a35b0f7.tex" />
+    <Content Include="Documentation\latex\dir_db57887bf343096f76d7ad296d7cbf27.tex" />
+    <Content Include="Documentation\latex\dir_dcb7d5f66d7f8061213d3d171c286409.tex" />
+    <Content Include="Documentation\latex\dir_dec89a8d95293e783460baa88d9dd64c.tex" />
+    <Content Include="Documentation\latex\dir_def2c911ac00f31915bb6f1403790012.tex" />
+    <Content Include="Documentation\latex\dir_e190ed6821743defc8b05d04cbc073ae.tex" />
+    <Content Include="Documentation\latex\dir_e7a78c6ae47091f0d8be1e86d16fe756.tex" />
+    <Content Include="Documentation\latex\dir_e7c7d6550b6839e04eca4ac0724dedb0.tex" />
+    <Content Include="Documentation\latex\dir_e84bcb57cc48b5b1826a02440234a3a2.tex" />
+    <Content Include="Documentation\latex\dir_eaa8adc9763e4629a04db69dbd62855c.tex" />
+    <Content Include="Documentation\latex\dir_eb7a0b3151b6a767d64b4733527fb6ce.tex" />
+    <Content Include="Documentation\latex\dir_f0515c3eaca9fce0a367e90fbcd3d2b6.tex" />
+    <Content Include="Documentation\latex\dir_f086767ac7dab8437f40ad3d226f1edd.tex" />
+    <Content Include="Documentation\latex\dir_f1117d66cd83cff67f2c252b948a2e8f.tex" />
+    <Content Include="Documentation\latex\dir_f11c14825af6c3d5f62bc2c25ab39f9f.tex" />
+    <Content Include="Documentation\latex\dir_f6dcc5834ff660ef944ffcd61f4c9b76.tex" />
+    <Content Include="Documentation\latex\dir_f81c0ada9107f5258636b6aeef88337d.tex" />
+    <Content Include="Documentation\latex\dir_fc67a33990834ac96d58b9d02a0b961f.tex" />
+    <Content Include="Documentation\latex\doxygen.sty" />
+    <Content Include="Documentation\latex\hierarchy.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_applications.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_applications.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_applications_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_applications_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_client.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_client.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_client_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_client_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_features.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_features.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_features_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_features_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_license.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_license.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_license_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_license_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_logg.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_logg.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_logg_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_logg_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_product.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_product.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_product_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_product_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_script.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_script.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_script_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_script_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_user.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_user.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_user_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_user_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_version.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_version.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_version_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_version_channel.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_writer.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_writer.tex" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_writer_channel.eps" />
+    <Content Include="Documentation\latex\interface_tieto_c_r_m_1_1_feature_service_1_1_i_writer_channel.tex" />
+    <Content Include="Documentation\latex\make.bat" />
+    <Content Include="Documentation\latex\Makefile" />
+    <Content Include="Documentation\latex\md_obj__the__r_e_a_l__d_e_b_u_g__package__package_tmp__content_tinymce_langs_readme.tex" />
+    <Content Include="Documentation\latex\md__content_tinymce_langs_readme.tex" />
+    <Content Include="Documentation\latex\namespaces.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_controllers.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_controllers_1_1_contracts.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_controllers_1_1_list___management.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_extensions.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_feature_service.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_models.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_views.tex" />
+    <Content Include="Documentation\latex\namespace_tieto_c_r_m_1_1_views_1_1_contracts.tex" />
+    <Content Include="Documentation\latex\refman.tex" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
+    <Content Include="Scripts\bootbox.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\Site.less" />
+    <Content Include="Content\tinymce\langs\readme.md" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.eot" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.ttf" />
+    <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.woff" />
+    <None Include="Properties\PublishProfiles\local.pubxml" />
+    <None Include="Properties\PublishProfiles\TESS.pubxml" />
+    <None Include="Properties\PublishProfiles\TESSWeb.pubxml" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\ContractModals\Articles.js" />
+    <Content Include="Scripts\ContractModals\ArticlesFromContracts.js" />
+    <Content Include="Scripts\ContractModals\ContractHead.js" />
+    <Content Include="Scripts\ContractModals\HeadInformation.js" />
+    <Content Include="Scripts\ContractModals\Options.js" />
+    <Content Include="Scripts\ContractModals\OptionsFromActive.js" />
+    <Content Include="Scripts\ContractModals\Services.js" />
+    <Content Include="Scripts\ContractModals\Templates.js" />
+    <Content Include="Scripts\CRMFunctions.js" />
+    <Content Include="Scripts\dataTables.colVis.js" />
+    <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
+    <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\autoFill.foundation.js" />
+    <Content Include="Scripts\DataTables\autoFill.foundation.min.js" />
+    <Content Include="Scripts\DataTables\autoFill.jqueryui.js" />
+    <Content Include="Scripts\DataTables\autoFill.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap4.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap4.min.js" />
+    <Content Include="Scripts\DataTables\buttons.colVis.js" />
+    <Content Include="Scripts\DataTables\buttons.colVis.min.js" />
+    <Content Include="Scripts\DataTables\buttons.flash.js" />
+    <Content Include="Scripts\DataTables\buttons.flash.min.js" />
+    <Content Include="Scripts\DataTables\buttons.foundation.js" />
+    <Content Include="Scripts\DataTables\buttons.foundation.min.js" />
+    <Content Include="Scripts\DataTables\buttons.html5.js" />
+    <Content Include="Scripts\DataTables\buttons.html5.min.js" />
+    <Content Include="Scripts\DataTables\buttons.jqueryui.js" />
+    <Content Include="Scripts\DataTables\buttons.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\buttons.print.js" />
+    <Content Include="Scripts\DataTables\buttons.print.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.autoFill.js" />
+    <Content Include="Scripts\DataTables\dataTables.autoFill.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap4.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap4.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.buttons.js" />
+    <Content Include="Scripts\DataTables\dataTables.buttons.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.colReorder.js" />
+    <Content Include="Scripts\DataTables\dataTables.colReorder.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedColumns.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedColumns.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedHeader.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedHeader.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.foundation.js" />
+    <Content Include="Scripts\DataTables\dataTables.foundation.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.jqueryui.js" />
+    <Content Include="Scripts\DataTables\dataTables.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.keyTable.js" />
+    <Content Include="Scripts\DataTables\dataTables.keyTable.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.material.js" />
+    <Content Include="Scripts\DataTables\dataTables.material.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.responsive.js" />
+    <Content Include="Scripts\DataTables\dataTables.responsive.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.rowReorder.js" />
+    <Content Include="Scripts\DataTables\dataTables.rowReorder.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.scroller.js" />
+    <Content Include="Scripts\DataTables\dataTables.scroller.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.select.js" />
+    <Content Include="Scripts\DataTables\dataTables.select.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.semanticui.js" />
+    <Content Include="Scripts\DataTables\dataTables.semanticui.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.uikit.js" />
+    <Content Include="Scripts\DataTables\dataTables.uikit.min.js" />
+    <Content Include="Scripts\DataTables\jquery.dataTables.js" />
+    <Content Include="Scripts\DataTables\jquery.dataTables.min.js" />
+    <Content Include="Scripts\DataTables\responsive.bootstrap.js" />
+    <Content Include="Scripts\DataTables\responsive.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\responsive.foundation.js" />
+    <Content Include="Scripts\DataTables\responsive.foundation.min.js" />
+    <Content Include="Scripts\DataTables\responsive.jqueryui.js" />
+    <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4-min.js" />
+    <Content Include="Scripts\jquery.bsAlerts.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\less-1.5.1.js" />
+    <Content Include="Scripts\less-1.5.1.min.js" />
+    <Content Include="Scripts\mindmup-editabletable.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\tree.js" />
+    <Content Include="Scripts\_references.js" />
+    <None Include="Service References\FeatureService\configuration91.svcinfo" />
+    <None Include="Service References\FeatureService\configuration.svcinfo" />
+    <None Include="Service References\FeatureService\ReadService1.wsdl" />
+    <None Include="Service References\FeatureService\ReadService6.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService61.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService62.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService63.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService64.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService65.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Scripts\ContractModals\ContractFromOffer.js" />
+    <None Include="Service References\FeatureService\ReadService1.disco" />
+    <Content Include="Views\CustomerContract\Footer.html" />
+    <Content Include="Views\CustomerContract\Header.cshtml" />
+    <Content Include="Views\CustomerOffer\Footer.html" />
+    <Content Include="Views\CustomerOffer\Header.html" />
+    <Content Include="Views\Shared\Footer.html" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Customer\Data.cshtml" />
+    <Content Include="Views\Tariff\Index.cshtml" />
+    <Content Include="Views\Module\Index.cshtml" />
+    <Content Include="Views\Shared\_ReportLayout.cshtml" />
+    <Content Include="Views\CustomerProductReport\Index.cshtml" />
+    <Content Include="Views\CustomerProductReport\Pdf.cshtml" />
+    <Content Include="Views\Features\Index.cshtml" />
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Applications.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Client.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Features.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Logg.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.MyVersion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Product.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Script.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.User.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Views\CustomerContact\Index.cshtml" />
+    <Content Include="Views\CustomerOffer\Index.cshtml" />
+    <Content Include="Views\CustomerOffer\ViewPdf.cshtml" />
+    <Content Include="Views\CustomerOffer\_OfferHTML.cshtml" />
+    <Content Include="Views\CustomerOffer\Pdf.cshtml" />
+    <Content Include="Views\CustomerOffer\Modals.cshtml" />
+    <Content Include="Views\Features\Pdf.cshtml" />
+    <Content Include="Views\Template\Index.cshtml" />
+    <Content Include="Views\CustomerOffer\_OfferHTML_OfferSection.cshtml" />
+    <Content Include="Views\Template\MainContractTemplate.cshtml" />
+    <Content Include="Views\Service\Index.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\CustomerOffer\Footer.cshtml" />
+    <Content Include="Views\CustomerContract\Index.cshtml" />
+    <Content Include="Views\CustomerContract\ViewPdf.cshtml" />
+    <Content Include="Views\CustomerContract\_ModuleSection.cshtml" />
+    <Content Include="Views\CustomerContract\_ContractHTML.cshtml" />
+    <Content Include="Views\CustomerContract\_HeaderSection.cshtml" />
+    <Content Include="Views\CustomerContract\_MainContractHeader.cshtml" />
+    <Content Include="Views\CustomerContract\Pdf.cshtml" />
+    <Content Include="Views\CustomerContract\_HeadSection.cshtml" />
+    <Content Include="Views\CustomerContract\_SigningSection.cshtml" />
+    <Content Include="Views\CustomerContract\_MainContractEpilog.cshtml" />
+    <Content Include="Views\CustomerContract\_OldModuleSection.cshtml" />
+    <Content Include="Views\CustomerContract\Headers\EmptyView.cshtml" />
+    <Content Include="Views\ContractSupervision\Index.cshtml" />
+    <Content Include="Views\ContractSupervision\Pdf.cshtml" />
+    <Content Include="Views\Access\Login.cshtml" />
+    <Content Include="Views\Access\Denied.cshtml" />
+    <Content Include="Views\Access\Index.cshtml" />
+    <Content Include="Views\Price\Index.cshtml" />
+    <Content Include="Views\Population\Index.cshtml" />
+    <Content Include="Views\Sector\Index.cshtml" />
+    <Content Include="Views\CustomerContract\_ModalContractFromOffer.cshtml" />
+    <Content Include="Views\ContractExpirationList\Index.cshtml" />
+    <Content Include="Views\CustomerMissingProductReport\Index.cshtml" />
+    <Content Include="Views\CustomerMissingProductReport\Pdf.cshtml" />
+    <Content Include="Views\CustomerContract\_ModuleTerminationSection.cshtml" />
+    <Content Include="Views\Reminder\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\FeatureService\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'The REAL DEBUG|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>61645</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:61645/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\Site.css" /recursive
+"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\sidebar.css" /recursive
+"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\OfferPdf.css" /recursive
+"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\ContractPdf.css" /recursive
+"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\ExpPdfStyle.css" /recursive
+del "$(ProjectDir)Content\Site.css"
+del "$(ProjectDir)Content\sidebar.css"
+del "$(ProjectDir)Content\OfferPdf.css"
+del "$(ProjectDir)Content\ContractPdf.css"
+del "$(ProjectDir)Content\ExpPdfStyle.css" 
+"$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\Site.less" "$(ProjectDir)Content\Site.css"
+"$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\sidebar.less" "$(ProjectDir)Content\sidebar.css"
+"$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\OfferPdf.less" "$(ProjectDir)Content\OfferPdf.css"
+"$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\ContractPdf.less" "$(ProjectDir)Content\ContractPdf.css"
+"$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\ExpPdfStyle.less" "$(ProjectDir)Content\ExpPdfStyle.css"
+rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\Site.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."
+rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\sidebar.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."
+rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\OfferPdf.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."
+rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\ContractPdf.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

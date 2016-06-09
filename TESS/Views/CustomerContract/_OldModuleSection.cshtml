@@ -1,0 +1,325 @@
+﻿@{
+    Layout = null;
+    
+    // CultureInfo for swedish currency print out 
+    CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+    bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
+}
+@using TietoCRM.Models;
+@using System.Globalization;
+
+<div id="crm-pdf-old-module-head">
+
+    <h3>Modulförteckning</h3>
+    <p>
+        Avtalet omfattar en icke exklusiv, evig, nyttjamderätt till nedan redovisade 
+        programprodukter/-moduler. Leverans av programvara sker i objektkod.
+    </p>
+    @if (ViewBag.OldArticles.Count > 0 || ViewBag.OldEducationPortals.Count > 0)
+    {
+        <h4>Befintliga moduler</h4>
+    }
+</div>
+@if (ViewBag.OldArticles.Count > 0)
+{
+@*-------------------------------------
+    Befintliga Produkter
+-------------------------------------*@
+<div id="crm-pdf-old-module-rows" class="">
+    <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+        <table>
+            <tr>
+                <td>Produkter</td>
+                <td></td>
+                <td></td>
+                <td>Underhåll/mån</td>
+            </tr>
+        </table>
+    </div>
+    <div class="large-divider"></div>
+    @{
+        decimal ProductLicenseTotal = 0;
+        decimal ProductMaintenanceTotal = 0;
+        
+        String previousSystem = "";
+    }
+    @foreach (dynamic article in ViewBag.OldArticles)
+    {
+        // Calculate total sums
+        ProductLicenseTotal += Convert.ToDecimal(article.License);
+        ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+
+        // Format currency
+        String Maintenance = "";
+        if (article.Maintenance != 0)
+        {
+            Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+        }
+        if (previousSystem != article.System)
+        {
+            <div class="crm-pdf-subrows_1">
+                <table>
+                    <tr>
+                        <td>@article.System</td>
+                    </tr>
+                </table>
+            </div>
+        }
+        <div class="crm-pdf-subrows_2">
+            <table>
+                <tr>
+                    <td>@article.Classification</td>
+                    <td>@article.Article_number</td>
+                    <td>@article.Module</td>
+                    <td></td>
+                    <td>@Maintenance</td>
+                </tr>
+            </table>
+        </div>
+        previousSystem = article.System;
+    }
+    @{
+        // Format currency for total sums
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+    }
+    <span class="large-divider"></span>
+    <div class="crm-pdf-subsum_1">
+        <table>
+            <tr>
+                <td></td>
+                <td>Summa Befintliga moduler:</td>
+                <td></td>
+                <td>@ProductMaintenanceTotalFormated</td>
+            </tr>
+        </table>
+    </div>
+</div>
+}
+
+@if(ViewBag.OldEducationPortals.Count > 0)
+{
+<div id="crm-pdf-old-educational-portal-rows" class="crm-print-block">
+    <div class="crm-pdf-50" id="crm-pdf-educational-portal-rows-title">
+        <p><strong>Lärportal</strong></p>
+    </div><!--
+ --><div class="crm-pdf-50 price-headings">
+        <table>
+            <tr>
+                <td class="pull-right">Person / år</td>
+            </tr>
+        </table>
+    </div>
+    <div class="large-divider"></div>
+    @{
+        decimal EducationalPortalTotal = 0;
+    }
+    @foreach (dynamic article in ViewBag.OldEducationPortals)
+    {
+
+        // Calculate total sums
+        EducationalPortalTotal += Convert.ToDecimal(article.License);
+        // Format currency
+        String License = "";
+        if (article.License != 0)
+        {
+            License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+        }
+
+        <div class="crm-pdf-educational-portal-row">
+            <div class="crm-pdf-70">
+                <table style="width: 90%;" class="crm-pdf-educational-portal-row-info">
+                    <tr>
+                        <td style="width: 7em">@article.Classification</td>
+                        <td style="width: 4em">@article.Article_number</td>
+                        <td>@article.Module</td>
+                    </tr>
+                </table>
+            </div><!--
+         --><div class="crm-pdf-30">
+                <table style="width: 100%; ">
+                    <tr>
+                        <td></td>
+                        <td><span style="margin-right:2em">@License</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+    @{
+        // Format currency for total sums
+        string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+    }
+    <span class="large-divider"></span>
+    <div class="crm-pdf-educational-portal-row-sum">
+        <div class="crm-pdf-70">
+            <span class="pull-right">Totalsumma: </span>
+        </div><!--
+        --><div class="crm-pdf-30">
+            <table style="width: 100%;">
+                <tr>
+                    <td></td>
+                    <td>@EducationalPortalTotalFormated</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+}
+
+@if (ViewBag.RemArticles.Count > 0 || ViewBag.RemEducationPortals.Count > 0)
+{
+    <h4>Avslutade moduler</h4>
+}
+
+@if (ViewBag.RemArticles.Count > 0)
+{
+<div id="crm-pdf-module-rows" class="">
+    <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+        <table>
+            <tr>
+                <td>Produkter</td>
+                <td></td>
+                <td></td>
+                <td>Underhåll/mån</td>
+            </tr>
+        </table>
+    </div>
+    <div class="large-divider"></div>
+    @{
+    decimal ProductLicenseTotal = 0;
+    decimal ProductMaintenanceTotal = 0;
+
+    String previousSystem = "";
+    }
+    @foreach (dynamic article in ViewBag.RemArticles)
+    {
+        // Calculate total sums
+        ProductLicenseTotal += Convert.ToDecimal(article.License);
+        ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+
+        // Format currency
+        String Maintenance = "";
+        if (article.Maintenance != 0)
+        {
+            Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+        }
+        if (previousSystem != article.System)
+        {
+        <div class="crm-pdf-subrows_1">
+            <table>
+                <tr>
+                    <td>@article.System</td>
+                </tr>
+            </table>
+        </div>
+        }
+        <div class="crm-pdf-subrows_2">
+            <table>
+                <tr>
+                    <td>@article.Classification</td>
+                    <td>@article.Article_number</td>
+                    <td>@article.Module</td>
+                    <td></td>
+                    <td>@Maintenance</td>
+                </tr>
+            </table>
+        </div>
+        previousSystem = article.System;
+    }
+    @{
+    // Format currency for total sums
+    string ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
+    string ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+    }
+    <span class="large-divider"></span>
+    <div class="crm-pdf-subsum_1">
+        <table>
+            <tr>
+                <td></td>
+                <td>Summa Produkter:</td>
+                <td></td>
+                <td>@ProductMaintenanceTotalFormated</td>
+            </tr>
+        </table>
+    </div>
+</div>
+}
+
+@if (ViewBag.RemEducationPortals.Count > 0)
+{
+    <div id="crm-pdf-old-educational-portal-rows" class="crm-print-block">
+        <div class="crm-pdf-50" id="crm-pdf-educational-portal-rows-title">
+            <p><strong>Lärportal</strong></p>
+        </div>
+        <!--
+        -->
+        <div class="crm-pdf-50 price-headings">
+            <table>
+                <tr>
+                    <td class="pull-right">Person / år</td>
+                </tr>
+            </table>
+        </div>
+        <div class="large-divider"></div>
+        @{
+    decimal EducationalPortalTotal = 0;
+        }
+        @foreach (dynamic article in ViewBag.RemEducationPortals)
+        {
+
+            // Calculate total sums
+            EducationalPortalTotal += Convert.ToDecimal(article.License);
+            string EducationalPortalLicense = string.Format(se, "{0:C0}", Convert.ToDecimal(article.License)).Replace(".", " ");
+
+            // Format currency
+
+            String License = "";
+            if (article.License != 0)
+            {
+                License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+            }
+            <div class="crm-pdf-educational-portal-row">
+                <div class="crm-pdf-70">
+                    <table style="width: 90%;" class="crm-pdf-educational-portal-row-info">
+                        <tr>
+                            <td style="width: 7em">@article.Classification</td>
+                            <td style="width: 4em">@article.Article_number</td>
+                            <td>@article.Module</td>
+                        </tr>
+                    </table>
+                </div>
+                <!--
+                -->
+                <div class="crm-pdf-30">
+                    <table style="width: 100%; ">
+                        <tr>
+                            <td></td>
+                            <td><span style="margin-right:2em">@License</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        }
+        @{
+        // Format currency for total sums
+        string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+        }
+        <span class="large-divider"></span>
+        <div class="crm-pdf-educational-portal-row-sum">
+            <div class="crm-pdf-70">
+                <span class="pull-right">Totalsumma: </span>
+            </div>
+            <!--
+            -->
+            <div class="crm-pdf-30">
+                <table style="width: 100%;">
+                    <tr>
+                        <td></td>
+                        <td>@EducationalPortalTotalFormated</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+}

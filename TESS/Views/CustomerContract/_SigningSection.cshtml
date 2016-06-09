@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+<table>
+    <tr>
+        <td class="crm-table-title">Ort och datum</td>
+        <td class="crm-table-title">Ort och datum</td>
+    </tr>
+    <tr>
+        <td class="crm-empty-signing-field">
+            <span id="custCity" class="signing-line">@ViewBag.ContractHead.City den</span>
+        </td>
+        <td class="crm-empty-signing-field">
+            <span id="ourCity" class="signing-line">@ViewBag.OurCity den</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="crm-table-title">Kundens underskrift</td>
+        <td class="crm-table-title">Leverantörens underskrift</td>
+    </tr>
+    <tr>
+        <td class="crm-empty-signing-field">
+            <span class="signing-line"></span>
+        </td>
+        <td class="crm-empty-signing-field">
+            <span class="signing-line"></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="crm-table-title">Namnförtydligande</td>
+        <td class="crm-table-title">Namnförtydligande</td>
+    </tr>
+    <tr>
+        <td class="crm-empty-signing-field">
+            <span class="signing-line" style="font-size: 80%;">@ViewBag.ContractHead.Customer_sign</span>
+        </td>
+        <td class="crm-empty-signing-field">
+            <span class="signing-line" style="font-size: 80%;">@ViewBag.ContractHead.Our_sign</span>
+        </td>
+    </tr>
+</table>
+@*<script>
+    String.prototype.capitalizeFirstLetter = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase;
+    }
+
+    $(document).ready(function () {
+        $custCity = $("#custCity");
+        var city = decodeURI("@ViewBag.ContractHead.City");
+        //city = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
+        $custCity.html(city + " den");
+
+        $ourCity = $("#ourCity");
+        var ourcity = "@ViewBag.Representative.City";
+        var iSplit = new Number;
+        for (var i = 0, len = ourcity.length; i < len; i++) {
+            if (ourcity[i] != " ") {
+                if (isNaN(ourcity[i])) {
+                    iSplit = i;
+                    { break;}
+                }
+            }
+        }
+        $ourCity.html(ourcity.slice(iSplit) + " den");
+    });
+</script>*@

@@ -1,0 +1,1011 @@
+﻿<form>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="crm-select-customer">Customer:</label>
+            <select name="customer" id="crm-select-customer" class="form-inline">
+                @foreach (String Customer in ViewBag.Customers)
+                {
+                    <option value="@Customer">@Customer</option>
+                }
+            </select>
+            <button type='button' class='btn-xs btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+        </div>
+        </div>
+    </div>
+    <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+        <thead>
+            <tr>
+
+                @foreach (String ColumnName in ViewBag.Properties)
+                {
+                    String PropertyName = ColumnName.Replace("_", " ");
+                    if (@PropertyName != "SSMA timestamp" && @PropertyName != "#")
+                    {
+                        <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                    }
+                    else if (@PropertyName != "SSMA timestamp") // this is for #
+                    {
+                        <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
+                    }
+
+                }
+            </tr>
+        </thead>
+    </table>
+    <div class="bottom-wrapper" style="margin-top:30px; margin-bottom:30px">
+        <div id='crm-edit-contact' class='crm-table-btn'>
+            <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+        </div>
+        
+    </div>
+</form>
+
+<!-- #region reminders -->
+
+@*<div class="modal fade bs-example-modal-lg" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog reminders-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Reminders on customer</h4>
+            </div>
+            <div id="reminder-modal" class="modal-body"> 
+                <form class="form-inline" id="reminders-form">
+                    <table id="reminders-table">
+                        <tr>
+                            <td valign="top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Active Reminders</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <table style="margin-left: 0.8em;">
+                                            <tr>
+                                                <th></th>
+                                                <th>Start date</th>
+                                                <th>Reminder text</th>
+                                                <th>Deactivate</th>
+                                            </tr>
+                                        </table>
+                                        <div id="active-reminders" class="list-group">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-reminders" class="btn btn-primary">Save deactivation</button>
+            </div>
+        </div>
+    </div>
+</div>*@
+<!--#endregion-->
+<style>
+    table#reminder-table {
+        width: 100%;
+    }
+
+    table#reminder-table th, table#reminder-table td {
+        border: 1px solid black;
+        padding: 3px;
+    }
+</style>
+
+<div class="modal fade bs-example-modal-lg" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog reminders-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Reminders on customer</h4>
+            </div>
+            <div id="reminder-modal" class="modal-body">
+                <form class="form-inline" id="reminders-form">
+                    <table id="reminder-table">
+                        <col style="width:10%">
+                        <col style="width:75%">
+                        <col style="width:5%">
+                        <col style="width:10%; text-align:center">
+                       <thead>
+                            <tr>
+                                <th>Start date</th>
+                                <th>Reminder text</th>
+                                <th>Sign</th>
+                                <th>Deactivate</th>
+                            </tr>
+                        </thead>
+                        <tbody class="reminder-body">
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-reminders" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Contact</h4>
+            </div>
+            <div id="contact-modal" class="modal-body">
+                <div class="form-inline">
+                    <select id="crm-contact-select" class="form-control">
+                    </select>
+                </div>
+                <br />
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="fullName3" class="col-sm-2 control-label">Full name</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Contact_person" id="fullName3" placeholder="Full name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Email" id="inputEmail3" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber3" class="col-sm-2 control-label">Phone number</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="phoneNumber3" placeholder="Phone number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobileNumber3" class="col-sm-2 control-label">Mobile number</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="mobileNumber3" placeholder="Mobile number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address3" class="col-sm-2 control-label">Address</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="address3" placeholder="Address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes3" class="col-sm-2 control-label">Notes</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="notes3" placeholder="Notes">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:-5px">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button id="create-contact-button" class="btn btn-default">Create</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-contact-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="newRowModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">New offer</h4>
+            </div>
+            <div id="new-offer-modal" class="modal-body">
+                
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="contactPerson4" class="col-sm-2 control-label">Contact Person</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="contactPerson4">
+                                <option value="none">None</option>
+                                
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="created4" class="col-sm-2 control-label">Offer created</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Created" id="created4" type="date" value='@DateTime.Now.Date.ToShortDateString()'/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="valid4" class="col-sm-2 control-label">Offer valid</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="valid4" type="date" value='@DateTime.Now.AddMonths(3).Date.ToShortDateString()'>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="offerStatus4" class="col-sm-2 control-label">Offer status</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="offerStatus4">
+                                @foreach (String status in ViewBag.OfferStatus)
+                                {
+                                    <option value='@status'>@status</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                   
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="create-offer-btn" class="btn btn-primary">Save Offer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+    
+    Script for new offer modal
+-->
+<script>
+    
+    var $customerSelect = $("#crm-select-customer");
+    var checkReminder = function(customer){
+        $.ajax({
+            "url": "/CustomerOffer/checkReminder/",
+            "type": "POST",
+            "data": {
+                "customer": customer
+            },
+            "success": function(data){
+                if (data == "1") {
+                    $("#remind-modal-button").show();
+                }
+                else {
+                    $("#remind-modal-button").hide();
+                }
+            }
+        });
+    }
+
+    var loadNewContactData = function()
+    {
+        $.ajax({
+            "url": "/CustomerOffer/GetContacts/",
+            "type": "POST",
+            "data": {
+                "customer": $customerSelect.val()
+            },
+            "success": function(data){
+                currentPerson = JSON.parse(data);
+                $select = $("#contactPerson4");
+                $select.html("");
+             
+
+                for(var i = 0; i < currentPerson.length; i++)
+                {
+                    var person = currentPerson[i];
+                    $select.append($("<option></option>").attr("innerText", person.Contact_person).html(person.Contact_person));
+     
+                }
+                $select.append("<option value='none'>None</option>");
+
+            }
+        });
+    }
+    function get_browser() {
+        var ua = navigator.userAgent,
+            tem,
+            M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+        if (/trident/i.test(M[1])) {
+            tem =/\brv[ :]+(\d+)/g.exec(ua) || [];
+            return 'IE';
+        }
+        if (M[1] === 'Chrome') {
+            tem = ua.match(/\bOPR\/(\d+)/)
+            if (tem != null) {
+                return 'Opera'
+            }
+        }
+        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        if ((tem = ua.match(/version\/(\d+)/i)) !=null) {
+            M.splice(1,1,tem[1]);
+        }
+        return M[0];
+    }
+
+    var webkit = get_browser() == "Chrome"  ||
+        /iPad|iPhone|iPod/.test( navigator.userAgent )  ||
+        get_browser() == "Opera";
+
+    if(!webkit)
+    {
+        $("#created4").datepicker();
+        $("#valid4").datepicker();
+    }
+        
+
+    $("#create-offer-btn").click(function(){
+        if ($("#new-offer-modal form").valid()) {
+        var newOffer = {}
+        newOffer.Customer = $customerSelect.val();
+        newOffer.Contact_person = $("#contactPerson4").val();
+        newOffer.Offer_created =  $("#created4").val();
+        newOffer.Offer_valid =  $("#valid4").val();
+        newOffer.Offer_status =  $("#offerStatus4").val();
+        
+        $.ajax({
+            "url": "/CustomerOffer/Insert/",
+            "type": "POST",
+            "data": {
+                "json": JSON.stringify(newOffer)
+            },
+            "success": function(data){
+                if(data > 0){
+                    updateDataTable($("#crm-select-customer").val());
+                    //checkReminder($("#crm-select-customer").val());
+                    drawButtons();
+                    triggerAlert("Successfully added new offer.", "success");
+                    $("#newRowModal").modal("toggle");
+                }
+                else {
+                    triggerAlert("Failed to add new offer.", "warning");
+                }
+            }
+        });
+        }
+
+
+    });
+</script>
+
+<!--
+    Script for contact modal
+-->
+<script>
+    var currentPerson;
+    var $contactSelect = $("#crm-select-customer");
+    $("#contact-modal-button").click(function(){
+        $("#contactModal").appendTo("body").modal("show");
+    });
+
+    var loadContactData = function()
+    {
+        $.ajax({
+            "url": "/CustomerOffer/GetContacts/",
+            "type": "POST",
+            "data": {
+                "customer": $("#crm-select-customer").val()
+            },
+            "success": function(data){
+                currentPerson = JSON.parse(data);
+                $select = $("#crm-contact-select");
+                $select.html("");
+                $button = $("#create-contact-button");
+
+                for(var i = 0; i < currentPerson.length; i++)
+                {
+                    var person = currentPerson[i];
+                    $select.append($("<option></option>").attr("value", JSON.stringify(person)).html(person.Contact_person));
+                    if(i == 0)
+                    {
+                        changePersonToShow(person);
+                    }
+
+                }
+                $select.append("<option new-person='true'>New person</option>");
+
+                if($select.children().length > 1)
+                    $button.hide();
+                else
+                    $button.show();
+            }
+        });
+    }
+
+    $("#remind-modal-button").click(function(){
+        $("#reminderModal").appendTo("body").modal("show");
+    });
+    var loadReminders = function()
+    {
+        $.ajax({
+            "url": "/CustomerOffer/GetReminders/",
+            "type": "POST",
+            "data": {
+                "customer": $("#crm-select-customer").val()
+            },
+            "success": function(data){
+                reminders = JSON.parse(data);
+
+                $newRows = $(".reminder-body");
+                $newRows.empty();
+                $newRows.html("");
+                $newRows.append("<tbody>");
+                for(var i = 0; i < reminders.length; i++)
+                {
+                    var remind = reminders[i];
+
+                    var $row = $("<tr>                                                                                                \
+                                    <td class='startdat'>" + remind.Start_date + "</td>                                   \
+                                    <td class='remtext'>" + remind.Reminder_text + "</td>         \
+                                    <td class='sign'>" + remind.Sign + "</td>         \
+                                    <td class='deactivate'><input data-id=" + remind.ID_PK + " class='ch-deact' type='checkbox' /></td>         \
+                                </tr>");
+                    $newRows.append($row);
+                }
+                $newRows.append("<tbody>");
+            }
+        });
+    }
+
+    $("#save-reminders").click(function(){
+        var $inputs = $("#reminderModal #reminder-table").find("input:checked");
+        var length = $inputs.length;
+        for(var i = 0; i < length; i++){
+            $input = $($inputs[i]);
+            var id = $input.attr("data-id");
+            $.ajax({
+                "url": "/CustomerOffer/DeactivateReminder/",
+                "type": "POST",
+                "data": {
+                    "id_pk": id
+                },
+                "success": function(data){
+                
+                }
+            });
+        }
+        $("#reminderModal").modal("hide");
+        checkReminder($("#crm-select-customer").val());
+        triggerAlert("Successfully deactivated reminders", "success");
+    });
+
+    $("#crm-contact-select").change(function(){
+        $option = $(this).find("option:selected");
+        if(typeof $option.attr("new-person") == "undefined")
+        {
+            $("#create-contact-button").hide();
+            changePersonToShow(JSON.parse(this.value), $option);
+        }
+        else
+        {
+            $("#create-contact-button").show();
+            changePersonToShow("", $option);
+        }
+    });
+    var changePersonToShow = function(person, $option)
+    {
+        if(typeof $option != "undefined")
+        {
+            if(typeof $option.attr("new-person") == "undefined")
+            {
+                $("#fullName3").val($("<div>").html(person.Contact_person).text());
+                $("#inputEmail3").val(person.Email);
+                $("#phoneNumber3").val(person.Telephone);
+                $("#mobileNumber3").val(person.Mobile);
+                $("#address3").val(person.Address);
+                $("#notes3").val($("<div>").html(person.Notes).text());
+            }
+            else
+            {
+                $("#fullName3").val("");
+                $("#inputEmail3").val("");
+                $("#phoneNumber3").val("");
+                $("#mobileNumber3").val("");
+                $("#address3").val("");
+                $("#notes3").val("");
+            }
+        }
+        else
+        {
+            $("#fullName3").val($("<div>").html(person.Contact_person).text());
+            $("#inputEmail3").val(person.Email);
+            $("#phoneNumber3").val(person.Telephone);
+            $("#mobileNumber3").val(person.Mobile);
+            $("#address3").val(person.Address);
+            $("#notes3").val($("<div>").html(person.Notes).text());
+        }
+    }
+    $("#create-contact-button").click(function(e){
+        if ($("#contactModal form").valid())
+        {
+            e.preventDefault();
+            var person = {}
+            $option = $("#crm-contact-select").find("option:selected");
+
+            person.Customer = $contactSelect.val();
+            person.Contact_person = $("#fullName3").val();
+            person.Email = $("#inputEmail3").val();
+            person.Telephone = $("#phoneNumber3").val();
+            person.Address = $("#address3").val();
+            person.Mobile = $("#mobileNumber3").val();
+            person.Notes = $("#notes3").val();
+            person.Title = "";
+
+            $.ajax({
+                "url": "/CustomerOffer/InsertContact/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(person)
+                },
+                "success": function(data){
+                    if(data > 0)
+                    {
+                        $select = $("#crm-contact-select");
+                        json = JSON.stringify(person);
+                        $select.prepend($("<option></option>").attr("value", json).html(person.Contact_person));
+                        $select.val(json);
+                        triggerAlert("Successfully added contact.", "success");
+                    }
+                    else
+                    {
+                        triggerAlert("Failed to add contact.", "warning");
+                    }
+                }
+            });
+        }
+    });
+
+
+    $("#save-contact-changes").click(function(){
+        $option = $("#crm-contact-select").find("option:selected");
+        if(typeof $option.attr("new-person") == "undefined")
+        {
+            if ($("#contactModal form").valid())
+            {
+                var oldPerson = JSON.parse($option.val());
+                var person = {}
+
+                person.oldName = oldPerson.Contact_person;
+                person.oldEmail = oldPerson.Email;
+                if(selectedId != null)
+                    person.offerNumber = selectedId;
+                person.Customer = $contactSelect.val();
+                person.Contact_person = $("#fullName3").val();
+                person.Email = $("#inputEmail3").val();
+                person.Telephone = $("#phoneNumber3").val();
+                person.Address = $("#address3").val();
+                person.Mobile = $("#mobileNumber3").val();
+                person.Notes = $("#notes3").val();
+                person.Title = "";
+
+                $.ajax({
+                    "url": "/CustomerOffer/SaveContact/",
+                    "type": "POST",
+                    "data": {
+                        "json": JSON.stringify(person),
+                        "id": selectedId
+                    },
+                    "success": function(data){
+                        if(data > 0)
+                        {
+                            updateDataTable($("#crm-select-customer").val());
+                            //checkReminder($("#crm-select-customer").val());
+                            drawButtons();
+                            selectedId = null;
+                            triggerAlert("Successfully updated contact.", "success");
+                            $("#contactModal").modal("toggle");
+                        }
+                        else
+                        {
+                            triggerAlert("Failed to update contact.", "warning");
+                        }
+                    }
+                });
+            }
+            
+        }
+    });
+
+</script>
+
+<!--
+    Script for main page
+-->
+<script>
+    var selectedId;
+    var onSuccess = function(data, textStatus, jqxhr, $row){
+        if(data > 0)
+        {
+            $@{@ViewBag.ControllerName}Table.row( $row )
+            .remove()
+            .draw();
+            $(document).trigger("clear-alerts");
+            $(document).trigger("add-alerts", [
+              {
+                  'message': 'Row successfully deleted!',
+                  'priority': 'success'
+              }
+            ]);
+        }
+    }
+    var selectRow = function(element){
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#CustomerOffer-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+        $table.find("tr.selected").removeClass("selected");
+        $row.addClass("selected");
+    }
+    var uniqueRowNumber = 0;
+    var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+        var insertValue;
+        var selectOptions = "@Html.Raw(HttpUtility.JavaScriptStringEncode((new System.Web.Script.Serialization.JavaScriptSerializer()).Serialize( ViewBag.SelectOfferStatus)))";
+        var selectArr = JSON.parse(selectOptions);
+        for (var name in JSON.parse(selectOptions)) {
+            if (selectArr[j][0] == aData["Offer_status"]) {
+                selectArr[j].push(1);
+            }
+            j++;
+        }
+        for (var name in aData) {
+
+            var dataObj = {}
+            var $td;
+            dataObj.primaryKey = aData["@ViewBag.PrimaryKey"];
+            dataObj.value = aData[name];
+            dataObj.type = name;
+
+            if(i == 0)
+            {
+                $td = $('td:eq(' + i + ')', nRow);
+
+                $td.parent().click(function () {
+
+                    selectRow(this.firstChild);
+
+                });
+                $td.html("<input type='radio' value='" + aData["Offer_number"] + "' name='selected-offer' onClick=''/>");
+                if ($td.parent().hasClass("selected") && $td.find("input").val() == selectedId) {
+                    selectRow($td);
+                }
+                else if ($td.parent().hasClass("selected") && $td.find("input").val() != selectedId) {
+                    $td.parent().removeClass("selected");
+                }
+                i++;
+            }
+            else if (i == 7) {
+                $td = $('td:eq(' + i + ')', nRow);
+                $td.attr("data-type", "select");
+                $td.attr("data-data", selectOptions);
+
+                // deleteRowFunction($td, dataObj);
+            }
+            if(i != 7)
+            {
+                $td = $('td:eq(' + i + ')', nRow);
+                $td.html(insertValue);
+                $td.attr("data-property", name);
+            }
+
+            i++;
+        }
+    }
+
+    @{String DataObject = "\r\n";}
+    @foreach (String ColumnName in ViewBag.Properties)
+    {
+            if (ColumnName != "SSMA_timestamp")
+    {
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @ColumnName + "\"  },\r\n";
+    }
+    }
+    var updateDataTable = function(customer, onSuccess)
+    {
+        $('#@ViewBag.ControllerName-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": "/CustomerOffer/CustomerOfferJsonData/",
+                "type": "POST",
+                "data": {
+                    "customer": customer
+                }
+            },
+            "initComplete": function(settings, json) {
+                if(typeof onSuccess != "undefined")
+                    onSuccess();
+            },
+            "defaultContent": "",
+            "bPaginate": false,
+            "bInfo" : false,
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[1, "desc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+        checkReminder(customer);
+        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+        //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+        //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+        //$('#crm-save-btn').on('click', save);
+    }
+
+    var save = function (onSuccess) {
+        var $btn = $(this).button();
+        var btnTimeout = setTimeout(function()  // Reset button after 30 secs
+        {
+            $btn.button('reset')
+        }, 30000);
+        updateToServer("@ViewBag.TargetUrl",
+            function(){ // beforeSend
+                $btn.button('loading')
+                $btn.html("Uploading...")
+            },
+            function(data, textStatus, jqxhr, rows){ // onSuccess
+                if(data > 0)
+                {
+                    var didInsert = false,
+                        didUpdate = false;
+
+                    for(var i = 0; i < rows.length; i++){
+                        var row = rows[i];
+                        if(typeof row.insert != "undefined"){
+                            didInsert = true;
+
+                            $@{@ViewBag.ControllerName}Table.row($("#new-row-" + row.insert)).remove().draw();
+                            delete row.insert;
+                            var $newRowNode = $@{@ViewBag.ControllerName}Table.row.add(row).draw();
+                        }
+                        else{
+                            didUpdate = true;
+                        }
+                    }
+                    var msg ="";
+                    if( didInsert && !didUpdate ) {
+                        if(rows.length > 1)
+                            msg = "Rows successfully added";
+                        else
+                            msg = "Row successfully added";
+                    } else if ( !didInsert && didUpdate ) {
+                        if( rows.length > 1 )
+                            msg = "Rows successfully updated";
+                        else
+                            msg = "Row successfully updated";
+                    }  else {
+                        if( rows.length > 1 )
+                            msg = "Rows successfully updated and inserted";
+                        else
+                            msg = "Row successfully updated and inserted";
+                    }
+                    var getType = {};
+                    var isFunction = onSuccess && getType.toString.call(onSuccess) === '[object Function]';
+                    if(typeof onSuccess != "undefined" && isFunction)
+                        onSuccess();
+                    updateDataTable($customerSelect.val());
+                    //checkReminder($customerSelect.val());
+                    drawButtons();
+                    $(document).trigger("clear-alerts");
+                    $(document).trigger("add-alerts", [
+                      {
+                          'message': msg,
+                          'priority': 'success'
+                      }
+                    ]);
+
+                }
+                else
+                {
+                    $(document).trigger("clear-alerts");
+                    $(document).trigger("add-alerts", [
+                      {
+                          'message': "Something went wrong, prehaps you have incorrect format on some inputs or missing values?",
+                          'priority': 'warning',
+                      }
+                    ]);
+                }
+
+                setTimeout(function(){
+                    $btn.button('reset')
+                }, 300);
+                clearInterval(btnTimeout); // Clear button timeout if request succeeded
+            });
+    }
+    
+    function drawButtons()
+    {
+        var $selRowContainer = $("#CustomerOffer-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $selRowContainer.append("<div id='crm-edit-offer' class='crm-table-btn'><button type='button' class='btn btn-default'>Preview</button></div>");
+        var $editBtn = $("#crm-save-updates");
+        $("#crm-edit-offer").bind("click", function(){
+            //get selected item and add so the url is correct.
+            if(typeof selectedId == "undefined" || selectedId == null)
+                triggerAlert("Select an item to edit", "info");
+            else if(rows.length <= 0)
+            {
+                window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
+
+                window.location = "ViewPdf?selected-offer=" + selectedId;
+            }
+            else
+            {
+                bootbox.dialog({
+                    title: 'Do you want to save changes?',
+                    message: "You are about to leave this page without saving your changes. Do you want to save changes?",
+                    buttons: {
+                        'cancel': {
+                            label: 'Cancel',
+                            className: 'btn-default'
+                        },
+                        'yes': {
+                            label: 'Yes',
+                            className: 'pull-right',
+                            callback: function () {
+                                save(function(){
+                                    window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
+                                    window.location = "ViewPdf?selected-offer=" + selectedId;
+                                });
+                            }
+                        },
+                        'no': {
+                            label: 'No',
+                            className: 'btn-danger pull-right',
+                            callback: function () {
+                                window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
+                                window.location = "ViewPdf?selected-offer=" + selectedId;
+                            }
+                        }
+                    },
+                });
+            }
+        });
+        $('#crm-save-btn').on('click', save);
+
+        $("#crm-add-row").click(function(){
+            loadNewContactData();
+            $("#newRowModal").appendTo("body").modal("show");
+        });
+    }
+
+    $(document).ready(function () {
+        $("#crm-select-customer").change(function () {
+            selectedId = null;
+            updateDataTable(this.value);
+            //checkReminder(this.value);
+            drawButtons();
+            $("#crm-add-row").click(function(){
+                loadNewContactData();
+                $("#newRowModal").appendTo("body").modal("show");
+            });
+        });
+
+        var uniqueRowNumber = 0;
+        var $delBtns;
+        @{String NewRowObj = "{\r\n";}
+        @foreach (String ColumnName in ViewBag.Properties)
+        {
+            NewRowObj += "\t\t\t\t\t\t\"" + @ColumnName + "\": '1***',\r\n";
+        }
+        @{
+            NewRowObj = NewRowObj.Remove(NewRowObj.Length - 3);
+            NewRowObj += "\r\n\t\t\t\t}";
+        }
+        newRowObj =  @Html.Raw(NewRowObj);
+
+        @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+
+        // code herehrherherehrh
+
+
+        // Filter columns DISABLED for now.
+
+        //var colvis = new $.fn.dataTable.ColVis($@{@ViewBag.ControllerName}Table);
+        //var $colvisBtn = $(colvis.button());
+
+        //$('.dataTables_filter').append($colvisBtn);
+
+
+        $formValidation = $("#newRowModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Created": {
+                    required: true,
+                    date: true
+                },
+                "Valid": {
+                    required: true,
+                    date: true
+                },
+                
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+
+        $formValidation = $("#contactModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Contact_person": {
+                    required: true
+                },
+                "Email": {
+                    email: true,
+                    maxlength: 50
+                },
+                "Telephone": {
+                    maxlength: 20,
+                },
+                "Mobile": {
+                    maxlength: 20,
+                },
+                "Address": {
+                    maxlength: 100,
+                },
+                "Notes": {
+                    maxlength: 255,
+                }
+                
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+
+
+
+        var editState = false;
+
+
+
+        $("#crm-edit-contact").bind("click", function(){
+
+        });
+
+        $("#crm-edit").bind("click", function(){
+            if(editState == false){
+
+                $delBtns.show();
+                editState = true;
+            } else if (editState == true){
+                $delBtns.hide();
+                editState = false;
+            }
+
+        });
+        $customerSelect = $("#crm-select-customer");
+        //@Html.Raw(@ViewBag.OfferNumber)
+        $customerSelect.val("@Html.Raw(@ViewBag.OfferNumber)");
+        updateDataTable("@Html.Raw(@ViewBag.OfferNumber)", function(){
+            @Html.Raw("selectRow($(\"input[value='" + Request["selected-offer"] + "'][type='radio'][name='selected-offer']\").parent());")
+            drawButtons();
+            if($customerSelect.val() == "")
+                $("#crm-add-row").unbind("click");
+        });
+
+        
+
+    });
+</script>

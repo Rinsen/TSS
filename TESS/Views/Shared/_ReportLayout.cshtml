@@ -1,0 +1,258 @@
+﻿@functions{
+    
+    bool IsContract()
+    {
+        if (Request.Url.Segments[Request.Url.Segments.Length - 2] == "CustomerContract")
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public bool IsController(string controller)
+    {
+        if (ViewContext.RouteData.Values["controller"] != null)
+        {
+            return ViewContext.RouteData.Values["controller"].ToString().Equals(controller, StringComparison.OrdinalIgnoreCase);
+        }
+        return false;
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    
+    @RenderSection("Styles", false)
+
+    @using System.Text;
+   <style>
+        body {
+          background: rgb(204,204,204);
+          font-family: Arial;
+          font-size: 80%;
+        }
+        table.cpr-table td:nth-child(1){
+            width: 8em;
+        }
+        table.cpr-table td:nth-child(2){
+
+        }
+        table.cpr-table td:nth-child(3){
+            width: 8em;
+        }
+        table.cpr-table td:nth-child(4){
+            width: 15em;
+        }
+        table.cpr-table td:nth-child(5){
+            width: 8em;
+        }
+        .crm-print-block{
+            display: block;
+            page-break-inside: avoid;
+        }
+        .crm-service-info-text{
+            font-size: 15px !important;
+        }
+        /*
+            Offer styles
+        */
+        .crm-pdf{
+            font-size: 15px;
+             margin: 0 1.4cm 0 2.1cm !important;
+        }
+         .crm-service-info-text{
+            font-size: 12px !important;
+        }
+        /*
+            Features styles
+        */
+
+        table.features-table th:nth-child(2) {
+            text-align: center;
+        }
+        table.features-table th:nth-child(3) {
+            text-align: center;
+        }
+        table.features-table  td:nth-child(1){
+           
+        }
+        table.features-table  td:nth-child(2){
+            width: 8em;
+            text-align: right;
+        }
+        table.features-table  td:nth-child(3){
+            width: 10em;
+            text-align: right;
+        }
+        /*
+            Styles for Contract Supervision
+
+        */
+        table.contract-supervision-table td:nth-child(3){
+            width: 7em;
+        }
+        table.contract-supervision-table td:nth-child(4){
+            width: 7em;
+        }
+        table.contract-supervision-table td:nth-child(5){
+            width: 7em;
+        }
+        table.contract-supervision-table td:nth-child(6){
+            width: 7em;
+        }
+        table.contract-supervision-table td:nth-child(7){
+            width: 7em;
+        }
+       div.crm-pdf-subheader_1 table {
+           page-break-before: auto;
+           margin-top: 1em;
+           width: 100%;
+       }
+
+           div.crm-pdf-subheader_1 table td:nth-child(1) {
+               width: 60%;
+               text-align: left;
+               font-weight: bold;
+           }
+
+           div.crm-pdf-subheader_1 table td:nth-child(2) {
+               width: 8%;
+               text-align: center;
+           }
+
+           div.crm-pdf-subheader_1 table td:nth-child(3) {
+               text-align: right;
+               width: 16%;
+           }
+
+           div.crm-pdf-subheader_1 table td:nth-child(4) {
+               text-align: right;
+               width: 16%;
+           }
+
+       div.crm-pdf-subrows_1 table {
+           page-break-before: auto;
+           width: 100%;
+       }
+
+           div.crm-pdf-subrows_1 table td:nth-child(1) {
+               width: 60%;
+               text-align: left;
+           }
+
+           div.crm-pdf-subrows_1 table td:nth-child(2) {
+               width: 8%;
+               text-align: center;
+               vertical-align: text-top;
+           }
+
+           div.crm-pdf-subrows_1 table td:nth-child(3) {
+               text-align: right;
+               width: 16%;
+               vertical-align: text-top;
+           }
+
+           div.crm-pdf-subrows_1 table td:nth-child(4) {
+               text-align: right;
+               width: 16%;
+               vertical-align: text-top;
+           }
+
+       div.crm-pdf-subrows_2 table {
+           page-break-before: auto;
+           width: 100%;
+       }
+
+           div.crm-pdf-subrows_2 table td:nth-child(1) {
+               padding-left: 0.5em;
+               width: 20%;
+               text-align: left;
+               vertical-align: text-top;
+           }
+
+           div.crm-pdf-subrows_2 table td:nth-child(2) {
+               width: 10%;
+               text-align: left;
+               vertical-align: text-top;
+           }
+
+           div.crm-pdf-subrows_2 table td:nth-child(3) {
+               width: 38%;
+               text-align: left;
+           }
+
+           div.crm-pdf-subrows_2 table td:nth-child(4) {
+               text-align: right;
+               width: 16%;
+               vertical-align: text-top;
+           }
+
+           div.crm-pdf-subrows_2 table td:nth-child(5) {
+               text-align: right;
+               width: 16%;
+               vertical-align: text-top;
+           }
+
+       div.crm-pdf-subsum_1 table {
+           page-break-before: auto;
+           width: 100%;
+       }
+
+           div.crm-pdf-subsum_1 table td:nth-child(1) {
+               width: 40%;
+               text-align: left;
+               font-size: 8pt;
+           }
+
+           div.crm-pdf-subsum_1 table td:nth-child(2) {
+               width: 28%;
+               text-align: right;
+               vertical-align: text-top;
+           }
+
+           div.crm-pdf-subsum_1 table td:nth-child(3) {
+               text-align: right;
+               width: 16%;
+               vertical-align: text-top;
+           }
+
+           div.crm-pdf-subsum_1 table td:nth-child(4) {
+               text-align: right;
+               width: 16%;
+               vertical-align: text-top;
+           }
+
+    </style>
+    <style>
+         @{
+            // Custom code to render css code for PDF rendering
+            StringBuilder OfferCssInclude = new StringBuilder();
+            if(IsController("CustomerContract"))
+            {
+                OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/ContractPdf.css")));
+                OfferCssInclude.Append("\n\n");
+                OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/OfferPdf.css")));
+            }
+            else 
+            {
+                OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/OfferPdf.css")));
+           }
+           
+            OfferCssInclude.Append("\n\n");
+            OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/bootstrap.table.css")));
+            @Html.Raw(OfferCssInclude)
+        }
+
+
+    </style>
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>

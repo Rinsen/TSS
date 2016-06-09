@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/FeatureService.Model" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfScript">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Script" nillable="true" type="tns:Script" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfScript" nillable="true" type="tns:ArrayOfScript" />
+  <xs:complexType name="Script">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="fileNR" type="xs:int" />
+      <xs:element minOccurs="0" name="fileName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="fileType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="modID" type="xs:int" />
+      <xs:element minOccurs="0" name="originalFileNR" type="xs:int" />
+      <xs:element minOccurs="0" name="sort" type="xs:int" />
+      <xs:element minOccurs="0" name="verID" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Script" nillable="true" type="tns:Script" />
+</xs:schema>

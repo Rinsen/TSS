@@ -1,0 +1,1497 @@
+﻿@{
+    bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
+    bool isServiceContract = ViewBag.CustomerContract.Is(ContractType.ServiceContract)
+        || ViewBag.CustomerContract.Is(ContractType.SupplementaryContract);
+    bool isSent = ViewBag.CustomerContract.Status == "Sänt";
+    bool isValid = ViewBag.CustomerContract.Status == "Giltigt";
+    bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
+}
+@using TietoCRM.Models;
+@section Style
+{
+    <link rel="stylesheet" media="all" href="@Url.Content("~/Content/ContractPdf.css")" />
+    <link rel="stylesheet" media="all" href="@Url.Content("~/Content/OfferPdf.css")" />
+    @*<link rel="stylesheet/less" media="all" href="@Url.Content("~/Content/ContractPdf.less")" />*@
+    @*<script type="text/javascript" src="~/Scripts/less-1.5.1.min.js"></script>*@
+    <style>
+        .navbar .nav,
+        .navbar .nav > li {
+            float: none;
+            display: inline-block;
+            *display: inline; /* ie7 fix */
+            *zoom: 1; /* hasLayout ie7 trigger */
+            vertical-align: top;
+        }
+
+        .navbar-inner {
+            text-align: center;
+        }
+
+        body {
+            background: rgb(204,204,204);
+        }
+
+        #page-content-wrapper {
+            padding-top: 0;
+        }
+
+        page[size="A4"] {
+            background: white;
+            width: 21cm;
+            /*height: 59.4cm;*/
+            min-height: 29.7cm;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+            padding: 2cm 1cm 2cm 1.6cm;
+        }
+
+        page.A4-scaled {
+            -ms-transform: scale(0.8); /* IE 9 */
+            -webkit-transform: scale(0.8); /* Safari */
+            transform: scale(0.8);
+            -webkit-transform-origin: 0 0 0;
+            transform-origin: top left;
+            margin-bottom: -300px;
+        }
+
+        @@media print {
+            body, page[size="A4"] {
+                margin: 0;
+                box-shadow: 0;
+                padding: 0;
+            }
+        }
+    </style>
+}
+
+<div class="row">
+    <nav class="navbar navbar-default" style="background-color: inherit; text-align: center">
+        <div class="container-fluid">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Add <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" id="articles-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ") ; } } href="#">Articles</a></li>
+                   @* <li><a data-toggle="modal" id="articles-search-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Articles by search</a></li>*@
+                    <li><a data-toggle="modal" id="services-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ") ; } } href="#">Services</a></li>
+                    <li><a data-toggle="modal" id="options-modal-button" @{ if (isServiceContract || !isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ") ; } } href="#">Options</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Import <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" id="contractFromOffer-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Items from offers</a></li>
+                    <li><a data-toggle="modal" id="optionsFromActive-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Options from contracts</a></li>
+                    <li><a data-toggle="modal" id="modulesFromContracts-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Items from contracts</a></li>
+                    <li><a data-toggle="modal" id="resign-modal-button" @{ if (!isSent || !isMainContract) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Re-sign contract</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Edit <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" id="head-info-modal-button" href="#">Contract information</a></li>
+                    <li><a data-toggle="modal" id="contractHead-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Customer information</a></li>
+                    <li><a data-toggle="modal" id="textTemplate-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Text templates</a></li>
+                    <li><a data-toggle="modal" id="finalizetermination-modal-button" @{ if (!isValid || !isModuleTermination) { @Html.Raw("class='disabled-link' ")    ; } } href="#">Finalize Termination</a></li>
+
+                </ul>
+            </div>
+            <!--<button type="button" class="btn btn-success navbar-btn">Save</button>-->
+            <button type="button" onclick="window.location = '@Url.Content("~/CustomerContract/Index?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))';" class="btn btn-default navbar-btn">Back</button>
+            <span style="margin-left: 1em"></span>
+            <a class="btn btn-primary navbar-btn" href="@Url.Content("~/CustomerContract/Pdf?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))" target="_blank">PDF</a>
+        </div><!-- /.container-fluid -->
+    </nav>
+    <page size="A4">
+        @if (!isModuleTermination)
+            {
+                try
+                {
+                    Html.RenderPartial("_ContractHTML");
+                }
+                catch (Exception ex)
+                {
+                    Html.Raw(ex);
+                }
+            }
+            
+        @if (isModuleTermination)
+        {
+            <div class="crm-pdf-moduletermination-section">
+            @try
+            {
+                Html.RenderPartial("_ModuleTerminationSection");
+            }
+            catch (Exception ex)
+            {
+                Html.Raw(ex);
+            }
+            </div>
+        }
+    </page>
+</div>
+@section JavaScript{
+    @{
+        <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/HeadInformation.js")"></script>
+        if (isSent)
+        {
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/ArticlesFromContracts.js")"></script>
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/Templates.js")"></script>
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/ContractHead.js")"></script>
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/ContractFromOffer.js")"></script>
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/Articles.js")"></script>
+            @*<script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/ArticlesSearch.js")"></script>*@
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/Services.js")"></script>
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/OptionsFromActive.js")"></script>
+        }
+        if (isServiceContract && isSent)
+        {
+
+        }
+        else if (isMainContract && isSent)
+        {
+            <script type="text/javascript" src="@Url.Content("~/Scripts/ContractModals/Options.js")"></script>
+        }
+    }
+}
+<!-- #region Contract from offer -->
+@*<div id="included_ModalContractFromOffer"></div>*@
+<div class="modal fade bs-example-modal-lg" id="contractFromOfferModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contractFromOffer-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Articles and services from offer</h4>
+            </div>
+            <div id="contractFromOffer-modal" class="modal-body">
+                <form class="form-inline modal-select-items" id="service-form">
+                    <table>
+                        <tr>
+                            <td style=" width:50%;">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-modules">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Articles from open offer</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="modules-from-open-offer" class="list-group">
+                                            @{
+                                            foreach (view_OfferRow module in ViewBag.OpenOfferModules)
+                                            {
+                                                <li class="list-group-item">
+                                                    <span class="list-inline" style="width:96%; display:inline-block">
+                                                        @{ view_Module article = new view_Module();
+                                                    article.Select("Article_number = " + module.Article_number);
+                                                        }
+                                                        @article.Article_number   -   @article.Module
+                                                    </span>
+                                                    <!--
+                                                    -->
+                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-id="@module.Article_number" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
+                                                </li>
+                                            }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td valign="top">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-services">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Services from open offer</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="services-from-open-offer" class="list-group">
+                                            @{
+                                            foreach (view_ConsultantRow service in ViewBag.OpenOfferServices)
+                                            {
+                                                <li class="list-group-item">
+                                                    <span class="list-inline" style="width:95%; display:inline-block">
+                                                        @{  view_Service s = new view_Service();
+                                                    s.Select("Code = " + service.Code);
+                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + " }";
+                                                        }
+                                                        @s.Description
+                                                    </span>
+                                                    <!--
+                                                    -->
+                                                    <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
+                                                </li>
+                                            }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="clearfix"></div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="choose-selected-things" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region Options from active contract -->
+<div class="modal fade bs-example-modal-lg" id="optionsFromActiveModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog optionsFromActive-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Options from active contracts</h4>
+            </div>
+            <div id="optionsFromActive-modal" class="modal-body">
+                <form class="form-inline modal-select-items" id="options-form">
+                    <table>
+                        <tr>
+                            <td style=" width:50%;">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-options">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Options from active contracts</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="options-from-active-contract" class="list-group">
+                                            @{
+                                            foreach (view_Contract contract1 in ViewBag.ActiveContracts)
+                                            {
+                                            if(contract1.Contract_id != ViewBag.CustomerContract.Contract_id)
+                                            {
+                                            foreach (view_ContractOption option in contract1._ContractOptions)
+                                            {
+                                                <li class="list-group-item">
+                                                    <span class="list-inline" style="width:96%; display:inline-block">
+                                                        @{ view_Module article = new view_Module();
+                                                    article.Select("Article_number = " + option.Article_number);
+                                                        }
+                                                        @article.Module
+                                                    </span>
+                                                    <!--
+                                                    -->
+                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;">
+                                                        <input data-id="@option.Article_number" type="checkbox" />
+                                                    </div>
+                                                </li>
+                                            }
+                                            }
+                                            }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="clearfix"></div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="choose-selected-things" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region Modules and services from contracts -->
+<div class="modal fade bs-example-modal-lg" id="modulesFromContractsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modulesFromContracts-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Articles and services from previous contracts</h4>
+            </div>
+            <div id="modulesFromContracts-modal" class="modal-body">
+                <form class="form-inline modal-select-items" id="options-form">
+                    <table>
+                        <tr>
+                            <td style="width:50%;">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-options">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Articles:</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="modules-from-contracts" class="list-group">
+                                            @{
+                                            foreach (view_ContractRow cr in ViewBag.CustomersModules)
+                                            {
+                                                <li class="list-group-item">
+                                                    <span class="list-inline" style="width:96%; display:inline-block">
+                                                        @{ view_Module article = new view_Module();
+                                                    article.Select("Article_number = " + cr.Article_number);
+                                                        }
+                                                        @article.Module
+                                                    </span>
+                                                    <!--
+                                                    -->
+                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;">
+                                                        <input data-id="@cr.Article_number" data-license="@cr.License" data-maintenance="@cr.Maintenance" type="checkbox" />
+                                                    </div>
+                                                </li>
+                                            }
+
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td valign="top">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-contract-services">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Services:</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="services-from-contracts" class="list-group">
+                                            @{
+                                            foreach (view_ContractConsultantRow service in ViewBag.CustomersServices)
+                                            {
+                                                <li class="list-group-item">
+                                                    <span class="list-inline" style="width:95%; display:inline-block">
+                                                        @{  view_Service s = new view_Service();
+                                                    s.Select("Code = " + service.Code);
+                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + " }";
+                                                        }
+                                                        @s.Description
+                                                    </span>
+                                                    <!--
+                                                    -->
+                                                    <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
+                                                </li>
+                                            }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </table>
+                    <div class="clearfix"></div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="choose-selected-things" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region ContractHead modal -->
+<div class="modal fade bs-example-modal-lg" id="contractHeadModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contracthead-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit buyer information</h4>
+            </div>
+            <div id="contract-head-modal" class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="contract-id3" class="col-sm-2 control-label">Contract ID</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="contract-id3" name="Contract_id" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer3" class="col-sm-2 control-label">Customer</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="customer3" name="Customer" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="buyer3" class="col-sm-2 control-label">Buyer</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="buyer3" name="Buyer" placeholder="Buyer" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-person3" class="col-sm-2 control-label">Contact person</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="contact-person3" name="Contact_person"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address3" class="col-sm-2 control-label">Address</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="address3" name="Address" placeholder="Address" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip-code3" class="col-sm-2 control-label">Zip code</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="zip-code3" name="Zip_code" placeholder="Zip code" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="city3" class="col-sm-2 control-label">City</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="city3" name="City" placeholder="City" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="corporate-id3" class="col-sm-2 control-label">Corporate ID</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="corporate-id3" name="Corporate_identity_number" placeholder="Corporate ID" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="corporate-id3" class="col-sm-2 control-label">Customer sign</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="customer_sign3" name="Customer_sign" placeholder="Customer sign" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="corporate-id3" class="col-sm-2 control-label">Our sign</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="our_sign3" name="Our_sign" placeholder="Our sign" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-head-changes" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
+<!-- #region Articles -->
+<div class="modal fade bs-example-modal-lg" id="articlesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog articles-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Articles</h4>
+            </div>
+            <div id="article-modal" class="modal-body">
+                <form class="form-inline" id="articles-form">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="System-select">System: </label>
+                                <select class="form-control" id="System-select">
+                                    @foreach (String System in ViewBag.Systems)
+                                    {
+                                        <option value="@System">@System</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="classification-select">Classification: </label>
+                                <select class="form-control" id="classification-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="art-search">Or </label>
+                                <input class="form-control input-sm" id="art-search">
+                                <button id="search-button" type="button" class="btn btn-close">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="articles-table">
+                        <tr>
+                            <td valign="top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Available articles</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <table style="margin-left: 0.8em;">
+                                            <tr>
+                                                <th></th>
+                                                <th title="Exists in previous contract">#</th>
+                                                <th>Art. nr</th>
+                                                <th>Module</th>
+                                                <th>License</th>
+                                                <th>Maintenance</th>
+                                            </tr>
+
+                                        </table>
+                                        <div id="available-articles" class="list-group">
+                                        </div>
+                                        <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
+                                    </div>
+                                </div>
+                                <p>Click on an item above to add it to the list</p>
+                            </td>
+                            <td valign="top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Selected articles to add</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <table style="margin-left: 0.8em;">
+                                            <tr>
+                                                <th>Art. nr</th>
+                                                <th>Module</th>
+                                                <th>License</th>
+                                                <th>Maintenance</th>
+                                            </tr>
+
+                                        </table>
+                                        <div id="selected-articles" class="list-group">
+                                            @using System.Globalization;
+                                            @{
+                                            int LicenseTotal = 0;
+                                            int MaintenanceTotal = 0;
+                                            CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+
+                                            }
+                                            @foreach (view_ContractRow or in ViewBag.CustomerContract._ContractRows)
+                                            {
+                                                // Fetch modules
+                                                view_Module module = new view_Module();
+                                                module.Select("Article_number = " + or.Article_number);
+
+                                                // Format currency
+
+                                                String License = string.Format(se, "{0:C0}", or.License);
+                                                String Maintenance = string.Format(se, "{0:C0}", or.Maintenance);
+
+                                                if (or.Removed == false)
+                                                {
+                                                    LicenseTotal += Convert.ToInt32(or.License);
+                                                    MaintenanceTotal += Convert.ToInt32(or.Maintenance);
+                                                }
+
+                                                <button id="selart-@or.Article_number"
+                                                        type="button"
+                                                        class="list-group-item"
+                                                        data-selected="true"
+                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."))  ; }
+                                                        data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
+                                                        @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; } ; }
+                                                        @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; } ; }
+                                                        @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
+                                                    <table>
+                                                        <tr>
+                                                            <td class="art-nr">@or.Article_number</td>
+                                                            @if (or.Rewritten == true)
+                                                            {
+                                                                if (or.Removed == true)
+                                                                {
+                                                                    <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
+                                                                }
+                                                                if (or.Removed == false)
+                                                                {
+                                                                    <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@module.Module</td>
+                                                                }
+                                                            }
+                                                            @if (or.Rewritten == false)
+                                                            {
+                                                                <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
+                                                            }
+                                                            @if (module.System != "Lärportal")
+                                                            {
+                                                                <td onclick="editSelectArticle(this)" class="license">@License</td>
+                                                                <td onclick="editSelectArticle(this)" class="maintenance">@Maintenance</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td style='float:right; width:auto;'>@Maintenance</td>
+                                                            }
+
+                                                        </tr>
+                                                    </table>
+                                                </button>
+                                            }
+                                            @{
+                                            // Format currency
+
+                                            String LicenseTotalStr = string.Format(se, "{0:C0}", LicenseTotal);
+                                            String MaintenanceTotalStr = string.Format(se, "{0:C0}", MaintenanceTotal);
+                                            }
+
+                                        </div>
+                                        <table>
+                                            <tr>
+                                                <td></td>
+                                                <td style="text-align: right"><h4 style="margin-right: 2em;">Summa:</h4></td>
+                                                <td><h4 id="article-license-total">@LicenseTotalStr</h4></td>
+                                                <td><h4 id="article-maintenance-total">@MaintenanceTotalStr</h4></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <p>Click on an item above to remove it from the list</p>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="sum-zero-button" class="btn btn-default">Sum=Zero</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="choose-selected-articles" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--#endregion-->
+
+<!-- #region Options -->
+<div class="modal fade bs-example-modal-lg" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog options-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Options</h4>
+            </div>
+            <div id="options-modal" class="modal-body">
+                <form class="form-inline modal-select-items" id="options-form">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="System-select">System: </label>
+                                <select class="form-control" id="System-select">
+                                    @foreach (String System in ViewBag.Systems)
+                                                    {
+                                        <option value="@System">@System</option>
+                                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="classification-select">Classification: </label>
+                                <select class="form-control" id="classification-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="opt-search">Or </label>
+                                <input class="form-control input-sm" id="opt-search">
+                                <button id="opt-search-button" type="button" class="btn btn-close">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="options-table" class="crm-items-table">
+                        <tr>
+                            <td valign="top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Available options</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <table style="margin-left: 0.8em;">
+                                            <tr>
+                                                <th></th>
+                                                <th title="Exists in previous contract">#</th>
+                                                <th>Art. nr</th>
+                                                <th>Module</th>
+                                                <th>License</th>
+                                                <th>Maintenance</th>
+                                            </tr>
+
+                                        </table>
+                                        <div class="crm-available-items list-group" id="available-options">
+                                        </div>
+                                        <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
+                                    </div>
+                                </div>
+                                <p>Click on an item above to add it to the list</p>
+                            </td>
+                            <td valign="top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Selected options to the contract</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <table style="margin-left: 0.8em;" class="item-row-names">
+                                            <tr>
+                                                <th>Art. nr</th>
+                                                <th>Module</th>
+                                                <th>License</th>
+                                                <th>Maintenance</th>
+                                            </tr>
+
+                                        </table>
+                                        <div class="crm-selected-items list-group" id="selected-options">
+                                            @{
+                                                            LicenseTotal = 0;
+                                                            MaintenanceTotal = 0;
+
+                                            }
+                                            @foreach (view_ContractOption or in ViewBag.CustomerContract._ContractOptions)
+                                                            {
+                                                            // Fetch modules
+                                                            view_Module module = new view_Module();
+                                                            module.Select("Article_number = " + or.Article_number);
+
+                                                            // Format currency
+
+                                                            String License = String.Format(se, "{0:C0}", or.License);
+                                                            String Maintenance = String.Format(se, "{0:C0}", or.Maintenance);
+
+                                                            LicenseTotal += Convert.ToInt32(or.License);
+                                                            MaintenanceTotal += Convert.ToInt32(or.Maintenance);
+
+                                                <button onclick="moveOption(event, this)"
+                                                        type="button"
+                                                        class="list-group-item"
+                                                        data-selected="true"
+                                                        @if (module.System !="Lärportal" ) { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "." )) ; }
+                                                        data-maintenance="@or.Maintenance.ToString().Replace(",", ".")">
+                                                    <table>
+                                                        <tr>
+                                                            <td class="art-nr">@or.Article_number</td>
+                                                            <td>@module.Module</td>
+                                                            @if (module.System != "Lärportal")
+                                                                        {
+                                                                <td>@License</td>
+                                                                <td>@Maintenance</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                <td style='float:right; width:auto;'>@Maintenance</td>
+                                                                        }
+
+                                                        </tr>
+                                                    </table>
+                                                </button>
+                                                            }
+                                            @{
+                                                            // Format currency
+
+                                                            LicenseTotalStr = string.Format(se, "{0:C0}", LicenseTotal);
+                                                            MaintenanceTotalStr = string.Format(se, "{0:C0}", MaintenanceTotal);
+                                            }
+
+                                        </div>
+                                        <table>
+                                            <tr>
+                                                <td></td>
+                                                <td style="text-align: right"><h4 style="margin-right: 2em;">Summa:</h4></td>
+                                                <td><h4 id="options-license-total">@LicenseTotalStr</h4></td>
+                                                <td><h4 id="options-maintenance-total">@MaintenanceTotalStr</h4></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <p>Click on an item above to remove it from the list</p>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="choose-selected-options" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--#endregion-->
+<!-- #region Services -->
+<div class="modal fade bs-example-modal-lg" id="servicesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog services-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Services</h4>
+            </div>
+            <div id="services-modal" class="modal-body modal-select-items">
+                <form class="form-inline" id="service-form">
+                    <table>
+                        <tr>
+                            <td style=" width:50%;">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Available services</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="available-services" class="list-group">
+                                            @{
+                                                            view_Contract contract = new view_Contract("Contract_id = '" + Request["contract-id"] + "' AND Customer = '" + Request["customer"] + "'");
+                                            }
+                                            @foreach (view_Service service in ViewBag.Services)
+                                                            {
+                                                            String price = "";
+                                                            int cost = 0;
+                                                            if(contract._ContractConsultantRows.Any(c => c.Code == service.Code) )
+                                                            {
+                                                            view_ContractConsultantRow ccr = contract._ContractConsultantRows.First(c => c.Code == service.Code);
+                                                            price = String.Format(se, "{0:C0}", ccr.Total_price / ccr.Amount).Replace(".", " ");
+                                                            cost = Convert.ToInt32(ccr.Total_price / ccr.Amount);
+                                                            }
+                                                            else
+                                                            {
+                                                            price = String.Format(se, "{0:C0}", service.Price).Replace(".", " ");
+                                                            cost = (int)service.Price;
+                                                            }
+
+                                                <table>
+                                                    <td style="display:inline-block; margin-top: 2vh; cursor: pointer">
+                                                        <span onclick="editService(this);" class="glyphicon glyphicon-pencil">
+
+                                                        </span>
+                                                    </td>
+                                                    <td style="display:inline-block; float:right; width:95%">
+                                                        <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="false" class="list-group-item">
+                                                            <label>@price</label>
+                                                            <span class="service-amount"></span>
+                                                            <br />
+                                                            @service.Description
+                                                        </button>
+                                                    </td>
+                                                </table>
+                                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <p> Click on a service to add it</p>
+                            </td>
+                            <td valign="top">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Selected services to add</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="selected-services" class="list-group">
+                                            @{
+                                                            foreach (view_ContractConsultantRow row in contract._ContractConsultantRows)
+                                                            {
+                                                            view_Service service = new view_Service();
+                                                            service.Select("Code = " + row.Code);
+
+                                                            String price = String.Format(se, "{0:C0}", row.Total_price/row.Amount);
+                                                            int cost = Convert.ToInt32(row.Total_price / row.Amount);
+
+                                                                <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
+                                                                    <label>@price</label>
+                                                                    <span class="service-amount">@row.Amount</span>
+                                                                    <br />
+                                                                    @service.Description
+                                                                </button>
+                                                            }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <p> Click on a service to remove it</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="pull-right">
+                        <h4 style="display: inline-block;" id="total-cost-container">0</h4>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="choose-selected-services" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--#endregion-->
+<!-- #region TextTemplate modal -->
+
+<div class="modal fade bs-example-modal-lg" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog templates-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Templates</h4>
+            </div>
+            <div id="template-modal" class="modal-body">
+                <form class="form-horizontal" id="templates-form">
+                    <div class="form-group">
+                        <label for="template-number-select" class="col-sm-2 control-label">Contract text template</label>
+                        <div class="col-sm-10">
+                            <select id="template-number-select" name="Template_number" class="form-control">
+                                <option value="current" selected>Current template used on contract</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="document-type-text" class="col-sm-2 control-label">Document type</label>
+                        <div class="col-sm-10">
+                            <input id="document-type-text" name="Document_type" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title-text" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input id="title-text" name="Title" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="page-head-text" class="col-sm-2 control-label">Page head</label>
+                        <div class="col-sm-10">
+                            <textarea id="page-head-text" name="Page_head" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deluhtitle" class="col-sm-2 control-label">Delivery/Maintanance title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="DeluhTitle" id="deluhtitle"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="deluhtext" class="col-sm-2 control-label">Delivery/Maintanance text</label>
+                        <div class="col-sm-10">
+                            <textarea rows="2" class="form-control" name="DeluhText" id="deluhtext"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bodytitle" class="col-sm-2 control-label">Text body title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="BodyTitle" id="bodytitle"></input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
+                        <div class="col-sm-10">
+                            <textarea id="document-foot-text" name="Document_foot" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-template-changes" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--#endregion-->
+<!-- #region MainTextTemplate modal -->
+
+<div class="modal fade bs-example-modal-lg" id="mainTemplatesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog main-templates-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Templates</h4>
+            </div>
+            <div id="main-template-modal" class="modal-body">
+                <div class="container-fluid" id="main-templates-form">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="main-template-number-select" class="col-sm-2 control-label">Contract text template</label>
+                            <div class="col-sm-10">
+                                <select id="main-template-number-select" name="Template_number" class="form-control">
+                                    <option value="current" selected>Current text</option>
+                                    <option value="template" selected>Template text</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    <input data-name='rubrik1' type='text' class='form-control main-template-mainhead' id="main-top-head" placeholder="Main contract head" />
+                    <div class="row col-sm-12" style="margin-bottom:30px">
+                        <form>
+                            <textarea data-name='Prolog' rows="10" id="prolog-text" class='form-control main-template-text'></textarea>
+                        </form>
+                    </div>
+                    <h3 style="color:black">Modulförteckning</h3>
+                    <p style="color:black">Avtalet omfattar en icke exklusiv, evig, nyttjanderätt till nedan redovisade programprodukter/- moduler. Leverans av programvara sker i objektkod</p>
+                    <div class="row col-sm-12" style="margin-bottom:20px">
+                        <form>
+                            <textarea data-name='ModuleText' rows="6" id="module-text" class='form-control main-template-text'>@ViewBag.ModuleText</textarea>
+                        </form>
+                    </div>
+                    <div class="row col-sm-12">
+                        <form>
+                            <textarea data-name='Epilog' rows="12" id="epilog-text" class='form-control main-template-text'></textarea>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-main-template-changes" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--#endregion-->
+<!-- #region TableItems modal -->
+
+<div class="modal fade bs-example-modal-lg" id="tableItemsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog table-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Contract information</h4>
+            </div>
+            <div id="table-items-modal" class="modal-body">
+                <form class="form-horizontal" id="table-form">
+                    @{
+                                    foreach (System.Reflection.PropertyInfo pi in ViewBag.TableItems)
+                                    {
+                                    if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_"))
+                                    {
+
+                                    String pName = pi.Name.Replace("_", " ");
+
+
+                                        <div class="form-group">
+                                            <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                            <div class="col-sm-10">
+                                                @if (pi.PropertyType == typeof(bool?))
+                                            {
+                                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                        <option value="true">true</option>
+                                                        <option value="false">false</option>
+                                                    </select>
+                                            }
+                                            else if (pi.Name == "Status")
+                                            {
+                                                <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                    @foreach (String status in ViewBag.Statuses)
+                                                {
+                                                        <option value="@status">@status</option>
+                                                }
+                                                </select>
+                                            }
+                                            else if (pi.Name == "Contract_type")
+                                            {
+                                                <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                    @foreach (String types in ViewBag.ContractTypes)
+                                                {
+                                                        <option value="@types">@types</option>
+                                                }
+                                                </select>
+                                            }
+                                            else if (pi.Name == "Main_contract_id")
+                                            {
+                                                <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                    <option value=""></option>
+                                                    @foreach (String types in ViewBag.MainContracts)
+                                                {
+                                                        <option value="@types">@types</option>
+                                                }
+                                                </select>
+                                            }
+                                            else if (pi.Name == "Sign")
+                                            {
+                                                <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                    @foreach (String types in ViewBag.Users)
+                                                {
+                                                        <option value="@types">@types</option>
+                                                }
+                                                </select>
+                                            }
+                                            else
+                                            {
+                                            String inputType = "";
+                                            String inputVal = "";
+                                            if (pi.PropertyType == typeof(DateTime?))
+                                            {
+                                            inputType = "date";
+                                            inputVal = DateTime.Now.ToShortDateString();
+                                            }
+                                            else
+                                            {
+                                            inputType = "text";
+                                            }
+                                            if (pi.Name == "Contract_id")
+                                            {
+                                                <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+                                            }
+                                            else
+                                            {
+                                                <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+                                            }
+
+                                            }
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                    }
+                    }
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-table-changes" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--#endregion-->
+
+<script type="text/javascript" src="@Url.Content("~/Content/tinymce/tinymce.min.js")"></script>
+<script type="text/javascript">
+    //tinymce.init({
+    //    selector: "#epilog-text"
+    //});
+    //tinymce.init({
+    //    selector: "#prolog-text"
+    //});
+
+    //$('#mainTemplatesModal').bind('shown', function () {
+    //    console.log(1);
+    //    tinymce.init({
+    //        selector: "#epilog-text"
+    //    });
+    //    tinyMCE.execCommand('mceAddControl', false, 'epilog-text');
+    //});
+    //$('#mainTemplatesModal').bind('shown', function () {
+    //    tinyMCE.execCommand('mceAddControl', false, 'prolog-text');
+    //});
+
+
+    $('#mainTemplatesModal').bind('shown.bs.modal', function () {
+
+        tinymce.init({
+            selector: "#prolog-text",
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                    loadPrologText();
+                });
+            }
+        });
+        tinymce.init({
+            selector: "#module-text",
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                    loadModuleText();
+                });
+            }
+        });
+        tinymce.init({
+            selector: "#epilog-text",
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                    loadEpilogText();
+                });
+            }
+        });
+
+
+        tinyMCE.execCommand('mceAddControl', false, 'prolog-text');
+        tinyMCE.execCommand('mceAddControl', false, 'module-text');
+        tinyMCE.execCommand('mceAddControl', false, 'epilog-text');
+
+
+    });
+    $('#mainTemplatesModal').bind('hidden.bs.modal', function () {
+
+
+        tinyMCE.remove();
+
+    });
+</script>
+
+<script>
+    @*var openModal = function (el) {
+        var $el = $(el);
+        bootbox.dialog({
+            title: "Edit " + $el.text(),
+            message: (function () {
+                var rdata = "";
+                $.ajax({
+                    "url": "@Url.Content("~/CustomerOffer/Modals?modal=")" + $el.data("modal-target") + "&selected-offer=@Request["selected-offer"]&sign=@ViewBag.Representative.Sign&customer=@Url.Encode(ViewBag.Customer.Customer)",
+                    "success": function (data) { rdata = data },
+                    "error": function (data) { rdata = "<h2>Failed to load modal content, have you lost internet connection?</h2>"; },
+                    "async": false,
+                    "headers": { 'Cache-Control': 'no-cache' }
+                })
+                return rdata;
+            }),
+            buttons: {
+                close: {
+                    label: "Close",
+                    className: "btn-close",
+                },
+                success: {
+                    label: "Save",
+                    className: "btn-success",
+                    callback: function () {
+                        var name = $('#name').val();
+                        var answer = $("input[name='awesomeness']:checked").val()
+                        saveFunction(@ViewBag.CustomerContract.SSMA_timestamp);
+                    },
+                },
+            }
+        });
+    }*@
+
+    $(document).ready(function () {
+
+        //$(function () {
+        //    $("#included_ModalContractFromOffer").load("_ModalContractFromOffer.cshtml");
+        //});
+
+        function get_browser() {
+            var ua = navigator.userAgent,
+                tem,
+                M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+            if (/trident/i.test(M[1])) {
+                tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+                return 'IE';
+            }
+            if (M[1] === 'Chrome') {
+                tem = ua.match(/\bOPR\/(\d+)/)
+                if (tem != null) {
+                    return 'Opera'
+                }
+            }
+            M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+            if ((tem = ua.match(/version\/(\d+)/i)) != null) {
+                M.splice(1, 1, tem[1]);
+            }
+            return M[0];
+        }
+
+        $("#finalizetermination-modal-button").click(function () {
+            if (contractValidFrom.substring(0,10) > getDate()) {
+                bootbox.dialog({
+                    title: 'Cannot be finalized!',
+                    className: "crm-notfinalize-confirm",
+                    message: "The modules cannot be finalized as the valid-from date has not yet occured.",
+                    buttons: {
+                        'cancel': {
+                            label: 'Ok',
+                            className: 'btn-default'
+                        }
+                    }
+                })
+            }
+            else {
+                bootbox.dialog({
+                    title: 'Do you want to finalize deletion of modules?',
+                    className: "crm-finalize-confirm",
+                    message: "You are about to delete module(s) in this module termination document, are you sure?",
+                    buttons: {
+                        'cancel': {
+                            label: 'Cancel',
+                            className: 'btn-default'
+                        },
+                        'yes': {
+                            label: 'Yes',
+                            className: 'btn-danger pull-right',
+                            callback: function () {
+                                $.ajax({
+                                    "url": "/CustomerContract/FinalizeModuleTermination/",
+                                    "type": "POST",
+                                    "data": {
+                                        "avtalsid": contractId,
+                                    },
+                                    "success": function (data) {
+                                        if (data > 0) {
+                                            triggerAlert("Successfully finalized module(s)", "success");
+                                            location.reload();
+                                        }
+                                        else {
+                                            triggerAlert("Something went wrong when trying to finalize module(s)", "warning");
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    },
+                });
+            }
+        });
+
+        $("#resign-modal-button").click(function () {
+            
+            @{
+                var opt = "";
+                foreach (String ctr in ViewBag.MainCtrResign)
+            {
+                opt += "<option value='" + @ctr + "'>" + @ctr + "</option>";
+            }
+            }
+            var htmlopt = '@opt'
+            htmlopt = replaceAll(htmlopt, '&lt;', '<')
+            htmlopt = replaceAll(htmlopt, '&gt;', '>')
+            htmlopt = replaceAll(htmlopt, '&#39;', '"')
+
+            bootbox.dialog({
+                title: 'Re-sign contract.',
+                className: "modal-dialog",
+                message: 'Select Main Contract to re-sign. ' +
+                    '<select class="form-control" id="MC-id" name="MC-namn"> ' + htmlopt +
+                    '</select> <br> ' +
+                    '<label for="chkText">Kopiera texter&nbsp&nbsp</label>' + '<input id="chkText" type="checkbox" checked="checked"/>',
+                buttons: {
+                    'cancel': {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    },
+                    'yes': {
+                        label: 'Ok',
+                        className: 'btn-danger pull-right',
+                        callback: function () {
+                            $sel = $("#MC-id");
+                            if ($sel.val().substring(0,2) == "--") {
+                                return;
+                            }
+                            $text = $("#chkText");
+                            $.ajax({
+                                "url": serverPrefix + "CustomerContract/SaveResign/",
+                                "type": "POST",
+                                "data": {
+                                    "customer": customerName,
+                                    "contractid": contractId,
+                                    "resignid": $sel.val(),
+                                    "withtext": $text.is(':checked')
+                                },
+                                "success": function (data) {
+                                    if (data.length > 0) {
+                                        triggerAlert("Successfully resigned contract", "success");
+                                        location.reload();
+                                    }
+                                    else {
+                                        triggerAlert("Something went wrong when trying to resign contract", "warning");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+
+        var webkit = get_browser() == "Chrome" ||
+            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            get_browser() == "Opera";
+
+        if (!webkit) {
+            @{
+                foreach (System.Reflection.PropertyInfo pi in ViewBag.TableItems)
+                {
+
+                    if(pi.PropertyType == typeof(DateTime?))
+                    {
+                        @Html.Raw("\t\t\t$('#" + pi.Name.ToLower() + "-date').datepicker();\n");
+                    }
+
+                }
+            }
+        }
+
+        var getDate = function () {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+
+            today = yyyy + "-" + mm + "-" + dd;
+            return today;
+        }
+
+        function replaceAll(str, find, replace) {
+            return str.replace(new RegExp(find, 'g'), replace);
+        }
+
+        var loadMainContracts = function() {
+            $.ajax({
+                "url": "@Url.Content("~/CustomerContract/GetMainContracts/")",
+                "type": "POST",
+                "data": {
+                    "customer": customerName
+                },
+                "success": function(data){
+                    mainIds = JSON.parse(data);
+                    $select = $("#MC-id");
+                    $select.html("");
+
+
+                    for(var i = 0; i < mainIds.length; i++)
+                    {
+                        var mainID = mainIds[i];
+                        $select.append($("<option></option>").attr("value", mainID).html(mainID));
+
+                    }
+                    $select.prepend("<option value=''></option>");
+
+                }
+        });
+    }
+
+
+    });
+
+    var customerName = "@Html.Raw(ViewBag.CustomerContract.Customer)";
+    var contractId = "@Html.Raw(ViewBag.CustomerContract.Contract_id)";
+    var oldContractId = "@Html.Raw(ViewBag.CustomerContract.Contract_id)";
+    var ssma_timestamp = "@ViewBag.CustomerContract.SSMA_timestamp";
+    var isMainCont = "@isMainContract.ToString()";
+    var contractType = "@ViewBag.CustomerContract.Contract_type"
+    var serverPrefix = "@Url.Content("~/")";
+    var aktStatus = "@Html.Raw(ViewBag.CustomerContract.Status)";
+    var contractValidFrom = "@Html.Raw(ViewBag.CustomerContract.Valid_from)";
+    var ctrResign = "@Html.Raw(ViewBag.CtrResign)";
+
+</script>
+
+
+

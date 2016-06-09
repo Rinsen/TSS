@@ -1,0 +1,55 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+}
+
+<div class="crm-print-block">
+    <table class="table table-striped table-bordered contract-supervision-table">
+        @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+        {
+            String PropertyName = PropertyInfo.Name.Replace("_", " ");
+            <th>@PropertyName</th>
+
+        }
+        @foreach (TietoCRM.Models.view_Contract contract in ViewBag.Contracts)
+        {
+            <tr class="">
+                @foreach (System.Reflection.PropertyInfo PInfo in ViewBag.Properties)
+                {
+                    if (PInfo.PropertyType != typeof(DateTime?))
+                    {
+                        if (PInfo.GetValue(contract) != null)
+                        {
+                            if(PInfo.Name == "Extension" || PInfo.Name == "Term_of_notice")
+                            {
+                                <td>@PInfo.GetValue(contract).ToString() Month(s)</td>
+                            }
+                            else
+                            {
+                                <td>@PInfo.GetValue(contract).ToString()</td>
+                            }
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                    }
+                    else
+                    {
+                        if (PInfo.GetValue(contract) != null)
+                        {
+                            <td>@(((DateTime)PInfo.GetValue(contract)).ToString("yyyy-MM-dd"))</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+
+                    }
+                }
+            </tr>
+        }
+
+    </table>
+</div>
+
+

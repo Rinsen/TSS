@@ -1,0 +1,493 @@
+﻿<table draggable="true" id="contact-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false">#</th>
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                if (PropertyName != "SSMA timestamp")
+                {
+                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                }
+            }
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade bs-example-modal-lg" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Contact</h4>
+            </div>
+            <div id="contact-modal" class="modal-body">
+                <div class="form-group">
+                    <select name="customer" id="crm-select-customer" class="form-control">
+                        @foreach (String Customer in ViewBag.Customers)
+                        {
+                            <option value="@Customer">@Customer</option>
+                        }
+                    </select>
+                </div>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="fullName3" class="col-sm-2 control-label">Full name</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="fullName3" name="Name" placeholder="Full name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title3" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="title3" name="Title" placeholder="Title">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email3" class="col-sm-2 control-label">Email</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="email3" name="Email" type="email" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber3" class="col-sm-2 control-label">Phone number</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="phoneNumber3" name="Phone" placeholder="Phone number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobileNumber3" class="col-sm-2 control-label">Mobile number</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="mobileNumber3" name="Mobile" placeholder="Mobile number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address3" class="col-sm-2 control-label">Address</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="address3" name="Address" placeholder="Address">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes3" class="col-sm-2 control-label">Notes</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="notes3" name="Notes" placeholder="Notes">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-contact-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--
+    Script for contact modal
+-->
+
+<script>
+
+    var triggerAlert = function (msg, priorty) {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+    var loadContactData = function () {
+        data = JSON.parse(selectedId);
+        $.ajax({
+            "url": "@Url.Content("~/CustomerContact/GetContact/")",
+            "type": "POST",
+            "data": {
+                "customer": data.Customer,
+                "name": data.Contact_person,
+                "email": data.Email
+
+            },
+            "success": function (data) {
+                console.log("success");
+                person = JSON.parse(data);
+                changePersonToShow(person);
+            }
+        });
+    }
+    var changePersonToShow = function (person) {
+        $("#save-contact-changes").attr("data-person", JSON.stringify(person));
+        $("#fullName3").val($("<div>").html(person.Contact_person).text());
+        $("#email3").val(person.Email);
+        $("#phoneNumber3").val(person.Telephone);
+        $("#mobileNumber3").val(person.Mobile);
+        $("#address3").val(person.Address);
+        $("#notes3").val($("<div>").html(person.Notes).text());
+    }
+
+
+
+    var deleteContact = function(){
+        person = selectedId;
+        $.ajax({
+            "url": "@Url.Content("~/CustomerContact/DeleteContact/")",
+            "type": "POST",
+            "data": {
+                "json": person
+            },
+            "success": function (data) {
+                if (data > 0) {
+                    triggerAlert("Successfully deleted", "success");
+                    updateDataTable();
+                    console.log("success");
+                }
+                else {
+                    triggerAlert("Failed to delete from database", "info");
+                    console.log("failure");
+                }
+            }
+        });
+    }
+    $("#save-contact-changes").click(function () {
+        if ($("#contact-modal form").valid()) {
+            save();
+        }
+
+    });
+
+    var save = function () {
+        if (typeof $("#save-contact-changes").attr("data-person") != "undefined") {
+            var oldPerson = JSON.parse($("#save-contact-changes").attr("data-person"));
+            var person = {}
+
+            person.Customer = oldPerson.Customer;
+            person.Contact_person = $("#fullName3").val();
+            person.Title = $("#title3").val();
+            person.Email = $("#email3").val();
+            person.Telephone = $("#phoneNumber3").val();
+            person.Address = $("#address3").val();
+            person.Mobile = $("#mobileNumber3").val();
+            person.Notes = $("#notes3").val();
+
+
+            $.ajax({
+                "url": "@Url.Content("~/CustomerContact/SaveContact/")",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(person),
+                    "oldEmail": oldPerson.Email,
+                    "oldName": oldPerson.Contact_person
+                },
+                "success": function (data) {
+                    if (data > 0) {
+
+                        var data = {}
+                        data.Contact_person = person.Contact_person;
+                        data.Customer = person.Customer;
+                        data.Email = person.Email;
+                        selectedId = JSON.stringify(data);
+
+                        updateDataTable();
+                        triggerAlert("Successfully updated", "success");
+                        console.log("success");
+                        $("#contactModal").modal("toggle");
+                    }
+                    else {
+                        triggerAlert("Failed to update database.", "warning");
+                        console.log("failure");
+                    }
+                }
+            });
+        }
+        else {
+            var person = {}
+
+            person.Customer = $("#crm-select-customer").val();
+            person.Contact_person = $("#fullName3").val();
+            person.Title = $("#title3").val();
+            person.Email = $("#email3").val();
+            person.Telephone = $("#phoneNumber3").val();
+            person.Address = $("#address3").val();
+            person.Mobile = $("#mobileNumber3").val();
+            person.Notes = $("#notes3").val();
+
+
+            $.ajax({
+                "url": "@Url.Content("~/CustomerContact/InsertContact/")",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(person),
+                },
+                "success": function (data) {
+                    if (data > 0) {
+
+                        var data = {}
+                        data.Contact_person = person.Contact_person;
+                        data.Customer = person.Customer;
+                        data.Email = person.Email;
+                        selectedId = JSON.stringify(data);
+
+                        updateDataTable();
+                        triggerAlert("Successfully added", "success");
+                        console.log("success");
+                        $("#contactModal").modal("toggle");
+                    }
+                    else {
+                        triggerAlert("Failed to insert into database.", "warning");
+                        console.log("failure");
+                    }
+                }
+            });
+        }
+    }
+
+</script>
+
+
+
+
+<script>
+    var selectedId = null;
+
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#contact-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+
+    @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+
+        DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function (onSuccess) {
+        $('#contact-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "@Url.Content("~/CustomerContact/ContactData/")",
+            },
+            "initComplete": function (settings, json) {
+                if (typeof onSuccess != "undefined")
+                    onSuccess();
+                drawButtons();
+            },
+            "defaultContent": "",
+            "order": [[1, "asc"]],
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+    //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+    //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+    //$('#crm-save-btn').on('click', save);
+    }
+
+    var clearData = function()
+    {
+        $("#fullName3").val("");
+        $("#title3").val("");
+        $("#email3").val("");
+        $("#phoneNumber3").val("");
+        $("#mobileNumber3").val("");
+        $("#address3").val("");
+        $("#notes3").val("");
+    }
+
+    function drawButtons() {
+        var $selRowContainer = $("#contact-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-edit-contact' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        $("#crm-edit-contact").bind("click", function () {
+            if (selectedId != null) {
+                clearData();
+                loadContactData();
+                $("#crm-select-customer").hide();
+                $("#contactModal").appendTo("body").modal("show");
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+
+        });
+
+        $selRowContainer.append("<div id='create-contact-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-contact-button").bind("click", function () {
+            $("#contactModal").appendTo("body").modal("show");
+            $("#save-contact-changes").removeAttr("data-person");
+            $("#crm-select-customer").show();
+
+            clearData();
+        });
+
+        $selRowContainer.append("<div id='delete-contact-person-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
+        $("#delete-contact-person-button").bind("click", function () {
+            if (selectedId != null) {
+                bootbox.confirm({
+                    className: "crm-delete-confirm",
+                    title: 'Do you want to delete?',
+                    message: "Are you sure you want to delete this Template?",
+                    buttons: {
+                        'cancel': {
+                            label: 'Cancel',
+                            className: 'btn-default'
+                        },
+                        'confirm': {
+                            label: 'Delete',
+                            className: 'btn-danger pull-right'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            console.log(1);
+                            deleteContact();
+
+                        }
+                    }
+                });
+            }
+            else
+                triggerAlert("You have to select a row to delete.", "info");
+
+        });
+
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+        var insertValue;
+        for (var name in aData) {
+
+            var i = 0;
+            var insertValue;
+
+            for (var name in aData) {
+                var $td;
+
+
+                if (i == 0) {
+                    $td = $('td:eq(' + i + ')', nRow);
+
+                    $td.parent().click(function () {
+
+                        selectRow(this.firstChild);
+
+                    });
+                    var object = {Contact_person: aData["Contact_person"], Customer: aData["Customer"], Email: aData["Email"]}
+                    $td.html("<input type='radio' value='" + JSON.stringify(object) + "' name='selected-contact' onClick=''/>");
+                    if ($td.find("input").val() == selectedId) {
+                        selectRow($td);
+                    }
+                    else if ($td.find("input").val() != selectedId) {
+                        $td.parent().removeClass("selected");
+                    }
+                    i++;
+                }
+
+                if (i < 9) {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                }
+
+                i++;
+            }
+        }
+    }
+
+    $('document').ready(function () {
+        $table = $("#contact-table");
+        $table2 = $table.clone(true);
+        if ($table == $table2)
+            console.log("true");
+        else
+            console.log("false");
+
+        $('#contact-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "@Url.Content("~/CustomerContact/ContactData/")",
+            },
+            "initComplete": function (settings, json) {
+                drawButtons();
+            },
+            "defaultContent": "",
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+
+        $formValidation = $("#contactModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Name": {
+                    required: true,
+                },
+                "Email": {
+                    required: true,
+                    email: true,
+                    maxlength: 50,
+                },
+                "Title": {
+                    maxlength: 20,
+                },
+                "Telephone": {
+                    maxlength: 20,
+                },
+                "Mobile": {
+                    maxlength: 20,
+                },
+                "Address": {
+                    maxlength: 100,
+                },
+                "Notes": {
+                    maxlength: 255,
+                }
+
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+    });
+
+
+</script>

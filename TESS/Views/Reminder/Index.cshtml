@@ -1,0 +1,515 @@
+﻿@using TietoCRM.Models;
+<table draggable="true" id="Reminder-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false">#</th>
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                if (@PropertyName != "SSMA timestamp" && @PropertyName != "ID PK")
+                {
+                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                }
+
+            }
+        </tr>
+    </thead>
+</table>
+
+@* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
+<div class="modal fade bs-example-modal-lg" id="ReminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Reminder</h4>
+            </div>
+            <div id="Reminder-modal" class="modal-body">
+                <form class="form-horizontal">
+                    <table style="width: 100%;">
+                        <tr>
+                            @{
+                                int count = 0;
+                                foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
+                                {
+                                    if (pi.Name != "SSMA_timestamp" && pi.Name != "ID_PK" && !pi.Name.StartsWith("_"))
+                                    {
+
+                                        String pName = pi.Name.Replace("_", " ");
+
+                                        if (count == 1 || count == 9)
+                                        {
+                                            @Html.Raw("<td>")
+                                        }
+                                        <div class="form-group">
+                                            <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
+                                            <div class="col-sm-9">
+                                                @if (pi.PropertyType == typeof(bool?))
+                                                {
+                                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                        <option value="true">true</option>
+                                                        <option value="false">false</option>
+                                                    </select>
+                                                }
+                                                else if (pi.Name == "Sign")
+                                                {
+                                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                        @foreach (view_User User in ViewBag.Representatives)
+                                                        {
+                                                            <option value="@User.Sign">@User.Name</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else if (pi.Name == "Active")
+                                                {
+                                                    @*<label for="expired2" class="col-sm-2 control-label">Active</label>*@
+                                                    <div class="col-sm-10">
+                                                        <div class="pull-left list-inline" style="width:14%; display:inline-block;">
+                                                            <input id="expired2" data-id="expired2" name="Active" type="checkbox" />
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else if (pi.Name == "Customer_name")
+                                                {
+                                                    <select class="form-control" id="@pi.Name.ToLower()-select" name="@pi.Name">
+                                                        <option value="null">---</option>
+                                                        @foreach (String types in ViewBag.Customers)
+                                                        {
+                                                            <option value="@types">@types</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else if (pi.Name == "Reminder_text")
+                                                {
+                                                    <textarea rows="3" class="form-control" placeholder="@pName" name="@pi.Name" id="@pi.Name.ToLower()-text1"></textarea>
+                                                }
+                                                else
+                                                {
+                                                    String inputType = "";
+                                                    String inputVal = "";
+                                                    if (pi.PropertyType == typeof(DateTime?) || pi.PropertyType == typeof(DateTime))
+                                                    {
+                                                        inputType = "date";
+                                                        if (pi.Name == "Start_date")
+                                                        {
+                                                            inputVal = DateTime.Now.ToShortDateString();
+                                                        }
+                                                    }
+                                                    else if (pi.Name == "Default_system")
+                                                    {
+                                                        inputVal = ViewBag.DefaultSystem;
+                                                    }
+                                                    else
+                                                    {
+                                                        inputType = "text";
+                                                    }
+                                                    <input class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+                                                }
+                                            </div>
+                                        </div>
+                                        if (count == 8 || count == ViewBag.Properties.Length - 1)
+                                        {
+                                            @Html.Raw("</td>")
+                                        }
+                                    }
+                                    count++;
+                                }
+                            }
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-Reminder-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Slut på Modal*@
+
+<script>
+//Sparar ändringar alternativ ny post
+    var uploadToServer = function () {
+        var oldReminder = $("#save-Reminder-changes").attr("data-Reminder");
+
+        var Reminder = {}
+
+        var $formInputs = $("#ReminderModal form").find(":input");
+        console.log($formInputs);
+        var frmInpLen = $formInputs.length;
+        for (var i = 0; i < frmInpLen; i++) {
+            var $currInput = $($formInputs[i]);
+            if ($currInput.prop("type") == "checkbox") {
+                Reminder[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");
+            }
+            else {
+                Reminder[$currInput.attr("name")] = ($currInput.val() == "null" ? null : $currInput.val());
+            }
+        }
+
+        if (typeof $("#save-Reminder-changes").attr("data-Reminder") != "undefined") {
+
+            $.ajax({
+                "url": "/Reminder/SaveReminder/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(Reminder),
+                    "id_pk": oldReminder,
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#ReminderModal").modal("hide");
+                        triggerAlert("Successfully updated this Reminder", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to update the Reminder on the server", "warning");
+                    }
+                }
+            });
+        }
+        else {
+            $.ajax({
+                "url": "/Reminder/InsertReminder/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(Reminder),
+                    "default_system": "IFO"
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#ReminderModal").modal("hide");
+                        triggerAlert("Successfully inserted the new Reminder", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to insert the Reminder to the server", "warning");
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $("#save-Reminder-changes").click(function () {
+            if ($("#Reminder-modal form").valid()) {
+                uploadToServer();
+            }
+        });
+
+        $formValidation = $("#ReminderModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Prio": {
+                    required: true,
+                    maxlength: 1,
+                    range: [1,2],
+                },
+                "Start_date": {
+                    required: true,
+                    date: true
+                },
+                "Customer_name": {
+                    required: false,
+                },
+                "Reminder_text": {
+                    required: true,
+                },
+                "Sign": {
+                    required: true,
+                },
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    var selectedId = null;
+
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#Reminder-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+
+    @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (@PropertyName != "SSMA timestamp" && @PropertyName != "ID PK")
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function (onSuccess) {
+        var defSystem = "@ViewBag.DefaultSystem";
+        getIndexData(defSystem);
+        var $selRowContainer = $("#Reminder-table_length");
+        //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+        //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+        //$('#crm-save-btn').on('click', save);
+    }
+
+    function drawButtons() {
+        var $selRowContainer = $("#Reminder-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-edit-Reminder' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+
+        $("#crm-edit-Reminder").bind("click", function () {
+            if (selectedId != null) {
+                $("#id_pk-text").prop("readonly", true);
+                $("#save-Reminder-changes").attr("data-Reminder", selectedId);
+                var $selectedTds = $("#Reminder-table tr.selected td").not(".radios");
+                var tdLen = $selectedTds.length;
+
+                var $formInputs = $("#ReminderModal form").find(":input");
+
+                var frmInpLen = $formInputs.length;
+                for (var i = 0; i < frmInpLen; i++) {
+                    var $currInput = $($formInputs[i]);
+                    for (var j = 0; j < tdLen; j++) {
+                        var $currTD = $($selectedTds[j]);
+                        if ($currTD.data("property") == $currInput.attr("name")) {
+                            if ($currInput.attr("name") == "Active") {
+                                if ($currTD.html() == "1") {
+                                    $currInput.prop("checked", true);
+                                }
+                                else {
+                                    $currInput.prop("checked", false);
+                                }
+                            }
+                            else
+                            {
+                                $currInput.val($currTD.html());
+                            }
+                        }
+                    }
+                }
+                $("#save-Reminder-changes").attr("data-Reminder", selectedId);
+                $("#ReminderModal").appendTo("body").modal("show");
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+        });
+
+        $selRowContainer.append("<div id='create-Reminder-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-Reminder-button").bind("click", function () {
+            $("#id_pk-text").removeAttr("readonly");
+            $("#ReminderModal").appendTo("body").modal("show");
+            $("#save-Reminder-changes").removeAttr("data-Reminder");
+            var $selectedTds = $("#Reminder-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#ReminderModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                //for (var j = 0; j < tdLen; j++) {
+                //    var $currTD = $($selectedTds[j]);
+                //    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "id_pk") {
+                        if ($currInput.attr("name") == "Start_date") {
+                            var today = new Date();
+                            $currInput.val($.datepicker.formatDate('yy-mm-dd', today));
+                        }
+                        if ($currInput.attr("name") == "Active") {
+                            $currInput.prop("checked", true);
+                        }
+                        if ($currInput.attr("name") == "Prio") {
+                            $currInput.val("2");
+                        }
+                        if ($currInput.attr("name") == "Reminder_text") {
+                            $currInput.val("");
+                        }
+                        if ($currInput.attr("name") == "Sign") {
+                            $currInput.val(System.Web.HttpContext.Current.GetUser().Windows_user);
+                        }
+                        if ($currInput.attr("name") == "Customer_name") {
+                            $currInput.val("null");
+                        }
+                //    }
+                //}
+            }
+        });
+
+        $selRowContainer.append("<div id='delete-Reminder-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
+        $("#delete-Reminder-button").bind("click", function () {
+            bootbox.dialog({
+                title: 'Do you want to delete?',
+                className: "crm-delete-confirm",
+                message: "You are about to delete the selected Reminder, are you sure you want to delete it?",
+                buttons: {
+                    'cancel': {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    },
+                    'yes': {
+                        label: 'Yes',
+                        className: 'btn-danger pull-right',
+                        callback: function () {
+                            $.ajax({
+                                "url": "/Reminder/DeleteReminder/",
+                                "type": "POST",
+                                "data": {
+                                    "id_pk": selectedId,
+                                },
+                                "success": function (data) {
+                                    if (data > 0) {
+                                        updateDataTable();
+                                        console.log("success");
+                                        triggerAlert("Successfully deleted row", "success");
+                                    }
+                                    else {
+                                        console.log("failure");
+                                        triggerAlert("Something went wrong when trying to delete this row", "warning");
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    'no': {
+                        label: 'No',
+                        className: 'pull-right',
+                    }
+                },
+            });
+        });
+
+    }
+
+    var triggerAlert = function (msg, priorty) {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+        var insertValue;
+        for (var name in aData) {
+
+            var i = 0;
+            var insertValue;
+
+            for (var name in aData) {
+                var $td;
+
+
+                if (i == 0) {
+                    $td = $('td:eq(' + i + ')', nRow);
+
+                    $td.parent().click(function () {
+
+                        selectRow(this.firstChild);
+
+                    });
+                    $td.html("<input type='radio' value=" + aData["ID_PK"] + " name='selected-contact' onClick=''/>");
+                    $td.addClass("radios");
+                    if ($td.find("input").val() == selectedId) {
+                        selectRow($td);
+                    }
+                    else if ($td.find("input").val() != selectedId) {
+                        $td.parent().removeClass("selected");
+                    }
+                    i++;
+                }
+
+                if (name != "ID_PK") {
+                    if (i < 10) {
+                        $td = $('td:eq(' + i + ')', nRow);
+                        $td.attr("data-property", name);
+                        $td.html(aData[name]);
+                    }
+
+                    i++;
+                }
+            }
+        }
+    }
+
+    $('document').ready(function () {
+        var defSystem = "@ViewBag.DefaultSystem";
+        getIndexData(defSystem);
+    });
+
+    var getIndexData = function (defSys) {
+        $('#Reminder-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "/Reminder/ReminderJsonData/",
+                "type": "POST",
+                "data": {
+                    "default_system": defSys
+                }
+            },
+            "initComplete": function (settings, json) {
+                drawButtons();
+            },
+            "defaultContent": "",
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "width": "20px",
+                    "targets": 0
+                },
+                {
+                    "width": "100px",
+                    "targets": [1, 6]
+                },
+                {
+                    "width": "50px",
+                    className: "text-center",
+                    "targets": [2,3]
+                },
+                {
+                    "width": "250px",
+                    "targets": 4
+                },
+                {
+                    "width": "500px",
+                    "targets": 5
+                },
+                {
+                    "width": "50px",
+                    "targets": [7, 8]
+                },
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+    };
+
+</script>

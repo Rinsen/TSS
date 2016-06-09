@@ -1,0 +1,841 @@
+body {
+  padding-top: 60px;
+  font-family: Arial;
+}
+/* Set padding to keep content from hitting the edges */
+
+.body-content {
+  padding-left: 15px;
+  padding-right: 15px;
+  height: calc(-20vh);
+}
+.area-newline {
+  white-space: pre-wrap;
+}
+/*------------- jQuery datepicker -------------*/
+
+.ui-datepicker {
+  background-color: white;
+  border: 1px solid #66afe9;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+  display: none;
+  margin-top: 4px;
+  padding: 10px;
+  width: 240px;
+}
+.ui-datepicker a,
+.ui-datepicker a:hover {
+  text-decoration: none;
+}
+.ui-datepicker a:hover,
+.ui-datepicker td:hover a {
+  color: #2a6496;
+  -webkit-transition: color 0.1s ease-in-out;
+  -moz-transition: color 0.1s ease-in-out;
+  -o-transition: color 0.1s ease-in-out;
+  transition: color 0.1s ease-in-out;
+}
+.ui-datepicker .ui-datepicker-header {
+  margin-bottom: 4px;
+  text-align: center;
+}
+.ui-datepicker .ui-datepicker-title {
+  font-weight: 700;
+}
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+  cursor: default;
+  font-family: 'Glyphicons Halflings';
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-weight: normal;
+  height: 20px;
+  line-height: 1;
+  margin-top: 2px;
+  width: 30px;
+}
+.ui-datepicker .ui-datepicker-prev {
+  float: left;
+  text-align: left;
+}
+.ui-datepicker .ui-datepicker-next {
+  float: right;
+  text-align: right;
+}
+.ui-datepicker .ui-datepicker-prev:before {
+  content: "\e079";
+}
+.ui-datepicker .ui-datepicker-next:before {
+  content: "\e080";
+}
+.ui-datepicker .ui-icon {
+  display: none;
+}
+.ui-datepicker .ui-datepicker-calendar {
+  table-layout: fixed;
+  width: 100%;
+}
+.ui-datepicker .ui-datepicker-calendar th,
+.ui-datepicker .ui-datepicker-calendar td {
+  text-align: center;
+  padding: 4px 0;
+}
+.ui-datepicker .ui-datepicker-calendar td {
+  border-radius: 4px;
+  -webkit-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  -moz-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  -o-transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+}
+.ui-datepicker .ui-datepicker-calendar td:hover {
+  background-color: #eeeeee;
+  cursor: pointer;
+}
+.ui-datepicker .ui-datepicker-calendar td a {
+  text-decoration: none;
+}
+.ui-datepicker .ui-datepicker-current-day {
+  background-color: #4289cc;
+}
+.ui-datepicker .ui-datepicker-current-day a {
+  color: white;
+}
+.ui-datepicker .ui-datepicker-calendar .ui-datepicker-unselectable:hover {
+  background-color: white;
+  cursor: default;
+}
+/*-------- Index home ------------------*/
+
+ul.nav.navbar-nav ol.breadcrumb {
+  margin: 11px 0;
+  background: inherit;
+}
+ul.nav.navbar-nav ol.breadcrumb li a {
+  color: white;
+}
+ul.nav.navbar-nav ol.breadcrumb li.active span {
+  color: white;
+}
+.crm-overlay-backgorund-filter {
+  opacity: 80%;
+  background-color: #c8c8c8;
+  position: absolute;
+  top: 60px;
+  width: 100%;
+  height: 100%;
+  margin: -60px -35px;
+}
+.crm-overlay-background-image {
+  background: url("img/overlay-bg.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.dataTable tr {
+  position: relative;
+}
+.dataTable td input {
+  background-color: white;
+  background-image: none;
+  border: 1px solid #dce4ec;
+  border-radius: 4px;
+  color: #4e7987;
+  display: block;
+  font-size: 15px;
+  height: 45px;
+  line-height: 1.42857;
+  padding: 10px 15px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+  width: 100%;
+  border-width: 2px;
+  box-shadow: none;
+  display: inline-block;
+  vertical-align: middle;
+  width: auto;
+}
+.crm-table-btn {
+  display: inline-block;
+  margin-left: 1em;
+}
+.crm-save {
+  color: #21c27c;
+  cursor: pointer;
+  font-size: 18pt;
+  left: -1.3em;
+  margin: 0.8em 0;
+  position: absolute;
+}
+.crm-delete {
+  color: #cd0000;
+  cursor: pointer;
+  font-size: 18pt;
+  margin: 0 1em 0 0;
+  vertical-align: middle;
+  display: inline-block;
+}
+.bootbox-body {
+  font-size: 20pt;
+}
+/*--------Alert messages---------------*/
+
+.crm-alert-message > div {
+  left: 0;
+  margin: auto;
+  padding: 0.8em 2em;
+  position: fixed;
+  right: 0;
+  top: 65px;
+  width: 30%;
+  z-index: 2000;
+}
+.crm-alert-message > div.alert-success {
+  background-color: #21c27c !important;
+  border: 1px solid #21c27c !important;
+}
+.crm-alert-message ul {
+  list-style: none;
+  text-decoration: none;
+}
+div.ColVis {
+  margin: 5px 1em;
+}
+.crm-delete-confirm {
+  width: 40%;
+  margin-left: 30%;
+}
+/*-------Features---------------------*/
+
+#features-wrapper {
+  max-height: calc(100vh -  110px);
+}
+.features-header {
+  float: right;
+}
+.features-table {
+  margin-top: 20px;
+}
+.crm-client-list {
+  text-decoration: none;
+  list-style: none;
+  height: calc(100vh -  130px);
+  overflow: auto;
+  padding: 0;
+}
+.crm-client-list li {
+  background-color: gray;
+  color: white;
+  padding: 1em;
+  margin-bottom: 2px;
+}
+.crm-client-list li:hover {
+  background-color: lightgray;
+}
+.features-id {
+  position: absolute;
+  right: 1em;
+}
+.tree-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 40px;
+}
+.features-pdf-button {
+  margin-left: 2em;
+}
+#feature-filter {
+  width: 175px !important;
+}
+.dataTables_length {
+  display: inline-block !important;
+}
+@media screen and (max-width: 991px) {
+  .filter-label {
+    display: none !important;
+  }
+  .tree-wrapper {
+    max-height: 50vh;
+  }
+  .feature-filter-wrapper {
+    width: 500px !important;
+    margin-right: 0px !important;
+  }
+  .features-header {
+    margin-right: 30px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .feature-filter-wrapper .form-control {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
+}
+@media screen and (max-width: 1001px) and (min-width: 992px) {
+  
+}
+/*-------------CustomerOffer-------------------*/
+
+.modal-dialog {
+  margin-top: 5em;
+  width: 75%;
+}
+.bootbox-body {
+  font-size: inherit;
+}
+form#articles-form div.form-group,
+.modal-select-items div.form-group {
+  width: 100%;
+}
+form#articles-form select,
+.modal-select-items select {
+  width: 70%;
+}
+form#articles-form #classification-select,
+.modal-select-items #classification-select {
+  width: 36%;
+}
+form#articles-form table,
+.modal-select-items table {
+  margin-top: 1em;
+  width: 100%;
+  border-spacing: 0.5em;
+  border-collapse: separate;
+}
+form#articles-form div table,
+.modal-select-items div table {
+  margin-top: 0;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+form#articles-search-form div.form-group,
+.modal-select-items div.form-group {
+  width: 100%;
+}
+form#articles-search-form select,
+.modal-select-items select {
+  width: 70%;
+}
+form#articles-search-form #classification-select,
+.modal-select-items #classification-select {
+  width: 36%;
+}
+form#articles-search-form table,
+.modal-select-items table {
+  margin-top: 1em;
+  width: 100%;
+  border-spacing: 0.5em;
+  border-collapse: separate;
+}
+form#articles-search-form div table,
+.modal-select-items div table {
+  margin-top: 0;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+table#articles-table > tbody > tr > td,
+.crm-items-table > tbody > tr > td {
+  width: 50%;
+}
+table#articles-search-table > tbody > tr > td,
+.crm-items-table > tbody > tr > td {
+  width: 50%;
+}
+.small-modal .modal-dialog {
+  width: 40% !important;
+}
+table#articles-table td:first-child th:nth-of-type(1),
+table.crm-items-table td:first-child th:nth-of-type(1),
+table#articles-search-table td:first-child th:nth-of-type(1) {
+  width: 5%;
+}
+table#articles-table td:first-child th:nth-of-type(2),
+table.crm-items-table td:first-child th:nth-of-type(2),
+table#articles-search-table td:first-child th:nth-of-type(2) {
+  width: 10%;
+}
+table#articles-table td:first-child th:nth-of-type(3),
+table.crm-items-table td:first-child th:nth-of-type(3),
+table#articles-search-table td:first-child th:nth-of-type(3) {
+  width: 32%;
+}
+table#articles-table td:first-child th:nth-of-type(4),
+table.crm-items-table td:first-child th:nth-of-type(4),
+table#articles-search-table td:first-child th:nth-of-type(4) {
+  width: 15%;
+}
+table#articles-table td:first-child th:nth-of-type(5),
+table.crm-items-table td:first-child th:nth-of-type(5),
+table#articles-search-table td:first-child th:nth-of-type(5) {
+  width: 10%;
+}
+table#articles-table .item-row-names td:nth-child(1),
+table.crm-items-table .item-row-names td:nth-child(1),
+table#articles-search-table .item-row-names td:nth-child(1),
+table#articles-table .item-row-names th:nth-of-type(1),
+table.crm-items-table .item-row-names th:nth-of-type(1),
+table#articles-search-table .item-row-names th:nth-of-type(1) {
+  width: 10%;
+}
+table#articles-table .item-row-names td:nth-child(2),
+table.crm-items-table .item-row-names td:nth-child(2),
+table#articles-search-table .item-row-names td:nth-child(2),
+table#articles-table .item-row-names th:nth-of-type(2),
+table.crm-items-table .item-row-names th:nth-of-type(2),
+table#articles-search-table .item-row-names th:nth-of-type(2) {
+  width: 40%;
+}
+table#articles-table .item-row-names td:nth-child(3),
+table.crm-items-table .item-row-names td:nth-child(3),
+table#articles-search-table .item-row-names td:nth-child(3),
+table#articles-table .item-row-names th:nth-of-type(3),
+table.crm-items-table .item-row-names th:nth-of-type(3),
+table#articles-search-table .item-row-names th:nth-of-type(3) {
+  width: 15%;
+}
+table#articles-table .item-row-names td:nth-child(4),
+table.crm-items-table .item-row-names td:nth-child(4),
+table#articles-search-table .item-row-names td:nth-child(4),
+table#articles-table .item-row-names th:nth-of-type(4),
+table.crm-items-table .item-row-names th:nth-of-type(4),
+table#articles-search-table .item-row-names th:nth-of-type(4) {
+  width: 10%;
+}
+table#articles-table .item-row-names td:nth-child(4),
+table.crm-items-table .item-row-names td:nth-child(4),
+table#articles-search-table .item-row-names td:nth-child(4) {
+  text-align: right;
+}
+table#articles-table #available-articles,
+table.crm-items-table #available-articles,
+table#articles-search-table #available-articles,
+table#articles-table #available-articles-search,
+table.crm-items-table #available-articles-search,
+table#articles-search-table #available-articles-search,
+table#articles-table .crm-available-items,
+table.crm-items-table .crm-available-items,
+table#articles-search-table .crm-available-items {
+  height: 50vh;
+  overflow-y: auto;
+}
+table#articles-table #available-articles td:nth-child(1),
+table.crm-items-table #available-articles td:nth-child(1),
+table#articles-search-table #available-articles td:nth-child(1),
+table#articles-table #available-articles-search td:nth-child(1),
+table.crm-items-table #available-articles-search td:nth-child(1),
+table#articles-search-table #available-articles-search td:nth-child(1),
+table#articles-table .crm-available-items td:nth-child(1),
+table.crm-items-table .crm-available-items td:nth-child(1),
+table#articles-search-table .crm-available-items td:nth-child(1),
+table#articles-table #available-articles th:nth-of-type(1),
+table.crm-items-table #available-articles th:nth-of-type(1),
+table#articles-search-table #available-articles th:nth-of-type(1),
+table#articles-table #available-articles-search th:nth-of-type(1),
+table.crm-items-table #available-articles-search th:nth-of-type(1),
+table#articles-search-table #available-articles-search th:nth-of-type(1),
+table#articles-table .crm-available-items th:nth-of-type(1),
+table.crm-items-table .crm-available-items th:nth-of-type(1),
+table#articles-search-table .crm-available-items th:nth-of-type(1) {
+  width: 5%;
+}
+table#articles-table #available-articles td:nth-child(2),
+table.crm-items-table #available-articles td:nth-child(2),
+table#articles-search-table #available-articles td:nth-child(2),
+table#articles-table #available-articles-search td:nth-child(2),
+table.crm-items-table #available-articles-search td:nth-child(2),
+table#articles-search-table #available-articles-search td:nth-child(2),
+table#articles-table .crm-available-items td:nth-child(2),
+table.crm-items-table .crm-available-items td:nth-child(2),
+table#articles-search-table .crm-available-items td:nth-child(2),
+table#articles-table #available-articles th:nth-of-type(2),
+table.crm-items-table #available-articles th:nth-of-type(2),
+table#articles-search-table #available-articles th:nth-of-type(2),
+table#articles-table #available-articles-search th:nth-of-type(2),
+table.crm-items-table #available-articles-search th:nth-of-type(2),
+table#articles-search-table #available-articles-search th:nth-of-type(2),
+table#articles-table .crm-available-items th:nth-of-type(2),
+table.crm-items-table .crm-available-items th:nth-of-type(2),
+table#articles-search-table .crm-available-items th:nth-of-type(2) {
+  width: 10%;
+}
+table#articles-table #available-articles td:nth-child(3),
+table.crm-items-table #available-articles td:nth-child(3),
+table#articles-search-table #available-articles td:nth-child(3),
+table#articles-table #available-articles-search td:nth-child(3),
+table.crm-items-table #available-articles-search td:nth-child(3),
+table#articles-search-table #available-articles-search td:nth-child(3),
+table#articles-table .crm-available-items td:nth-child(3),
+table.crm-items-table .crm-available-items td:nth-child(3),
+table#articles-search-table .crm-available-items td:nth-child(3),
+table#articles-table #available-articles th:nth-of-type(3),
+table.crm-items-table #available-articles th:nth-of-type(3),
+table#articles-search-table #available-articles th:nth-of-type(3),
+table#articles-table #available-articles-search th:nth-of-type(3),
+table.crm-items-table #available-articles-search th:nth-of-type(3),
+table#articles-search-table #available-articles-search th:nth-of-type(3),
+table#articles-table .crm-available-items th:nth-of-type(3),
+table.crm-items-table .crm-available-items th:nth-of-type(3),
+table#articles-search-table .crm-available-items th:nth-of-type(3) {
+  width: 40%;
+}
+table#articles-table #available-articles td:nth-child(4),
+table.crm-items-table #available-articles td:nth-child(4),
+table#articles-search-table #available-articles td:nth-child(4),
+table#articles-table #available-articles-search td:nth-child(4),
+table.crm-items-table #available-articles-search td:nth-child(4),
+table#articles-search-table #available-articles-search td:nth-child(4),
+table#articles-table .crm-available-items td:nth-child(4),
+table.crm-items-table .crm-available-items td:nth-child(4),
+table#articles-search-table .crm-available-items td:nth-child(4),
+table#articles-table #available-articles th:nth-of-type(4),
+table.crm-items-table #available-articles th:nth-of-type(4),
+table#articles-search-table #available-articles th:nth-of-type(4),
+table#articles-table #available-articles-search th:nth-of-type(4),
+table.crm-items-table #available-articles-search th:nth-of-type(4),
+table#articles-search-table #available-articles-search th:nth-of-type(4),
+table#articles-table .crm-available-items th:nth-of-type(4),
+table.crm-items-table .crm-available-items th:nth-of-type(4),
+table#articles-search-table .crm-available-items th:nth-of-type(4) {
+  width: 15%;
+}
+table#articles-table #available-articles td:nth-child(5),
+table.crm-items-table #available-articles td:nth-child(5),
+table#articles-search-table #available-articles td:nth-child(5),
+table#articles-table #available-articles-search td:nth-child(5),
+table.crm-items-table #available-articles-search td:nth-child(5),
+table#articles-search-table #available-articles-search td:nth-child(5),
+table#articles-table .crm-available-items td:nth-child(5),
+table.crm-items-table .crm-available-items td:nth-child(5),
+table#articles-search-table .crm-available-items td:nth-child(5),
+table#articles-table #available-articles th:nth-of-type(5),
+table.crm-items-table #available-articles th:nth-of-type(5),
+table#articles-search-table #available-articles th:nth-of-type(5),
+table#articles-table #available-articles-search th:nth-of-type(5),
+table.crm-items-table #available-articles-search th:nth-of-type(5),
+table#articles-search-table #available-articles-search th:nth-of-type(5),
+table#articles-table .crm-available-items th:nth-of-type(5),
+table.crm-items-table .crm-available-items th:nth-of-type(5),
+table#articles-search-table .crm-available-items th:nth-of-type(5) {
+  width: 10%;
+}
+table#articles-table #available-articles td:nth-child(4),
+table.crm-items-table #available-articles td:nth-child(4),
+table#articles-search-table #available-articles td:nth-child(4),
+table#articles-table #available-articles-search td:nth-child(4),
+table.crm-items-table #available-articles-search td:nth-child(4),
+table#articles-search-table #available-articles-search td:nth-child(4),
+table#articles-table .crm-available-items td:nth-child(4),
+table.crm-items-table .crm-available-items td:nth-child(4),
+table#articles-search-table .crm-available-items td:nth-child(4) {
+  text-align: left;
+}
+table#articles-table #available-articles td:nth-child(5),
+table.crm-items-table #available-articles td:nth-child(5),
+table#articles-search-table #available-articles td:nth-child(5),
+table#articles-table #available-articles-search td:nth-child(5),
+table.crm-items-table #available-articles-search td:nth-child(5),
+table#articles-search-table #available-articles-search td:nth-child(5),
+table#articles-table .crm-available-items td:nth-child(5),
+table.crm-items-table .crm-available-items td:nth-child(5),
+table#articles-search-table .crm-available-items td:nth-child(5) {
+  text-align: right;
+}
+table#articles-table #selected-articles,
+table.crm-items-table #selected-articles,
+table#articles-search-table #selected-articles,
+table#articles-table #selected-articles-search,
+table.crm-items-table #selected-articles-search,
+table#articles-search-table #selected-articles-search,
+table#articles-table .crm-selected-items,
+table.crm-items-table .crm-selected-items,
+table#articles-search-table .crm-selected-items {
+  height: 50vh;
+  overflow-y: auto;
+}
+table#articles-table #selected-articles table td:nth-child(1),
+table.crm-items-table #selected-articles table td:nth-child(1),
+table#articles-search-table #selected-articles table td:nth-child(1),
+table#articles-table #selected-articles-search table td:nth-child(1),
+table.crm-items-table #selected-articles-search table td:nth-child(1),
+table#articles-search-table #selected-articles-search table td:nth-child(1),
+table#articles-table .crm-selected-items table td:nth-child(1),
+table.crm-items-table .crm-selected-items table td:nth-child(1),
+table#articles-search-table .crm-selected-items table td:nth-child(1),
+table#articles-table #selected-articles table th:nth-of-type(1),
+table.crm-items-table #selected-articles table th:nth-of-type(1),
+table#articles-search-table #selected-articles table th:nth-of-type(1),
+table#articles-table #selected-articles-search table th:nth-of-type(1),
+table.crm-items-table #selected-articles-search table th:nth-of-type(1),
+table#articles-search-table #selected-articles-search table th:nth-of-type(1),
+table#articles-table .crm-selected-items table th:nth-of-type(1),
+table.crm-items-table .crm-selected-items table th:nth-of-type(1),
+table#articles-search-table .crm-selected-items table th:nth-of-type(1) {
+  width: 10%;
+}
+table#articles-table #selected-articles table td:nth-child(2),
+table.crm-items-table #selected-articles table td:nth-child(2),
+table#articles-search-table #selected-articles table td:nth-child(2),
+table#articles-table #selected-articles-search table td:nth-child(2),
+table.crm-items-table #selected-articles-search table td:nth-child(2),
+table#articles-search-table #selected-articles-search table td:nth-child(2),
+table#articles-table .crm-selected-items table td:nth-child(2),
+table.crm-items-table .crm-selected-items table td:nth-child(2),
+table#articles-search-table .crm-selected-items table td:nth-child(2),
+table#articles-table #selected-articles table th:nth-of-type(2),
+table.crm-items-table #selected-articles table th:nth-of-type(2),
+table#articles-search-table #selected-articles table th:nth-of-type(2),
+table#articles-table #selected-articles-search table th:nth-of-type(2),
+table.crm-items-table #selected-articles-search table th:nth-of-type(2),
+table#articles-search-table #selected-articles-search table th:nth-of-type(2),
+table#articles-table .crm-selected-items table th:nth-of-type(2),
+table.crm-items-table .crm-selected-items table th:nth-of-type(2),
+table#articles-search-table .crm-selected-items table th:nth-of-type(2) {
+  width: 40%;
+}
+table#articles-table #selected-articles table td:nth-child(3),
+table.crm-items-table #selected-articles table td:nth-child(3),
+table#articles-search-table #selected-articles table td:nth-child(3),
+table#articles-table #selected-articles-search table td:nth-child(3),
+table.crm-items-table #selected-articles-search table td:nth-child(3),
+table#articles-search-table #selected-articles-search table td:nth-child(3),
+table#articles-table .crm-selected-items table td:nth-child(3),
+table.crm-items-table .crm-selected-items table td:nth-child(3),
+table#articles-search-table .crm-selected-items table td:nth-child(3),
+table#articles-table #selected-articles table th:nth-of-type(3),
+table.crm-items-table #selected-articles table th:nth-of-type(3),
+table#articles-search-table #selected-articles table th:nth-of-type(3),
+table#articles-table #selected-articles-search table th:nth-of-type(3),
+table.crm-items-table #selected-articles-search table th:nth-of-type(3),
+table#articles-search-table #selected-articles-search table th:nth-of-type(3),
+table#articles-table .crm-selected-items table th:nth-of-type(3),
+table.crm-items-table .crm-selected-items table th:nth-of-type(3),
+table#articles-search-table .crm-selected-items table th:nth-of-type(3) {
+  width: 15%;
+}
+table#articles-table #selected-articles table td:nth-child(4),
+table.crm-items-table #selected-articles table td:nth-child(4),
+table#articles-search-table #selected-articles table td:nth-child(4),
+table#articles-table #selected-articles-search table td:nth-child(4),
+table.crm-items-table #selected-articles-search table td:nth-child(4),
+table#articles-search-table #selected-articles-search table td:nth-child(4),
+table#articles-table .crm-selected-items table td:nth-child(4),
+table.crm-items-table .crm-selected-items table td:nth-child(4),
+table#articles-search-table .crm-selected-items table td:nth-child(4),
+table#articles-table #selected-articles table th:nth-of-type(4),
+table.crm-items-table #selected-articles table th:nth-of-type(4),
+table#articles-search-table #selected-articles table th:nth-of-type(4),
+table#articles-table #selected-articles-search table th:nth-of-type(4),
+table.crm-items-table #selected-articles-search table th:nth-of-type(4),
+table#articles-search-table #selected-articles-search table th:nth-of-type(4),
+table#articles-table .crm-selected-items table th:nth-of-type(4),
+table.crm-items-table .crm-selected-items table th:nth-of-type(4),
+table#articles-search-table .crm-selected-items table th:nth-of-type(4) {
+  width: 10%;
+}
+table#articles-table #selected-articles table td:nth-child(4),
+table.crm-items-table #selected-articles table td:nth-child(4),
+table#articles-search-table #selected-articles table td:nth-child(4),
+table#articles-table #selected-articles-search table td:nth-child(4),
+table.crm-items-table #selected-articles-search table td:nth-child(4),
+table#articles-search-table #selected-articles-search table td:nth-child(4),
+table#articles-table .crm-selected-items table td:nth-child(4),
+table.crm-items-table .crm-selected-items table td:nth-child(4),
+table#articles-search-table .crm-selected-items table td:nth-child(4) {
+  text-align: right;
+}
+table#articles-table button[disabled],
+table.crm-items-table button[disabled],
+table#articles-search-table button[disabled] {
+  background-color: #9dcfae;
+  color: white;
+}
+form#service-form .service-amount {
+  float: right;
+  margin-left: 25vh;
+}
+form#service-form .highlight-item-red {
+  background-color: #f08d8d;
+  color: white;
+  transition: all 0.6s ease;
+}
+form#service-form .highlight-item-blue {
+  background-color: lightblue;
+  transition: all 0.6s ease;
+}
+form#service-form .highlight-item-fade {
+  transition: all 0.6s ease;
+}
+@media screen and (max-width: 1310px) {
+  .modal-dialog {
+    width: 90%;
+  }
+}
+@media screen and (max-width: 940px) {
+  .modal-dialog {
+    width: 99%;
+  }
+}
+/*-------------------CustomerOfferTable-----------------*/
+
+#CustomerOffer-table tr.selected {
+  background-color: lightblue;
+}
+.dataTables_scrollBody {
+  max-height: 65vh;
+  overflow: auto;
+}
+.contact-modal {
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 25px;
+  z-index: 100000;
+}
+.modal-backdrop {
+  z-index: 1;
+}
+#delete-contact-button {
+  float: right;
+}
+@media screen and (max-width: 1025px) {
+  .contact-modal {
+    width: 90%;
+    margin-left: 5%;
+  }
+}
+@media screen and (max-height: 870px) {
+  .dataTables_scrollBody {
+    max-height: 45vh;
+  }
+}
+/*---------------Templates------------*/
+
+#Template-table tr.selected {
+  background-color: lightblue;
+}
+.edit-template-modal {
+  width: 70%;
+  margin-left: 15%;
+  height: 70%;
+  margin-top: 10vh;
+}
+@media screen and (max-width: 1025px) {
+  .edit-template-modal {
+    width: 90%;
+    margin-left: 5%;
+    height: 70%;
+    margin-top: 10vh;
+  }
+}
+.main-template-mainhead {
+  font-weight: bold;
+  font-size: x-large;
+  height: auto;
+  margin-top: 15px;
+  color: black;
+}
+.main-template-subheading {
+  font-weight: bold;
+  font-size: large;
+  margin-top: 10px;
+}
+.main-template-text {
+  height: auto;
+  margin-top: 5px;
+}
+/*------------- Customer contact ---------------*/
+
+#contact-table tr.selected {
+  background-color: lightblue;
+}
+/*------------- Articles ---------------*/
+
+#module-table tr.selected {
+  background-color: lightblue;
+}
+/*------------- Customer ---------------*/
+
+#customer-table tr.selected {
+  background-color: lightblue;
+}
+/*------------- Service ---------------*/
+
+#service-table tr.selected {
+  background-color: lightblue;
+}
+/*------------- User ---------------*/
+
+#user-table tr.selected {
+  background-color: lightblue;
+}
+/*------------- Contract ---------------*/
+
+#CustomerContract-table tr.selected {
+  background-color: lightblue;
+}
+input.error {
+  border-radius: 1px;
+  box-shadow: 0 0 5px #4e7987;
+}
+a.tooltips > span {
+  position: relative;
+  display: block;
+}
+a.tooltips:hover {
+  text-decoration: none;
+  cursor: default;
+}
+a.tooltips > span {
+  padding: 0.5em 1em;
+  width: 140px;
+  color: #fcfcfc;
+  background: #4e7987;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  top: 9px;
+}
+a.tooltips > span:after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -8px;
+  width: 0;
+  height: 0;
+  border-bottom: 8px solid #4e7987;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+}
+.disabled-link {
+  cursor: not-allowed !important;
+  background-color: #d6d6d6;
+  color: black !important;
+}
+.disabled-link:hover {
+  background-color: #d6d6d6 !important;
+}
+/*------------- Tariff---------------*/
+
+#tariff-table tr.selected {
+  background-color: lightblue;
+}
+/*Small modal scroll fix*/
+
+.small-modal .bootbox-close-button {
+  display: none;
+}
+.radios {
+  vertical-align: top !important;
+  padding-top: 0px !important;
+  margin-top: 0px !important;
+}
+td#user-table {
+  border: solid 1px black;
+}

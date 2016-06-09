@@ -1,0 +1,14 @@
+﻿@{
+    bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
+
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+    if (!isModuleTermination)
+    {
+        Html.RenderPartial("_ContractHTML");
+    }
+    if (isModuleTermination)
+    {
+    Html.RenderPartial("_ModuleTerminationSection");
+    }
+}
+@using TietoCRM.Models;

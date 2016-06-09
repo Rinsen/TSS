@@ -1,0 +1,165 @@
+﻿@{
+    bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
+    @functions{
+
+        bool IsPdf()
+        {
+            if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        String GetWorkingUrl(string url)
+        {
+            if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "ViewPdf")
+            {
+                return url;
+            }
+            else if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+            {
+                String retVal = Server.MapPath(url);
+                return retVal;
+            }
+            else
+            {
+                return "";
+            }
+        }
+    }
+}
+@using TietoCRM.Models;
+@using System.Globalization;
+<div class="crm-pdf">
+
+    @if (!IsPdf())
+    {
+        <div class='crm-pdf-head'>
+            @try
+            {
+                Html.RenderPartial("_HeadSection", null, new ViewDataDictionary(ViewData));
+            }
+            catch (Exception ex)
+            {
+                @Html.Raw(ex);
+            }
+        </div>
+    }
+    @{
+        <div class="large-divider"></div>
+        <div class="crm-pdf-header-section">
+            @try
+            {
+                Html.RenderPartial("_HeaderSection", null, new ViewDataDictionary(ViewData));
+            }
+            catch (Exception ex)
+            {
+                @Html.Raw(ex);
+            }
+        </div>
+
+
+        if (isMainContract)
+        {
+            <div class="crm-pdf-main-contract-header">
+                @try
+                {
+                    Html.RenderPartial("_MainContractHeader", null, new ViewDataDictionary(ViewData));
+                }
+                catch (Exception ex)
+                {
+                    @Html.Raw(ex);
+                }
+            </div>
+        }
+    }
+    @if (isMainContract)
+    {
+        <div class="crm-pdf-old-module-section">
+            @try
+            {
+                Html.RenderPartial("_OldModuleSection", null, new ViewDataDictionary(ViewData));
+            }
+            catch (Exception ex)
+            {
+                @Html.Raw(ex);
+            }
+        </div>
+    }
+    <div id="crm-pdf-module-head">
+        @if (isMainContract)
+        {
+            if (ViewBag.OldArticles.Count > 0 || ViewBag.OldEducationPortals.Count > 0)
+            {
+                <h4>Nya moduler</h4>
+            }
+            else if (ViewBag.OldArticles.Count > 0)
+            {
+                <h4>Moduler</h4>
+            }
+
+        }
+        else
+        {
+            <h5 id="template-Delivery_maint_title">@ViewBag.ContractText.Delivery_maint_title</h5>
+            <div id="template-Delivery_maint_text" class="area-newline">@ViewBag.ContractText.Delivery_maint_text</div>
+        }
+    </div>
+    <div class="crm-pdf-module-section">
+        @try
+        {
+            Html.RenderPartial("_ModuleSection", null, new ViewDataDictionary(ViewData));
+        }
+        catch (Exception ex)
+        {
+            @Html.Raw(ex);
+        }
+    </div>
+    @if (isMainContract)
+    {
+        <div class="crm-pdf-main-contract-epilog-section">
+            @try
+            {
+                Html.RenderPartial("_MainContractEpilog", null, new ViewDataDictionary(ViewData));
+            }
+            catch (Exception ex)
+            {
+                @Html.Raw(ex);
+            }
+        </div>
+    }
+    <div class="crm-print-block">
+        @if (!isMainContract)
+        {
+            <div class="crm-pdf-footer-section">
+
+                <div id="crm-pdf-footer-info">
+                    <h5 id="template-Document_foot_title">@ViewBag.ContractText.Document_foot_title</h5>
+                    <div id="template-Document_foot" class="area-newline">@ViewBag.ContractText.Document_foot</div>
+                </div>
+                <div id="crm-pdf-signing-section">
+                    @try
+                    {
+                        Html.RenderPartial("_SigningSection", null, new ViewDataDictionary(ViewData));
+                    }
+                    catch (Exception ex)
+                    {
+                        @Html.Raw(ex);
+                    }
+                </div>
+            </div>
+        }
+        @if (!IsPdf())
+        {
+            <div class="crm-pdf-foot">
+                <div class="crm-pdf-foot-logo">
+                    <img src="@GetWorkingUrl(Url.Content("~/Content/img/tieto-logo.png"))" alt="tieto-logo" />
+                </div>
+            </div>
+        }
+    </div>
+</div>

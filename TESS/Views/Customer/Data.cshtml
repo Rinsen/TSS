@@ -1,0 +1,23 @@
+﻿
+[
+
+@{
+    Response.setContentType("text/plain");
+    int i = 1;
+    foreach (TietoCRM.Models.dboKund kund in ViewBag.Customers)
+    {
+        if (i != ViewBag.Customers.Count)
+        {
+            Response.Write("{ 'Kund': " + kund.Kund + ", 'Kundtyp': " + kund.Kundtyp + ", 'Adress': " + kund.Adress + "},");
+        }
+        else
+        {
+            Response.Write("{ 'Kund': " + kund.Kund + ", 'Kundtyp': " + kund.Kundtyp + ", 'Adress': " + kund.Adress + "}");
+        }
+        i++;
+    }
+}
+
+
+
+]

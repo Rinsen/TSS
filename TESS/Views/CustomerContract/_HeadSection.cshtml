@@ -1,0 +1,92 @@
+﻿@{
+    Layout = null;
+    string currentDate = DateTime.Now.Date.ToShortDateString();
+    @functions{
+
+        bool IsPdf()
+        {
+            if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        String GetWorkingUrl(string url)
+        {
+            if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "ViewPdf")
+            {
+                return url;
+            }
+            else if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+            {
+                String retVal = Server.MapPath(url);
+                return retVal;
+            }
+            else
+            {
+                return "";
+            }
+        }
+    }
+}
+@using TietoCRM.Models;
+@if(IsPdf())
+{
+    @Html.Raw("<div class='crm-pdf-head'>");
+}
+
+    <table id="crm-pdf-head-table">
+        <tr>
+            <td style="width: 35%">
+                <table id="crm-pdf-head-contract-info">
+                    @if (ViewBag.CustomerContract.Is(ContractType.MainContract))
+                    {
+                        <tr>
+                            <td class="crm-table-title" >Avtalsbeteckning:</td>
+                            <td>@ViewBag.CustomerContract.Contract_id</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="crm-table-title">Avtalsbeteckning:</td>
+                            <td>@ViewBag.CustomerContract.Main_contract_id</td>
+                        </tr>
+                    }
+                    @if (ViewBag.CustomerContract.Is(ContractType.SupplementaryContract))
+                    {
+                        <tr>
+                            <td class="crm-table-title">Tilläggsavtal:</td>
+                            <td>@ViewBag.CustomerContract.Contract_id</td>
+                        </tr>
+                    }
+                </table>
+            </td>
+            <td class="crm-contract-title" style="text-align:center">
+                <span><strong>@ViewBag.CustomerContract.Contract_type</strong></span>
+            </td>
+            <td style="text-align:right">
+                <span id="crm-pdf-tieto-logo-com">
+                    <img id ="tieto-logo" src="@GetWorkingUrl(Url.Content("~/Content/img/tieto-logo-com.png"))" alt=""  />
+                </span>
+            </td>
+        </tr>
+    </table>
+@if (IsPdf())
+{
+    @Html.Raw("</div>");
+}
+@*<script>
+    $(document).ready(function () {
+
+        $("tieto-logo").each(function () {
+            var $img = $(this);
+            $img.width($img.width() * .5);
+            $img.height($img.height() * .5);
+        });
+    });
+</script>*@

@@ -1,0 +1,597 @@
+﻿@using TietoCRM.Models;
+<table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-height="299" data-sort-name="Customer" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false">#</th>
+            @*<th data-field="Representative" data-sortable="true">Representative</th>*@
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                //if (@PropertyName != "Representative" && @PropertyName != "SSMA timestamp")
+                if (@PropertyName != "SSMA timestamp")
+                {
+                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                }
+            }
+        </tr>
+    </thead>
+</table>
+<div class="modal fade bs-example-modal-lg" id="customer-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" >Edit Customer</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="form-horizontal">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="representative-select" class="col-sm-3 control-label">Representative</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="Representative" id="representative-select">
+                                        @foreach (view_User User in ViewBag.Representatives)
+                                        {
+                                            <option value="@User.Sign">@User.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-text" class="col-sm-3 control-label">Customer</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="Customer" id="customer-text" placeholder="Customer">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="short-name-text" class="col-sm-3 control-label">Short name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="Short_name" id="short-name-text" placeholder="Short name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-type-select" class="col-sm-3 control-label">Customer type</label>
+                                <div class="col-sm-9">
+                                    <!--<select class="form-control" name="Customer_type" id="customer-type-select">
+                                        <option value="Privat">Privat</option>
+                                        <option value="Kommun">Kommun</option>
+                                    </select>-->
+                                    <input type="text"  class="form-control" name="Customer_type" id="customer-type-text" placeholder="Customer type">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address-text" class="col-sm-3 control-label">Address</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="Address" id="address-text" placeholder="Address">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="zip-code-text" class="col-sm-3 control-label">Zip code</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="Zip_code" id="zip-code-text" placeholder="Zip code">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="city-text" class="col-sm-3 control-label">City</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="City" id="city-text" placeholder="City">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="telephone-text" class="col-sm-3 control-label">Telephone</label>
+                                <div class="col-sm-9">
+                                    <input type="tel" class="form-control ignore" name="Telephone" id="telephone-text" placeholder="Telephone">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="fax-text" class="col-sm-3 control-label">Fax</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="Fax" id="fax-text" placeholder="Fax">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="web-address-text" class="col-sm-3 control-label">Web address</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="Web_address" id="web-address-text" placeholder="Web address">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="corporate-identity-number-text" class="col-sm-3 control-label">Corporate identity number</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="Corporate_identity_number" id="corporate-identity-number" placeholder="Corporate identity number">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email-format-text" class="col-sm-3 control-label">Email format</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control ignore" name="Email_format" id="email-format-text" placeholder="Email format">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="county-text" class="col-sm-3 control-label">County</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="County" id="county-text" placeholder="County">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label for="municipality-text" class="col-sm-3 control-label">Municipality</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="Municipality" id="municipality-text" placeholder="Municipality">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="it-manager-text" class="col-sm-3 control-label">IT manager</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="IT_manager" id="it-manager-text" placeholder="IT manager">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="it-manager-telephone-text" class="col-sm-3 control-label">IT manager telephone</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="IT_manager_telephone" id="it-manager-telephone-text" placeholder="IT manager">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="it-manager-mobile-text" class="col-sm-3 control-label">IT manager mobile</label>
+                                <div class="col-sm-9">
+                                    <input type="tel" class="form-control ignore" name="IT_manager_mobile" id="it-manager-mobile-text" placeholder="IT manager mobile">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="it-manager-email-text" class="col-sm-3 control-label">IT manager email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control ignore" name="IT_manager_email" id="it-manager-email-text" placeholder="IT manager email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ea-system-text" class="col-sm-3 control-label">EA system</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="EA_system" id="ea-system-text" placeholder="EA system">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pa-system-text" class="col-sm-3 control-label">PA system</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="PA_system" id="pa-system-text" placeholder="PA system">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="other-1-text" class="col-sm-3 control-label">Other 1</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="Other_1" id="other-1-text" placeholder="Other 1">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="other-2-text" class="col-sm-3 control-label">Other 2</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control ignore" name="Other_2" id="other-2-text" placeholder="Other 2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pul-text" class="col-sm-3 control-label">PUL</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control " name="PUL" id="pul-text">
+                                        <option value="false" selected>False</option>
+                                        <option value="true">True</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="note-text" class="col-sm-3 control-label">Note</label>
+                                <div class="col-sm-9">
+                                    <textarea type="text" class="form-control ignore" name="Note" id="note-text" rows="3" placeholder="Note"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inhabitant-level-text" class="col-sm-3 control-label">Inhabitant level</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="Inhabitant_level" id="Inhabitant_level-select">
+                                        @foreach (view_Population Level in ViewBag.Population)
+                                        {
+                                            <option value="@Level.ID_PK">@Level.MinPopulation - @Level.MaxPopulation</option>
+                                        }
+                                    </select>
+@*                                    <input type="text" class="form-control" name="Inhabitant_level" id="inhabitant-level-text" placeholder="Inhabitant level">*@
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-customer-changes" class="btn btn-success">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var onSuccess = function(data, textStatus, jqxhr, $row){
+        if(data > 0)
+        {
+            $@{@ViewBag.ControllerName}Table.row( $row )
+            .remove()
+            .draw();
+            $(document).trigger("clear-alerts");
+            $(document).trigger("add-alerts", [
+              {
+                  'message': 'Row successfully deleted!',
+                  'priority': 'success'
+              }
+            ]);
+        }
+    }
+    var selectedId = null;
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#customer-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+    $(document).ready(function () {
+        var uniqueRowNumber = 0;
+        var $delBtns;
+
+
+        @{String DataObject =  "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+        @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+        {
+            if (PropertyInfo.Name != "SSMA_timestamp")
+            {
+                DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+            }
+        }
+        @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+
+        var updateTable = function() {
+            $@{@ViewBag.ControllerName}Table = $('#@ViewBag.ControllerName-table').DataTable({
+                "destroy": true,
+                "processing": true,
+                "ajax": "@Url.Content("~" + ViewBag.AjaxUrl)",
+                "defaultContent": "",
+                "order": [[ 1, "asc" ]],
+                //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 50)),
+                "columns": [@Html.Raw(DataObject)
+                ],
+                "columnDefs": [
+                    {"data": null,"defaultContent": "","targets": 0}
+                ],
+                "scrollY": ($("#page-content-wrapper").height() - 10),
+                "scrollX": true,
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                    var i = 0, j = 0;
+                    var selectOptions = "@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.Select))";
+                    var selectArr = JSON.parse(selectOptions);
+                    //for (var name in JSON.parse(selectOptions)) {
+                    //    if (selectArr[j][0] == aData["Representative"]) {
+                    //        selectArr[j].push(1);
+                    //    }
+                    //    j++;
+                    //}
+                    j = 0;
+                    for (var name in aData) {
+                        var $td;
+                        if (i == 0) {
+                            $td = $('td:eq(' + i + ')', nRow);
+                            $td.parent().click(function () {
+
+                                selectRow(this.firstChild);
+
+                            });
+                            $td.addClass("radios");
+                            $td.html("<input value='" + aData["Customer"] + "' type='radio' name='selected-contact' onClick=''/>");
+                            if($td.parent().hasClass("selected") && $td.find("input").val() == selectedId){
+                                selectRow($td);
+                            }
+                            else if($td.parent().hasClass("selected") && $td.find("input").val() != selectedId){
+                                $td.parent().removeClass("selected");
+                            }
+                            i++;
+                            j++;
+                        }
+
+                        if (i >= 1) {
+                            var tdInc = j;
+                            //if (name == "Representative")
+                            //    tdInc = 1;
+                            $td = $('td:eq(' + tdInc + ')', nRow);
+                            $td.attr("data-property", name);
+                            $td.html(aData[name]);
+                            j++;
+                        }
+                        i++;
+                    }
+                }
+            });
+        }
+        var drawButtons = function(){
+            var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+            $selRowContainer.append("<div id='crm-edit-customer' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+            $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        }
+
+    var saveCustomerInformation = function($formInputs){
+
+        var customerData = {};
+        var formInputsLen = $formInputs.length;
+        // Loop through all inputs and store data in a customerData object.
+        for(var i = 0; i < formInputsLen; i++){
+            var $currentInput = $($formInputs[i]);
+            var currentProp = $currentInput.attr("name");
+            if(currentProp == "County" || currentProp == "Municipality")
+            {
+                if($currentInput.val().length <= 0)
+                    customerData[currentProp] = 0;
+                else
+                    customerData[currentProp] = $currentInput.val();
+            } else {
+                customerData[currentProp] = $currentInput.val();
+            }
+
+        }
+        // Control if to update or insert
+        var oldCustomer = $("#crm-edit-customer").data("customer");
+        var ajaxData = {};
+        var ajaxUrl = "";
+        if(oldCustomer == null || typeof oldCustomer == "undefined"){
+            ajaxUrl = "@Url.Content("~/Customer/InsertCustomer/")";
+            ajaxData.customerData = JSON.stringify(customerData);
+        } else {
+            ajaxUrl = "@Url.Content("~/Customer/SaveCustomer/")";
+            ajaxData = {
+                "oldCustomer": selectedId,
+                "customerData": JSON.stringify(customerData)
+            }
+        }
+        $.ajax({
+            "url": ajaxUrl,
+            "type": "POST",
+            "data": ajaxData,
+            "success": function(data){
+                $(document).trigger("clear-alerts");
+                if(data > 0){
+                    updateTable();
+                    drawButtons();
+                    addButonListeners();
+                    $("#customer-modal").modal("hide");
+                    var msg = "Successfully updated Customer row.";
+                    if(oldCustomer == null) // If null, for inserting a new customer.
+                        msg = "Successfully inserted new Customer row";
+                    $(document).trigger("add-alerts", [
+                      {
+                          'message': msg,
+                          'priority': 'success'
+                      }
+                    ]);
+                } else {
+                    console.log(data);
+                    $(document).trigger("add-alerts", [
+                     {
+                         'message': "Failed to update Customer row.",
+                         'priority': 'warning'
+                     }
+                    ]);
+                }
+            }
+        });
+
+    }
+
+    var editCustomerHandler = function(button){
+        // If no user is selected, do noting, and display a message
+        if(selectedId == null){
+            $(document).trigger("clear-alerts");
+            $(document).trigger("add-alerts", [
+                      {
+                          'message': "You have to select a row to edit first.",
+                          'priority': 'info'
+                      }
+            ]);
+            return;
+        }
+
+        // Save current user as data-customer on the button element.
+        $(button).attr("data-customer", selectedId);
+
+        var $selectedTr = $("#customer-table").find("tr.selected");
+        // Get all table cells with relevant information
+        var $tds = $selectedTr.find("td").not(".radios");
+        var tdsLen = $tds.length;
+        // Get all modal input fields
+        var $formInputs = $("#customer-modal form").find(":input");
+        var formInputsLen = $formInputs.length;
+
+        // Loop through all modal input fields and fill it with data corresponding to
+        // matching table cell
+        for(var i = 0; i < formInputsLen; i++){
+            var $currentInput = $($formInputs[i]);
+            for(var j = 0; j < tdsLen; j++){
+                var $td = $($tds[j]);
+                var $tdProp = $td.data("property");
+                if($currentInput.attr("name") == $tdProp){
+                    if($tdProp == "County" || $tdProp == "Municipality" || $tdProp == "PUL")
+                    {
+                        if($td.html().length == 0)
+                            $currentInput.val(0);
+                        else
+                            $currentInput.val($td.html());
+                    } else {
+                        $currentInput.val($td.html());
+                    }
+                }
+            }
+        }
+        // Show modal
+        $("#customer-modal").appendTo("body").modal("show");
+        // Remove old saveCustomerInformation() binding and add a new one.
+        //$("#customer-modal form").validate();
+        //$("#save-customer-changes").unbind("click");
+
+
+        $("#save-customer-changes").unbind("click");
+        $("#save-customer-changes").bind("click", function(){
+            if($("#customer-modal form").valid()){
+                saveCustomerInformation($formInputs);
+            }
+        });
+    }
+
+    var addCustomerHandler = function(button)
+    {
+        // Set null as data-customer on the button element.
+        $("#crm-edit-customer").removeData("customer");
+        $("#crm-edit-customer").removeAttr("data-customer");
+        // Get all modal input fields
+        var $formInputs = $("#customer-modal form").find(":input");
+        var formInputsLen = $formInputs.length;
+        for(var i = 0; i < formInputsLen; i++){
+            var $currentInput = $($formInputs[i]);
+            var name = $currentInput.attr("name");
+            var type = $currentInput.attr("type") || $currentInput.prop("tagName").toLowerCase();
+            if(type != "select")
+                $currentInput.val("");
+            if(name == "County" || name == "Municipality" || name == "PUL")
+            {
+                $currentInput.val(0);
+            }
+        }
+
+
+        $("#customer-modal").appendTo("body").modal("show");
+        // Remove old saveCustomerInformation() binding and add a new one.
+        //$("#customer-modal form").validate();
+        //$("#save-customer-changes").unbind("click");
+
+
+        $("#save-customer-changes").unbind("click");
+        $("#save-customer-changes").bind("click", function(){
+            console.log("asd");
+            if($("#customer-modal form").valid()){
+                saveCustomerInformation($formInputs);
+            }
+        });
+    }
+
+    var addButonListeners = function(){
+
+        $("#crm-edit-customer").bind("click", function () {
+
+            $formValidation.resetForm();
+            editCustomerHandler(this);
+        });
+
+
+        $("#crm-add-row").bind("click", function(){
+
+            $formValidation.resetForm();
+            addCustomerHandler(this);
+        });
+    }
+
+    updateTable();
+    drawButtons();
+    addButonListeners();
+
+
+    $formValidation = $("#customer-modal form").validate({
+        ignore: ".ignore",
+        rules: {
+            "Customer": {
+                required: true,
+            },
+            "Customer_type": {
+                required: true,
+                maxlength: 10
+            },
+            "Address": {
+                required: false,
+                maxlength: 30
+            },
+            "Zip_code":  {
+                required: true,
+                maxlength: 6
+            },
+            "City": {
+                required: true,
+                maxlength: 25
+            },
+            "Corporate_identity_number": {
+                required: true,
+                maxlength: 11
+            },
+            "Email_format": {
+                maxlength: 50
+            },
+            "Fax": {
+                maxlength: 15
+            },
+            "County": {
+                digits: true
+            },
+            "Municipality": {
+                digits: true
+            },
+            "Inhabitant_level": {
+                required: true,
+                digits: true
+            },
+            "Telephone": {
+                maxlength: 15
+            },
+            "IT_manager": {
+                maxlength: 25
+            },
+            "IT_manager_telephone": {
+                maxlength: 15
+            },
+            "IT_manager_mobile": {
+                maxlength: 15
+            },
+            "EA_system": {
+                maxlength: 15
+            },
+            "PA_system": {
+                maxlength: 15
+            },
+            "Other_1": {
+                maxlength: 15
+            },
+            "Other_2": {
+                maxlength: 15
+            },
+        },
+        errorElement: "span",
+        wrapper: "a",  // a wrapper around the error message
+        errorPlacement: function(error, element)
+        {
+            error.next().addClass("tooltips");
+            error.addClass("tooltips");
+            error.insertAfter(element);
+        }
+    });
+
+
+    // Filter columns DISABLED for now.
+
+    //var colvis = new $.fn.dataTable.ColVis($@{@ViewBag.ControllerName}Table);
+    //var $colvisBtn = $(colvis.button());
+
+    //$('.dataTables_filter').append($colvisBtn);
+
+
+
+
+    });
+</script>

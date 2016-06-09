@@ -1,0 +1,94 @@
+﻿@section Style
+{
+<link rel="stylesheet" media="all" href="~/Content/OfferPdf.css" />
+<link rel="stylesheet" media="all" href="~/Content/ExpPdfStyle.css" />
+@*<link rel="stylesheet/less" media="all" href="~/Content/OfferPdf.less" />
+    <link rel="stylesheet/less" media="all" href="~/Content/ExpPdfStyle.less" />
+    <script type="text/javascript" src="~/Scripts/less-1.5.1.min.js"></script>*@
+<style>
+    .modal-backdrop {
+        z-index: -1 !important;
+    }
+</style>
+
+}
+@{
+    bool isOpen = ViewBag.CustomerOffer.Offer_status == "Öppen";
+}
+<div class="row">
+    <nav class="navbar navbar-default" style="background-color: inherit; text-align: center">
+        <div class="container-fluid">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Add / Edit <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a onclick="openModal(this)" data-modal-target="head-information" href="#">Head information</a></li>
+                    <li><a @{if (!isOpen) { @Html.Raw("class='disabled-link'") ; } else {@Html.Raw("onclick='openModal(this)'") ; }} data-modal-target="text-template" href="#">Text templates</a></li>
+                    <li><a @{if (!isOpen) { @Html.Raw("class='disabled-link'") ; } else {@Html.Raw("onclick='openModal(this)'") ; }} data-modal-target="articles" href="#">Articles</a></li>
+                    <li><a @{if (!isOpen) { @Html.Raw("class='disabled-link'") ; } else {@Html.Raw("onclick='openModal(this)'") ; }} data-modal-target="services" href="#">Services</a></li>
+                </ul>
+            </div>
+            <!--<button type="button" class="btn btn-success navbar-btn">Save</button>-->
+            <button type="button" onclick="window.location = '/CustomerOffer/Index?selected-offer=@Url.Encode(Request["selected-offer"])';" class="btn btn-default navbar-btn">Back</button>
+            <span style="margin-left: 1em"></span>
+            <a class="btn btn-primary navbar-btn" href="Pdf?selected-offer=@Request["selected-offer"]" target="_blank">PDF</a>
+        </div><!-- /.container-fluid -->
+    </nav>
+ @* 
+     End of creating the three buttons (Add/Edit - Back - PDF) on the top of the page
+
+     Now starting rendering the A4-page of the offer by rendering the partial view _OfferHTML
+ *@
+    
+    <page size="A4">
+        @try{
+            Html.RenderPartial("_OfferHTML");
+        }
+        catch (Exception ex) { @Html.Raw(ex.Message); }
+    </page>
+
+@*
+    End of rendering the A4-page of the offer
+
+    Now code for menu selection through bootbox. Complicated!?!
+*@
+
+    <script>
+        var openModal = function (el) {
+            var $el = $(el);
+            console.log($el)
+            bootbox.dialog({
+                title: "Edit " + $el.text(),
+                message: (function () {
+                    var rdata = "";
+                    $.ajax({
+                        "url": "Modals?modal=" + $el.data("modal-target") + "&selected-offer=@Request["selected-offer"]&sign=@ViewBag.Representative.Sign&customer=@Url.Encode(ViewBag.Customer.Customer)",
+                            "success": function (data) { rdata = data },
+                            "error": function (data) { rdata = "<h2>Failed to load modal content, have you lost internet connection?</h2>";},
+                            "async": false,
+                            "headers": { 'Cache-Control': 'no-cache' }
+                        })
+                        return rdata;
+                    }),
+                    buttons: {
+                        close: {                
+                            label: "Close",
+                            className: "btn-close",
+                        },
+                        success: {
+                            label: "Save",
+                            className: "btn-success",
+                            callback: function () {
+                                var name = $('#name').val();
+                                var answer = $("input[name='awesomeness']:checked").val()
+                                saveFunction(@ViewBag.CustomerOffer._Offer_number);
+                        },
+                    },
+                }
+            });
+        }
+
+    </script>
+
+</div>

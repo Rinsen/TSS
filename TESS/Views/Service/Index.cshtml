@@ -1,0 +1,346 @@
+﻿<table draggable="true" id="service-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false">#</th>
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                if (@PropertyName != "SSMA timestamp")
+                {
+                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                }
+
+            }
+        </tr>
+    </thead>
+</table>
+
+<div class="modal fade bs-example-modal-lg" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit service</h4>
+            </div>
+            <div id="service-modal" class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="description-text" class="col-sm-2 control-label">Description</label>
+                        <div class="col-sm-10">
+                            <textarea cols="2" class="form-control" id="description-text" name="Description" placeholder="Description"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="price-text" class="col-sm-2 control-label">Price</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="price-text" name="Price" placeholder="Price">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-service-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var uploadToServer = function()
+    {
+        if (typeof $("#save-service-changes").attr("data-service") != "undefined") {
+
+            var oldService = $("#save-service-changes").attr("data-service");
+
+            var service = {}
+
+            var $formInputs = $("#serviceModal form").find(":input");
+            console.log($formInputs);
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                service[$currInput.attr("name")] = $currInput.val();
+            }
+            $.ajax({
+                "url": "/Service/SaveService/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(service),
+                    "code": oldService,
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#serviceModal").modal("hide");
+                        triggerAlert("Successfully updated this service", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to update the service on the server", "warning");
+                    }
+                }
+            });
+        }
+        else {
+            var service = {}
+
+            var $formInputs = $("#service-modal form").find(":input");
+            console.log($formInputs);
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                service[$currInput.attr("name")] = $currInput.val();
+            }
+            $.ajax({
+                "url": "/Service/InsertService/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(service),
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#serviceModal").modal("hide");
+                        triggerAlert("Successfully inserted the new service", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to insert the service to the server", "warning");
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $("#save-service-changes").click(function () {
+            if ($("#service-modal form").valid()) {
+                uploadToServer();
+            }
+        });
+
+        $formValidation = $("#serviceModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Description": {
+                    required: true,
+                    maxlength: 150,
+                },
+                "Price": {
+                    required: true,
+                    digits: true
+                }
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    var selectedId = null;
+
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#service-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+
+    @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (@PropertyName != "SSMA timestamp")
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+        @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function (onSuccess) {
+        $('#service-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "/service/serviceJsonData/",
+            },
+            "initComplete": function (settings, json) {
+                if (typeof onSuccess != "undefined")
+                    onSuccess();
+                drawButtons();
+            },
+            "defaultContent": "",
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+        var $selRowContainer = $("#service-table_length");
+        //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+        //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+        //$('#crm-save-btn').on('click', save);
+    }
+
+    function drawButtons() {
+        var $selRowContainer = $("#service-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-edit-service' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        $("#crm-edit-service").bind("click", function () {
+            if (selectedId != null) {
+                $("#save-service-changes").attr("data-service", selectedId);
+                var $selectedTds = $("#service-table tr.selected td").not(".radios");
+                var tdLen = $selectedTds.length;
+
+                var $formInputs = $("#serviceModal form").find(":input");
+
+                var frmInpLen = $formInputs.length;
+                for (var i = 0; i < frmInpLen; i++) {
+                    var $currInput = $($formInputs[i]);
+                    for (var j = 0; j < tdLen; j++) {
+                        var $currTD = $($selectedTds[j]);
+                        if ($currTD.data("property") == $currInput.attr("name")) {
+                            $currInput.val($currTD.html());
+                        }
+                    }
+                }
+                $("#save-service-changes").attr("data-service", selectedId);
+                $("#serviceModal").appendTo("body").modal("show");
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+        });
+
+        $selRowContainer.append("<div id='create-service-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-service-button").bind("click", function () {
+            $("#serviceModal").appendTo("body").modal("show");
+            $("#save-service-changes").removeAttr("data-service");
+            var $selectedTds = $("#service-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#serviceModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                for (var j = 0; j < tdLen; j++) {
+                    var $currTD = $($selectedTds[j]);
+                    if ($currTD.data("property") == $currInput.attr("name")) {
+                        $currInput.val("");
+                    }
+                }
+            }
+        });
+
+    }
+
+    var triggerAlert = function(msg, priorty)
+    {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+        var insertValue;
+        for (var name in aData) {
+
+            var i = 0;
+            var insertValue;
+
+            for (var name in aData) {
+                var $td;
+
+
+                if (i == 0) {
+                    $td = $('td:eq(' + i + ')', nRow);
+
+                    $td.parent().click(function () {
+
+                        selectRow(this.firstChild);
+
+                    });
+                    $td.html("<input type='radio' value='" + aData["Code"] + "' name='selected-contact' onClick=''/>");
+                    $td.addClass("radios");
+                    if ($td.find("input").val() == selectedId) {
+                        selectRow($td);
+                    }
+                    else if ($td.find("input").val() != selectedId) {
+                        $td.parent().removeClass("selected");
+                    }
+                    i++;
+                }
+
+                if (i < 4) {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                }
+
+                i++;
+            }
+        }
+    }
+
+    $('document').ready(function () {
+
+        $('#service-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "/service/serviceJsonData/",
+            },
+            "initComplete": function (settings, json) {
+                drawButtons();
+            },
+            "defaultContent": "",
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+    });
+
+
+</script>

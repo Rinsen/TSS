@@ -1,0 +1,1211 @@
+﻿@{
+    Layout = null;
+    
+}
+@using TietoCRM.Models;
+@using System.Globalization;
+@if (Request["modal"] == "text-template")
+{
+    <!-- #region asd -->
+    <form id="text-template-form" class="form-horizontal">
+        <div class="form-group">
+            <label for="template-number-select" class="col-sm-2 control-label">Offer text template</label>
+            <div class="col-sm-10">
+                <select id="template-number-select" name="Template_number" class="form-control" >
+                    <option value="current" selected>Current template used on offer</option>
+                    @foreach (view_TextTemplate tt in ViewBag.TextTemplates)
+                    {
+                        <option value="@tt.ID_PK">@tt.Sign - @tt.Short_descr </option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="document-type-text" class="col-sm-2 control-label">Document type</label>
+            <div class="col-sm-10">
+                <input id="document-type-text" name="Document_type" type="text" class="form-control" value="@ViewBag.CustomerOffer.Document_type">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="document-head-text" class="col-sm-2 control-label">Document head</label>
+            <div class="col-sm-10">
+                <input id="document-head-text" type="text" name="Document_head" class="form-control" value="@ViewBag.CustomerOffer.Document_head">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="page-head-text" class="col-sm-2 control-label">Page head</label>
+            <div class="col-sm-10">
+                <textarea id="page-head-text" name="Page_head" class="form-control" rows="3">@ViewBag.CustomerOffer.Page_head</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="title-text" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+                <input id="title-text" name="Title" type="text" class="form-control" value="@ViewBag.CustomerOffer.Title">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="page-foot-text" class="col-sm-2 control-label">Page foot</label>
+            <div class="col-sm-10">
+                <textarea id="page-foot-text" name="Page_foot" class="form-control" rows="3">@ViewBag.CustomerOffer.Page_foot</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
+            <div class="col-sm-10">
+                <textarea id="document-foot-text" name="Document_foot" class="form-control" rows="3">@ViewBag.CustomerOffer.Document_foot</textarea>
+            </div>
+        </div>
+        <!--<div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button class="btn btn-success">Update</button>
+            </div>
+        </div>-->
+    </form>
+    <script>
+        var currentOfferValues = @Html.Raw(ViewBag.CustomerOfferJSON);
+        // Itterate through form inputs and json data and match input with correct values.
+        var updateModalFields = function (data, targetFormId) {
+            var $ttForm = $("#" + targetFormId);
+            var $inputs = $ttForm.find(":input");
+            var dataLen = Object.keys(data).length;
+            for (var i = 0; i < dataLen; i++) {
+                $inputs.each(function () {
+                    var $formInput = $(this);
+                    // Match input name with json property name, if a match set form value to prop value;
+                    if ($formInput.attr("name") == Object.keys(data)[i]) {
+                        $formInput.val(data[$formInput.attr("name")]);
+                    }
+                });
+            }    
+        }
+        
+        // Get field data and update modal fields.
+        $("#template-number-select").change(function () {
+            var $el = $(this);
+            var templateId = $el.val();
+            if(templateId == "current"){
+                updateModalFields(currentOfferValues, "text-template-form");
+            }
+            else{
+                $.ajax({
+                    "url": "/CustomerOffer/JsonData/",
+                    "type": "POST",
+                    "data": {
+                        "requestData": "view_TextTemplate",
+                        "templateId": templateId,
+                    },
+                    "success": function (data) {
+                        if (data.length > 0) {
+                            var textTemplate = JSON.parse(data);
+                            updateModalFields(textTemplate, "text-template-form");
+                        }
+                    }
+                })
+            }
+        })
+        var saveFunction = function(offerNumber){
+            var updateData = {};
+            var $ttForm = $("#text-template-form");
+            var $inputs = $ttForm.find(":input");
+            console.log("Spara");
+           
+            $inputs.each(function () {
+                var $formInput = $(this);
+                var inputProp = $formInput.attr("name");
+                if(inputProp != "Sign" && inputProp != "Template_number" && inputProp != "SSMA_timestamp" && typeof inputProp != 'undefined'){
+                    console.log($formInput.attr("value"),$formInput.val());
+                    updateData[$formInput.attr("name")] = $formInput.val(); 
+                }
+                   
+            });
+            
+            updateData["primaryKey"] = offerNumber;
+            var updateDataArr = [];
+            updateDataArr.push(updateData);
+
+
+            $.ajax({
+                "url": "/CustomerOffer/JsonData/",
+                "type": "POST",
+                "data": {
+                    "requestData": "update_view_CustomerOffer",
+                    "object": JSON.stringify(updateDataArr)                    
+                },
+                dataType: 'text',
+                // iOS 6 has a dreadful bug where POST requests are not sent to the
+                // server if they are in the cache.
+                headers: { 'Cache-Control': 'no-cache' }, // Apple!
+                "success": function (data) {
+                    if (data > 0) {
+                        // Update current values
+                        currentOfferValues = updateData;
+                        // Loop through "HTML PDF" and update fields
+                        $.each(updateData, function(key, val){
+                            var $updateTarget = $("#" + key);
+                            if($updateTarget.length > 0){
+                                $updateTarget.html(val);
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    </script>
+    <!-- #endregion -->
+}
+
+else if (Request["modal"] == "articles")
+{
+
+    <form class="form-inline" id="articles-form">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="System-select">System: </label>
+                    <select class="form-control" id="System-select">
+                        @foreach (String System in ViewBag.Systems)
+                        {
+                            <option value="@System">@System</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="classification-select">Classification: </label>
+                    <select class="form-control" id="classification-select"></select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="art-search" class="area-newline">Or    </label>
+                    <input class="form-control input-sm" id="art-search">
+                    <button id="search-button" type="button" class="btn btn-close">Search</button>
+                </div>
+            </div>
+        </div>
+        <table id="articles-table">
+            <tr>
+                <td valign="top">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Available articles</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table style="margin-left: 0.8em;">
+                                <tr>
+                                    <th></th>
+                                    <th title="Exists in previous contract">#</th>
+                                    <th>Art. nr</th>
+                                    <th>Module</th>
+                                    <th>License</th>
+                                    <th>Maintenance</th>
+                                </tr>
+                                
+                            </table>
+                            <div id="available-articles" class="list-group">
+                            </div>     
+                            <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
+                        </div>
+                    </div>
+                    <p>Click on an item above to add it to the list</p>
+                </td>
+                <td valign="top">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Selected articles to add</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table style="margin-left: 0.8em;">
+                                <tr>
+                                    <th >Art. nr</th>
+                                    <th >Module</th>
+                                    <th >License</th>
+                                    <th >Maintenance</th>
+                                </tr>
+                                
+                            </table>
+                            <div id="selected-articles" class="list-group">
+                                @{
+                                    
+                                    int LicenseTotal = 0;
+                                    int MaintenanceTotal = 0;
+                                    CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+                                    
+                                 }
+                                @foreach (view_OfferRow or in ViewBag.CustomerOffer._OfferRows)
+                                {
+                                    // Fetch modules
+                                    view_Module module = new view_Module();
+                                    module.Select("Article_number = " + or.Article_number);
+
+                                    // Format currency
+                                   
+                                    String License = string.Format(se, "{0:C0}", or.License);
+                                    String Maintenance = string.Format(se, "{0:C0}", or.Maintenance);
+
+                                    LicenseTotal += Convert.ToInt32(or.License);
+                                    MaintenanceTotal += Convert.ToInt32(or.Maintenance);
+
+                                    <button onclick="moveItem(event, this)"
+                                            type="button"
+                                            class="list-group-item"
+                                            data-selected="true"
+                                            @if(module.System != "Lärportal")
+                                            {
+                                                @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."));
+                                            }
+                                            data-maintenance="@or.Maintenance.ToString().Replace(",", ".")">
+                                        <table>
+                                            <tr>
+                                                <td class="art-nr">@or.Article_number</td>
+                                                <td>@module.Module</td>
+                                                @if(module.System != "Lärportal")
+                                                {
+                                                    <td>@License</td>
+                                                    <td>@Maintenance</td>
+                                                }
+                                                else
+                                                {
+                                                    <td style='float:right; width:auto;'>@Maintenance</td>
+                                                }
+                                                
+                                            </tr>
+                                        </table>
+                                    </button>
+                                }
+                                @{
+                                    // Format currency
+                                    
+                                    String LicenseTotalStr = string.Format(se, "{0:C0}", LicenseTotal);
+                                    String MaintenanceTotalStr = string.Format(se, "{0:C0}", MaintenanceTotal);
+                                }
+
+                            </div>
+                            <table>
+                                <tr>
+                                    <td></td>
+                                    <td style="text-align: right"><h4 style="margin-right: 2em;">Summa:</h4></td>
+                                    <td><h4 id="article-license-total">@LicenseTotalStr</h4></td>
+                                    <td><h4 id="article-maintenance-total">@MaintenanceTotalStr</h4></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                   <p>Click on an item above to remove it from the list</p>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+   
+
+<script>
+
+    // Global variables
+    var $SystemSelect = $("#System-select");
+    var $classificationSelect = $("#classification-select");
+
+    $(document).ready(function(){
+        $('#art-search').keypress(function(e){
+            if(e.keyCode==13){
+                $('#search-button').click();
+                return false;
+            }
+        });
+    });
+
+    // Fuction to fill the classifications select element with options corresponding to the correct
+    // System.
+    var fillClassificationSelect = function(System){
+        var $classificationSelect = $("#classification-select");
+        $.ajax({
+            "url": "/CustomerOffer/JsonData/",
+            "type": "POST",
+            "data": {
+                "requestData": "update_classification_select",
+                "System": System,
+                "customer": "@Html.Raw(ViewBag.CustomerName)"
+
+            },
+            "success": function (data) {
+                if (data.length > 0) {
+                    var classifications = JSON.parse(data);
+                    var classificationsLen = Object.keys(classifications).length;
+                    $classificationSelect.empty();
+                    for(var i = 0 ; i < classificationsLen ; i++){
+                        $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
+                        if(i == classificationsLen-1)
+                            fillArticleList($SystemSelect.val(), $classificationSelect.val());
+                    }
+                }
+            }
+        });
+    }
+    // Fill classifications select on page load
+    fillClassificationSelect("@Html.Raw(ViewBag.Systems[0])")
+
+    // Function to fill the article list depending on chosen System and classification
+    var fillArticleList = function(System, classification){
+        $.ajax({
+            "url": "/CustomerOffer/JsonData/",
+            "type": "POST",
+            "data": {
+                "requestData": "get_modules",
+                "System": System,
+                "classification": classification,
+                "customer": "@Html.Raw(ViewBag.CustomerName)"
+            },
+            "success": function (data) {
+                if (data.length > 0) {
+                    var articles = JSON.parse(data);
+                    var $availableList = $("#available-articles");
+                    var $selectedList = $("#selected-articles");
+                    $availableList.empty();
+                    handleExistingArticle(articles, $availableList, $selectedList);
+                } 
+            }
+        });
+    }
+    var fillArticleListSearch = function(){
+        var $searchText = $("#art-search");
+        $.ajax({
+            "url": "/CustomerOffer/JsonData/",
+            "type": "POST",
+            "data": {
+                "requestData": "get_modules_all",
+                "customer": "@Html.Raw(ViewBag.CustomerName)",
+                "searchtext": $searchText.val()
+            },
+            "success": function (data) {
+                if (data.length > 0) {
+                    var articles = JSON.parse(data);
+                    var $availableList = $("#available-articles");
+                    var $selectedList = $("#selected-articles");
+                    $availableList.empty();
+                    handleExistingArticle(articles, $availableList, $selectedList);
+                }
+            }
+        });
+    }
+    function RecursiveUnbind($jElement) {
+        // remove this element's and all of its children's click events
+        $jElement.unbind();
+        $jElement.removeAttr('onclick');
+        $jElement.children().each(function () {
+            RecursiveUnbind($(this));
+        });
+    }
+    var editArticle = function(editButton){
+        var $editButton = $(editButton); 
+        var $articleBtn = $editButton.parent().parent().parent().find("td button");
+        var oldLicenseVal = Math.round($articleBtn.data("license"), 0);
+        var oldMaintenanceVal = Math.round($articleBtn.data("maintenance"), 0);
+        var articleName = $articleBtn.find(".art-nr").next().html();
+        var articleNr = $articleBtn.find(".art-nr").html();
+        var licenseText = "";
+        if(typeof $articleBtn.data("license") != "undefined" && typeof $articleBtn.data("license") != false){
+            licenseText = " <div class='form-group'>                                                                                                    \
+                                <label for='license-text' class='col-sm-2 control-label'>License</label>                                                \
+                                <div class='col-sm-10'>                                                                                                 \
+                                    <input class='form-control' id='license-text' name='License' value='" + oldLicenseVal + "'>                         \
+                                </div>                                                                                                                  \
+                            </div>  ";
+        }
+        bootbox.dialog({
+            backdrop: false,
+            closebutton: false,
+            className: "small-modal",
+            title: "Edit Article:  " + articleNr + " " + articleName,
+            message: "<form class='form-horizontal'>                                                                                                \                                                                                                                    \
+                        <div class='form-group'>                                                                                                    \
+                            <label for='maintenance-text' class='col-sm-2 control-label'>Maintenance</label>                                        \
+                            <div class='col-sm-10'>                                                                                                 \
+                                <input class='form-control' id='maintenance-text' name='Maintenance' value='" + oldMaintenanceVal + "'>             \
+                            </div>                                                                                                                  \
+                        </div>                                                                                                                      \
+                        " + licenseText  + "                                                                                                        \
+                      </form>"
+                ,
+                buttons: {
+                    close: {                
+                        label: "Close",
+                        className: "btn-close",
+                        callback: function(){
+                            $(".small-modal").remove();
+                        }
+                    },
+                    success: {
+                        label: "Save",
+                        className: "btn-success",
+                        callback: function () {
+                            var $licenseEl = $("#license-text");
+                            var $maintenanceEl = $("#maintenance-text");
+                            // Update article data attrs
+                            if(typeof $licenseEl != "undefined" && typeof $licenseEl != false){
+                                $articleBtn.attr("data-license", $licenseEl.val());
+                                $articleBtn.data("license", $licenseEl.val());
+                                $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
+                            }
+                            $articleBtn.attr("data-maintenance", $maintenanceEl.val());
+                            $articleBtn.data("maintenance", $maintenanceEl.val());
+                            $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
+
+                            $(".small-modal").remove();
+                            
+                        },
+                    },
+                }
+        });
+    }
+
+    // Function to disable a button element if it already exists in the selected list.
+    var handleExistingArticle = function(availableArticles, $availableList, $selectedList){
+        var aaLen = availableArticles.length;
+        var $artNrs = $selectedList.find("button .art-nr");
+        var artNrsLen = $artNrs.length;
+        var hasFixedRows = false;
+        for(var i = 0; i < aaLen; i++) {
+            var article = availableArticles[i];
+            var usedCell = "<td></td>";
+            var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
+            var artClass = article.System + " / " + article.Classification;
+            console.log(artClass);
+            if(article.Used == true)
+            {
+                usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
+            }
+            var $newButton;
+            if(article.System == "Lärportal"){
+                if(!hasFixedRows)
+                {
+                    $tr = $availableList.parent().find("table").find("tbody").find("tr");
+                    $tr.html("<th></th><th>Art. nr</th><th>Module</th><th>Price category</th>");
+                    hasFixedRows = true;
+                }
+                $newButton = $("<button onclick='moveItem(event, this)'                                             \
+                                            class='list-group-item art-nr-" + article.Article_number + "'           \
+                                            data-selected='false'                                                   \
+                                            data-maintenance='" + article.Price_category + "'                       \
+                                            type='button'>                                                          \
+                                    <table>                                                                         \
+                                        <tr>                                                                        "
+                                            + usedCell +                                                            
+                                           "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
+                                            <td title='" + artComm + "'>" + article.Module + "</td>                                         \
+                                            <td class='maintenance' style='float: right; width:auto;'>" + formatCurrency(article.Price_category) + "</td>\
+                                        </tr>                                                                       \
+                                    </table>                                                                        \
+                                </button>");
+            }
+            else{
+                if(!hasFixedRows)
+                {
+                    $tr = $availableList.parent().find("table").find("tbody").find("tr");
+                    $tr.html("<th></th><th>Art. nr</th><th>Module</th><th>License</th><th>Maintenance</th>");
+                    hasFixedRows = true;
+                }
+                $newButton = $("<button onclick='moveItem(event, this)'                                             \
+                                            class='list-group-item art-nr-" + article.Article_number + "'           \
+                                            data-selected='false'                                                   \
+                                            data-license='" + article.License + "'                                  \
+                                            data-maintenance='" + article.Maintenance + "'                          \
+                                            type='button'>                                                          \
+                                    <table>                                                                         \
+                                        <tr>                                                                        "
+                                            + usedCell +                                                            
+                                           "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
+                                            <td title = '" + artComm + "'>" + article.Module + "</td>                                         \
+                                            <td class='license'>" + formatCurrency(article.License) + "</td>        \
+                                            <td class='maintenance'>" + formatCurrency(article.Maintenance) + "</td>\
+                                        </tr>                                                                       \
+                                    </table>                                                                        \
+                                </button>");
+            }
+            var $buttonContainer = $("<table>                                                                                               \
+                                        <tr>                                                                                                \
+                                            <td style='width: 10px'>                                                                        \
+                                                <div style='margin-right: 1em; cursor: pointer'>                                            \
+                                                    <span onclick='editArticle(this)' class='glyphicon glyphicon-pencil'></span>            \
+                                                </div>                                                                                      \
+                                            </td>                                                                                           \
+                                            <td style='width: auto' class='module-item-container'>                                          \
+                                                                                                                                            \
+                                            </td>                                                                                           \
+                                        </tr>                                                                                               \
+                                     </table>");
+            var $mic = $buttonContainer.find(".module-item-container");
+            if(artNrsLen > 0) {
+                for(var j = 0; j < artNrsLen; j++){
+                    var selVal = $artNrs.get(j);
+                    var $selectedButton = $(selVal).parent().parent().parent();
+                    var selectedButtonArt = $(selVal).html();
+                    
+                    if(article.Article_number == selectedButtonArt)
+                    {
+                        $mic.append($newButton.prop("disabled", true));
+
+                        $availableList.append($buttonContainer);
+                    } else {
+                        $mic.append($newButton);
+                      
+                        $availableList.append($buttonContainer);
+                    }
+                }
+            } else {
+                $mic.append($newButton);
+              
+                $availableList.append($buttonContainer);
+            }  
+        }
+        
+    }
+
+    // Change content of classificationSelect on change
+    $SystemSelect.change(function () {
+        var $el = $(this);
+        var System = $el.val();
+        fillClassificationSelect(System);
+        
+    });
+
+    // Change content of available-articles on change
+    $classificationSelect.change(function () {
+        var $el = $(this);
+        var classification = $el.val();
+        var System = $SystemSelect.val();
+        fillArticleList(System, classification);
+    });
+
+    $("#search-button").click(function () {
+        console.log("Click");
+        fillArticleListSearch();
+    });
+
+     //
+    var calculateSums = function(){
+        var $selectedArticleButtons = $("#selected-articles button");
+        var SACLen =  $selectedArticleButtons.length;
+        var LicenseTotal = 0,
+            MaintenanceTotal = 0;
+        for(var i = 0; i < SACLen; i++){
+            var $btn = $($selectedArticleButtons[i]);
+            var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
+            var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
+            LicenseTotal += parseInt(license);
+            MaintenanceTotal += parseInt(maintenance); 
+        }
+        $("#article-license-total").html(formatCurrency(LicenseTotal));
+        $("#article-maintenance-total").html(formatCurrency(MaintenanceTotal));
+    }
+
+    // Array to store objects of selected articles
+    var selectedArticlesArray = [];
+
+    var removeArticle = function(arr, articleNr) {
+        for (var i = arr.length; i--;) {
+            if (arr[i].Article_number == articleNr) {
+                arr.splice(i, 1);
+            }
+        }
+    }
+
+    // Move list item from either available-articles to selected-articles or
+    // the other way around.
+    var moveItem = function(event, element){
+        $button = $(element);
+     
+        $availableArticles = $("#available-articles");
+        $selectedArticles = $("#selected-articles");
+
+        var buttonArt = $button.find(".art-nr").html();
+        var buttonLicense = $button.data("license");
+        var buttonMaintenance = $button.data("maintenance");
+
+        if($button.attr("data-selected") == "false") { 
+            $newButton = $button.clone();
+            // Fix to exclude the "used" checkmark on selected items.
+            $($newButton).find("td").get(0).remove();
+           
+            $button.prop("disabled", true);
+            $newButton.attr("data-selected", "true");
+            $newButton.attr("type", "button");
+            $newButton.find('.license').html(formatCurrency(buttonLicense));
+            $newButton.find('.maintenance').html(formatCurrency(buttonMaintenance));
+            $newButton.appendTo($selectedArticles);
+            calculateSums();
+        } else {
+            $availableArticles.find(".art-nr-" + buttonArt).prop("disabled", false);
+            $button.attr("data-selected", "false");      
+            $button.remove();
+            calculateSums();
+        }
+    }
+    // Function to show a highlight effect on movement between lists
+    var highlightItem = function($item, css)
+    {
+        $item.addClass(css)
+        setTimeout(function () {      
+            $item.removeClass(css);
+            $item.addClass("highlight-item-fade");
+            setTimeout(function () {      
+                $item.removeClass("highlight-item-fade");
+            }, 600);   
+        }, 600);     
+    }
+
+    var saveFunction = function(){
+        var selectedArticlesArray = [];
+        var $selectedList = $("#selected-articles button");
+        var selectedListLen = $selectedList.length;
+        for(var i = 0; i < selectedListLen; i++)
+        {
+            var $button = $($selectedList[i]);
+            var buttonArt = $button.find(".art-nr").html();
+            var buttonLicense = $button.data("license");
+            var buttonMaintenance = $button.data("maintenance");
+
+            // "Create a new article" to store in an array to use for server side db update.
+            var newArticle = {
+                "Article_number":  buttonArt,
+                "License": buttonLicense,
+                "Maintenance": buttonMaintenance
+            }
+            selectedArticlesArray.push(newArticle);
+        }
+        
+        $.ajax({
+            "url": "/CustomerOffer/JsonData/",
+            "type": "POST",
+            "data": {
+                "requestData": "update_module_rows",
+                "Object": JSON.stringify(selectedArticlesArray),
+                "Offer_number": "@Request["selected-offer"]"
+            },
+            dataType: 'text',
+            // iOS 6 has a dreadful bug where POST requests are not sent to the
+            // server if they are in the cache.
+            headers: { 'Cache-Control': 'no-cache' }, // Apple!
+            "success": function (data) {
+                if (data > 0) {
+                    // Success to update db. Now update the preview section.
+                    $.ajax({
+                        "url": "/CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
+                        "type": "GET",
+                        "success": function (data) {
+                            $(".crm-pdf-offer-section").html(data);
+                        }
+                    });
+                }
+                else{
+                    console.log(data);
+                }
+            }
+        })
+    }
+
+</script>
+}
+else if (Request["modal"] == "services")
+{
+
+    <form class="form-inline" id="service-form">
+        <table>
+            <tr>
+                <td style=" width:50%;">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Available services</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                            <div id="available-services" class="list-group">
+                                @{
+                                    view_CustomerOffer offer = ViewBag.CustomerOffer;
+                                    CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+                                }
+                                @foreach (view_Service service in ViewBag.Services)
+                                {
+                                    String price = "";
+                                    int cost = 0;
+                                    if (offer._ConsultantRows.Any(c => c.Code == service.Code))
+                                    {
+                                        view_ConsultantRow ccr = offer._ConsultantRows.First(c => c.Code == service.Code);
+                                        price = String.Format(se, "{0:C0}", ccr.Total_price / ccr.Amount).Replace(".", " ");
+                                        cost = Convert.ToInt32(ccr.Total_price / ccr.Amount);
+                                    }
+                                    else
+                                    {
+                                        price = String.Format(se, "{0:C0}", service.Price).Replace(".", " ");
+                                        cost = (int)service.Price;
+                                    }
+
+                                    <table style="width: 100%">
+                                        <td style="display:inline-block; margin-top: 2vh; cursor: pointer">
+                                            <span onclick="editService(this);" class="glyphicon glyphicon-pencil">
+
+                                            </span>
+                                        </td>
+                                        <td style="display:inline-block; float:right; width:95%">
+                                            <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="false" class="list-group-item">
+                                                <label>@price</label>
+                                                <span class="service-amount"></span>
+                                                <br />
+                                                @service.Description
+                                            </button>
+                                        </td>
+                                    </table>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <p> Click on a service to add it</p>
+                </td>
+                <td valign="top">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Selected services to add</h3>
+                        </div>
+                        <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                            <div id="selected-services" class="list-group">
+                                @{
+                                //view_CustomerOffer offer = new view_CustomerOffer("Offer_number = " + Request["selected-offer"]);
+                                foreach (view_ConsultantRow row in offer._ConsultantRows)
+                                {
+                                    view_Service service = new view_Service();
+                                    service.Select("Code = " + row.Code);
+
+                                    String price = String.Format(se, "{0:C0}", row.Total_price / row.Amount);
+                                    int cost = Convert.ToInt32(row.Total_price / row.Amount);
+
+                                    <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
+                                        <label>@price</label>
+                                        <span class="service-amount">@row.Amount</span>
+                                        <br />
+                                        @service.Description
+                                    </button>
+                                }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <p> Click on a service to remove it</p>
+                </td>
+            </tr>
+        </table>
+        <div class="pull-right">
+            <h4 style="display: inline-block;" id="total-cost-container">0</h4>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+
+
+
+<script>
+    var services = [];
+    var addService = function(code, cost, amount)
+    {
+        if(typeof amount == "undefined")
+            amount = 1;
+
+        amount = parseInt(amount);
+
+        for(var i = 0; i < services.length; i++)
+        {
+            if(services[i].id == code){
+                services[i].amount += amount;
+                services[i].total += amount*cost;
+                if(services[i].amount <= 0)
+                {
+                    services.splice(i, 1);
+                }
+                break;
+            }
+        }
+
+        setTotalCost(amount,cost);
+
+    }
+
+    var setTotalCost = function(amount, cost){
+        $h4 = $("#total-cost-container");
+        total = parseInt($h4.html().replace("kr","").replace(/\s+/g, ''));
+        total += amount*cost;
+        if(total < 0)
+            total = 0;
+        $h4.html(formatCurrency(total));
+    }
+
+    var elementExist = function($element, $list, attr)
+    {
+        $list = $list.find(".list-group-item");
+        for(var i = 0; i < $list.length; i++)
+        {
+            var $item = $($list.get(i));
+            if(typeof $item == "undefined")
+                return false;
+
+            if($item.attr(attr) == $element.attr(attr))
+                return true;
+        }
+        return false;
+    }
+
+    var highlightItem = function($item, css)
+    {
+        $item.addClass(css)
+        setTimeout(function () {
+            $item.removeClass(css);
+            $item.addClass("highlight-item-fade");
+            setTimeout(function () {
+                $item.removeClass("highlight-item-fade");
+            }, 600);
+        }, 600);
+    }
+
+    var editService = function(span)
+    {
+        $span = $(span);
+        $tr = $span.parent().parent();
+        $label = $tr.find("label");
+        var value = $label.html();
+        value = value.replace(" kr", "");
+        value = value.replace(" ", "");
+    
+        bootbox.dialog({
+            backdrop: false,
+            closebutton: false,
+            className: "small-modal",
+            title: "Edit service",
+            message: "<form class='form-horizontal'>                                                                                                \
+                    <div class='form-group'>                                                                                                    \
+                        <label for='license-text' class='col-sm-2 control-label'>Cost</label>                                                \
+                        <div class='col-sm-10'>                                                                                                 \
+                            <input class='form-control' id='cost-text' name='Cost' value='" + value + "'>                         \
+                        </div>                                                                                                                  \
+                    </div>                                                                                                                      \                                                                                                                  \
+                    </form>"
+                ,
+            buttons: {
+                close: {
+                    label: "Close",
+                    className: "btn-close",
+                    callback: function(){
+                        $(".small-modal").remove();
+                    }
+                },
+                success: {
+                    label: "Save",
+                    className: "btn-success",
+                    callback: function () {
+                        newCost = formatCurrency($("#cost-text").val());
+                        $button = $tr.find("button");
+                        var code = $button.attr("data-code");
+                        $label.html(newCost);
+                        $("#selected-services button[data-code='" + code + "'] label").html(newCost);
+                    
+                        $button.attr("onclick", "newItem(this, " + $("#cost-text").val() + ");");
+
+                        var code = $button.attr("data-code");
+                        length = services.length;
+
+                        for(var i = 0; i < length; i++)
+                        {
+                            var service = services[i];
+
+                            if(service.id == code)
+                            {
+                                setTotalCost(service.amount * (-1), value);
+                                setTotalCost(service.amount, $("#cost-text").val());
+
+                                service.total = $("#cost-text").val() * service.amount;
+
+                            }
+                        }
+                        $(".small-modal").remove();
+                    },
+                },
+            }
+        });
+    }
+
+    var newItem = function(element, price){
+
+        $button = $(element);
+        $availableServices = $("#available-services");
+        $selectedServices = $("#selected-services");
+
+        if($button.attr("data-selected") == "false"){
+            if(!elementExist($button, $selectedServices, "data-code")){
+                $newButton = $button.clone();
+                $newButton.attr("data-selected", "true");
+                $newButton.prependTo($selectedServices);
+
+                $amountLabel = $newButton.find(".service-amount");
+                $amountLabel.html("1");
+                $amountLabel.parent().removeClass("highlight-item-red");
+                highlightItem($amountLabel.parent(), "highlight-item-blue");
+
+                setTotalCost(1 ,price);
+                services.push({id:$newButton.attr("data-code"), amount:1, total:price});
+            }
+            else{
+                $amountLabel = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']").find(".service-amount");
+                var amount = parseInt($amountLabel.html());
+                amount += 1;
+
+                $amountLabel.html(amount);
+                $amountLabel.parent().removeClass("highlight-item-red");
+                highlightItem($amountLabel.parent(), "highlight-item-blue");
+
+                addService($button.attr("data-code"), price, 1);
+            }
+        }
+        else{
+            $amountLabel = $button.find(".service-amount");
+            var amount = parseInt($amountLabel.html());
+            if(amount > 1){
+                amount -= 1;
+                $amountLabel.html(amount);
+                $amountLabel.parent().removeClass("highlight-item-blue");
+                highlightItem($amountLabel.parent(), "highlight-item-red");
+
+                addService($button.attr("data-code"), price, -1);
+            }
+            else{
+                $button.attr("data-selected", "false");
+                addService($button.attr("data-code"), price, -1);
+                $button.remove();
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        @{
+            foreach (view_ConsultantRow row in offer._ConsultantRows)
+            {
+                view_Service service = new view_Service();
+                service.Select("Code = " + row.Code);
+
+                String price = String.Format(se, "{0:C0}", service.Price);
+                int cost = (int)service.Price;
+                @Html.Raw("services.push({id:" + row.Code + ", amount:" + row.Amount + ", total:" + (int)row.Total_price + "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
+            }
+        }
+    });
+
+        var saveFunction = function(){
+
+            $.ajax({
+                "url": "/CustomerOffer/JsonData/",
+                "type": "POST",
+                "data": {
+                    "requestData": "update_view_Service",
+                    "object": JSON.stringify(services),
+                    "offer": "@Request["selected-offer"]"
+                },
+                dataType: 'text',
+                // iOS 6 has a dreadful bug where POST requests are not sent to the
+                // server if they are in the cache.
+                headers: { 'Cache-Control': 'no-cache' }, // Apple!
+                "success": function (data) {
+                    if (data > 0) {
+                        // Success to update db. Now update the preview section.
+                        $.ajax({
+                            "url": "/CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
+                            "type": "GET",
+                            "success": function (data) {
+                                $(".crm-pdf-offer-section").html(data);
+                            }
+                        });
+                    }
+                }
+            })
+        }
+</script>
+}
+else if (Request["modal"] == "head-information")
+{
+   
+    String disabled = "";
+    if (ViewBag.CustomerOffer.Offer_status != "Öppen")
+    {
+        disabled = "disabled";
+    }
+        
+  
+
+    <form id="head-information-form" class="form-horizontal">
+        <div class="form-group">
+            <label for="contact-person-select" class="col-sm-2 control-label">Contact Person</label>
+            <div class="col-sm-10">
+                <select class="form-control" name="Contact_person" id="contact-person-select" placeholder="Contact person">
+                    @foreach (view_CustomerContact cc in ViewBag.ContactPersons)
+                    {
+                        if (ViewBag.CustomerOffer.Contact_person == cc.Contact_person)
+                        {
+                            <option value="@cc.Contact_person" selected>@cc.Contact_person</option>
+                        }
+                        else
+                        {
+                            <option value="@cc.Contact_person">@cc.Contact_person</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="offer-valid-date" class="col-sm-2 control-label">Offer valid</label>
+            <div class="col-sm-10">
+                <input type="date" 
+                       class="form-control" 
+                       name="Offer_valid" 
+                       id="offer-valid-date" 
+                       value="@ViewBag.CustomerOffer.Offer_valid.ToString().Replace(@" 00:00:00", "")" 
+                       placeholder="Offer valid"
+                       @Html.Raw(disabled)
+                       >
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="status-select" class="col-sm-2 control-label">Status</label>
+            <div class="col-sm-10">
+                <select class="form-control" name="Offer_status" id="status-select"  placeholder="Status">
+                    @foreach (String status in ViewBag.Statuses)
+                    {
+                        if (ViewBag.CustomerOffer.Offer_status == status)
+                        {
+                            <option value="@status" selected>@status</option>
+                        }
+                        else
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </form>
+
+
+
+    <script>
+
+        // Global variables
+
+        // Get current browser information
+        var get_browser = function() {
+            var ua = navigator.userAgent,
+                tem,
+                M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+            if (/trident/i.test(M[1])) {
+                tem =/\brv[ :]+(\d+)/g.exec(ua) || [];
+                return 'IE';
+            }
+            if (M[1] === 'Chrome') {
+                tem = ua.match(/\bOPR\/(\d+)/)
+                if (tem != null) {
+                    return 'Opera'
+                }
+            }
+            M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+            if ((tem = ua.match(/version\/(\d+)/i)) !=null) {
+                M.splice(1,1,tem[1]);
+            }
+            return M[0];
+        }
+
+        // Check if browser is using webkit
+        var webkit = get_browser() == "Chrome"  ||
+            /iPad|iPhone|iPod/.test( navigator.userAgent )  ||
+            get_browser() == "Opera";
+
+        var saveFunction = function(offerNumber){
+            var updateData = {};
+            var $sndForm = $("#head-information-form");
+            var $inputs = $sndForm.find(":input");
+           
+            $inputs.each(function () {
+                var $formInput = $(this);
+                var inputProp = $formInput.attr("name");
+                if(inputProp != "Sign" && inputProp != "Template_number" && inputProp != "SSMA_timestamp" && typeof inputProp != 'undefined'){
+                    updateData[$formInput.attr("name")] = $formInput.val(); 
+                }
+                   
+            });
+            
+            
+
+
+            $.ajax({
+                "url": "/CustomerOffer/JsonData/",
+                "type": "POST",
+                "data": {
+                    "requestData": "update_head_information",
+                    "object": JSON.stringify(updateData),
+                    "offerNumber": offerNumber
+                    
+                },
+                dataType: 'text',
+                // iOS 6 has a dreadful bug where POST requests are not sent to the
+                // server if they are in the cache.
+                headers: { 'Cache-Control': 'no-cache' }, // Apple!
+                "success": function (data) {
+                    if (data > 0) {
+                        // Update current values
+                        currentOfferValues = updateData;
+                        // Loop through "HTML PDF" and update fields
+                        $.each(updateData, function(key, val){
+                            if(key == "Contact_person"){
+                                $.ajax({
+                                    "url": "/CustomerOffer/GetCustomerContact/",
+                                    "type": "POST",
+                                    "data": {
+                                        "offerNumber": offerNumber,
+                                        "customer": "@Html.Raw(ViewBag.CustomerName)"
+                                    },
+                                    "success": function(data){
+                                        var cc = JSON.parse(data);
+                                        if(Object.keys(data).length > 0){
+                                            try{
+                                                $("#Contact_person_name").html(cc.Contact_person);
+                                                $("#Contact_person_email").attr("href", "mailto:" + cc.Email).html(cc.Email);
+                                            }
+                                            catch(e){
+                                                console.log(e.description);
+                                            }
+                                            location.reload();
+                                        }
+                                    }
+                                });
+                            } else {
+                                var $updateTarget = $("#" + key);
+                                if($updateTarget.length > 0){
+                                    $updateTarget.html(val);
+                                }
+                            }
+                            
+                        })
+                    }
+                }
+            })
+        }
+
+        // If browser is not using webkit use jquery datepicker
+        $(document).ready(function(){
+            $("#status-select").change(function(element){
+                var val = $(this).val();
+                var $dateInput = $("#offer-valid-date");
+                if(val != "Öppen") {
+                    $dateInput.prop("disabled", true);
+                } else {
+                    $dateInput.prop("disabled", false);
+                }              
+            });
+            if(!webkit)
+            {
+                $("#offer-valid-date").datepicker({ dateFormat: 'yy-mm-dd' });
+            }
+        });
+    </script>
+}

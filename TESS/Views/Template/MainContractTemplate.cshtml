@@ -1,0 +1,105 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row col-sm-12">
+    <div class="form-inline">
+        <button class="btn btn-default" type="button" style="float:right; margin-bottom: 10px; margin-left:10px;" id="back-button">Back</button>
+        <button class="btn btn-success" type="button" style="float:right; margin-bottom: 10px;" id="save-button">Save</button>
+    </div>
+   
+    <input type="text" data-name='TopTitle' id="top-title-text" class='form-control main-template-mainhead' value='@ViewBag.TopTitle'/>
+    @*@Html.Raw(ViewBag.Templates);*@
+</div>
+
+<div class="row col-sm-12" style="margin-bottom:30px">
+    <form>
+        <textarea data-name='Prolog' rows="10" id="prolog-text" class='form-control main-template-text'>@ViewBag.Prolog</textarea>
+    </form>
+</div>
+<h3 style="color:black">Modulförteckning</h3>
+<p style="color:black">Avtalet omfattar en icke exklusiv, evig, nyttjanderätt till nedan redovisade programprodukter/- moduler. Leverans av programvara sker i objektkod</p>
+<div class="row col-sm-12" style="margin-bottom:20px">
+    <form>
+        <textarea data-name='ModuleText' rows="6" id="module-text" class='form-control main-template-text'>@ViewBag.ModuleText</textarea>
+    </form>
+</div>
+<div class="row col-sm-12">
+    <form>
+        <textarea data-name='Epilog' rows="12" id="epilog-text" class='form-control main-template-text'>@ViewBag.Epilog</textarea>
+    </form>
+</div>
+
+<script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "#epilog-text"
+    });
+    tinymce.init({
+        selector: "#prolog-text"
+    });
+    tinymce.init({
+        selector: "#module-text"
+    });
+</script>
+
+
+
+<script>
+    //$(document).ready(function () {
+    //    $('textarea').each(function () {
+    //        $(this).height($(this).prop('scrollHeight'));
+    //    });
+    //});
+    $("#back-button").click(function () {
+        window.location = "Index";
+    });
+
+    $("#save-button").click(function () {
+        //var list = [];
+        
+        //$.each($(".form-control"), function (index, element) {
+        //    $element = $(element);
+            
+        //    list.push({ name: $element.attr("data-name"), value: $element.val() });
+        //});
+
+        $.ajax({
+            "url": "/Template/SaveMainContractText/",
+            "type": "POST",
+            "data": {
+                "epilog": tinymce.get('epilog-text').getContent(),
+                "prolog": tinymce.get('prolog-text').getContent(),
+                "title": $('#top-title-text').val(),
+                "moduleText": tinymce.get('module-text').getContent(),
+
+            },
+            success: function (data) {
+                if (data > 0) {
+                    console.log("Sucsess");
+
+                    $(document).trigger("clear-alerts");
+                    $(document).trigger("add-alerts", [
+                      {
+                          'message': "Successfully updated values",
+                          'priority': 'success'
+                      }
+                    ]);
+                }
+                else {
+                    $(document).trigger("clear-alerts");
+                    $(document).trigger("add-alerts", [
+                      {
+                          'message': "Something went wrong when trying to update, some data might not been saved",
+                          'priority': 'warning'
+                      }
+                    ]);
+                }
+
+
+            }
+
+        });
+    });
+    
+</script>

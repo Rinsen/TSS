@@ -1,0 +1,421 @@
+﻿.lc-icon-size-s {
+  font-size: 16px;
+}
+.lc-icon-size-m {
+  font-size: 24px;
+}
+.lc-icon-size-l {
+  font-size: 32px;
+}
+.lc-border-severe {
+  border: 2px solid #993333;
+}
+.lc-border-edit {
+  border: 2px solid #ff9b27;
+}
+.loading {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  opacity: 0.7;
+  background: #ffffff url('../../../../Content/img/tieto-spinner.gif') center center no-repeat;
+  top: 0;
+  left: 0;
+  z-index: 99999 !important;
+}
+[class*="lc-icon-"] {
+  font-family: 'Lifecare-Icons';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.lc-icon-Notepad:before {
+  content: "\e625";
+}
+.lc-icon-Bell-off:before {
+  content: "\e626";
+}
+.lc-icon-Bell:before {
+  content: "\e627";
+}
+.lc-icon-TableView:before {
+  content: "\e628";
+}
+.lc-icon-Chart-medical:before {
+  content: "\e629";
+}
+.lc-icon-Timer:before {
+  content: "\e62a";
+}
+.lc-icon-Calendar-empty:before {
+  content: "\e62b";
+}
+.lc-icon-Shield:before {
+  content: "\e624";
+}
+.lc-icon-Auctionhammer:before {
+  content: "\e61b";
+}
+.lc-icon-Bills:before {
+  content: "\e61c";
+}
+.lc-icon-Cashregister:before {
+  content: "\e61d";
+}
+.lc-icon-economy:before {
+  content: "\e61e";
+}
+.lc-icon-Legal:before {
+  content: "\e61f";
+}
+.lc-icon-Book:before {
+  content: "\e620";
+}
+.lc-icon-Console:before {
+  content: "\e621";
+}
+.lc-icon-grades:before {
+  content: "\e622";
+}
+.lc-icon-Poll:before {
+  content: "\e623";
+}
+.lc-icon-Orderedlist2:before {
+  content: "\e618";
+}
+.lc-icon-Thumbnaillist:before {
+  content: "\e619";
+}
+.lc-icon-List_3:before {
+  content: "\e61a";
+}
+.lc-icon-arrow_right:before {
+  content: "\e613";
+}
+.lc-icon-arrow_up:before {
+  content: "\e614";
+}
+.lc-icon-arrow_down:before {
+  content: "\e615";
+}
+.lc-icon-arrow_left:before {
+  content: "\e616";
+}
+.lc-icon-List_2:before {
+  content: "\e617";
+}
+.lc-icon-Alert:before {
+  content: "\e612";
+}
+.lc-icon-Fullscreen-minimize:before {
+  content: "\e611";
+}
+.lc-icon-Alert-alt:before {
+  content: "\e610";
+}
+.lc-icon-Refresh:before {
+  content: "\e60f";
+}
+.lc-icon-Unlocked:before {
+  content: "\e60c";
+}
+.lc-icon-Thumbnails-small2:before {
+  content: "\e60d";
+}
+.lc-icon-Lock:before {
+  content: "\e60e";
+}
+.lc-icon-Cloud-upload:before {
+  content: "\e60b";
+}
+.lc-icon-Sync:before {
+  content: "\e60a";
+}
+.lc-icon-Down-doublearrow:before {
+  content: "\e609";
+}
+.lc-icon-Edit-alt:before {
+  content: "\e608";
+}
+.lc-icon-Cube:before {
+  content: "\e607";
+}
+.lc-icon-People:before {
+  content: "\e602";
+}
+.lc-icon-Box:before {
+  content: "\e600";
+}
+.lc-icon-Navigation-left:before {
+  content: "\e601";
+}
+.lc-icon-Navigation-down:before {
+  content: "\e603";
+}
+.lc-icon-Download:before {
+  content: "\e604";
+}
+.lc-icon-Navigation-up:before {
+  content: "\e605";
+}
+.lc-icon-Navigation-right:before {
+  content: "\e606";
+}
+.lc-icon-Zoom-out:before {
+  content: "\e000";
+}
+.lc-icon-Zoom-in:before {
+  content: "\e001";
+}
+.lc-icon-axis-rotation:before {
+  content: "\e002";
+}
+.lc-icon-Wrong:before {
+  content: "\e003";
+}
+.lc-icon-Wrench:before {
+  content: "\e004";
+}
+.lc-icon-Window-popin:before {
+  content: "\e005";
+}
+.lc-icon-Wand:before {
+  content: "\e006";
+}
+.lc-icon-Users:before {
+  content: "\e007";
+}
+.lc-icon-User:before {
+  content: "\e009";
+}
+.lc-icon-User-females:before {
+  content: "\e00a";
+}
+.lc-icon-User-femalesalt:before {
+  content: "\e00b";
+}
+.lc-icon-User-female:before {
+  content: "\e00c";
+}
+.lc-icon-Trash:before {
+  content: "\e00d";
+}
+.lc-icon-Trash-alt:before {
+  content: "\e00e";
+}
+.lc-icon-Tools:before {
+  content: "\e00f";
+}
+.lc-icon-Time:before {
+  content: "\e010";
+}
+.lc-icon-Thumbnails:before {
+  content: "\e011";
+}
+.lc-icon-Settings:before {
+  content: "\e012";
+}
+.lc-icon-Settings-alt:before {
+  content: "\e013";
+}
+.lc-icon-Settings-alt2:before {
+  content: "\e014";
+}
+.lc-icon-Rss:before {
+  content: "\e015";
+}
+.lc-icon-Reply-arrow:before {
+  content: "\e016";
+}
+.lc-icon-Rate:before {
+  content: "\e017";
+}
+.lc-icon-Printer-alt:before {
+  content: "\e018";
+}
+.lc-icon-Print:before {
+  content: "\e019";
+}
+.lc-icon-Power:before {
+  content: "\e01a";
+}
+.lc-icon-Plugin:before {
+  content: "\e01b";
+}
+.lc-icon-Picture:before {
+  content: "\e01c";
+}
+.lc-icon-People2:before {
+  content: "\e01d";
+}
+.lc-icon-People-female:before {
+  content: "\e01e";
+}
+.lc-icon-People-alt:before {
+  content: "\e01f";
+}
+.lc-icon-Parental-control:before {
+  content: "\e020";
+}
+.lc-icon-Paper-plane:before {
+  content: "\e021";
+}
+.lc-icon-Message:before {
+  content: "\e022";
+}
+.lc-icon-Message-open:before {
+  content: "\e023";
+}
+.lc-icon-Medicine:before {
+  content: "\e024";
+}
+.lc-icon-Medical-emergency:before {
+  content: "\e025";
+}
+.lc-icon-Male-symbol:before {
+  content: "\e026";
+}
+.lc-icon-MaleAndFemale:before {
+  content: "\e027";
+}
+.lc-icon-Mailbox:before {
+  content: "\e028";
+}
+.lc-icon-List:before {
+  content: "\e029";
+}
+.lc-icon-Link:before {
+  content: "\e02a";
+}
+.lc-icon-Key:before {
+  content: "\e02b";
+}
+.lc-icon-Info:before {
+  content: "\e02c";
+}
+.lc-icon-Inbox:before {
+  content: "\e02d";
+}
+.lc-icon-Inbox-full:before {
+  content: "\e02e";
+}
+.lc-icon-Home:before {
+  content: "\e02f";
+}
+.lc-icon-Help:before {
+  content: "\e030";
+}
+.lc-icon-Help-alt:before {
+  content: "\e031";
+}
+.lc-icon-Fullscreen-alt:before {
+  content: "\e032";
+}
+.lc-icon-Folder:before {
+  content: "\e033";
+}
+.lc-icon-Folder-open:before {
+  content: "\e034";
+}
+.lc-icon-Flag:before {
+  content: "\e035";
+}
+.lc-icon-Eye:before {
+  content: "\e036";
+}
+.lc-icon-Employee:before {
+  content: "\e037";
+}
+.lc-icon-Edit:before {
+  content: "\e038";
+}
+.lc-icon-Documents:before {
+  content: "\e039";
+}
+.lc-icon-Document:before {
+  content: "\e03a";
+}
+.lc-icon-Diagnostics:before {
+  content: "\e03b";
+}
+.lc-icon-Delete:before {
+  content: "\e03c";
+}
+.lc-icon-Cut:before {
+  content: "\e03d";
+}
+.lc-icon-Crop:before {
+  content: "\e03e";
+}
+.lc-icon-Conversation:before {
+  content: "\e03f";
+}
+.lc-icon-Client:before {
+  content: "\e040";
+}
+.lc-icon-Checkbox:before {
+  content: "\e041";
+}
+.lc-icon-Checkbox-empty:before {
+  content: "\e042";
+}
+.lc-icon-Checkbox-dotted:before {
+  content: "\e043";
+}
+.lc-icon-Checkbox-dottedactive:before {
+  content: "\e044";
+}
+.lc-icon-Check:before {
+  content: "\e045";
+}
+.lc-icon-Chat:before {
+  content: "\e046";
+}
+.lc-icon-Chat-active:before {
+  content: "\e047";
+}
+.lc-icon-Chart:before {
+  content: "\e048";
+}
+.lc-icon-Calendar:before {
+  content: "\e049";
+}
+.lc-icon-Calendar-alt:before {
+  content: "\e04a";
+}
+.lc-icon-Bookmark:before {
+  content: "\e04b";
+}
+.lc-icon-Award:before {
+  content: "\e04c";
+}
+.lc-icon-Attachment:before {
+  content: "\e04d";
+}
+.lc-icon-Arrow-up:before {
+  content: "\e04e";
+}
+.lc-icon-Arrow-right:before {
+  content: "\e04f";
+}
+.lc-icon-Arrow-left:before {
+  content: "\e050";
+}
+.lc-icon-Arrow-down:before {
+  content: "\e051";
+}
+.lc-icon-Add:before {
+  content: "\e052";
+}
+.lc-icon-Search:before {
+  content: "\e008";
+}
+.lc-icon-Users-alt:before {
+  content: "\e055";
+}

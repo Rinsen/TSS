@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white-translucent" />
+    @if (String.IsNullOrEmpty(ViewBag.Title))
+    {
+        <title>@TietoCRM.Models.GlobalVariables.ApplicationName</title>
+    }
+    else
+    {
+        <title>@ViewBag.Title</title>
+    }
+
+    <!-- Style section-->
+    @Styles.Render("~/Content/css")
+
+    @Styles.Render("//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css")
+@*    @Styles.Render("//www.datatables.net/release-datatables/extensions/ColVis/css/dataTables.colVis.css")*@
+    @Styles.Render("//cdn.datatables.net/buttons/1.2.1/css/buttons.dataTables.min.css")
+
+
+    <!-- Speical style for the Feature page-->
+    @RenderSection("Styles", false)
+    <!-- Speical style for the Feature page ends-->
+    <!-- Special style for Offer creation-->
+    @RenderSection("Style", false)
+    <!-- Special style for Offer creation ends-->
+    @*@Styles.Render("~/Content/less")*@
+    <!-- Style section ends-->
+    <!-- Script section-->
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+
+    @RenderSection("JavaScript", required: false)
+
+    @Scripts.Render("//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js")
+    @Scripts.Render("~/Scripts/dataTables.colVis.js")
+
+
+    @Scripts.Render("//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js")
+    @Scripts.Render("~/Scripts/jquery.bsAlerts.min.js")
+
+    @Scripts.Render("~/Scripts/CRMFunctions.js")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/bootbox.min.js")
+    <!-- Script section ends-->
+    @functions
+    {
+        public HtmlString GetCurrentPagePath()
+        {
+            String MenuItem = "";
+            if (ViewBag.Title == "" || ViewBag.Title == "Home")
+                return new HtmlString("");
+            else
+                return new HtmlString("<li class='active'><span>" + ViewBag.Title + "</span></li>");
+
+        }
+    }
+    @using System.Security.Principal;
+    @using TietoCRM.Extensions;
+ </head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand crm-navbar-brand menu-toggle btn">
+                    <span class="glyphicon glyphicon glyphicon-list" aria-hidden="false"></span>
+                </a>
+                <a class="navbar-brand btn" onclick="window.location = '/'">
+                    @TietoCRM.Models.GlobalVariables.ApplicationName
+                </a>
+
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <ol class="breadcrumb">
+                            <li><a href="/">Home</a></li>
+                            @GetCurrentPagePath() &nbsp &nbsp
+                            <button type='button' class='btn-xs btn-warning form-inline' data-toggle="modal" id='main-remind-modal-button' onclick="loadMainReminders()" style="display: none">Reminder</button>
+                        </ol>
+                    </li>
+
+
+                </ul>
+               <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a id="currentUser" href="#">Hello, @HttpContext.Current.GetUser().Name!</a>
+                    </li>
+                </ul>
+                <!--<form class="navbar-form navbar-right" role="search">
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Search">
+                    </div>
+                    <button class="btn btn-default" type="submit">Submit</button>
+                </form>-->
+            </div>
+        </div>
+    </div>
+    <div id="wrapper" class="">
+        <div id="sidebar-wrapper">
+            <div class="nav-side-menu">
+                <div class="menu-list">
+                    <ul id="menu-content" class="menu-content collapse out">
+                        <div class="brand"></div>
+                        <li data-toggle="collapse" data-target="#products" class="collapsed">
+                            <a href="#">Basic information</a>
+                        </li>
+                        <ul class="sub-menu collapse" id="products">
+                            <li><a href="~/Module/">- Articles</a></li>
+                            <li><a href="~/Template/">- Templates</a></li>
+                            <li><a href="~/CustomerContact/">- Contact persons</a></li>
+                            <li><a href="~/Customer/">- Customers</a></li>
+                            <li><a href="~/Tariff/">- Tariff</a></li>
+                            <li><a href="~/Service/">- Services</a></li>
+                            <li><a href="~/User/">- Users</a></li>
+                            <li><a href="~/Population/">- Population levels</a></li>
+                            <li><a href="~/Price/">- Price category</a></li>
+                            <li><a href="~/Sector/">- System/Classification</a></li>
+                            <li><a href="~/Reminder/">- Reminders</a></li>
+                            @*<li><a href="#">List of value</a></li>*@
+                        </ul>
+                        <li data-toggle="collapse" data-target="#reports" class="collapsed">
+                            <a href="#"> Reports </a>
+                        </li>
+                        <ul class="sub-menu collapse" id="reports">
+                            <li><a href="~/CustomerProductReport/">- Customer products</a></li>
+                            <li><a href="~/CustomerMissingProductReport/">- "Missing" products</a></li>
+                            <li><a href="~/ContractSupervision/">- Supervision</a></li>
+                            @*<li><a href="#">My contacts</a></li>
+                                <li><a href="#">Offer & Outturn </a></li>
+                                <li><a href="#">Product customers</a></li>
+                                <li><a href="#">Sold modules</a></li>*@
+                        </ul>
+                        <li data-toggle="collapse" data-target="#offers" class="collapsed">
+                            <a href="#"> Offers </a>
+                        </li>
+                        <ul class="sub-menu collapse" id="offers">
+                            <li><a href="~/CustomerOffer/">- Customer offers</a></li>
+                            @*<li><a href="#">Summary</a></li>*@
+                        </ul>
+                        <li data-toggle="collapse" data-target="#contracts" class="collapsed">
+                            <a href="#"> Contracts </a>
+                        </li>
+                        <ul class="sub-menu collapse" id="contracts">
+
+                            <li><a href="~/CustomerContract/">- Customer contracts</a></li>
+                            <li><a href="~/ContractExpirationList/">- Expiration List</a></li>
+                            @*<li><a href="#">Customer visit</a></li>
+                                <li><a href="#">Modual closure</a></li>
+                                <li><a href="#">Summary</a></li>*@
+                        </ul>
+                        <li data-toggle="collapse" data-target="#installations" class="collapsed">
+                            <a href="#"> Installations </a>
+                        </li>
+                        <ul class="sub-menu collapse" id="installations">
+                            <li><a href="~/Features/">- Features</a></li>
+
+                        </ul>
+                        <li class=" crm-close-menu active menu-toggle">
+                            <a href="#"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid body-content">
+                <div class="crm-alert-message" id="crm-alert-message" data-fade="3000" data-alerts="alerts"></div>
+                @RenderBody()
+
+                @*<hr />
+                    <footer>
+                        <p>&copy; @DateTime.Now.Year - @TietoCRM.Models.GlobalVariables.ApplicationName</p>
+                    </footer>*@
+            </div>
+        </div>
+    </div>
+    <style>
+        table#reminder-table {
+            width: 100%;
+        }
+
+            table#reminder-table th, table#reminder-table td {
+                border: 1px solid black;
+                padding: 3px;
+            }
+    </style>
+
+    <div class="modal fade bs-example-modal-lg" id="mainreminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog reminders-modal" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Reminders high prio</h4>
+                </div>
+                <div id="reminder-modal" class="modal-body">
+                    <form class="form-inline" id="reminders-form">
+                        <table id="reminder-table">
+                            <col style="width:8%">
+                            <col style="width:25%">
+                            <col style="width:52%">
+                            <col style="width:5%">
+                            <col style="width:10%; text-align:center">
+                            <thead>
+                                <tr>
+                                    <th>Start date</th>
+                                    <th>Customer</th>
+                                    <th>Reminder text</th>
+                                    <th>Sign</th>
+                                    <th>Deactivate</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mainreminder-body"></tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="save-reminders" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(".menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        $("#crm-alert-message").bsAlerts({ 'fade': 3000 });
+        $("#test").bsAlerts({ 'fade': 3000 });
+
+        var checkMainReminder = function () {
+            $.ajax({
+                "url": "/Home/checkReminder/",
+                "type": "POST",
+                "success": function (data) {
+                    if (data == "1") {
+                        $("#main-remind-modal-button").show();
+                    }
+                    else {
+                        $("#main-remind-modal-button").hide();
+                    }
+                }
+            });
+        }
+
+        checkMainReminder();
+
+        $("#currentUser").click(function(){
+            checkMainReminder();
+        });
+
+        $("#main-remind-modal-button").click(function () {
+            $("#mainreminderModal").appendTo("body").modal("show");
+        });
+        var loadMainReminders = function () {
+            $.ajax({
+                "url": "/Home/GetReminders/",
+                "type": "POST",
+                "success": function (data) {
+                    reminders = JSON.parse(data);
+
+                    $newRows = $(".mainreminder-body");
+                    $newRows.empty();
+                    $newRows.html("");
+                    $newRows.append("<tbody>");
+                    for (var i = 0; i < reminders.length; i++) {
+                        var remind = reminders[i];
+
+                        var $row = $("<tr>                                                                                                \
+                                    <td class='startdat'>" + remind.Start_date + "</td>                                   \
+                                    <td class='customer'>" + (remind.Customer_name == null ? "" : remind.Customer_name) + "</td>                                   \
+                                    <td class='remtext'>" + remind.Reminder_text + "</td>         \
+                                    <td class='sign'>" + remind.Sign + "</td>         \
+                                    <td class='deactivate'><input data-id=" + remind.ID_PK + " class='ch-deact' type='checkbox' /></td>         \
+                                </tr>");
+                        $newRows.append($row);
+                    }
+                    $newRows.append("<tbody>");
+                }
+            });
+        }
+
+        $("#save-reminders").click(function () {
+            var $inputs = $("#mainreminderModal #reminder-table").find("input:checked");
+            var length = $inputs.length;
+            for (var i = 0; i < length; i++) {
+                $input = $($inputs[i]);
+                var id = $input.attr("data-id");
+                $.ajax({
+                    "url": "/Home/DeactivateReminder/",
+                    "type": "POST",
+                    "data": {
+                        "id_pk": id
+                    },
+                    "success": function (data) {
+                        checkMainReminder();
+                    }
+                });
+            }
+            $("#mainreminderModal").modal("hide");
+            triggerAlert("Successfully deactivated selected reminders", "success");
+        });
+
+
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

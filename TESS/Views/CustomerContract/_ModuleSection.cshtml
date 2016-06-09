@@ -1,0 +1,345 @@
+﻿@{
+    Layout = null;
+    
+    // CultureInfo for swedish currency print out 
+    CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+    bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
+}
+@using TietoCRM.Models;
+@using System.Globalization;
+
+@*-------------------------------------
+Inledning av modulsektionen
+-------------------------------------*@
+
+@if(ViewBag.Articles.Count > 0)
+{
+@*-------------------------------------
+Produkter
+-------------------------------------*@
+<div id="crm-pdf-module-rows" class="">
+    <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+        <table>
+            <tr>
+                <td>Produkter</td>
+                <td></td>
+                <td>Engångsbelopp</td>
+                <td>Underhåll/mån</td>
+            </tr>
+        </table>
+    </div>
+    <div class="large-divider"></div>
+    @{
+        decimal ProductLicenseTotal = 0;
+        decimal ProductMaintenanceTotal = 0;
+        
+        String previousSystem = "";
+    }
+    @foreach(dynamic article in ViewBag.Articles)
+    {
+        // Calculate total sums
+        ProductLicenseTotal += Convert.ToDecimal(article.License);
+        ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+                
+        // Format currency
+        String License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+        String Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+        if(previousSystem != article.System)
+        {
+            <div class="crm-pdf-subrows_1">
+                <table>
+                    <tr>
+                        <td>@article.System</td>
+                    </tr>
+                </table>
+            </div>
+        }
+        <div class="crm-pdf-subrows_2">
+            <table>
+                <tr>
+                    <td>@article.Classification</td>
+                    <td>@article.Article_number</td>
+                    <td>@article.Module</td>
+                    <td>@License</td>
+                    <td>@Maintenance</td>
+                </tr>
+            </table>
+        </div>
+        previousSystem = article.System;
+    }
+    @{
+        // Format currency for total sums
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+    }
+    <span class="large-divider"></span>
+    <div class="crm-pdf-subsum_1">
+        <table>
+            <tr>
+                <td></td>
+                <td>Summa Produkter:</td>
+                <td>@ProductLicenseTotalFormated</td>
+                <td>@ProductMaintenanceTotalFormated</td>
+            </tr>
+        </table>
+    </div>
+</div>
+}
+@if(ViewBag.EducationPortals.Count > 0)
+{
+@*-------------------------------------
+Educational Portal
+-------------------------------------*@
+<div id="crm-pdf-educational-portal-rows">
+    <div class="crm-pdf-subheader_1" id="crm-pdf-educational-portal-rows-title">
+        <table>
+            <tr>
+                <td>Lärportal</td>
+                <td></td>
+                <td></td>
+                <td>Person/år</td>
+            </tr>
+        </table>
+    </div>
+    <div class="large-divider"></div>
+    @{
+        decimal EducationalPortalTotal = 0;
+    }
+    @foreach (dynamic article in ViewBag.EducationPortals)
+    {
+        String Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+        // Calculate total sums
+        EducationalPortalTotal += Convert.ToDecimal(article.Maintenance);
+        view_Module module = new view_Module();
+        module.Select("Article_number = " + article.Article_number);
+
+        // Format currency
+
+        String License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+        <div class="crm-pdf-subrows_2">
+            <table>
+                <tr>
+                    <td style="padding-left:0em">@article.Classification</td>
+                    <td>@article.Article_number</td>
+                    <td>@article.Module</td>
+                    <td></td>
+                    <td>@Maintenance</td>
+                </tr>
+            </table>
+        </div>
+    }
+    @{
+        // Format currency for total sums
+        string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+    }
+    <span class="large-divider"></span>
+    <div class="crm-pdf-subsum_1">
+        <table>
+            <tr>
+                <td></td>
+                <td>Summa Lärportal:</td>
+                <td></td>
+                <td>@EducationalPortalTotalFormated</td>
+            </tr>
+        </table>
+    </div>
+</div>
+}
+@if (isMainContract && ViewBag.Options.Count > 0)
+{
+@*-------------------------------------
+Main contract and Options
+-------------------------------------*@
+    <div id="crm-pdf-option-rows" class="crm-print-block">
+        <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+            <table>
+                <tr>
+                    <td>Optioner</td>
+                    <td></td>
+                    <td>Engångsbelopp</td>
+                    <td>Underhåll/mån</td>
+                </tr>
+            </table>
+        </div>
+        <div class="large-divider"></div>
+        @{
+            decimal OptionLicenseTotal = 0;
+            decimal OptionMaintenanceTotal = 0;
+
+            String previousSystem = "";
+        }
+        @foreach (dynamic option in ViewBag.Options)
+        {
+            // Calculate total sums
+            OptionLicenseTotal += Convert.ToDecimal(option.License);
+            OptionMaintenanceTotal += Convert.ToDecimal(option.Maintenance);
+
+            // Format currency
+            String License = string.Format(se, "{0:C0}", option.License).Replace(".", " ");
+            String Maintenance = string.Format(se, "{0:C0}", option.Maintenance).Replace(".", " ");
+            if (previousSystem != option.System)
+            {
+            <div class="crm-pdf-subrows_1">
+                <table>
+                    <tr>
+                        <td>@option.System</td>
+                    </tr>
+                </table>
+            </div>
+           }
+            <div class="crm-pdf-subrows_2">
+                <table>
+                    <tr>
+                        <td>@option.Classification</td>
+                        <td>@option.Article_number</td>
+                        <td>@option.Article</td>
+                        <td>@License</td>
+                        <td>@Maintenance</td>
+                    </tr>
+                </table>
+            </div>
+            previousSystem = option.System;
+        }
+        @{
+            // Format currency for total sums
+            string OptionLicenseTotalFormated = string.Format(se, "{0:C0}", OptionLicenseTotal).Replace(".", " ");
+            string OptionMaintenanceTotalFormated = string.Format(se, "{0:C0}", OptionMaintenanceTotal).Replace(".", " ");
+        }
+        <span class="large-divider"></span>
+        <div class="crm-pdf-subsum_1">
+            <table>
+                <tr>
+                    <td></td>
+                    <td>Summa Optioner:</td>
+                    <td>@OptionLicenseTotalFormated</td>
+                    <td>@OptionMaintenanceTotalFormated</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+@if (isMainContract && ViewBag.EducationalOptions.Count > 0)
+{
+@*-------------------------------------
+Main contract and Educational Options
+-------------------------------------*@
+    <div id="crm-pdf-educational-portal-rows">
+        <div class="crm-pdf-subheader_1" id="crm-pdf-educational-portal-rows-title">
+            <table>
+                <tr>
+                    <td>Option: Lärportal</td>
+                    <td></td>
+                    <td></td>
+                    <td>Person/år</td>
+                </tr>
+            </table>
+        </div>
+    <div class="large-divider"></div>
+        @{
+            decimal OptionMaintenanceTotal = 0;
+        }
+        @foreach (dynamic article in ViewBag.EducationalOptions)
+        {
+            String Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            // Calculate total sums
+            OptionMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+            view_Module module = new view_Module();
+            module.Select("Article_number = " + article.Article_number);
+
+            // Format currency
+
+            String License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+            <div class="crm-pdf-subrows_2">
+                <table>
+                    <tr>
+                        <td style="padding-left:0em">@article.Classification</td>
+                        <td>@article.Article_number</td>
+                        <td>@article.Article</td>
+                        <td></td>
+                        <td>@Maintenance</td>
+                    </tr>
+                </table>
+            </div>
+        }
+        @{
+        // Format currency for total sums
+            string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", OptionMaintenanceTotal).Replace(".", " ");
+        }
+        <span class="large-divider"></span>
+        <div class="crm-pdf-subsum_1">
+            <table>
+                <tr>
+                    <td></td>
+                    <td>Summa Option Lärportal:</td>
+                    <td></td>
+                    <td>@EducationalPortalTotalFormated</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+    <div class="crm-pdf-module-section-text">
+     @Html.Raw(ViewBag.ModuleText)
+    </div>
+    @if (ViewBag.CustomerContract._ContractConsultantRows.Count > 0)
+    {
+@*-------------------------------------
+Konsulttjänster
+-------------------------------------*@
+    <div id="crm-pdf-service-rows">
+        <div class="crm-pdf-subheader_1">
+            <table>
+                <tr>
+                    <td>Konsulttjänster/Teknikinstallation</td>
+                    <td>Antal</td>
+                    <td>Àpris</td>
+                    <td>Summa</td>
+                </tr>
+            </table>
+        </div>
+        <div class="large-divider"></div>
+        @{
+
+        decimal ServicesTotal = 0;
+        }
+        @foreach (view_ContractConsultantRow cr in ViewBag.CustomerContract._ContractConsultantRows)
+        {
+            // Fetch Service from DB
+            view_Service Service = new view_Service();
+            Service.Select("Code = " + cr.Code);
+
+            // Calculate total sums
+            ServicesTotal += Convert.ToDecimal(cr.Total_price);
+
+
+            // Format currency
+            string Price = string.Format(se, "{0:C0}", cr.Total_price / cr.Amount).Replace(".", " ");
+            string TotalPrice = string.Format(se, "{0:C0}", cr.Total_price).Replace(".", " ");
+            <div class="crm-pdf-subrows_1">
+                <table>
+                    <tr>
+                        <td>@Service.Description</td>
+                        <td>@cr.Amount</td>
+                        <td>@Price</td>
+                        <td>@TotalPrice</td>
+                    </tr>
+                </table>
+            </div>
+        }
+        @{
+        // Format currency for total sums
+        string ServicesTotalFormated = string.Format(se, "{0:C0}", ServicesTotal).Replace(".", " ");
+        }
+        <span class="large-divider"></span>
+        <div class="crm-pdf-subsum_1">
+            <table>
+                <tr>
+                    <td>Ev kostnader för resor, traktamente, färdtid och logi tillkommer.</td>
+                    <td>Summa Tjänster: </td>
+                    <td></td>
+                    <td>@ServicesTotalFormated</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    }

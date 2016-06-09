@@ -1,0 +1,18 @@
+﻿@{
+    Layout = null;
+}
+<div class="crm-pdf-main-contract-header-prolog"> 
+    
+    @Html.Raw(ViewBag.Prolog)
+    
+</div>
+<div id="crm-pdf-signing-section" style="page-break-after: always !important;">
+    @try
+    {
+        Html.RenderPartial("_SigningSection", null, new ViewDataDictionary(ViewData));
+    }
+    catch (Exception ex)
+    {
+        @Html.Raw(ex);
+    }
+</div>

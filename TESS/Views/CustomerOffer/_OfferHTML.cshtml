@@ -1,0 +1,133 @@
+﻿@{
+   
+    Layout = null;
+    @section Styles{
+        <link rel="stylesheet" media="all" href="@Server.MapPath("~/Content/OfferPdf.css")" />
+    }
+    string offerValid = Convert.ToString(ViewBag.CustomerOffer.Offer_valid);
+    if (offerValid != null)
+    {
+        offerValid = offerValid.Replace(" 00:00:00", "");
+    }
+        
+    string currentDate = DateTime.Now.Date.ToShortDateString();
+    @functions{
+    
+        bool IsPdf()
+        {
+           if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+           {
+                return true;
+           }
+           else
+           {
+               return false;
+           }
+        }
+        
+        String GetWorkingUrl(string url)
+        {
+            if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "ViewPdf")
+            {
+                return url;
+            }
+            else if (Request.Url.Segments[Request.Url.Segments.Length - 1] == "Pdf")
+            {
+                String retVal = Server.MapPath(url);
+                return retVal;
+            }
+            else 
+            {
+                return "";
+            }
+        }
+    }
+}
+@using TietoCRM.Models;
+@using System.Globalization;
+<div class="crm-pdf">
+    @if (!IsPdf())
+    {
+        <div class="crm-pdf-head">
+            <span id="crm-pdf-todays-date">@currentDate</span>
+            <span id="crm-pdf-tieto-logo-com">
+                <img src="@GetWorkingUrl("/Content/img/tieto-logo-com.png")" alt=""/>
+
+            </span>
+        </div>
+    }
+    <div class="crm-pdf-header-section">
+        <table>
+            <tr>
+                <td id="crm-pdf-offer-info">
+                    <p><strong>@ViewBag.CustomerOffer.Customer</strong></p>
+                    <p id="Contact_person_name">@ViewBag.CustomerOffer.Contact_person</p>
+                    <a href="mailto:@ViewBag.CustomerContact.Email" id="Contact_person_email">@ViewBag.CustomerContact.Email</a>
+                </td>
+                <td id="crm-pdf-tieto-info">
+                    <p>Tieto Sweden Healthcare & Welfare AB</p>
+                    <p>@ViewBag.Representative.Address</p>
+                    <p>@ViewBag.Representative.City</p>
+                </td>
+            </tr>
+        </table>
+        <span class="small-divider pull-right"></span>
+        <span class="clearfix"></span>
+        <table>
+            <tr>
+                <td id="crm-pdf-valid-info"><span>Giltig t.o.m <span id="Offer_valid">@offerValid</span></span></td>
+                <td id="crm-pdf-representative-info">
+                    <p><strong>@ViewBag.Representative.Name</strong></p>
+                    <p>@ViewBag.Representative.Telephone</p>
+                    <p>@ViewBag.Representative.Mobile</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="crm-pdf-offer-section">
+        @try
+        {
+            Html.RenderPartial("_OfferHTML_OfferSection", null, new ViewDataDictionary(ViewData));
+        }
+        catch (Exception ex)
+        {
+            @Html.Raw(ex.Message);
+        }
+    </div>
+    <div class="crm-print-block">
+        <div class="crm-pdf-footer-section">
+            <div id="crm-pdf-footer-info">
+                <div id="Document_foot" class="area-newline">@ViewBag.CustomerOffer.Document_foot</div>
+            </div>
+            <div id="crm-pdf-footer-regards">
+                <p>Med vänlig hälsning</p>
+                <p>Tieto Sweden Healthcare & Wellfare AB</p>
+                <div class="signature-container">
+                    @{
+                        String url = "~/Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
+                        if (System.IO.File.Exists(Request.MapPath(url)))
+                        {
+                            <img src="@GetWorkingUrl(url.Remove(0,1))" alt="" />
+                        }
+                        else
+                        {
+                            <span class="crm-signing-line"></span>
+                        }
+                    }
+                    
+                </div>
+                <p>@ViewBag.Representative.Name</p>
+                <p>Affärsansvarig</p>
+            </div>
+        </div>
+        @if (!IsPdf())
+        {
+        <div class="crm-pdf-foot">
+           
+            <div class="crm-pdf-foot-logo">
+                <img src="@GetWorkingUrl("/Content/img/tieto-logo.png")" alt="tieto-logo" />
+            </div>
+        </div>
+        }   
+    </div>
+</div>

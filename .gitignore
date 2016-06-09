@@ -243,3 +243,10 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/TESS/Documentation
+/TESS/Web.Release.config
+/TESS/Web.Debug.config
+/TESS/Web.config
+/TESS/Service References/FeatureService/configuration91.svcinfo
+/TESS/Service References/FeatureService/configuration.svcinfo
+/TESS/Service References/FeatureService/Reference.svcmap

@@ -1,0 +1,60 @@
+﻿@using TietoCRM.Models;
+@{
+    
+    Layout = null;
+}
+@if (ViewBag.CustomerContract.Is(ContractType.MainContract))
+{
+    String contractTitle = ViewBag.ContractTemplate.Title1;
+    if (String.IsNullOrEmpty(contractTitle))
+    {
+        <h3 id="main-top-title-text">Avtalsrubrik saknas</h3>
+    }
+    else
+    {
+        <h3 id="main-top-title-text" class="area-newline">@Html.Raw(contractTitle)</h3>
+    }
+}
+else
+{
+    <h4 id="template-Title">@ViewBag.ContractText.Title</h4>
+    <h5 id="template-Page_head" class="area-newline">@ViewBag.ContractText.Page_head</h5>
+}
+<table>
+    <tr>
+        <td class="crm-table-title">Kund</td>
+        <td class="crm-table-title">Leverantör</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.ContractHead.Buyer</td>
+        <td>Tieto Sweden Healthcare & Welfare AB</td>
+    </tr>
+    <tr>
+        <td class="crm-table-title">Referens</td>
+        <td class="crm-table-title">Referens</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.ContractHead.Contact_person</td>
+        <td>@ViewBag.Representative.Name</td>
+    </tr>
+    <tr>
+        <td class="crm-table-title">Adress</td>
+        <td class="crm-table-title">Adress</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.ContractHead.Address</td>
+        <td>@ViewBag.Representative.Address</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.ContractHead.Zip_code @ViewBag.ContractHead.City</td>
+        <td>@ViewBag.Representative.City</td>
+    </tr>
+    <tr>
+        <td class="crm-table-title">Organisationsnr.</td>
+        <td class="crm-table-title">Organisationsnr.</td>
+    </tr>
+    <tr>
+        <td>@ViewBag.ContractHead.Corporate_identity_number</td>
+        <td>556559-6151</td>
+    </tr>
+</table>    

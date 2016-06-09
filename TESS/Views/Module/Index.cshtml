@@ -1,0 +1,557 @@
+﻿<table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false">#</th>
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                if (@PropertyName != "SSMA timestamp")
+                {
+                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                }
+
+            }
+        </tr>
+    </thead>
+</table>
+
+
+<div class="modal fade bs-example-modal-lg" id="moduleModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Module</h4>
+            </div>
+            <div id="module-modal" class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="article-number2" class="col-sm-2 control-label">Article number</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Article_number" id="article-number2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="module2" class="col-sm-2 control-label">Module</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Module" id="module2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description2" class="col-sm-2 control-label style="width: 200px;">Description</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Description" id="description2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="price-category2" class="col-sm-2 control-label">Price category</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Price_category" id="price-category2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="area2" class="col-sm-2 control-label">Area</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Area" id="area2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="system2" class="col-sm-2 control-label">System</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="System" id="system2">
+                                @foreach (String System in ViewBag.Systems)
+                                {
+                                    <option value="@System">@System</option>
+                                }
+                            </select>
+                       </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="classification2" class="col-sm-2 control-label">Classification</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="Classification" id="classification2"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sort-number2" class="col-sm-2 control-label">Sort number</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Sort_number" id="sort-number2">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expired2" class="col-sm-2 control-label">Expired</label>
+                        <div class="col-sm-10">
+                            <div class="pull-left list-inline" style="width:14%; display:inline-block;">
+                                <input id="expired2" data-id="expired2" name="Expired_type" type="checkbox" />
+                            </div>
+                            @*<select class="form-control" name="Expired" id="expired2">
+                                <option value="false">false</option>
+                                <option value="true">true</option>
+                                
+                            </select>*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="discount2" class="col-sm-2 control-label">Discount type</label>
+                        <div class="col-sm-10">
+                            <div class="pull-left list-inline" style="width:14%; display:inline-block;">
+                                <input id="discount2" data-id="discount2" name="Discount_type" type="checkbox" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="multiple2" class="col-sm-2 control-label">Multiple select</label>
+                        <div class="col-sm-10">
+                            <div class="pull-left list-inline" style="width:4%; display:inline-block;">
+                                <input id="multiple2" data-id="multiple2" name="Multiple_type" type="checkbox" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes2" class="col-sm-2 control-label">Comment</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="Comment" id="notes2" rows="6"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-module-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- #region Main scripts -->
+<script>
+    var selectedId = null;
+
+    var selectRow = function (element) {
+
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#module-table");
+
+
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+        $td.find("input").prop("checked", "true");
+
+    }
+
+    $(document).ready(function () {
+        var uniqueRowNumber = 0;
+        var $delBtns;
+
+
+        $("#system2").change(function(){
+            fillClassificationSelect(this.value);
+        });
+
+        @{String DataObject =  "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+        @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+        {
+            if (PropertyInfo.Name != "SSMA_timestamp")
+            {
+
+                DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+            }
+        }
+        @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+
+        updateDataTable();
+        drawButtons();
+        // Filter columns DISABLED for now.
+
+        //var colvis = new $.fn.dataTable.ColVis($@{@ViewBag.ControllerName}Table);
+        //var $colvisBtn = $(colvis.button());
+
+        //$('.dataTables_filter').append($colvisBtn);
+
+        $formValidation = $("#moduleModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Article_number": {
+                    required: true,
+                    digits: true
+                },
+                "Module": {
+                    required: true,
+                    maxlength: 255
+                },
+                "Price_category": {
+                    required: true,
+                    digits: true
+                },
+                "Area": {
+                    required: true,
+                    maxlength: 255
+                },
+                "System": {
+                    required: true,
+
+                },
+                "Classification": {
+                    required: true,
+
+                },
+                "Sort_number": {
+                    required: true,
+                    digits: true
+
+                },
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+
+        //fillClassificationSelect($("#system2").val());
+    });
+
+    var drawButtons = function(){
+        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+
+        $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $selRowContainer.append("<div id='crm-edit' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        //$selRowContainer.append("<div id='module-delete' class='crm-table-btn'><button type='button' id='module-delete-btn' class='btn btn-danger' autocomplete='off'>Delete</button></div>");
+
+
+
+
+        //$("#module-delete").bind("click",function(){
+        //    if(selectedId != null){
+
+
+        //        $.ajax({
+        //            "url": "/Module/DeleteModule/",
+        //            "type": "POST",
+        //            "data": {
+        //                "primaryKey": selectedId
+        //            },
+        //            "success": function(data){
+        //                if(data > 0)
+        //                {
+
+        //                    console.log("success");
+        //                    selectedId = null;
+        //                    updateDataTable();
+        //                    drawButtons();
+        //                    triggerAlert("Successfully deleted", "success");
+        //                }
+        //                else {
+
+        //                    triggerAlert("Failed to delete from database.", "info");
+        //                    console.log("failure");
+        //                }
+
+
+        //            }
+        //        });
+        //    }
+        //    else
+        //        triggerAlert("You have to select a row to delete.", "info");
+
+        //});
+
+
+        $("#crm-add-row").bind("click", function(){
+            $("#article-number2").prop("readonly",false);
+            $("#save-module-changes").removeAttr("data-Article-number");
+            var $formInputs = $("#moduleModal form").find(":input");
+            console.log($formInputs);
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                if ($currInput.prop("id") == "expired2") {
+                    $currInput.val("false");
+                }
+                else {
+                    $currInput.val("");
+                }
+            }
+            $("#moduleModal").appendTo("body").modal("show");
+        });
+
+
+        $("#crm-edit").bind("click", function(){
+            if(selectedId != null){
+                fillClassificationSelect($("#system2").val(), function(){
+                    $("#article-number2").prop("readonly",true);
+                    var $selectedTds = $("#module-table tr.selected td").not(".radios");
+                    var tdLen = $selectedTds.length;
+
+                    var $formInputs = $("#moduleModal form").find(":input");
+
+                    var frmInpLen = $formInputs.length;
+                    for (var i = 0; i < frmInpLen; i++) {
+                        var $currInput = $($formInputs[i]);
+                        for (var j = 0; j < tdLen; j++) {
+                            var $currTD = $($selectedTds[j]);
+                            if($currTD.data("property") == $currInput.attr("name")){
+                                var name = $currInput.attr("name");
+                                if (name == "Discount_type" || name == "Multiple_type" || name == "Expired") {
+                                    if ($currTD.html() == "1") {
+                                        $currInput.prop("checked", true);
+                                    }
+                                    else {
+                                        $currInput.prop("checked", false);
+                                    }
+                                }
+                                else {
+                                    $currInput.val($currTD.html());
+                                }
+                            }
+                            // console.log($currTD.data("property"));
+                            // console.log($currInput.attr("name"));
+                        }
+                    }
+                    $("#save-module-changes").attr("data-Article-number",selectedId);
+                    $("#moduleModal").appendTo("body").modal("show");
+                });
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+
+        })
+    }
+
+    var triggerAlert = function(msg, priorty)
+    {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+
+    var updateDataTable = function()
+    {
+
+        $@{@ViewBag.ControllerName}Table = $('#@ViewBag.ControllerName-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax":"@Url.Content("~/Module/ModuleData/")",
+            "defaultContent": "",
+            "order": [[ 1, "asc" ]],
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                },
+                {
+                    "width": "30%",
+                    "targets": 3
+                },
+                {
+                    "width": "20%",
+                    "targets": 10
+                }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 90),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+    //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+    //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+    //$('#crm-save-btn').on('click', save);
+
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0, j = 0;
+
+
+        for (var name in aData) {
+            var $td;
+
+
+            if (i == 0) {
+
+                $td = $('td:eq(' + i + ')', nRow);
+
+                $td.parent().click(function () {
+
+                    selectRow(this.firstChild);
+
+                });
+                $td.addClass("radios");
+                $td.html("<input type='radio' value='" + aData["Article_number"] + "' name='selected-contact' onClick=''/>");
+
+                if( $td.find("input").val() == selectedId){
+
+                    selectRow($($td));
+
+                }
+                else if( $td.find("input").val() != selectedId){
+                    $td.parent().removeClass("selected");
+                }
+                i++;
+                j++;
+            }
+
+            if (i >= 1 && j < 13) {
+                $td = $('td:eq(' + j + ')', nRow);
+                $td.attr("data-property", name);
+                $td.html(aData[name]);
+                j++;
+            }
+
+            i++;
+        }
+
+
+    }
+
+</script>
+<!-- #endregion-->
+
+<!-- #region Modal scripts -->
+<script>
+    $("#save-module-changes").bind("click",function(){
+
+        if ($("#module-modal form").valid()) {
+            save();
+        }
+
+    });
+
+    var fillClassificationSelect = function(System, onSuccess){
+        var $classificationSelect = $("#classification2");
+        $.ajax({
+            "url": "@Url.Content("~/Module/ClassificationData/")",
+            "type": "POST",
+            "data": {
+                "System": System,
+
+            },
+            "success": function (data) {
+                if (data.length > 0) {
+                    var classifications = JSON.parse(data);
+                    var classificationsLen = Object.keys(classifications).length;
+                    $classificationSelect.empty();
+                    for(var i = 0 ; i < classificationsLen ; i++){
+                        $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
+                    }
+                    if(typeof onSuccess != "undefined")
+                        onSuccess();
+                }
+            }
+        });
+    }
+
+    var save = function(){
+        if(typeof $("#save-module-changes").attr("data-Article-number") != "undefined"){
+            //Update
+            var module = {}
+
+            var $formInputs = $("#moduleModal form").find(":input");
+            console.log($formInputs);
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                if ($currInput.prop("type") == "checkbox") {
+                    module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                }
+                else {
+                    module[$currInput.attr("name")] = $currInput.val();
+                }
+
+            }
+
+            $.ajax({
+                "url": "@Url.Content("~/Module/SaveModule/")",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(module),
+                    "oldArtNr": selectedId
+
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        console.log("success");
+                        updateDataTable();
+                        drawButtons();
+                        triggerAlert("Successfully updated", "success");
+                        $("#save-module-changes").removeAttr("data-Article-number");
+                        $("#moduleModal").modal("toggle");
+                    }
+                    else {
+
+                        triggerAlert("Failed to update database.", "info");
+                        console.log("failure");
+                    }
+                }
+
+            });
+        }
+        else {
+            //new
+            var module = {}
+
+            var $formInputs = $("#moduleModal form").find(":input");
+            console.log($formInputs);
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                if ($currInput.prop("type") == "checkbox") {
+                    module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                }
+                else {
+                    module[$currInput.attr("name")] = $currInput.val();
+                }
+
+            }
+
+            $.ajax({
+                "url": "@Url.Content("~/Module/InsertModule/")",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(module)
+
+
+                },
+                "success": function (data) {
+                    if (data > 0) {
+
+
+
+                        console.log("success");
+                        updateDataTable();
+                        drawButtons();
+                        triggerAlert("Successfully added", "success");
+                        $("#moduleModal").modal("toggle");
+                    }
+                    else {
+
+                        triggerAlert("Failed to insert into database.", "info");
+                        console.log("failure");
+                    }
+                }
+            });
+        }
+
+    }
+</script>
+
+
+<!-- #endregion -->
