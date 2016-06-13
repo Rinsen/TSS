@@ -311,8 +311,8 @@ var calculateSums = function(){
         var $btn = $($selectedArticleButtons[i]);
         var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
         var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
-        LicenseTotal += parseInt(license);
-        MaintenanceTotal += parseInt(maintenance); 
+        LicenseTotal += parseFloat(license);
+        MaintenanceTotal += parseFloat(maintenance); 
     }
     $("#articlesModal #article-license-total").html(formatCurrency(LicenseTotal));
     $("#articlesModal #article-maintenance-total").html(formatCurrency(MaintenanceTotal));
@@ -509,7 +509,8 @@ var highlightItem = function($item, css)
     }, 600);     
 }
 
-var saveArticlesFunction = function(){
+var saveArticlesFunction = function () {
+    $("#choose-selected-articles").button('loading');
     var selectedArticlesArray = [];
     var $selectedList = $("#articlesModal #selected-articles button");
     var selectedListLen = $selectedList.length;
@@ -530,7 +531,6 @@ var saveArticlesFunction = function(){
         }
         selectedArticlesArray.push(newArticle);
     }
-       
     $.ajax({
         "url": serverPrefix + "CustomerContract/UpdateContractRows/",
         "type": "POST",
@@ -552,6 +552,7 @@ var saveArticlesFunction = function(){
                     "type": "GET",
                     "success": function (data) {
                         $(".crm-pdf-old-module-section").html(data);
+                        updateDoneAjax(0);
                     }
                 });
 
@@ -560,6 +561,7 @@ var saveArticlesFunction = function(){
                     "type": "GET",
                     "success": function (data) {
                         $(".crm-pdf-moduletermination-section").html(data);
+                        updateDoneAjax(1);
                     }
                 });
 
@@ -568,9 +570,7 @@ var saveArticlesFunction = function(){
                     "type": "GET",
                     "success": function (data) {
                         $(".crm-pdf-module-section").html(data);
-                        //location.reload();
-                        $("#articlesModal").modal("hide");
-                        triggerAlert("Successfully added articles", "success");
+                        updateDoneAjax(2);
                     }
                 });
             }
@@ -580,6 +580,28 @@ var saveArticlesFunction = function(){
             }
         }
     })
+}
+
+doneAjax = [false,false,false];
+var updateDoneAjax = function(ajaxRequestDone)
+{
+    doneAjax[ajaxRequestDone] = true;
+    var check = true
+
+    for(var i = 0; i < doneAjax.length; i++)
+    {
+        if(doneAjax[i] == true && check)
+            check = true;
+        else
+            check = false;
+    }
+
+    if(check)
+    {
+        $("#articlesModal").modal("hide");
+        triggerAlert("Successfully added articles", "success");
+        $("#choose-selected-articles").button('reset');
+    }
 }
 
 var zeroArticlesFunction = function () {

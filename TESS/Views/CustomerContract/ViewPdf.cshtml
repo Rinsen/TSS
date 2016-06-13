@@ -400,7 +400,7 @@
                                                     <span class="list-inline" style="width:95%; display:inline-block">
                                                         @{  view_Service s = new view_Service();
                                                     s.Select("Code = " + service.Code);
-                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + " }";
+                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (decimal)service.Total_price + " }";
                                                         }
                                                         @s.Description
                                                     </span>
@@ -589,9 +589,9 @@
                                         <div id="selected-articles" class="list-group">
                                             @using System.Globalization;
                                             @{
-                                            int LicenseTotal = 0;
-                                            int MaintenanceTotal = 0;
-                                            CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+                                                decimal LicenseTotal = 0;
+                                                decimal MaintenanceTotal = 0;
+                                                CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
                                             }
                                             @foreach (view_ContractRow or in ViewBag.CustomerContract._ContractRows)
@@ -602,13 +602,13 @@
 
                                                 // Format currency
 
-                                                String License = string.Format(se, "{0:C0}", or.License);
-                                                String Maintenance = string.Format(se, "{0:C0}", or.Maintenance);
+                                                String License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
+                                                String Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
 
                                                 if (or.Removed == false)
                                                 {
-                                                    LicenseTotal += Convert.ToInt32(or.License);
-                                                    MaintenanceTotal += Convert.ToInt32(or.Maintenance);
+                                                    LicenseTotal += Convert.ToDecimal(or.License);
+                                                    MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
                                                 }
 
                                                 <button id="selart-@or.Article_number"
@@ -629,12 +629,12 @@
                                                                 {
                                                                     <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
                                                                 }
-                                                                if (or.Removed == false)
+                                                                else
                                                                 {
                                                                     <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@module.Module</td>
                                                                 }
                                                             }
-                                                            @if (or.Rewritten == false)
+                                                            else
                                                             {
                                                                 <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
                                                             }
@@ -653,10 +653,10 @@
                                                 </button>
                                             }
                                             @{
-                                            // Format currency
+                                                // Format currency
 
-                                            String LicenseTotalStr = string.Format(se, "{0:C0}", LicenseTotal);
-                                            String MaintenanceTotalStr = string.Format(se, "{0:C0}", MaintenanceTotal);
+                                                String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal).Replace(".", " ");
+                                                String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal).Replace(".", " ");
                                             }
 
                                         </div>
@@ -679,7 +679,7 @@
             <div class="modal-footer">
                 <button type="button" id="sum-zero-button" class="btn btn-default">Sum=Zero</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="choose-selected-articles" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+                <button type="button" data-loading-text="Loading..." id="choose-selected-articles" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
@@ -777,8 +777,8 @@
 
                                                             // Format currency
 
-                                                            String License = String.Format(se, "{0:C0}", or.License);
-                                                            String Maintenance = String.Format(se, "{0:C0}", or.Maintenance);
+                                                            String License = String.Format(se, "{0:C2}", or.License);
+                                                            String Maintenance = String.Format(se, "{0:C2}", or.Maintenance);
 
                                                             LicenseTotal += Convert.ToInt32(or.License);
                                                             MaintenanceTotal += Convert.ToInt32(or.Maintenance);
@@ -810,8 +810,8 @@
                                             @{
                                                             // Format currency
 
-                                                            LicenseTotalStr = string.Format(se, "{0:C0}", LicenseTotal);
-                                                            MaintenanceTotalStr = string.Format(se, "{0:C0}", MaintenanceTotal);
+                                                            LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal);
+                                                            MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal);
                                             }
 
                                         </div>
@@ -868,12 +868,12 @@
                                                             if(contract._ContractConsultantRows.Any(c => c.Code == service.Code) )
                                                             {
                                                             view_ContractConsultantRow ccr = contract._ContractConsultantRows.First(c => c.Code == service.Code);
-                                                            price = String.Format(se, "{0:C0}", ccr.Total_price / ccr.Amount).Replace(".", " ");
+                                                            price = String.Format(se, "{0:C2}", ccr.Total_price / ccr.Amount).Replace(".", " ");
                                                             cost = Convert.ToInt32(ccr.Total_price / ccr.Amount);
                                                             }
                                                             else
                                                             {
-                                                            price = String.Format(se, "{0:C0}", service.Price).Replace(".", " ");
+                                                            price = String.Format(se, "{0:C2}", service.Price).Replace(".", " ");
                                                             cost = (int)service.Price;
                                                             }
 
@@ -911,7 +911,7 @@
                                                             view_Service service = new view_Service();
                                                             service.Select("Code = " + row.Code);
 
-                                                            String price = String.Format(se, "{0:C0}", row.Total_price/row.Amount);
+                                                            String price = String.Format(se, "{0:C2}", row.Total_price/row.Amount);
                                                             int cost = Convert.ToInt32(row.Total_price / row.Amount);
 
                                                                 <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">

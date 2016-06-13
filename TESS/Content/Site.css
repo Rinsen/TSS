@@ -376,6 +376,26 @@ table.crm-items-table td:first-child th:nth-of-type(5),
 table#articles-search-table td:first-child th:nth-of-type(5) {
   width: 10%;
 }
+table#articles-table td:nth-child(2) th:nth-of-type(1),
+table.crm-items-table td:nth-child(2) th:nth-of-type(1),
+table#articles-search-table td:nth-child(2) th:nth-of-type(1) {
+  width: 10%;
+}
+table#articles-table td:nth-child(2) th:nth-of-type(2),
+table.crm-items-table td:nth-child(2) th:nth-of-type(2),
+table#articles-search-table td:nth-child(2) th:nth-of-type(2) {
+  width: 32%;
+}
+table#articles-table td:nth-child(2) th:nth-of-type(3),
+table.crm-items-table td:nth-child(2) th:nth-of-type(3),
+table#articles-search-table td:nth-child(2) th:nth-of-type(3) {
+  width: 15%;
+}
+table#articles-table td:nth-child(2) th:nth-of-type(4),
+table.crm-items-table td:nth-child(2) th:nth-of-type(4),
+table#articles-search-table td:nth-child(2) th:nth-of-type(4) {
+  width: 15%;
+}
 table#articles-table .item-row-names td:nth-child(1),
 table.crm-items-table .item-row-names td:nth-child(1),
 table#articles-search-table .item-row-names td:nth-child(1),
@@ -637,7 +657,18 @@ table#articles-search-table #selected-articles-search table th:nth-of-type(4),
 table#articles-table .crm-selected-items table th:nth-of-type(4),
 table.crm-items-table .crm-selected-items table th:nth-of-type(4),
 table#articles-search-table .crm-selected-items table th:nth-of-type(4) {
-  width: 10%;
+  width: 15%;
+}
+table#articles-table #selected-articles table td:nth-child(3),
+table.crm-items-table #selected-articles table td:nth-child(3),
+table#articles-search-table #selected-articles table td:nth-child(3),
+table#articles-table #selected-articles-search table td:nth-child(3),
+table.crm-items-table #selected-articles-search table td:nth-child(3),
+table#articles-search-table #selected-articles-search table td:nth-child(3),
+table#articles-table .crm-selected-items table td:nth-child(3),
+table.crm-items-table .crm-selected-items table td:nth-child(3),
+table#articles-search-table .crm-selected-items table td:nth-child(3) {
+  text-align: left;
 }
 table#articles-table #selected-articles table td:nth-child(4),
 table.crm-items-table #selected-articles table td:nth-child(4),

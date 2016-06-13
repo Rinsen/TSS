@@ -1057,8 +1057,8 @@ namespace TietoCRM.Controllers.Contracts
                     int Article_number = Convert.ToInt32(dict["Article_number"]);
                     double License = 0;
                     if (dict.Keys.Contains("License"))
-                        License = double.Parse(dict["License"].ToString(), CultureInfo.InvariantCulture);
-                    double Maintenance = double.Parse(dict["Maintenance"].ToString(), CultureInfo.InvariantCulture);
+                        License = double.Parse(dict["License"].ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+                    double Maintenance = double.Parse(dict["Maintenance"].ToString().Replace(",", "."), CultureInfo.InvariantCulture);
                     int RowType = Convert.ToInt32(dict["Rowtype"]);
 
                     view_ContractRow offerRow = new view_ContractRow();

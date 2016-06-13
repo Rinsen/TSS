@@ -90,8 +90,10 @@ namespace TietoCRM.Models
                     }
                     else if (pi.PropertyType == typeof(decimal) || pi.PropertyType == typeof(decimal?))
                     {
-                        if(!Convert.IsDBNull(value))
+                        if (!Convert.IsDBNull(value))
+                        {
                             pi.SetValue(this, Convert.ToDecimal(value));
+                        }
                         else
                             pi.SetValue(this, null);
                         break;

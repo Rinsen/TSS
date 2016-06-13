@@ -42,8 +42,8 @@ Produkter
         ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
                 
         // Format currency
-        String License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
-        String Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+        String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+        String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
         if(previousSystem != article.System)
         {
             <div class="crm-pdf-subrows_1">
@@ -69,8 +69,8 @@ Produkter
     }
     @{
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">
@@ -107,7 +107,7 @@ Educational Portal
     }
     @foreach (dynamic article in ViewBag.EducationPortals)
     {
-        String Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+        String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
         // Calculate total sums
         EducationalPortalTotal += Convert.ToDecimal(article.Maintenance);
         view_Module module = new view_Module();
@@ -115,7 +115,7 @@ Educational Portal
 
         // Format currency
 
-        String License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+        String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
         <div class="crm-pdf-subrows_2">
             <table>
                 <tr>
@@ -130,7 +130,7 @@ Educational Portal
     }
     @{
         // Format currency for total sums
-        string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+        string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">
@@ -175,8 +175,8 @@ Main contract and Options
             OptionMaintenanceTotal += Convert.ToDecimal(option.Maintenance);
 
             // Format currency
-            String License = string.Format(se, "{0:C0}", option.License).Replace(".", " ");
-            String Maintenance = string.Format(se, "{0:C0}", option.Maintenance).Replace(".", " ");
+            String License = string.Format(se, "{0:C2}", option.License).Replace(".", " ");
+            String Maintenance = string.Format(se, "{0:C2}", option.Maintenance).Replace(".", " ");
             if (previousSystem != option.System)
             {
             <div class="crm-pdf-subrows_1">
@@ -202,8 +202,8 @@ Main contract and Options
         }
         @{
             // Format currency for total sums
-            string OptionLicenseTotalFormated = string.Format(se, "{0:C0}", OptionLicenseTotal).Replace(".", " ");
-            string OptionMaintenanceTotalFormated = string.Format(se, "{0:C0}", OptionMaintenanceTotal).Replace(".", " ");
+            string OptionLicenseTotalFormated = string.Format(se, "{0:C2}", OptionLicenseTotal).Replace(".", " ");
+            string OptionMaintenanceTotalFormated = string.Format(se, "{0:C2}", OptionMaintenanceTotal).Replace(".", " ");
         }
         <span class="large-divider"></span>
         <div class="crm-pdf-subsum_1">
@@ -240,7 +240,7 @@ Main contract and Educational Options
         }
         @foreach (dynamic article in ViewBag.EducationalOptions)
         {
-            String Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
             // Calculate total sums
             OptionMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
             view_Module module = new view_Module();
@@ -248,7 +248,7 @@ Main contract and Educational Options
 
             // Format currency
 
-            String License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+            String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
             <div class="crm-pdf-subrows_2">
                 <table>
                     <tr>
@@ -263,7 +263,7 @@ Main contract and Educational Options
         }
         @{
         // Format currency for total sums
-            string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", OptionMaintenanceTotal).Replace(".", " ");
+            string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", OptionMaintenanceTotal).Replace(".", " ");
         }
         <span class="large-divider"></span>
         <div class="crm-pdf-subsum_1">
@@ -313,8 +313,8 @@ Konsulttjänster
 
 
             // Format currency
-            string Price = string.Format(se, "{0:C0}", cr.Total_price / cr.Amount).Replace(".", " ");
-            string TotalPrice = string.Format(se, "{0:C0}", cr.Total_price).Replace(".", " ");
+            string Price = string.Format(se, "{0:C2}", cr.Total_price / cr.Amount).Replace(".", " ");
+            string TotalPrice = string.Format(se, "{0:C2}", cr.Total_price).Replace(".", " ");
             <div class="crm-pdf-subrows_1">
                 <table>
                     <tr>
@@ -328,7 +328,7 @@ Konsulttjänster
         }
         @{
         // Format currency for total sums
-        string ServicesTotalFormated = string.Format(se, "{0:C0}", ServicesTotal).Replace(".", " ");
+        string ServicesTotalFormated = string.Format(se, "{0:C2}", ServicesTotal).Replace(".", " ");
         }
         <span class="large-divider"></span>
         <div class="crm-pdf-subsum_1">

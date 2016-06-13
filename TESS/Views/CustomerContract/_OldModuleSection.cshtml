@@ -53,7 +53,7 @@
         String Maintenance = "";
         if (article.Maintenance != 0)
         {
-            Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
         }
         if (previousSystem != article.System)
         {
@@ -80,8 +80,8 @@
     }
     @{
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">
@@ -123,7 +123,7 @@
         String License = "";
         if (article.License != 0)
         {
-            License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+            License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
         }
 
         <div class="crm-pdf-educational-portal-row">
@@ -148,7 +148,7 @@
     }
     @{
         // Format currency for total sums
-        string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+        string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-educational-portal-row-sum">
@@ -202,7 +202,7 @@
         String Maintenance = "";
         if (article.Maintenance != 0)
         {
-            Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
         }
         if (previousSystem != article.System)
         {
@@ -229,8 +229,8 @@
     }
     @{
     // Format currency for total sums
-    string ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
-    string ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+    string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
+    string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">
@@ -270,14 +270,14 @@
 
             // Calculate total sums
             EducationalPortalTotal += Convert.ToDecimal(article.License);
-            string EducationalPortalLicense = string.Format(se, "{0:C0}", Convert.ToDecimal(article.License)).Replace(".", " ");
+            string EducationalPortalLicense = string.Format(se, "{0:C2}", Convert.ToDecimal(article.License)).Replace(".", " ");
 
             // Format currency
 
             String License = "";
             if (article.License != 0)
             {
-                License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+                License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
             }
             <div class="crm-pdf-educational-portal-row">
                 <div class="crm-pdf-70">
@@ -303,7 +303,7 @@
         }
         @{
         // Format currency for total sums
-        string EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+        string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
         }
         <span class="large-divider"></span>
         <div class="crm-pdf-educational-portal-row-sum">
