@@ -686,10 +686,10 @@ namespace TietoCRM.Controllers
                 foreach (Dictionary<String, Object> dict in list)
                 {
                     int Article_number = Convert.ToInt32(dict["Article_number"]);
-                    double License = 0;
+                    Decimal License = 0;
                     if(dict.Keys.Contains("License"))
-                        License = double.Parse(dict["License"].ToString(), CultureInfo.InvariantCulture);
-                    double Maintenance = double.Parse(dict["Maintenance"].ToString(), CultureInfo.InvariantCulture);
+                        License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    Decimal Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",","."), NumberFormatInfo.InvariantInfo);
 
                     view_OfferRow offerRow = new view_OfferRow();
                     offerRow.Offer_number = Offer_number;
