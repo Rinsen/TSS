@@ -1163,12 +1163,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\Site.css" /recursive
-"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\sidebar.css" /recursive
-"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\OfferPdf.css" /recursive
-"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\ContractPdf.css" /recursive
-"$(DevEnvDir)tf" checkout "$(ProjectDir)Content\ExpPdfStyle.css" /recursive
-del "$(ProjectDir)Content\Site.css"
+    <PreBuildEvent>del "$(ProjectDir)Content\Site.css"
 del "$(ProjectDir)Content\sidebar.css"
 del "$(ProjectDir)Content\OfferPdf.css"
 del "$(ProjectDir)Content\ContractPdf.css"
@@ -1178,10 +1173,7 @@ del "$(ProjectDir)Content\ExpPdfStyle.css"
 "$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\OfferPdf.less" "$(ProjectDir)Content\OfferPdf.css"
 "$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\ContractPdf.less" "$(ProjectDir)Content\ContractPdf.css"
 "$(SolutionDir)packages\dotless.1.5.0\tool\dotless.compiler.exe" "$(ProjectDir)Content\ExpPdfStyle.less" "$(ProjectDir)Content\ExpPdfStyle.css"
-rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\Site.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."
-rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\sidebar.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."
-rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\OfferPdf.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."
-rem "$(DevEnvDir)tf" checkin "$(ProjectDir)Content\ContractPdf.css" /recursive /noprompt /force /comment:"File checked in automatically by Post-build action in source project."</PreBuildEvent>
+</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

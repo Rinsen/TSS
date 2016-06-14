@@ -241,9 +241,9 @@ else if (Request["modal"] == "articles")
                                     module.Select("Article_number = " + or.Article_number);
 
                                     // Format currency
-                                   
-                                    String License = string.Format(se, "{0:C0}", or.License);
-                                    String Maintenance = string.Format(se, "{0:C0}", or.Maintenance);
+
+                                    String License = string.Format(se, "{0:C2}", or.License).Replace("."," ");
+                                    String Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
 
                                     LicenseTotal += Convert.ToInt32(or.License);
                                     MaintenanceTotal += Convert.ToInt32(or.Maintenance);
@@ -277,9 +277,9 @@ else if (Request["modal"] == "articles")
                                 }
                                 @{
                                     // Format currency
-                                    
-                                    String LicenseTotalStr = string.Format(se, "{0:C0}", LicenseTotal);
-                                    String MaintenanceTotalStr = string.Format(se, "{0:C0}", MaintenanceTotal);
+
+                                    String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal).Replace(".", " ");
+                                    String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal).Replace(".", " ");
                                 }
 
                             </div>
@@ -732,12 +732,12 @@ else if (Request["modal"] == "services")
                                     if (offer._ConsultantRows.Any(c => c.Code == service.Code))
                                     {
                                         view_ConsultantRow ccr = offer._ConsultantRows.First(c => c.Code == service.Code);
-                                        price = String.Format(se, "{0:C0}", ccr.Total_price / ccr.Amount).Replace(".", " ");
+                                        price = String.Format(se, "{0:C2}", ccr.Total_price / ccr.Amount).Replace(".", " ");
                                         cost = Convert.ToInt32(ccr.Total_price / ccr.Amount);
                                     }
                                     else
                                     {
-                                        price = String.Format(se, "{0:C0}", service.Price).Replace(".", " ");
+                                        price = String.Format(se, "{0:C2}", service.Price).Replace(".", " ");
                                         cost = (int)service.Price;
                                     }
 
@@ -776,7 +776,7 @@ else if (Request["modal"] == "services")
                                     view_Service service = new view_Service();
                                     service.Select("Code = " + row.Code);
 
-                                    String price = String.Format(se, "{0:C0}", row.Total_price / row.Amount);
+                                    String price = String.Format(se, "{0:C2}", row.Total_price / row.Amount);
                                     int cost = Convert.ToInt32(row.Total_price / row.Amount);
 
                                     <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
@@ -988,7 +988,7 @@ else if (Request["modal"] == "services")
                 view_Service service = new view_Service();
                 service.Select("Code = " + row.Code);
 
-                String price = String.Format(se, "{0:C0}", service.Price);
+                String price = String.Format(se, "{0:C2}", service.Price);
                 int cost = (int)service.Price;
                 @Html.Raw("services.push({id:" + row.Code + ", amount:" + row.Amount + ", total:" + (int)row.Total_price + "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
             }
