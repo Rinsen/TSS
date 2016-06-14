@@ -91,6 +91,11 @@ namespace TietoCRM.Models
 			//ctr
 		}
 
+        public view_Customer(String condition) : base("Customer")
+        {
+            this.Select(condition);
+        }
+
         public void SetRepresentative(String representative)
         {
             

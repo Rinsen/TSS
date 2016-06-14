@@ -165,7 +165,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\List Management\ModuleController.cs" />
     <Compile Include="Controllers\List Management\TariffController.cs" />
-    <Compile Include="Controllers\Reports\SaleReportController.cs" />
+    <Compile Include="Controllers\Reports\ModuleReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1106,8 +1106,8 @@
     <Content Include="Views\CustomerMissingProductReport\Pdf.cshtml" />
     <Content Include="Views\CustomerContract\_ModuleTerminationSection.cshtml" />
     <Content Include="Views\Reminder\Index.cshtml" />
-    <Content Include="Views\SaleReport\Index.cshtml" />
-    <Content Include="Views\SaleReport\Pdf.cshtml" />
+    <Content Include="Views\ModuleReport\Index.cshtml" />
+    <Content Include="Views\ModuleReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1152,7 +1152,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:61645/</IISUrl>
+          <IISUrl>http://localhost:61646/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

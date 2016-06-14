@@ -593,8 +593,9 @@ else if (Request["modal"] == "articles")
             var $btn = $($selectedArticleButtons[i]);
             var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
             var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
-            LicenseTotal += parseInt(license);
-            MaintenanceTotal += parseInt(maintenance); 
+            LicenseTotal += parseFloat(license);
+            MaintenanceTotal += parseFloat(maintenance); 
+            console.log(maintenance);
         }
         $("#article-license-total").html(formatCurrency(LicenseTotal));
         $("#article-maintenance-total").html(formatCurrency(MaintenanceTotal));

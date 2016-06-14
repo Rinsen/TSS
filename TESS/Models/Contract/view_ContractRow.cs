@@ -205,6 +205,48 @@ public class view_ContractRow : SQLBaseClass
             }
             return list;
         }
-    }
 
+        public static List<view_ContractRow> GetValidContractRows(int articleNumber)
+        {
+            List<view_ContractRow> list = new List<view_ContractRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
+                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM qry_ValidContractRow WHERE Article_number=@articleNumber";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@articleNumber", articleNumber);
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ContractRow t = new view_ContractRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+        }
+    }
 }
