@@ -17,7 +17,7 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication>disabled</IISExpressAnonymousAuthentication>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <SccProjectName>SAK</SccProjectName>
@@ -159,6 +159,7 @@
     <Compile Include="Controllers\List Management\TemplateController.cs" />
     <Compile Include="Controllers\List Management\UserController.cs" />
     <Compile Include="Controllers\Offers\CustomerOfferController.cs" />
+    <Compile Include="Controllers\Reports\ContractSoldProductsReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerMissingProductReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerProductReportController.cs" />
     <Compile Include="Controllers\Installations\FeaturesController.cs" />
@@ -1111,6 +1112,8 @@
     <Content Include="Views\ModuleReport\Pdf.cshtml" />
     <Content Include="Views\SaleReport\Index.cshtml" />
     <Content Include="Views\SaleReport\Pdf.cshtml" />
+    <Content Include="Views\ContractSoldProductsReport\Index.cshtml" />
+    <Content Include="Views\ContractSoldProductsReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
