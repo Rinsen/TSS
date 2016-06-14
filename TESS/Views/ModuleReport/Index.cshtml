@@ -1,0 +1,75 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12">
+        <form method="get" action="~/ModuleReport/Pdf" target="_blank" class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-user">Modules:</label>
+                <select name="module" id="crm-select-module" class="form-control">
+                    @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
+                    {
+                        <option value="@Module.Article_number">@Module.Module</option>
+                    }
+                </select>
+            </div>
+            <button class="btn btn-default" type="submit">PDF</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="Customer" data-sortable="true">Customer</th>
+                    <th data-field="Contract_id" data-sortable="true">Contract id</th>
+                    <th data-field="Inhabitant_level" data-sortable="true">Inhabitant level</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script>
+    @{String DataObject = "\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Customer" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Contract_id" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Inhabitant_level" + "\"  },\r\n";}
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(module)
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bFilter": false,
+            "bPaginate": false,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": "/ModuleReport/Module/",
+                "type": "POST",
+                "data": {
+                    "module": module,
+                }
+            },
+            "defaultContent": "",
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+
+    $('document').ready(function () {
+
+        $moduleContainer = $("#crm-select-module");
+
+        updateDataTable($moduleContainer.val());
+
+        $moduleContainer.change(function () {
+            updateDataTable(this.value)
+        });
+
+    });
+
+    </script>
+</row>
