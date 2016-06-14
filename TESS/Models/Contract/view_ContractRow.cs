@@ -248,7 +248,6 @@ public class view_ContractRow : SQLBaseClass
             }
             return list;
         }
-    }
 
     /// <summary>
     /// Gets all ContractRows for a specified DateTime period.
