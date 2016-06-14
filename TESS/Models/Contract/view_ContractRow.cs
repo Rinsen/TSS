@@ -205,8 +205,13 @@ public class view_ContractRow : SQLBaseClass
             }
             return list;
         }
-
-        public static List<view_ContractRow> GetValidContractRows(int articleNumber)
+        /// <summary>
+        /// Gets all ContractRows for a specified DateTime period.
+        /// </summary>
+        /// <param name="Start">Start DateTime</param>
+        /// <param name="Stop">End DateTime</param>
+        /// <returns>List of ContractRows.</returns>
+        public static List<view_ContractRow> GetContractRowsByDateInterval(DateTime Start, DateTime Stop)
         {
             List<view_ContractRow> list = new List<view_ContractRow>();
 
@@ -217,13 +222,31 @@ public class view_ContractRow : SQLBaseClass
 
 
                 // Default query
-                command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
-                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM qry_ValidContractRow WHERE Article_number=@articleNumber";
+
+                command.CommandText = @"SELECT [view_ContractRow].[Contract_id], 
+                    [view_ContractRow].[Customer] ,[view_ContractRow].[Article_number] ,
+                    [view_ContractRow].[Offer_number] ,[view_ContractRow].[License] ,
+                    [view_ContractRow].[Maintenance] ,[view_ContractRow].[Delivery_date] ,
+                    [view_ContractRow].[Created] ,[view_ContractRow].[Updated] ,
+                    [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
+                    [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
+                    [view_ContractRow].[sortnr] ,
+                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp 
+                    FROM " + databasePrefix + @"ContractRow 
+                    INNER JOIN " + databasePrefix + @"Contract ON 
+                    view_Contract.Customer=view_ContractRow.Customer and 
+                    view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
+                    view_Contract.Valid_from >= @startDate AND
+                    view_Contract.Valid_from <= @stopDate";
+                //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
+                //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
+
 
                 command.Prepare();
-                command.Parameters.AddWithValue("@articleNumber", articleNumber);
-                command.ExecuteNonQuery();
+                command.Parameters.AddWithValue("@startDate", Start);
+                command.Parameters.AddWithValue("@stopDate", Stop);
+                //command.Parameters.AddWithValue("@startDate", Start.ToString("yyyy-MM-dd"));
+                //command.Parameters.AddWithValue("@endDate", Start.ToString("yyyy-MM-dd")));
 
 
                 using (SqlDataReader reader = command.ExecuteReader())
@@ -243,10 +266,10 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-
-
+                return list;
             }
-            return list;
         }
     }
 }
+
+
