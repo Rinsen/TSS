@@ -166,6 +166,7 @@
     <Compile Include="Controllers\List Management\ModuleController.cs" />
     <Compile Include="Controllers\List Management\TariffController.cs" />
     <Compile Include="Controllers\Reports\ModuleReportController.cs" />
+    <Compile Include="Controllers\Reports\SaleReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1108,6 +1109,8 @@
     <Content Include="Views\Reminder\Index.cshtml" />
     <Content Include="Views\ModuleReport\Index.cshtml" />
     <Content Include="Views\ModuleReport\Pdf.cshtml" />
+    <Content Include="Views\SaleReport\Index.cshtml" />
+    <Content Include="Views\SaleReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
