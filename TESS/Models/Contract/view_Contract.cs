@@ -213,8 +213,8 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Term_of_notice] ,[Status] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Extension] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
-
+                //command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Term_of_notice] ,[Status] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Extension] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
+                command.CommandText = "SELECT TOP 1000 [Contract_id] ,[Customer] ,[Contract_type] ,[Term_of_notice] ,[status] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Extension] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[sign] ,[Resigned_contract] , CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
                 command.Prepare();
                
 
