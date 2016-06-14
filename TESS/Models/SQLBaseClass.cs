@@ -73,7 +73,10 @@ namespace TietoCRM.Models
                     }
                     else if (pi.PropertyType == typeof(bool) || pi.PropertyType == typeof(bool?))
                     {
-                        pi.SetValue(this, Convert.ToBoolean(value));
+                        if (value == DBNull.Value || value == null)
+                            pi.SetValue(this, Convert.ToBoolean(false));
+                        else
+                            pi.SetValue(this, Convert.ToBoolean(value));
                         break;
                     }
                     else if (pi.PropertyType == typeof(int) || pi.PropertyType == typeof(int?))
