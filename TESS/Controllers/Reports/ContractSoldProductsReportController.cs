@@ -41,6 +41,7 @@ namespace TietoCRM.Controllers.Reports
             return valid;
         }
 
+
         // GET: ContractSoldProducts
         public ActionResult Index(String start, String stop)
         {
