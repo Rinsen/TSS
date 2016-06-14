@@ -5,6 +5,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Web.Security.AntiXss;
 using System.Configuration;
+using System.Diagnostics;
 
 namespace TietoCRM.Models
 {
@@ -62,15 +63,12 @@ namespace TietoCRM.Models
             {
                 if (pi.Name == variableName)
                 {
-
-                    if (value == null || value.GetType() == typeof(System.DBNull))
+                    if (pi.PropertyType == typeof(short) || pi.PropertyType == typeof(short?))
                     {
-                        pi.SetValue(this, null);
-                        break;
-                    }
-                    else if (pi.PropertyType == typeof(short) || pi.PropertyType == typeof(short?))
-                    {
-                        pi.SetValue(this, Convert.ToInt16(value));
+                        if (value == DBNull.Value || value == null)
+                            pi.SetValue(this, Convert.ToInt16(0));
+                        else
+                            pi.SetValue(this, Convert.ToInt16(value));
                         break;
                     }
                     else if (pi.PropertyType == typeof(bool) || pi.PropertyType == typeof(bool?))
@@ -80,20 +78,26 @@ namespace TietoCRM.Models
                     }
                     else if (pi.PropertyType == typeof(int) || pi.PropertyType == typeof(int?))
                     {
-                        pi.SetValue(this, Convert.ToInt32(value));
+                        if (value == DBNull.Value || value == null)
+                            pi.SetValue(this, Convert.ToInt32(0));
+                        else
+                            pi.SetValue(this, Convert.ToInt32(value));
                         break;
                     }
                     else if (pi.PropertyType == typeof(float) || pi.PropertyType == typeof(float?))
                     {
-                       pi.SetValue(this, Convert.ToSingle(value));
-                       break;
+                        if (value == DBNull.Value || value == null)
+                            pi.SetValue(this, Convert.ToSingle(0));
+                        else
+                            pi.SetValue(this, Convert.ToSingle(value));
+                        break;
                     }
                     else if (pi.PropertyType == typeof(decimal) || pi.PropertyType == typeof(decimal?))
                     {
-                        if(!Convert.IsDBNull(value))
-                            pi.SetValue(this, Convert.ToDecimal(value));
+                        if(value == DBNull.Value || value == null)
+                            pi.SetValue(this, Convert.ToDecimal(0));
                         else
-                            pi.SetValue(this, null);
+                            pi.SetValue(this, Convert.ToDecimal(value));
                         break;
                     }
                     else if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
@@ -114,12 +118,18 @@ namespace TietoCRM.Models
                     }
                     else if (pi.PropertyType == typeof(System.Int64) || pi.PropertyType == typeof(System.Int64?))
                     {
-                        pi.SetValue(this, Convert.ToInt64(value));
+                        if (value == DBNull.Value || value == null)
+                            pi.SetValue(this, Convert.ToInt64(0));
+                        else
+                            pi.SetValue(this, Convert.ToInt64(value));
                         break;
                     }
                     else if (pi.PropertyType == typeof(double) || pi.PropertyType == typeof(double?))
                     {
-                        pi.SetValue(this, Convert.ToDouble(value));
+                        if (value == DBNull.Value || value == null)
+                            pi.SetValue(this, Convert.ToDouble(0));
+                        else
+                            pi.SetValue(this, Convert.ToDouble(value));
                         break;
                     }
                     else
@@ -135,6 +145,11 @@ namespace TietoCRM.Models
                         }
                         else
                             pi.SetValue(this, value);
+                        break;
+                    }
+                    if (value == null || value.GetType() == typeof(System.DBNull))
+                    {
+                        pi.SetValue(this, null);
                         break;
                     }
                 }
@@ -397,7 +412,7 @@ namespace TietoCRM.Models
                         {
                             if (reader.GetName(i).ToLower() != "ssma_timestamp")
                             {
-                                this.SetValue(this.propertyInfos[j].Name, reader.GetValue(i));
+                                this.SetValue(this.propertyInfos[j].Name, reader[i]);
                                 j++;
                             }                         
                         }

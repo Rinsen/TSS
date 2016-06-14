@@ -186,6 +186,39 @@ namespace TietoCRM.Models
             return list;
         }
 
+        public static List<view_Customer> getAllCustomers(String representive)
+        {
+            List<view_Customer> list = new List<view_Customer>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                String query = "SELECT [Customer] ,[Representative] ,[Short_name] ,[Customer_type] ,[Address] ,[Zip_code] ,[City] ,[Telephone] ,[Fax] ,[Web_address] ,[Corporate_identity_number] ,[Email_format] ,[County] ,[Municipality] ,[IT_manager] ,[IT_manager_telephone] ,[IT_manager_mobile] ,[IT_manager_email] ,[EA_system] ,[PA_system] ,[Other_1] ,[Other_2] ,[PUL] ,[Note] ,[Inhabitant_level] FROM " + databasePrefix + "Customer WHERE Representative = @representive";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@representive", representive);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        view_Customer k = new view_Customer();
+                        int i = 0;
+                        while (reader.FieldCount > i)
+                        {
+                            k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                            i++;
+                        }
+                        list.Add(k);
+                    }
+                }
+            }
+            return list;
+        }
+
         /// <summary>
         /// Get the names of all customers
         /// </summary>
