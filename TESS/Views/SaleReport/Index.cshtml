@@ -1,0 +1,108 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12">
+        <form method="get" action="~/SaleReport/Pdf" target="_blank" class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-user">Representative:</label>
+                <select name="user" id="crm-select-user" class="form-control">
+                    @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
+                    {
+                        if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
+                        {
+                            <option value="@User.Sign" selected>@User.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@User.Sign">@User.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <button class="btn btn-default" type="submit">PDF</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="customer" data-sortable="true">Customer</th>
+                    <th data-field="customer_type" data-sortable="true">Customer Type</th>
+                    <th data-field="maintenance" data-sortable="true">Maintenance</th>
+                    <th data-field="license" data-sortable="true">License</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="col-md-12 form-inline">
+        <label style="float:right; margin-right:5%;">Total License: <span class="text" id="total-license"> 0 kr</span></label>
+        <label style="float:right; margin-right:5%;">Total Maintenance: <span class="text" id="total-maintenance"> 0 kr</span></label>
+</div>
+    <script>
+    @{String DataObject = "\r\n";}
+    @{
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "maintenance" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "license" + "\"  },\r\n";
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(user)
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bFilter": false,
+            "bPaginate": false,
+            "ajax": {
+                "url": "/SaleReport/User/",
+                "type": "POST",
+                "data": {
+                    "user": user,
+                },
+                "dataSrc": function (json) {
+
+                    var totalM = 0.0;
+                    var totalL = 0.0;
+                    for (var i = 0; i < Object.keys(json['data']).length; i++) {
+                        var m = json['data'][i]['maintenance'].replace(/[ ]+/g, "").replace("kr", "").replace(",", ".");
+                        m = parseFloat(m);
+                        totalM += m;
+
+                        var l = json['data'][i]['license'].replace(/[ ]+/g, "").replace("kr", "").replace(",", ".");
+                        console.log(totalM);
+                        l = parseFloat(l);
+                        totalL += l;
+                    }
+                    $("#total-maintenance").text(formatCurrency(String(totalM)));
+                    $("#total-license").text(formatCurrency(String(totalL)));
+
+                    return json.data;
+                }
+
+            },
+            "defaultContent": "",
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+    $('document').ready(function () {
+
+        $userContainer = $("#crm-select-user");
+
+        //updateDataTable($userContainer.val());
+
+        $userContainer.change(function () {
+            updateDataTable(this.value)
+
+        });
+    });
+
+    </script>
+</row>

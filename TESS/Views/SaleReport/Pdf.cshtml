@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+}
+
+<div class="crm-print-block">
+    <table class="table table-striped table-bordered contract-supervision-table">
+        <th>Customer</th>
+        <th>Customer Type</th>
+        <th>Maintenance</th>
+        <th>License</th>
+        @foreach (Dictionary<String,String> offers in ViewBag.Offers)
+        {
+            <tr class="">
+               @foreach(KeyValuePair<String,String> kp in offers)
+               {
+                   <td>@kp.Value</td>
+               }
+            </tr>
+        }
+
+    </table>
+    <div class="form-inline">
+        <label style="float:left; margin-right:5%;">Total maintenance: @ViewBag.totalM</label>
+        <label style="float:left; margin-right:5%;">Total license: @ViewBag.totalL</label>
+    </div>
+</div>
+
+
