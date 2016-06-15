@@ -342,6 +342,7 @@ var updateSelectedItems = function () {
         "success": function (data) {
             var modules = JSON.parse(data);
             var length = modules.length;
+            $selectedArticles.html("");
             for (var i = 0; i < length; i++) {
                 module = modules[i];
                 if (module.System == "Lärportal") {
@@ -350,7 +351,8 @@ var updateSelectedItems = function () {
                                 type='button'                                                       \
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
-                                data-maintenance='" + module.Maintenance + "'>                      \
+                                data-maintenance='" + module.Maintenance + "'                       \
+                                data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
                                     <td class='art-nr'>" + module.Article_number + "</td>           \
@@ -362,37 +364,39 @@ var updateSelectedItems = function () {
                         ");
                 }
                 else {
-                    $selectedArticles.append("                                                      \
+                    var html = "";
+                    html += "                                                                       \
                         <button onclick='moveItem(event, this)'                                     \
                                 type='button'                                                       \
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
                                 data-license='" + module.License + "'                               \
-                                data-maintenance='" + module.Maintenance + "'>                      \
+                                data-maintenance='" + module.Maintenance + "'                       \
+                                data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
-                                    <td class='art-nr'>" + module.Article_number + "</td>");
+                                    <td class='art-nr'>" + module.Article_number + "</td>";
                     if (module.Rewritten) {
                         if (module.NewArt) {
-                            $selectedArticles.append("<td>New " + module.Article + "</td>");
+                            html += "<td>New " + module.Article + "</td>";
                         }
                         if (module.Removed) {
-                            $selectedArticles.append("<td> Del " + module.Article + "</td>");
+                            html += "<td> Del " + module.Article + "</td>";
                         }
                     }
-                    else 
-                    {
-                        $selectedArticles.append("<td>" + module.Article + "</td>");
+                    else {
+                        html += "<td>" + module.Article + "</td>";
                     }
-                    $selectedArticles.append("<td>" + module.Article + "</td>                       \
-                                    <td>" + module.License + "</td>                                 \
-                                    <td>" + module.Maintenance + "</td>                             \
+                    html +=         "<td>" + formatCurrency(module.License) + "</td>                                \
+                                    <td>" + formatCurrency(module.Maintenance) + "</td>                             \
                                 </tr>                                                               \
                             </table>                                                                \
                         </button>                                                                   \
-                        ");
+                        ";
+                    $selectedArticles.append(html);
                 }
             }
+            calculateSums();
         }
     });
 }
@@ -503,7 +507,7 @@ var highlightItem = function($item, css)
     setTimeout(function () {      
         $item.removeClass(css);
         $item.addClass("highlight-item-fade");
-        setTimeout(function () {      
+        setTimeout(function () {
             $item.removeClass("highlight-item-fade");
         }, 600);   
     }, 600);     
@@ -576,6 +580,7 @@ var saveArticlesFunction = function () {
             }
             else{
                 console.log(data);
+                $("#choose-selected-articles").button('reset');
                 triggerAlert("Failed to add articles", "warning");
             }
         }
