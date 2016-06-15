@@ -707,12 +707,15 @@ namespace TietoCRM.Controllers
                 return "";
         }
 
+        [ValidateInput(false)]
         public String Data(String key = "SSMA_timestamp")
         {
 
             try
             {
-                String json = Request.Form["object"];
+
+                //String json = Request.Form["object"];
+                String json = HttpContext.Request.Unvalidated.Form["object"];
                 List<dynamic> map = null;
                 try
                 {
