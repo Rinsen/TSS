@@ -400,7 +400,7 @@
                                                     <span class="list-inline" style="width:95%; display:inline-block">
                                                         @{  view_Service s = new view_Service();
                                                     s.Select("Code = " + service.Code);
-                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (decimal)service.Total_price + " }";
+                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":\"" + (decimal)service.Total_price + "\" }";
                                                         }
                                                         @s.Description
                                                     </span>

@@ -383,6 +383,9 @@ var updateSelectedItems = function () {
                         if (module.Removed) {
                             html += "<td> Del " + module.Article + "</td>";
                         }
+                        else {
+                            html += "<td>" + module.Article + "</td>";
+                        }
                     }
                     else {
                         html += "<td>" + module.Article + "</td>";

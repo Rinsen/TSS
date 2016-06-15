@@ -783,7 +783,7 @@ namespace TietoCRM.Controllers.Contracts
                     ccRow.Contract_id = contract.Contract_id;
                     ccRow.Created = DateTime.Now;
                     ccRow.Amount = serviceObj["amount"];
-                    ccRow.Total_price = serviceObj["total_price"];
+                    ccRow.Total_price = decimal.Parse(serviceObj["total_price"]);
 
                     ccRow.Delete("Code = " + ccRow.Code + " AND Contract_id = '" + ccRow.Contract_id + "' AND Customer = '" + ccRow.Customer + "'");
                     ccRow.Insert();
