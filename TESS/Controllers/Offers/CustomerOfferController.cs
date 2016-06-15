@@ -880,6 +880,25 @@ namespace TietoCRM.Controllers
             return "1";
         }
 
+        public String DeleteOffer()
+        {
+            try
+            {
+                String value = Request.Form["id"];
+                view_CustomerOffer co = new view_CustomerOffer("Offer_number=" + value);
+                //a.Select("Article_number = " + value);
+                if (co.Offer_status == "Makulerad")
+                    co.Delete("Offer_number=" + value);
+                else
+                    return "-1";
+            }
+            catch (Exception e)
+            {
+                return "-1";
+            }
+            return "1";
+        }
+
         public String GetContacts()
         {
             String customer = Request.Form["customer"];
