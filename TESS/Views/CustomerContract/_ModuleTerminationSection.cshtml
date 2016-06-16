@@ -114,6 +114,19 @@
                 </tr>
             </table>
         </div>
+    }@foreach (dynamic article in ViewBag.EducationPortals)
+    {
+        <div class="crm-pdf-subrows_terminate">
+            <table>
+                <tr>
+                    <td>@article.Article_number</td>
+                    <td>@article.Module</td>
+                    <td>@article.System</td>
+                    <td>@article.Classification</td>
+                    <td>@ViewBag.CustomerContract.Valid_from.ToString("d")</td>
+                </tr>
+            </table>
+        </div>
     }
 
     <div class="crm-print-block">
