@@ -10,7 +10,7 @@
                 <select name="module" id="crm-select-module" class="form-control">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
-                        <option value="@Module.Article_number">@Module.Module</option>
+                        <option value="@Module.Article_number">@Module.Article_number - @Module.Module</option>
                     }
                 </select>
             </div>
