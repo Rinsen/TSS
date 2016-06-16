@@ -35,10 +35,11 @@
   width: 100%;
   position: absolute;
   padding: 15px;
-  padding-top: 50px;
+  padding-top: 60px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  height: calc(100vh - 60px);
+  height: 100%;
+  margin-top: 0px;
 }
 #wrapper.toggled #page-content-wrapper {
   position: absolute;

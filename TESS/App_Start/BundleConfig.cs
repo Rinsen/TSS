@@ -31,9 +31,9 @@ namespace TietoCRM
                       "~/Content/sidebar.css",
                       "~/Content/bootstrap-table.css"));
             // Less integration
-            //bundles.Add(new LessBundle("~/Content/less").Include(
-            //    "~/Content/Site.less",
-            //    "~/Content/Sidebar.less"));
+            bundles.Add(new LessBundle("~/Content/less").Include(
+                "~/Content/Site.less",
+                "~/Content/Sidebar.less"));
             
         }
     }

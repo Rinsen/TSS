@@ -9,7 +9,8 @@
 @sidebar-width: 150px;
 @top-menu-padding: 50px;
 @nav-background-color: #12313F;
-@window-height: calc(~"100vh - 60px");
+//@window-height: calc(~"100vh - 60px");
+@window-height: 100%;
 #wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
@@ -45,10 +46,11 @@
     width: 100%;
     position: absolute;
     padding: 15px;
-    padding-top: @top-menu-padding;
+    padding-top: 60px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     height: @window-height; 
+    margin-top: 0px;
 }
 
 #wrapper.toggled #page-content-wrapper {
