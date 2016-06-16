@@ -6,8 +6,21 @@
 
 @if(ViewBag.ValidDate)
 {
+    <style>
+
+        td:nth-child(1){
+            width: 5em !important;
+        }
+        td:nth-child(2){
+            width: 5em !important;
+        }
+         td:nth-child(3){
+            width: 30em !important;
+        }
+    </style>
     <div class="crm-print-block">
     <table class="table table-striped table-bordered cpr-table">
+        <th>Count</th>
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
             String PropertyName = PropertyInfo.Name.Replace("_", " ");
@@ -17,48 +30,22 @@
             }
 
         }
-        <th>Count</th>
-        @foreach (TietoCRM.Models.view_Module FM in ViewBag.FilteredModules)
+        @foreach (KeyValuePair<int, Dictionary<String, dynamic>> FM in ViewBag.ReturnModules)
         {
             <tr class="">
-                @{
-                    var LastPInfoCount = ViewBag.Properties.Length;
-                    var count = 0;
-                }
-                @foreach (System.Reflection.PropertyInfo PInfo in ViewBag.Properties)
+
+            @foreach (KeyValuePair<String,dynamic> FMS in FM.Value)
+            {
+                if(ViewBag.Printable.Contains(FMS.Key) || FMS.Key == "Count")
                 {
-                    count++;
-                    if (LastPInfoCount == count)
-                    {
-                        foreach(var dup in ViewBag.FilteredModulesWithCount)
-                        {
-                            System.Type type = dup.GetType();
-                            
-                            int art = (int)type.GetProperty("Value").GetValue(dup, null).Article_number;
-                            int dupCount = (int)type.GetProperty("Count").GetValue(dup, null);
-                            if (FM.Article_number == art)
-                            {
-                                <td>@dupCount</td>
-                            }
-                        }
-                    }
-
-                    if (ViewBag.Printable.Contains(PInfo.Name))
-                    {
-                        if (PInfo.GetValue(FM) != null)
-                        {
-                            <td>@PInfo.GetValue(FM).ToString()</td>
-                        }
-                        else
-                        {
-                            <td></td>
-                        }
-                    }
-                    
-
+                    <td>@FMS.Value</td>
                 }
+            }
+
             </tr>
+
         }
+       
 
     </table>
 </div>

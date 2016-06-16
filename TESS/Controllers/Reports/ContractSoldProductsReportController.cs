@@ -1,6 +1,8 @@
 ﻿using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -48,7 +50,8 @@ namespace TietoCRM.Controllers.Reports
             var Printable = new List<String> {
                 "Article_number",
                 "Module",
-                "Price_category"
+                "Price_category",
+                "Classification"
             };
 
 
@@ -62,7 +65,8 @@ namespace TietoCRM.Controllers.Reports
             var Printable = new List<String> {
                 "Article_number",
                 "Module",
-                "Price_category"
+                "Price_category",
+                "Classification"
             };
 
             DateTime Start;
@@ -74,7 +78,13 @@ namespace TietoCRM.Controllers.Reports
                 ViewData.Add("ValidDate", true);
                 Start = Convert.ToDateTime(start);
                 Stop = Convert.ToDateTime(stop);
-                GetFilteredModuleData(Start, Stop);
+
+                var sortedList = GetFilteredModules(Start, Stop).ToList();
+                sortedList.Sort((pair1, pair2) => Convert.ToInt32(pair2.Value["Count"]).CompareTo(Convert.ToInt32(pair1.Value["Count"])));
+
+                ViewData.Add("ReturnModules", sortedList);
+                ViewData.Add("Printable", Printable);
+                ViewData.Add("Properties", typeof(view_Module).GetProperties());
                 pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \" \"";
                 pdf.RotativaOptions.CustomSwitches += " --header-center \" Sold products between " + Start.ToString("yyyy'/'MM'/'dd") + " - " + Stop.ToString("yyyy'/'MM'/'dd") + " \"";
             }
@@ -88,50 +98,57 @@ namespace TietoCRM.Controllers.Reports
  
         }
 
-        private void GetFilteredModuleData(DateTime Start, DateTime Stop)
+        private Dictionary<int, Dictionary<String, dynamic>> GetFilteredModules(DateTime Start, DateTime Stop)
         {
 
             var Printable = new List<String> {
                 "Article_number",
                 "Module",
-                "Price_category"
+                "Price_category",
+                "Classification"
             };
 
             List<view_ContractRow> ContractRows = view_ContractRow.GetContractRowsByDateInterval(Start, Stop);
             List<view_Module> Modules = view_Module.getAllModules();
 
+            Dictionary<int, Dictionary<String, dynamic>> ReturnModules = new Dictionary<int, Dictionary<String, dynamic>>();
            
-
-            List<view_Module> FilteredModules = new List<view_Module>();
             foreach (var cr in ContractRows)
             {
                 foreach(var m in Modules)
                 {
                     if(m.Article_number == cr.Article_number)
                     {
-                        FilteredModules.Add(m);
+                        Dictionary<String, dynamic> SortedModule = new Dictionary<String, dynamic>();
+                        SortedModule.Add("Count", 1);
+                      
+                        foreach(System.Reflection.PropertyInfo pi in m.GetType().GetProperties())
+                        {
+                            SortedModule.Add(pi.Name, pi.GetValue(m, null));
+                        }
+                        int CurrentKey = Convert.ToInt32(m.Article_number);
+                        if (ReturnModules.ContainsKey(CurrentKey))
+                        {
+                            int newCount = Convert.ToInt32(ReturnModules[CurrentKey]["Count"]);                        
+                            ReturnModules[CurrentKey]["Count"] = newCount + 1;    
+                        }
+                        else
+                        {
+                            ReturnModules.Add(Convert.ToInt32(m.Article_number),SortedModule);
+                        }
+                       
                     }
                 }
             }
 
-            var FilteredModulesWithCount = from x in FilteredModules
-                    group x by x into g
-                    let count = g.Count()
-                    orderby count descending
-                    select new { Value = g.Key, Count = count };
+            return ReturnModules;
 
-            // Filter and remove duplicants
-            var FilteredModules2 = Modules.Where(
-               m => ContractRows.Any(
-               cr => cr.Article_number == m.Article_number));
+            //ViewData.Add("ReturnModules", ReturnModules);
+            //ViewData.Add("Printable", Printable);
+            //ViewData.Add("Properties", typeof(view_Module).GetProperties());
 
-            ViewData.Add("FilteredModules", FilteredModules2);
-            ViewData.Add("Printable", Printable);
-            ViewData.Add("FilteredModulesWithCount", FilteredModulesWithCount);
-            ViewData.Add("Properties", typeof(view_Module).GetProperties());
 
-     
-            this.ViewData["Title"] = "Contract Sold Products Report";
+            //this.ViewData["Title"] = "Contract Sold Products Report";
         }
 
 
@@ -141,7 +158,8 @@ namespace TietoCRM.Controllers.Reports
             var Printable = new List<String> {
                 "Article_number",
                 "Module",
-                "Price_category"
+                "Price_category",
+                "Classification"
             };
             String startRe;
             String stopRe;
@@ -167,79 +185,24 @@ namespace TietoCRM.Controllers.Reports
             }
             
 
-            List<view_ContractRow> ContractRows = view_ContractRow.GetContractRowsByDateInterval(Start, Stop);
-            List<view_Module> Modules = view_Module.getAllModules();
-
-            List<view_Module> FilteredModules = new List<view_Module>();
-            foreach (var cr in ContractRows)
-            {
-                foreach (var m in Modules)
-                {
-                    if (m.Article_number == cr.Article_number)
-                    {
-                        FilteredModules.Add(m);
-                    }
-                }
-            }
-
-            var FilteredModulesWithCount = from x in FilteredModules
-                                           group x by x into g
-                                           let count = g.Count()
-                                           orderby count descending
-                                           select new { Value = g.Key, Count = count };
-
-            // Filter and remove duplicants
-            var FilteredModules2 = Modules.Where(
-               m => ContractRows.Any(
-               cr => cr.Article_number == m.Article_number));
-
-
+            
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
-            foreach (view_Module m in FilteredModules2)
+            foreach (KeyValuePair<int, Dictionary<String, dynamic>> FM in this.GetFilteredModules(Start,Stop))
             {
                 Dictionary<String, String> dic = new Dictionary<String, String>();
-                var LastPInfoCount = m.GetType().GetProperties().Length;
-                var count = 0;
-                foreach (System.Reflection.PropertyInfo pi in m.GetType().GetProperties())
+                foreach (KeyValuePair<String,dynamic> FMS in FM.Value)
                 {
-                    count++;
-
-                    if (LastPInfoCount == count)
+                    if(FMS.Value != null)
                     {
-                        foreach (var dup in FilteredModulesWithCount)
-                        {
-                            System.Type type = dup.GetType();
-
-                            view_Module vm = (view_Module)type.GetProperty("Value").GetValue(dup, null);
-                            int dupCount = (int)type.GetProperty("Count").GetValue(dup, null);
-                            if (m.Article_number == vm.Article_number)
-                            {
-                                dic.Add("Count", dupCount.ToString());
-                            }
-                        }
+                        dic.Add(FMS.Key, FMS.Value.ToString());
                     }
-
-
-                    if (Printable.Contains(pi.Name))
+                    else
                     {
-                        if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
-                        {
-                            if (pi.GetValue(m) != null)
-                                dic.Add(pi.Name, ((DateTime)pi.GetValue(m)).ToString("yyyy-MM-dd"));
-                            else
-                                dic.Add(pi.Name, null);
-                        }
-                        else
-                        {
-                            if (pi.GetValue(m) != null)
-                                dic.Add(pi.Name, pi.GetValue(m).ToString());
-                            else
-                                dic.Add(pi.Name, null);
-                        }
+                        dic.Add(FMS.Key, "");
                     }
+                    
                 }
-                rows.Add(dic);
-                
+                rows.Add(dic);   
             }
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";

@@ -8,8 +8,8 @@
 @using System.Globalization;
 
 <div id="crm-pdf-offer-head">
-    <p><strong id="Document_head">@ViewBag.CustomerOffer.Document_head</strong></p>
-    <div id="Page_head" class="area-newline">@ViewBag.CustomerOffer.Page_head</div>
+    <p><strong id="Document_head">@Html.Raw(@ViewBag.CustomerOffer.Document_head)</strong></p>
+    <div id="Page_head" class="area-newline">@Html.Raw(@ViewBag.CustomerOffer.Page_head)</div>
 </div>
 @if(ViewBag.Articles.Count > 0)
 {

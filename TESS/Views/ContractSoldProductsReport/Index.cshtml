@@ -12,14 +12,14 @@
         }
         else
         {
-            Start = DateTime.Now;
+            Start = DateTime.Now.AddMonths(-1);
             Stop = DateTime.Now;
         }
 
     }
     catch(Exception ignore)
     {
-        Start = DateTime.Now;
+        Start = DateTime.Now.AddMonths(-1);
         Stop = DateTime.Now;
     }
 }
@@ -49,7 +49,7 @@
                        placeholder="Stop date"
                        >
             </div>
-            <button id="fetch-data" class="btn btn-default" type="button">Fetch Data</button>
+            <button id="fetch-data" class="btn btn-default" type="button">Search</button>
             <button id="fetch-pdf" class="btn btn-default" type="button">PDF</button>
         </form>
     </div>
@@ -57,18 +57,13 @@
         <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
             <thead>
                 <tr>
-                    @{ 
-                        int len = ViewBag.Properties.Length;
-                        int count = 0;
-                    }
+                       <th data-field="Count" data-sortable="true">Count</th>
+           
                     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
                     {
-                        count++;
+                      
                         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                        if (len == count)
-                        {
-                            <th data-field="Count" data-sortable="true">Count</th>
-                        }
+                        
                         if (ViewBag.Printable.Contains(PropertyInfo.Name))
                         {
                             <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
@@ -79,7 +74,10 @@
         </table>
     </div>
     <script>
-        @{String DataObject = "\r\n";}
+        @{
+            String DataObject = "\r\n";
+            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"Count\"  },\r\n";
+        }
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
             String PropertyName = PropertyInfo.Name.Replace("_", " ");
@@ -88,8 +86,7 @@
                 DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
             }
         }
-        @{
-            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"Count\"  },\r\n";
+        @{    
             DataObject = DataObject.Remove(DataObject.Length - 3);
         }
        
@@ -111,10 +108,12 @@
                 "defaultContent": "",
                 "columns": [@Html.Raw(DataObject)
                 ],
+                "order": [[ 0, 'desc' ]],
 
                 "scrollX": true,
 
             });
+            
 
         }
         
@@ -154,6 +153,7 @@
             })
 
             updateDataTable();
+           // $('#report-table').fnSort([[0, 'asc']]);
             
             if (!webkit) {
                 $startDate.datepicker({ dateFormat: 'yy-mm-dd' });

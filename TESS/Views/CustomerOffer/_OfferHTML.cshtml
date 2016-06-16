@@ -97,7 +97,7 @@
     <div class="crm-print-block">
         <div class="crm-pdf-footer-section">
             <div id="crm-pdf-footer-info">
-                <div id="Document_foot" class="area-newline">@ViewBag.CustomerOffer.Document_foot</div>
+                <div id="Document_foot" class="area-newline">@Html.Raw(@ViewBag.CustomerOffer.Document_foot)</div>
             </div>
             <div id="crm-pdf-footer-regards">
                 <p>Med vänlig hälsning</p>
