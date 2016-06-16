@@ -5,33 +5,46 @@
 <div class="row">
     <div class="col-md-6 crm-widget-dashboard">
         <div class="panel panel-default crm-widget-dashboard">
-            <div class="panel-heading">TESS Counters</div>
+            <div class="panel-heading">TESS Counters 
+                <span id="crm-widget-refresh-all" class="pull-right">
+                    <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                </span>
+            </div>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-6 col-md-4">
-                        <div class="panel panel-default crm-widget">
+                        <div id="open-offers" class="panel panel-default crm-widget">
                             <div class="panel-heading">Pending Offers</div>
                             <div class="panel-body">
                                 <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
-                                <span id="pending-offers-data"> 44</span>
+                                <span class="widget-data"> </span>
+                                <div style="display: none" class="crm-loading">
+                                    <img src="~/Content/img/crm-loading.gif" />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 col-md-4">
+                    <div id="sent-contracts" class="col-xs-6 col-md-4">
                         <div class="panel panel-default crm-widget">
                             <div class="panel-heading">Sent Contracts</div>
                             <div class="panel-body">
                                 <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
-                                <span id="sent-contracts-data"> 3</span>
+                                <span class="widget-data"> </span>
+                                <div style="display: none" class="crm-loading">
+                                    <img src="~/Content/img/crm-loading.gif" />
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-6 col-md-4">
-                        <div class="panel panel-default crm-widget">
+                        <div id="expiring-contracts" class="panel panel-default crm-widget">
                             <div class="panel-heading">Expiring Contracts</div>
                             <div class="panel-body">
                                 <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
-                                <span id="expiring-contracts-data"> 12</span>
+                                <span class="widget-data"> </span>
+                                <div style="display: none" class="crm-loading">
+                                    <img src="~/Content/img/crm-loading.gif" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -44,19 +57,55 @@
     </div>
 </div>
 <script>
+    var handleLoadingIcon = function($widget, action)
+    {
+        var $panelBody = $widget.find('.panel-body');
+        var $laodingContainer = $widget.find('.crm-loading')
+        if(action == 'show')
+        {
+            $panelBody.find('span').hide();
+            $laodingContainer.show();
+        }
+        else {
+            $panelBody.find('span').show();
+            $laodingContainer.hide();
+        }
+    }
     var getStatisticsValue = function(url, $widget)
     {
+        var $widgetData = $widget.find('.widget-data');
+        //console.log($widgetData);
         $.ajax({
             "url": url,
             "type": "POST",
+            "beforeSend": function(){
+                handleLoadingIcon($widget, "show");
+            },
             "success": function (data) {
-                alert(data);
+                console.log($widgetData);
+                $widgetData.html(data);
+                handleLoadingIcon($widget, "hide");
             }
         });
     }
     $(document).ready(function () {
-        getStatisticsValue("/Home/GetAmountOpenOffers/", null);
-        getStatisticsValue("/Home/GetAmountExpiringContracts/", null);
-        getStatisticsValue("/Home/GetAmountSentContracts/", null);
+
+        console.log('test1');
+        var $openOffersWidget = $('#open-offers');
+        var $sentContractsWidget = $('#sent-contracts');
+        var $expiringContractsWidget = $('#expiring-contracts');
+        
+        var getAllStatistics = function()
+        {
+            getStatisticsValue("/Home/GetAmountOpenOffers/", $openOffersWidget);
+            getStatisticsValue("/Home/GetAmountExpiringContracts/", $sentContractsWidget);
+            getStatisticsValue("/Home/GetAmountSentContracts/", $expiringContractsWidget);
+        }
+
+        $('#crm-widget-refresh-all').click(getAllStatistics);
+  
+        getAllStatistics();
+        
+        
     });
 </script>

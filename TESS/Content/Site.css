@@ -137,6 +137,12 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   height: 100%;
 }
 .crm-widget-dashboard {
+  border: none;
+}
+.crm-widget-dashboard .panel-default > .panel-heading {
+  color: white;
+  background-color: #28677b;
+  border-color: #ecf0f1;
   border-radius: 0;
 }
 .crm-widget {
@@ -151,6 +157,7 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   background-color: #749caa;
   border-color: #ecf0f1;
   border-radius: 0;
+  font-size: 80%;
 }
 .dataTable tr {
   position: relative;
