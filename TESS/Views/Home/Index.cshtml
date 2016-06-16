@@ -2,3 +2,28 @@
 <div class="crm-overlay-backgorund-filter">
     <div class="crm-overlay-background-image"></div>
 </div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            "url": "/Home/GetAmountOpenOffers/",
+            "type": "POST",
+            "success": function (data) {
+                alert(data);
+            }
+        });
+        $.ajax({
+            "url": "/Home/GetAmountSentContracts/",
+            "type": "POST",
+            "success": function (data) {
+                alert(data);
+            }
+        });
+        $.ajax({
+            "url": "/Home/GetAmountExpiringContracts/",
+            "type": "POST",
+            "success": function (data) {
+                alert(data);
+            }
+        });
+    });
+</script>
