@@ -43,3 +43,20 @@
 
     </div>
 </div>
+<script>
+    var getStatisticsValue = function(url, $widget)
+    {
+        $.ajax({
+            "url": url,
+            "type": "POST",
+            "success": function (data) {
+                alert(data);
+            }
+        });
+    }
+    $(document).ready(function () {
+        getStatisticsValue("/Home/GetAmountOpenOffers/", null);
+        getStatisticsValue("/Home/GetAmountExpiringContracts/", null);
+        getStatisticsValue("/Home/GetAmountSentContracts/", null);
+    });
+</script>
