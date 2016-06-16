@@ -286,10 +286,10 @@ var insertRowToDatabase = function (element, newRowObj, insertUrl, $dataTable) {
 **/
 var formatCurrency = function (n) {
     if (String(n).indexOf('.') > -1)
-        return parseFloat(n) + " kr";
+        return parseFloat(n).toFixed(2) + " kr";
     else {
         n = parseFloat(n);
-        return n.toFixed(0).replace(/./g, function (c, i, a) {
+        return n.toFixed(2).replace(/./g, function (c, i, a) {
             return i && c !== "." && ((a.length - i) % 3 === 0) ? ' ' + c : c;
         }) + " kr";
     }
