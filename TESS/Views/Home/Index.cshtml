@@ -3,27 +3,19 @@
     <div class="crm-overlay-background-image"></div>
 </div>
 <script>
+    var getStatisticsValue = function(url, $widget)
+    {
+        $.ajax({
+            "url": url,
+            "type": "POST",
+            "success": function (data) {
+                alert(data);
+            }
+        });
+    }
     $(document).ready(function () {
-        $.ajax({
-            "url": "/Home/GetAmountOpenOffers/",
-            "type": "POST",
-            "success": function (data) {
-                alert(data);
-            }
-        });
-        $.ajax({
-            "url": "/Home/GetAmountSentContracts/",
-            "type": "POST",
-            "success": function (data) {
-                alert(data);
-            }
-        });
-        $.ajax({
-            "url": "/Home/GetAmountExpiringContracts/",
-            "type": "POST",
-            "success": function (data) {
-                alert(data);
-            }
-        });
+        getStatisticsValue("/Home/GetAmountOpenOffers/", null);
+        getStatisticsValue("/Home/GetAmountExpiringContracts/", null);
+        getStatisticsValue("/Home/GetAmountSentContracts/", null);
     });
 </script>
