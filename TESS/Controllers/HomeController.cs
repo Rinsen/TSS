@@ -15,9 +15,7 @@ namespace TietoCRM.Controllers
     {
         public ActionResult Index()
         {
-            this.createCookie();
             var cName = User.Identity.Name;
-            GlobalVariables.MostVisitedSites = this.getMostVisitedSite();
             this.ViewData["Title"] = cName;
             return View();
         }
@@ -36,35 +34,23 @@ namespace TietoCRM.Controllers
             return View();
         }
 
-        public void createCookie()
+        public String GetAmountOpenOffers()
         {
-            if (!this.ControllerContext.HttpContext.Request.Cookies.AllKeys.Contains("Tariff"))
-            {
-                List<String> l = new List<String>();
-                l.Add("Tariff");
-                l.Add("Customer");
-                l.Add("Module");
-
-                foreach (String name in l)
-                {
-                    HttpCookie cookie = new HttpCookie(name);
-                    cookie.Value = Convert.ToString(0);
-                    cookie.Expires = DateTime.Parse("2035-10-10 15:15");
-
-                    this.ControllerContext.HttpContext.Response.Cookies.Add(cookie);
-                }
-            }
+            Statistics stats = new Statistics(GlobalVariables.WindowsUser.Sign);
+            return stats.getAmountOpenOffers().ToString();
         }
 
-        protected HashSet<HttpCookie> getMostVisitedSite()
+        public String GetAmountSentContracts()
         {
-            HashSet<HttpCookie> l = new HashSet<HttpCookie>();
-            foreach (String name in this.Request.Cookies)
-            {
-                HttpCookie c = this.Request.Cookies.Get(name);
-                l.Add(c);
-            }
-            return new HashSet<HttpCookie>(l.OrderByDescending(o => o.Value).ToArray());
+            Statistics stats = new Statistics(GlobalVariables.WindowsUser.Sign);
+            return stats.getAmounSentContracts().ToString();
+        }
+
+        public String GetAmountExpiringContracts()
+        {
+            Statistics stats = new Statistics(GlobalVariables.WindowsUser.Sign);
+            return stats.getAmountExpiringContracts().ToString();
+
         }
 
         public string checkReminder()
