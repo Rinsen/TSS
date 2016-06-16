@@ -103,8 +103,8 @@
         var getAllStatistics = function()
         {
             getStatisticsValue("/Home/GetAmountOpenOffers/", $openOffersWidget);
-            getStatisticsValue("/Home/GetAmountExpiringContracts/", $sentContractsWidget);
-            getStatisticsValue("/Home/GetAmountSentContracts/", $expiringContractsWidget);
+            getStatisticsValue("/Home/GetAmountSentContracts/", $sentContractsWidget);
+            getStatisticsValue("/Home/GetAmountExpiringContracts/", $expiringContractsWidget);
         }
 
         $('#crm-widget-refresh-all').click(getAllStatistics);
