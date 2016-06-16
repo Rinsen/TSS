@@ -159,6 +159,19 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   border-radius: 0;
   font-size: 80%;
 }
+.crm-loading {
+  background: white;
+  text-align: center;
+  margin: -15px;
+  margin-top: -16px;
+  border: 1px solid #28677b;
+}
+.crm-loading img {
+  width: 25%;
+}
+#crm-widget-refresh-all {
+  cursor: pointer;
+}
 .dataTable tr {
   position: relative;
 }
