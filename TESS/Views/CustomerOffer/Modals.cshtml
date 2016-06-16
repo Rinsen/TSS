@@ -400,8 +400,8 @@ else if (Request["modal"] == "articles")
     var editArticle = function(editButton){
         var $editButton = $(editButton); 
         var $articleBtn = $editButton.parent().parent().parent().find("td button");
-        var oldLicenseVal = Math.round($articleBtn.data("license"), 0);
-        var oldMaintenanceVal = Math.round($articleBtn.data("maintenance"), 0);
+        var oldLicenseVal = parseFloat($articleBtn.data("license")).toFixed(2);
+        var oldMaintenanceVal = parseFloat($articleBtn.data("maintenance")).toFixed(2);
         var articleName = $articleBtn.find(".art-nr").next().html();
         var articleNr = $articleBtn.find(".art-nr").html();
         var licenseText = "";
