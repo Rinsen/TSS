@@ -36,19 +36,25 @@ namespace TietoCRM.Controllers
 
         public String GetAmountOpenOffers()
         {
-            Statistics stats = new Statistics(GlobalVariables.WindowsUser.Sign);
+            view_User user = new view_User();
+            user.Select("windows_user='" + User.Identity.Name + "'");
+            Statistics stats = new Statistics(user);
             return stats.getAmountOpenOffers().ToString();
         }
 
         public String GetAmountSentContracts()
         {
-            Statistics stats = new Statistics(GlobalVariables.WindowsUser.Sign);
+            view_User user = new view_User();
+            user.Select("windows_user='" + User.Identity.Name + "'");
+            Statistics stats = new Statistics(user);
             return stats.getAmounSentContracts().ToString();
         }
 
         public String GetAmountExpiringContracts()
         {
-            Statistics stats = new Statistics(GlobalVariables.WindowsUser.Sign);
+            view_User user = new view_User();
+            user.Select("windows_user='" + User.Identity.Name + "'");
+            Statistics stats = new Statistics(user);
             return stats.getAmountExpiringContracts().ToString();
 
         }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Security.Principal;
 using System.Configuration;
 using TietoCRM;
+
 namespace TietoCRM.Models
 {
     public static class GlobalVariables
@@ -12,7 +13,6 @@ namespace TietoCRM.Models
         public static void Initializer()
         {
             HttpContext.Current.Application["ApplicationName"] = ConfigurationManager.AppSettings["applicationName"];
-           
         }
 
         

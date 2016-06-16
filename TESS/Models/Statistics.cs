@@ -17,12 +17,22 @@ namespace TietoCRM.Models
         }
 
         private List<String> customerNames;
-        private List<view_Contract> contracts;
+        private List<view_Contract> contracts = new List<view_Contract>();
         public Statistics(String user)
         {
             this.user = user;
             this.customerNames = view_Customer.getCustomerNames(this.User);
             this.contracts = view_Contract.GetValidContracts(user);
+        }
+        public Statistics(view_User user)
+        {
+            this.user = user.Sign;
+            this.customerNames = view_Customer.getCustomerNames(this.User);
+            foreach(String name in this.customerNames)
+            {
+                this.contracts.AddRange(view_Contract.GetContracts(name));
+            }
+            
         }
 
         public int getAmountOpenOffers()
@@ -47,7 +57,7 @@ namespace TietoCRM.Models
             {
                 if (contract.Valid_through.Value != null)
                 {
-                    if ((DateTime.Now - contract.Valid_through.Value).TotalDays <= 30)
+                    if ((contract.Valid_through.Value - DateTime.Now).TotalDays <= 30)
                     {
                         amountExpiringContracts += 1;
                     }

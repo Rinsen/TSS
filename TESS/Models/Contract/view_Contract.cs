@@ -247,6 +247,7 @@ namespace TietoCRM.Models
             }
             return list;
         }
+
         /// <summary>
         /// Gets all valid contracts of a client that the specific user is a representative of.
         /// </summary>
@@ -275,7 +276,7 @@ namespace TietoCRM.Models
                 command.Parameters.AddWithValue("@sign", sign);
 
 
-                
+
 
 
                 using (SqlDataReader reader = command.ExecuteReader())
