@@ -7,7 +7,7 @@
         <form method="get" action="~/SaleReport/Pdf" target="_blank" class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">Representative:</label>
-                <select name="user" id="crm-select-user" class="form-control">
+                <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
                     @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
                     {
                         if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
@@ -21,7 +21,7 @@
                     }
                 </select>
             </div>
-            <button class="btn btn-default" type="submit">PDF</button>
+            <button style="margin-top: 1.7em;" class="btn btn-default" type="submit">PDF</button>
         </form>
     </div>
     <div class="col-md-12">
@@ -93,6 +93,8 @@
 
     }
     $('document').ready(function () {
+
+        $('.selectpicker').selectpicker();
 
         $userContainer = $("#crm-select-user");
 
