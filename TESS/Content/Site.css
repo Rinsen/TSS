@@ -145,6 +145,42 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   height: 100%;
   display: block;
 }
+.crm-widget-dashboard {
+  border: none;
+}
+.crm-widget-dashboard .panel-default > .panel-heading {
+  color: white;
+  background-color: #28677b;
+  border-color: #ecf0f1;
+  border-radius: 0;
+}
+.crm-widget {
+  background-color: #6197aa;
+  border-radius: 0;
+  color: white;
+  font-weight: bold;
+  font-size: 150%;
+}
+.crm-widget .panel-heading {
+  color: white;
+  background-color: #749caa;
+  border-color: #ecf0f1;
+  border-radius: 0;
+  font-size: 80%;
+}
+.crm-loading {
+  background: white;
+  text-align: center;
+  margin: -15px;
+  margin-top: -16px;
+  border: 1px solid #28677b;
+}
+.crm-loading img {
+  width: 25%;
+}
+#crm-widget-refresh-all {
+  cursor: pointer;
+}
 .dataTable tr {
   position: relative;
 }

@@ -172,6 +172,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\view_CustomerMissingProductReport.cs" />
     <Compile Include="Models\Cloner.cs" />
     <Compile Include="Models\Contract\view_ContractExpirationList.cs" />
@@ -326,6 +327,7 @@
     <Content Include="Content\DataTables\swf\flashExport.swf" />
     <Content Include="Content\ExpPdfStyle.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\img\crm-loading.gif" />
     <Content Include="Content\img\Signatures\AHD.png" />
     <Content Include="Content\img\Signatures\JAA.png" />
     <Content Include="Content\img\Signatures\CWB.png" />
