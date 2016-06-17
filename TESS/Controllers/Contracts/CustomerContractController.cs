@@ -2076,6 +2076,26 @@ namespace TietoCRM.Controllers.Contracts
             return "1";
 
         }
+
+        public String DeleteContract()
+        {
+            try
+            {
+                String value = Request.Form["id"];
+                view_Contract co = new view_Contract("Contract_id='" + value + "'");
+                //a.Select("Article_number = " + value);
+                if (co.Status == "Makulerat")
+                    co.Delete("Contract_id='" + value + "'");
+                else
+                    return "-1";
+            }
+            catch (Exception e)
+            {
+                return "-1";
+            }
+            return "1";
+        }
+
         public string checkReminder()
         {
             String customer = Request.Form["customer"];

@@ -781,6 +781,7 @@
                 ]);
             }
         }
+    var selectedContract = {};
         var selectRow = function(element){
             var $td = $(element);
             var $row = $(element).parent();
@@ -789,8 +790,80 @@
             $td.find("input").prop("checked", true);
 
             selectedId = $td.find("input").val();
+            if(selectedId !== null)
+                generateSelectedContract($row);
             $table.find("tr.selected").removeClass("selected");
             $row.addClass("selected");
+
+            var $selRowContainer = $("#CustomerContract-table_wrapper").find(".row").first().find(".col-sm-6").first();
+            $button = $selRowContainer.find("#crm-delete-contract");
+            if(selectedContract.Status == "Makulerat" && $button.length == 0){
+                $selRowContainer.append("<div id='crm-delete-contract' class='crm-table-btn'><button type='button' class='btn btn-danger'>Remove</button></div>");
+                $selRowContainer.find("#crm-delete-contract").bind("click", function(){
+                    bootbox.dialog({
+                        title: 'Do you want to delete this contract?',
+                        message: "You are about to delete the selected contract",
+                        buttons: {
+                            'yes': {
+                                label: 'Yes',
+                                className: 'btn-danger pull-right',
+                                callback: function () {
+                                    $.ajax({
+                                        "url": "/CustomerContract/DeleteContract/",
+                                        "type": "POST",
+                                        "data": {
+                                            "id": selectedContract.Contract_id
+                                        },
+                                        "success": function(data){
+                                            if(data > 0)
+                                            {
+                                                updateDataTable($("#crm-select-customer").val());
+                                                //checkReminder($("#crm-select-customer").val());
+                                                drawButtons();
+                                                selectedId = null;
+                                                triggerAlert("Successfully deleted contract.", "success");
+                                            }
+                                            else
+                                            {
+                                                triggerAlert("Failed to delete contract.", "warning");
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                            'no': {
+                                label: 'No',
+                                className: 'pull-right',
+                            }
+                        },
+                    });
+                });
+            }
+            else if($button.length != 0 && selectedContract.Status != "Makulerat"){
+                $selRowContainer.find("#crm-delete-contract").remove();
+            }
+        }
+
+        var generateSelectedContract = function($selectedRow){
+            selectedContract.Contract_id = $selectedRow.find("td:nth-child(2)").html();
+            selectedContract.Customer = $selectedRow.find('[data-data="Customer"]').html();
+            selectedContract.Contract_type = $selectedRow.find('[data-data="Contract_type"]').html();
+            selectedContract.Term_of_notice = $selectedRow.find('[data-data="Term_of_notice"]').html();
+            selectedContract.Status = $selectedRow.find('[data-data="Status"]').html();
+            selectedContract.Valid_from = $selectedRow.find('[data-data="Valid_from"]').html();
+            selectedContract.Valid_through = $selectedRow.find('[data-data="Valid_through"]').html();
+            selectedContract.Main_contract_id = $selectedRow.find('[data-data="Main_contract_id"]').html();
+            selectedContract.Extension = $selectedRow.find('[data-data="Extension"]').html();
+            selectedContract.Expire = $selectedRow.find('[data-data="Expire"]').html();
+            selectedContract.Observation = $selectedRow.find('[data-data="Observation"]').html();
+            selectedContract.Note = $selectedRow.find('[data-data="Note"]').html();
+            selectedContract.Contact_person = $selectedRow.find('[data-data="Contact_person"]').html();
+            selectedContract.Created = $selectedRow.find('[data-data="Created"]').html();
+            selectedContract.Updated = $selectedRow.find('[data-data="Updated"]').html();
+            selectedContract.Option_date = $selectedRow.find('[data-data="Option_date"]').html();
+            selectedContract.Sign = $selectedRow.find('[data-data="Sign"]').html();
+            selectedContract.Resigned_contract = $selectedRow.find('[data-data="Resigned_contract"]').html();
+            console.log(selectedContract);
         }
         var uniqueRowNumber = 0;
         var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
