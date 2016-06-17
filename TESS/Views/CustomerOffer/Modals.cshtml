@@ -109,13 +109,25 @@
             var $ttForm = $("#text-template-form");
             var $inputs = $ttForm.find(":input");
             console.log("Spara");
-           
+            var tinyMCEInputs = [
+                "Page_head",
+                "Page_foot",
+                "Document_foot",
+            ];
             $inputs.each(function () {
                 var $formInput = $(this);
                 var inputProp = $formInput.attr("name");
                 if(inputProp != "Sign" && inputProp != "Template_number" && inputProp != "SSMA_timestamp" && typeof inputProp != 'undefined'){
-                    console.log($formInput.attr("value"),$formInput.val());
-                    updateData[$formInput.attr("name")] = $formInput.val(); 
+                    //console.log($formInput.attr("value"),$formInput.val());
+                    // if input is a TinyMCE field extract the content.
+                    if($.inArray(inputProp, tinyMCEInputs) >= 0){
+                        
+                        updateData[inputProp] = tinymce.get($formInput.attr("id")).getContent()
+                    }
+                    else{
+                        updateData[inputProp] = $formInput.val(); 
+                    }
+                    
                 }
                    
             });
@@ -151,6 +163,18 @@
                 }
             })
         }
+    </script>
+    <script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript">
+    tinymce.init({
+        selector: "#page-head-text"
+    });
+    tinymce.init({
+        selector: "#page-foot-text"
+    });
+    tinymce.init({
+        selector: "#document-foot-text"
+    });
     </script>
     <!-- #endregion -->
 }
