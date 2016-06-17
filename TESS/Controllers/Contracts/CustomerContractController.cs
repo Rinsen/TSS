@@ -294,7 +294,7 @@ namespace TietoCRM.Controllers.Contracts
             }
             else
             {
-                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "Sign").ToList();
+                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "Observation" || p.Name == "Sign").ToList();
             }
             this.ViewData.Add("TableItems", properties);
             this.ViewData.Add("Statuses", GetStatuses());
@@ -1642,15 +1642,16 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     if (String.IsNullOrEmpty(entry.Value.ToString()))
                     {
-                        short? nullString = null;
-                        a.SetValue(entry.Key, nullString);
+                        //short? nullString = null;
+                        //a.SetValue(entry.Key, nullString);
+                        a.SetValue(entry.Key, null);
                     }
                     else
                     {
                         a.SetValue(entry.Key, entry.Value);
                     }
-                    
-             
+
+
                 }
                 //If contract ID has been changed, and it's a mani ciontract, then we also change the Main Contract ID
                 if (a.Is(ContractType.MainContract))
