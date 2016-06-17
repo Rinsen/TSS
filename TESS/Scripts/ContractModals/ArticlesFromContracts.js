@@ -41,7 +41,6 @@
 
             moduleList.push(obj);
         }
-
         $inputs = $("#services-from-contracts").find("input:checked");
         length = $inputs.length;
         var serviceList = [];
@@ -61,10 +60,6 @@
             },
             "success": function (data) {
                 if (data > 0) {
-                    if (typeof updateSelectedOptions != "undefined")
-                        updateSelectedOptions();
-                    if (typeof updateServiceSelected != "undefined")
-                        updateServiceSelected();
 
                     $.ajax({
                         "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",
@@ -82,6 +77,8 @@
                             $("#modulesFromContractsModal").modal("hide");
                         }
                     });
+                    updateSelectedItems();
+                    updateServiceSelected();
                     console.log("success");
                 }
                 else {

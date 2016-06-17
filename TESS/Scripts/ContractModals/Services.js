@@ -221,10 +221,10 @@ var updateServiceSelected = function () {
             for (var i = 0; i < length; i++) {
                 service = servicesData[i];
                 $selectedServices.append("                                                                                              \
-                <button style='margin-bottom:25px' type='button' onclick='newItem(this, " + formatCurrency(service.Price) + ")'         \
-                        data-code='" + service.Code + "' data-selected='false' class='list-group-item'                                  \
-                    <label>" + service.Price + "</label>                                                                                \
-                    <span class='service-amount'></span>                                                                                \
+                <button style='margin-bottom:25px' type='button' onclick='newItem(this, " + service.Price + ")'         \
+                        data-code='" + service.Code + "' data-selected='true' class='list-group-item'  >                               \
+                    <label>" + formatCurrency(service.Price) + "</label>                                                                \
+                    <span class='service-amount'>" + service.Amount + "</span>                                                          \
                     <br />                                                                                                              \
                     " + service.Description + "                                                                                         \
                 </button>                                                                                                               \
