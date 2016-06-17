@@ -146,6 +146,8 @@
                                 <li><a href="#">Product customers</a></li>
                                 <li><a href="#">Sold modules</a></li>*@
                         </ul>
+                        @if(TietoCRM.Models.GlobalVariables.isAuthorized("CustomerOffer"))
+                            {
                         <li data-toggle="collapse" data-target="#offers" class="collapsed">
                             <a href="#"> Offers </a>
                         </li>
@@ -153,6 +155,9 @@
                             <li><a href="~/CustomerOffer/">- Customer offers</a></li>
                             @*<li><a href="#">Summary</a></li>*@
                         </ul>
+                        }
+                        @if(TietoCRM.Models.GlobalVariables.isAuthorized("CustomerContract"))
+                        {
                         <li data-toggle="collapse" data-target="#contracts" class="collapsed">
                             <a href="#"> Contracts </a>
                         </li>
@@ -161,9 +166,10 @@
                             <li><a href="~/CustomerContract/">- Customer contracts</a></li>
                             <li><a href="~/ContractExpirationList/">- Expiration List</a></li>
                             @*<li><a href="#">Customer visit</a></li>
-                                <li><a href="#">Modual closure</a></li>
-                                <li><a href="#">Summary</a></li>*@
+                            <li><a href="#">Modual closure</a></li>
+                            <li><a href="#">Summary</a></li>*@
                         </ul>
+                        }
                         <li data-toggle="collapse" data-target="#installations" class="collapsed">
                             <a href="#"> Installations </a>
                         </li>

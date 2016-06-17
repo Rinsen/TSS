@@ -5,6 +5,7 @@ using System.Web;
 using System.Security.Principal;
 using System.Configuration;
 using TietoCRM;
+using TietoCRM.Extensions;
 
 namespace TietoCRM.Models
 {
@@ -15,7 +16,22 @@ namespace TietoCRM.Models
             HttpContext.Current.Application["ApplicationName"] = ConfigurationManager.AppSettings["applicationName"];
         }
 
-        
+        public static void checkIfAuthorized(String site)
+        {
+            if(!isAuthorized(site))
+                throw new Exception("Invalid user level. You do not have premission to be here!");
+        }
+
+        public static bool isAuthorized(String site)
+        {
+            view_User user = new view_User();
+            user.Select("Sign='" + System.Web.HttpContext.Current.GetUser().Sign + "'");
+            System.Web.HttpContext.Current.UpdateUser(user);
+            if (user.User_level > 2 && (site == "CustomerContract" || site == "CustomerOffer"))
+                return false;
+            else
+                return true;
+        }
 
         // read-write variable
         public static string ApplicationName

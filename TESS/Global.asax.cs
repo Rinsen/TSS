@@ -19,6 +19,11 @@ namespace TietoCRM.Extensions
         {
             return current != null ? (String)current.Session["__UserRedirectUrl"] : null;
         }
+
+        public static void UpdateUser(this HttpContext current, view_User user)
+        {
+            current.Session["__User"] = user;
+        }
     }
 }
 

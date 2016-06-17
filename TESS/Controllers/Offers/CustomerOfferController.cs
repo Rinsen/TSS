@@ -40,7 +40,12 @@ namespace TietoCRM.Controllers
         // GET: CustomerOffer
         public ActionResult Index()
         {
-            this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
+            GlobalVariables.checkIfAuthorized("CustomerOffer");
+            this.ViewData.Add("User_level", System.Web.HttpContext.Current.GetUser().User_level);
+            if(System.Web.HttpContext.Current.GetUser().User_level > 1)
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
+            else
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames());
             this.ViewData.Add("ControllerName", "CustomerOffer");
             this.ViewData.Add("AjaxUrl", "/CustomerOffer/CustomerOfferJsonData/");
             this.ViewData.Add("TargetUrl", "/CustomerOffer/Data/");
@@ -94,6 +99,7 @@ namespace TietoCRM.Controllers
 
         public ActionResult ViewPdf()
         {
+            GlobalVariables.checkIfAuthorized("CustomerOffer");
             string request = Request["selected-offer"];
             int offerID = 0;
             if (!String.IsNullOrEmpty(request))
@@ -164,6 +170,7 @@ namespace TietoCRM.Controllers
 
         public ActionResult Pdf()
         {
+            GlobalVariables.checkIfAuthorized("CustomerOffer");
             string request = Request["selected-offer"];
             int offerID = 1;
             if (!String.IsNullOrEmpty(request))
@@ -237,6 +244,7 @@ namespace TietoCRM.Controllers
         }
         public ActionResult Modals()
         {
+            GlobalVariables.checkIfAuthorized("CustomerOffer");
             this.ViewData.Add("Services", view_Service.getAllServices());
 
             string request = Request["selected-offer"];
