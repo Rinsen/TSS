@@ -5,14 +5,16 @@
 <row>
     <div class="col-md-12" style="margin-bottom:5px">
         <form method="get" target="_blank" class="form-inline">
-            <select id="user-select" class="form-control">
-                @foreach (TietoCRM.Models.view_User user in ViewBag.Users)
-                {
-                    <option value="@user.Sign">@user.Name</option>
-                }
-            </select>
+            <div class="form-group">
+                <select style="width:100px; " id="user-select" class="form-control selectpicker" data-live-search="true">
+                    @foreach (TietoCRM.Models.view_User user in ViewBag.Users)
+                    {
+                        <option value="@user.Sign">@user.Name</option>
+                    }
+                </select>
+            </div>
             <button class="btn btn-default" id="contracts-generate-pdf" type="button">PDF</button>
-        </form>
+         </form>
     </div>
     <div class="col-md-12">
         <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
@@ -72,6 +74,9 @@
     }
 
     $('document').ready(function () {
+
+
+        $('.selectpicker').selectpicker();
 
         $userSelect = $("#user-select");
 

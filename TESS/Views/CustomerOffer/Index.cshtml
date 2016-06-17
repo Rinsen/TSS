@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="form-group">
             <label for="crm-select-customer">Customer:</label>
-            <select name="customer" id="crm-select-customer" class="form-inline">
+            <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
                 @foreach (String Customer in ViewBag.Customers)
                 {
                     <option value="@Customer">@Customer</option>
@@ -941,6 +941,7 @@
     }
 
     $(document).ready(function () {
+        $('.selectpicker').selectpicker();
         $("#crm-select-customer").change(function () {
             selectedId = null;
             updateDataTable(this.value);

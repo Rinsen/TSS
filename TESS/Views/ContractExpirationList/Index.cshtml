@@ -3,7 +3,7 @@
         <form class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">User:</label>
-                <select name="user" id="crm-select-user" class="form-control">
+                <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
                     @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
                     {
                         if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
@@ -217,6 +217,9 @@
     }
 
     $('document').ready(function () {
+
+        $('.selectpicker').selectpicker();
+
         $("#crm-select-user").change(function () {
             updateDataTable();
             drawButtons();

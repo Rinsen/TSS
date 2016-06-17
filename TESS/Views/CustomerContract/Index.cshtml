@@ -3,7 +3,7 @@
     <div class="col-md-12">
         <div class="form-group">
             <label for="crm-select-customer">Customer:</label>
-            <select name="customer" id="crm-select-customer" class="form-inline">
+            <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
                 @foreach (String Customer in ViewBag.Customers)
                 {
                     <option value="@Customer">@Customer</option>
@@ -1060,6 +1060,9 @@
             $("#newRowModal").appendTo("body").modal("show");
         });
     $(document).ready(function () {
+        
+        $('.selectpicker').selectpicker();
+
         $customerSelect = $("#crm-select-customer");
         $customerSelect.change(function () {
             selectedId = null;
