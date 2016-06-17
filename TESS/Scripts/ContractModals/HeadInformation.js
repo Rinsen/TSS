@@ -25,6 +25,32 @@ $(document).ready(function () {
         }
     });
 
+    var reCalcObservationDate = function () {
+        if (!isNaN($("#term_of_notice-text").val())) {      // Om Term Of Notice är numeriskt (Not icke-numeriskt)
+            if (isNaN($("#valid_through-date").val())) {    //Om inte valid_through är numeriskt (dvs ett datum) ska det beräknas
+                var myDate = new Date($("#valid_through-date").val());
+                myDate.setMonth(myDate.getMonth() - $("#term_of_notice-text").val());
+                $("#observation-date").val($.datepicker.formatDate('yy-mm-dd', myDate));
+            }
+            else {
+                if (isNaN($("#expire-date").val())) {    //Om inte Expire är numeriskt (dvs ett datum) ska det beräknas
+                    var myDate = new Date($("#expire-date").val());
+                    myDate.setMonth(myDate.getMonth() - $("#term_of_notice-text").val());
+                    $("#observation-date").val($.datepicker.formatDate('yy-mm-dd', myDate));
+                }
+            }
+        }
+    }
+
+    $("#term_of_notice-text").change(function () {
+        reCalcObservationDate();
+    });
+
+    $("#valid_through-date").change(function () {
+        reCalcObservationDate();
+    });
+
+
     $("#contract_type-text").change(function () {
         
         if ($(this).val() == "Huvudavtal") {
