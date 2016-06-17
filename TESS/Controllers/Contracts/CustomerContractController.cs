@@ -39,10 +39,12 @@ namespace TietoCRM.Controllers.Contracts
         // GET: CustomerContract
         public ActionResult Index()
         {
-
-            this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
+            GlobalVariables.checkIfAuthorized("CustomerContract");
+            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
+            else
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames());
             this.ViewData.Add("ControllerName", "CustomerContract");
-           
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
             String on;
             if (ViewBag.Customers.Count <= 0)
@@ -73,6 +75,7 @@ namespace TietoCRM.Controllers.Contracts
 
         public ActionResult ViewPdf()
         {
+            GlobalVariables.checkIfAuthorized("CustomerContract");
             this.GenerateThings();
 
             string contractRequest = Request["contract-section"];
@@ -312,6 +315,7 @@ namespace TietoCRM.Controllers.Contracts
 
         public ActionResult Pdf()
         {
+            GlobalVariables.checkIfAuthorized("CustomerContract");
             String urlCustomer = Request["customer"];
             String urlContractId = Request["contract-id"];
 
@@ -357,6 +361,7 @@ namespace TietoCRM.Controllers.Contracts
 
         private string RenderActionResultToString(ActionResult result)
         {
+            GlobalVariables.checkIfAuthorized("CustomerContract");
             // Create memory writer.
             var sb = new StringBuilder();
             var memWriter = new StringWriter(sb);

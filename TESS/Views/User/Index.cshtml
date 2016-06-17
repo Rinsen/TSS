@@ -29,11 +29,23 @@
                     @{
                         foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                         {
-                            if (pi.Name != "User_level")
-                            {
-                                
-                                String pName = pi.Name.Replace("_", " ");
 
+                            String pName = pi.Name.Replace("_", " ");
+                            if (pi.Name == "User_level")
+                            {
+                                <div class="form-group">
+                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                            <option value="1">Supervisor</option>
+                                            <option value="2">Salesperson</option>
+                                            <option value="3">Product owner</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
                                 <div class="form-group">
                                     <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                     <div class="col-sm-10">
@@ -165,6 +177,9 @@
                     maxlength: 15,
                 },
                 "Mobile": {
+                    maxlength: 15,
+                },
+                "User_level": {
                     maxlength: 15,
                 },
             },
@@ -382,7 +397,7 @@
                     i++;
                 }
 
-                if (i < 11) {
+                if (i < 12) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
                     $td.html(aData[name]);
