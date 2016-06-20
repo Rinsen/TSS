@@ -282,6 +282,7 @@
                 var tdLen = $selectedTds.length;
 
                 var $formInputs = $("#userModal form").find(":input");
+                console.log($formInputs);
 
                 var frmInpLen = $formInputs.length;
                 for (var i = 0; i < frmInpLen; i++) {
@@ -409,10 +410,10 @@
                     i++;
                 }
 
-                if (i < 12) {
+                if (i < 13) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
-                    $td.html(aData[name]);
+                    $td.html(String(aData[name]));
                 }
 
                 i++;
