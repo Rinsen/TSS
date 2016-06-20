@@ -123,7 +123,10 @@
                             <li><a href="~/Customer/">- Customers</a></li>
                             <li><a href="~/Tariff/">- Tariff</a></li>
                             <li><a href="~/Service/">- Services</a></li>
+                            @if (TietoCRM.Models.GlobalVariables.isAuthorized("Users"))
+                            {
                             <li><a href="~/User/">- Users</a></li>
+                            }
                             <li><a href="~/Population/">- Population levels</a></li>
                             <li><a href="~/Price/">- Price category</a></li>
                             <li><a href="~/Sector/">- System/Classification</a></li>

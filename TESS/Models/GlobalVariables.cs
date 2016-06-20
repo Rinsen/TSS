@@ -27,7 +27,7 @@ namespace TietoCRM.Models
             view_User user = new view_User();
             user.Select("Sign='" + System.Web.HttpContext.Current.GetUser().Sign + "'");
             System.Web.HttpContext.Current.UpdateUser(user);
-            if (user.User_level > 2 && (site == "CustomerContract" || site == "CustomerOffer"))
+            if (user.User_level > 2 && (site == "CustomerContract" || site == "CustomerOffer" || site == "Users"))
                 return false;
             else
                 return true;

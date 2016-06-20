@@ -13,6 +13,7 @@ namespace TietoCRM.Controllers.List_Management
         // GET: User
         public ActionResult Index()
         {
+            GlobalVariables.checkIfAuthorized("CustomerContract");
             ViewBag.Properties = typeof(TietoCRM.Models.view_User).GetProperties();
             //this.ViewData.Add("Properties", typeof(TietoCRM.Models.view_User).GetProperties());
             this.ViewData["title"] = "User";
