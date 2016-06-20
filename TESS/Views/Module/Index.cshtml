@@ -16,7 +16,7 @@
 </table>
 
 
-<div class="modal fade bs-example-modal-lg" id="moduleModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" id="moduleModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -280,7 +280,7 @@
                     $currInput.val("");
                 }
             }
-            $("#moduleModal").appendTo("body").modal("show");
+            $("#moduleModal").appendTo("body").modal().draggable();
         });
 
 
@@ -317,7 +317,9 @@
                         }
                     }
                     $("#save-module-changes").attr("data-Article-number",selectedId);
-                    $("#moduleModal").appendTo("body").modal("show");
+                    
+                    $("#moduleModal").appendTo("body").modal().draggable();
+                    
                 });
             }
             else

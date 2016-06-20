@@ -57,7 +57,7 @@
         <div id='crm-delete-template' class='crm-table-btn'><button type='button' class='btn btn-primary' style="margin-top:15px" id='main-contract-template-button'>Main Contract Template</button></div>
     </div>
 </row>
-<div class="modal fade bs-example-modal-lg" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" id="templateModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog-modal" role="document">
         <div class="modal-content edit-template-modal">
             <div class="modal-header">
@@ -329,7 +329,7 @@
 
         $("#edit-template-modal-button").click(function () {
             if (selectedId != null) {
-                $("#templateModal").appendTo("body").modal("show");
+                $("#templateModal").appendTo("body").modal("show").draggable();
                 $("#save-template-btn").attr("onclick", "save('update');");
                 getTemplate();
             }
@@ -358,7 +358,7 @@
             $("#deluhtitle5").val("");
             $("#deluhtext5").val("");
 
-            $("#templateModal").appendTo("body").modal("show");
+            $("#templateModal").appendTo("body").modal("show").draggable();
 
             setFields5("Offert");
 

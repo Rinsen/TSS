@@ -14,7 +14,7 @@
     </thead>
 </table>
 
-<div class="modal fade bs-example-modal-lg" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" id="contactModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -326,7 +326,7 @@
                 clearData();
                 loadContactData();
                 $("#crm-select-customer").hide();
-                $("#contactModal").appendTo("body").modal("show");
+                $("#contactModal").appendTo("body").modal("show").draggable();
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -335,7 +335,7 @@
 
         $selRowContainer.append("<div id='create-contact-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-contact-button").bind("click", function () {
-            $("#contactModal").appendTo("body").modal("show");
+            $("#contactModal").appendTo("body").modal("show").draggable();
             $("#save-contact-changes").removeAttr("data-person");
             $("#crm-select-customer").show();
 
