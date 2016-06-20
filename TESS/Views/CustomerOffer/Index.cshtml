@@ -19,7 +19,7 @@
                 @foreach (String ColumnName in ViewBag.Properties)
                 {
                     String PropertyName = ColumnName.Replace("_", " ");
-                    if (@PropertyName != "SSMA timestamp" && @PropertyName != "#")
+                    if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
                     {
                         <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
                     }
@@ -754,7 +754,7 @@
     @{String DataObject = "\r\n";}
     @foreach (String ColumnName in ViewBag.Properties)
     {
-            if (ColumnName != "SSMA_timestamp")
+            if (ColumnName != "SSMA_timestamp" && ColumnName != "Customer")
     {
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @ColumnName + "\"  },\r\n";
     }

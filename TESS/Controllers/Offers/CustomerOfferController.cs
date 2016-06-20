@@ -72,12 +72,11 @@ namespace TietoCRM.Controllers
             List<String> columnNames = new List<String>();
             columnNames.Add("#");
             columnNames.Add("Offer_number");
-            columnNames.Add("Customer");
-            columnNames.Add("Contact_person");
-            columnNames.Add("Email");
+            columnNames.Add("Title");
             columnNames.Add("Offer_created");
             columnNames.Add("Offer_valid");
             columnNames.Add("Offer_status");
+            columnNames.Add("Contact_person");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
             offerStatus = GetOfferStatus();
@@ -324,17 +323,14 @@ namespace TietoCRM.Controllers
 
             foreach (view_CustomerOffer co in customerOffers)
             {
-                view_CustomerContact cc = new view_CustomerContact();
-                cc.Select("Customer = '" + co.Customer + "' AND Contact_person = '" + co.Contact_person + "'");
                 var v = new
                 {
                     Offer_number = co._Offer_number,
-                    Customer = co.Customer,
-                    Contact_person = co.Contact_person,
-                    Email = cc.Email,
+                    Title = co.Title,
                     Offer_created = co.Offer_created,
                     Offer_valid = co.Offer_valid,
                     Offer_status = co.Offer_status,
+                    Contact_person = co.Contact_person,
                     SSMA_timestamp = co.SSMA_timestamp
                 };
 
