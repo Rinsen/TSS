@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -101,6 +102,7 @@ namespace TietoCRM.Controllers.Reports
 
         private Dictionary<int, Dictionary<String, dynamic>> GetFilteredModules(DateTime Start, DateTime Stop)
         {
+            CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
             var Printable = new List<String> {
                 "Article_number",
@@ -125,7 +127,10 @@ namespace TietoCRM.Controllers.Reports
                       
                         foreach(System.Reflection.PropertyInfo pi in m.GetType().GetProperties())
                         {
-                            SortedModule.Add(pi.Name, pi.GetValue(m, null));
+                            if(pi.Name == "Price_category")
+                                SortedModule.Add(pi.Name, String.Format(se, "{0:C2}", pi.GetValue(m)).Replace(".", " ").Replace(" kr", ""));
+                            else
+                                SortedModule.Add(pi.Name, pi.GetValue(m));
                         }
                         int CurrentKey = Convert.ToInt32(m.Article_number);
                         if (ReturnModules.ContainsKey(CurrentKey))
