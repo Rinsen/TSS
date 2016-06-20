@@ -57,6 +57,7 @@ namespace TietoCRM.Controllers.Reports
 
             ViewData.Add("Printable", Printable);
             ViewData.Add("Properties", typeof(view_Module).GetProperties());
+            ViewData.Add("Title", "Sold Products Report");
             return View();
         }
 

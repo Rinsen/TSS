@@ -17,6 +17,7 @@ namespace TietoCRM.Controllers.Reports
         public ActionResult Index()
         {
             ViewData.Add("Users", view_User.getAllUsers());
+            ViewData.Add("Title", "Sale Report");
 
             return View();
         }
