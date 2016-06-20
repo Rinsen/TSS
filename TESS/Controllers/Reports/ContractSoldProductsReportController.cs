@@ -128,7 +128,7 @@ namespace TietoCRM.Controllers.Reports
                         foreach(System.Reflection.PropertyInfo pi in m.GetType().GetProperties())
                         {
                             if(pi.Name == "Price_category")
-                                SortedModule.Add(pi.Name, String.Format(se, "{0:C2}", pi.GetValue(m)).Replace(".", " ").Replace(" kr", ""));
+                                SortedModule.Add(pi.Name, String.Format(se, "{0:C0}", pi.GetValue(m)).Replace(".", " ").Replace(" kr", ""));
                             else
                                 SortedModule.Add(pi.Name, pi.GetValue(m));
                         }

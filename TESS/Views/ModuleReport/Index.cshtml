@@ -23,7 +23,7 @@
                 <tr>
                     <th data-field="Customer" data-sortable="true">Customer</th>
                     <th data-field="Contract_id" data-sortable="true">Contract id</th>
-                    <th data-field="Inhabitant_level" data-sortable="true">Inhabitant level</th>
+                    <th data-field="Classification" data-sortable="true">Classification</th>
                 </tr>
             </thead>
         </table>
@@ -32,7 +32,7 @@
     @{String DataObject = "\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Customer" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Contract_id" + "\"  },\r\n";}
-    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Inhabitant_level" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(module)
     {

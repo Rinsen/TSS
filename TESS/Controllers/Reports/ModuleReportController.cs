@@ -53,6 +53,8 @@ namespace TietoCRM.Controllers.Reports
             List<view_ContractRow> ContractRows = view_ContractRow.GetValidContractRows(int.Parse(articleNumber));
             List<view_Contract> contracts = new List<view_Contract>();
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
+            view_Module module = new view_Module();
+            module.Select("Article_number=" + articleNumber);
 
             foreach (view_ContractRow cr in ContractRows)
             {
@@ -68,8 +70,7 @@ namespace TietoCRM.Controllers.Reports
                 {
                     Customers.Add("Customer", cr.Customer);
                     Customers.Add("Contract_id", cr.Contract_id);
-                    view_Customer Customer = new view_Customer("Customer='" + cr.Customer + "'");
-                    Customers.Add("Inhabitant_level", Customer.Inhabitant_level.ToString());
+                    Customers.Add("Classification", module.Classification);
                     rows.Add(Customers);
                 }
             }
