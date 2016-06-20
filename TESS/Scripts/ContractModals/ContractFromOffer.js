@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $("#contractFromOffer-modal-button").click(function () {
-        $("#contractFromOfferModal").appendTo("body").modal("show");
+        $("#contractFromOfferModal").appendTo("body").modal("show").find('.modal-content').draggable();
     });
 
     $("#contractFromOfferModal #check-all-modules").click(function () {

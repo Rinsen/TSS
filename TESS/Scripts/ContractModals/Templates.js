@@ -6,13 +6,13 @@
         
         if (isMainCont == "True") {
             $("#main-template-number-select").val("current");
-            $("#mainTemplatesModal").appendTo("body").modal("show");
+            $("#mainTemplatesModal").appendTo("body").modal("show").find('.modal-content').draggable();
             loadTopHeadText();
         }
         else {
             loadSelectData();
             loadTextData();
-            $("#templatesModal").appendTo("body").modal("show");
+            $("#templatesModal").appendTo("body").modal("show").find('.modal-content').draggable();
         }
        
     });

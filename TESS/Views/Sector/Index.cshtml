@@ -16,7 +16,7 @@
 </table>
 
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
-<div class="modal fade bs-example-modal-lg" id="SectorModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="SectorModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -256,7 +256,7 @@
                     }
                 }
                 $("#save-Sector-changes").attr("data-Sector", selectedId);
-                $("#SectorModal").appendTo("body").modal("show");
+                $("#SectorModal").appendTo("body").modal("show").draggable();
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -265,7 +265,7 @@
         $selRowContainer.append("<div id='create-Sector-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Sector-button").bind("click", function () {
             $("#id_pk-text").removeAttr("readonly");
-            $("#SectorModal").appendTo("body").modal("show");
+            $("#SectorModal").appendTo("body").modal("show").draggable();
             $("#save-Sector-changes").removeAttr("data-Sector");
             var $selectedTds = $("#Sector-table tr.selected td").not(".radios");
             var tdLen = $selectedTds.length;

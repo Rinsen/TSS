@@ -163,7 +163,7 @@
 }
 <!-- #region Contract from offer -->
 @*<div id="included_ModalContractFromOffer"></div>*@
-<div class="modal fade bs-example-modal-lg" id="contractFromOfferModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="contractFromOfferModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contractFromOffer-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -260,7 +260,7 @@
 </div>
 <!-- #endregion -->
 <!-- #region Options from active contract -->
-<div class="modal fade bs-example-modal-lg" id="optionsFromActiveModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="optionsFromActiveModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog optionsFromActive-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -329,7 +329,7 @@
 </div>
 <!-- #endregion -->
 <!-- #region Modules and services from contracts -->
-<div class="modal fade bs-example-modal-lg" id="modulesFromContractsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="modulesFromContractsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modulesFromContracts-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -430,7 +430,7 @@
 </div>
 <!-- #endregion -->
 <!-- #region ContractHead modal -->
-<div class="modal fade bs-example-modal-lg" id="contractHeadModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="contractHeadModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contracthead-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -510,7 +510,7 @@
 </div>
 <!-- #endregion -->
 <!-- #region Articles -->
-<div class="modal fade bs-example-modal-lg" id="articlesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="articlesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog articles-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -687,7 +687,7 @@
 <!--#endregion-->
 
 <!-- #region Options -->
-<div class="modal fade bs-example-modal-lg" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog options-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -840,7 +840,7 @@
 </div>
 <!--#endregion-->
 <!-- #region Services -->
-<div class="modal fade bs-example-modal-lg" id="servicesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="servicesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog services-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -945,7 +945,7 @@
 <!--#endregion-->
 <!-- #region TextTemplate modal -->
 
-<div class="modal fade bs-example-modal-lg" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="templatesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog templates-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -1018,7 +1018,7 @@
 <!--#endregion-->
 <!-- #region MainTextTemplate modal -->
 
-<div class="modal fade bs-example-modal-lg" id="mainTemplatesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="mainTemplatesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog main-templates-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -1069,7 +1069,7 @@
 <!--#endregion-->
 <!-- #region TableItems modal -->
 
-<div class="modal fade bs-example-modal-lg" id="tableItemsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="tableItemsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog table-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -1382,7 +1382,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $sel = $("#MC-id");
-                            if ($sel.val().substring(0,2) == "--") {
+                            if ($sel.val().substring(0, 2) == "--") {
                                 return;
                             }
                             $text = $("#chkText");
@@ -1408,7 +1408,7 @@
                         }
                     }
                 }
-            })
+            }).draggable();
         });
 
 

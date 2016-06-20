@@ -663,7 +663,7 @@ $(document).ready(function () {
     });
 
     $("#articles-modal-button").click(function () {
-        $("#articlesModal").appendTo("body").modal("show");
+        $("#articlesModal").appendTo("body").modal("show").find('.modal-content').draggable();
     });
 
     $("#articlesModal #choose-selected-articles").click(function () {

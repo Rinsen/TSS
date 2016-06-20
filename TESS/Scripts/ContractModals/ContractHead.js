@@ -2,7 +2,7 @@
 
     $("#contractHead-modal-button").click(function () {
         
-        $("#contractHeadModal").appendTo("body").modal("show");
+        $("#contractHeadModal").appendTo("body").modal("show").find('.modal-content').draggable();
         loadData();
     });
 

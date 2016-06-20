@@ -17,7 +17,7 @@
     </table>
 </div> 
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
-<div class="modal fade bs-example-modal-lg" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -294,7 +294,7 @@
                     }
                 }
                 $("#save-user-changes").attr("data-user", selectedId);
-                $("#userModal").appendTo("body").modal("show");
+                $("#userModal").appendTo("body").modal("show").draggable();
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -303,7 +303,7 @@
         $selRowContainer.append("<div id='create-user-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-user-button").bind("click", function () {
             $("#sign-text").removeAttr("readonly");
-            $("#userModal").appendTo("body").modal("show");
+            $("#userModal").appendTo("body").modal("show").draggable();
             $("#save-user-changes").removeAttr("data-user");
             var $selectedTds = $("#user-table tr.selected td").not(".radios");
             var tdLen = $selectedTds.length;

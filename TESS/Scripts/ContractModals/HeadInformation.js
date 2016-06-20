@@ -2,7 +2,7 @@
 $(document).ready(function () {
     var oldStatus = "";
     $("#head-info-modal-button").click(function () {
-        $("#tableItemsModal").appendTo("body").modal("show");
+        $("#tableItemsModal").appendTo("body").modal("show").find('.modal-content').draggable();
         loadInfo();
         if (contractType == "Huvudavtal") {
             $("#main_contract_id-text").prop("disabled", "disabled");

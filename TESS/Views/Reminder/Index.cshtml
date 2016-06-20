@@ -17,7 +17,7 @@
 </table>
 
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
-<div class="modal fade bs-example-modal-lg" id="ReminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="ReminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -309,7 +309,7 @@
                     }
                 }
                 $("#save-Reminder-changes").attr("data-Reminder", selectedId);
-                $("#ReminderModal").appendTo("body").modal("show");
+                $("#ReminderModal").appendTo("body").modal("show").draggable();
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -318,7 +318,7 @@
         $selRowContainer.append("<div id='create-Reminder-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Reminder-button").bind("click", function () {
             $("#id_pk-text").removeAttr("readonly");
-            $("#ReminderModal").appendTo("body").modal("show");
+            $("#ReminderModal").appendTo("body").modal("show").draggable();
             $("#save-Reminder-changes").removeAttr("data-Reminder");
             var $selectedTds = $("#Reminder-table tr.selected td").not(".radios");
             var tdLen = $selectedTds.length;
