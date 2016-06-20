@@ -75,6 +75,15 @@ namespace TietoCRM.Models
                     {
                         if (value == DBNull.Value || value == null)
                             pi.SetValue(this, Convert.ToBoolean(false));
+                        else if (value.GetType() == typeof(String))
+                        {
+                            if(value.ToString() == "1")
+                                pi.SetValue(this, true);
+                            else if(value.ToString() == "0")
+                                pi.SetValue(this, false);
+                            else
+                                pi.SetValue(this, Boolean.Parse(value.ToString()));
+                        }
                         else
                             pi.SetValue(this, Convert.ToBoolean(value));
                         break;
@@ -205,6 +214,8 @@ namespace TietoCRM.Models
                             sdt = SqlDbType.Date;
                         else if (pi.PropertyType == typeof(Decimal?))
                             sdt = SqlDbType.Money;
+                        else if (pi.PropertyType == typeof(bool))
+                            sdt = SqlDbType.Bit;
 
                         SqlParameter sp = new SqlParameter("@" + pi.Name, sdt, -1);
 
@@ -370,6 +381,8 @@ namespace TietoCRM.Models
                             sdt = SqlDbType.Date;
                         else if (pi.PropertyType == typeof(Decimal?))
                             sdt = SqlDbType.Money;
+                        else if (pi.PropertyType == typeof(bool))
+                            sdt = SqlDbType.Bit;
 
                         SqlParameter sp = new SqlParameter("@" + pi.Name, sdt, length);
 
