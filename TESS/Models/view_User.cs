@@ -41,7 +41,10 @@ namespace TietoCRM.Models
         private decimal user_level;
         public decimal User_level { get { return user_level; } set { user_level = value; } }
 
-		public view_User() : base("User")
+        private bool use_logo;
+        public bool Use_logo { get { return use_logo; } set { use_logo = value; } }
+
+        public view_User() : base("User")
 		{
 			//ctr
 		}
@@ -58,7 +61,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [Sign] ,[Name], [Default_system] ,[Offer_file_location] ,[File_format] ,[Address] ,[City] ,[Telephone] ,[Mobile] ,[windows_user], User_level FROM " + databasePrefix + "User";
+                String query = "SELECT [Sign] ,[Name], [Default_system] ,[Offer_file_location] ,[File_format] ,[Address] ,[City] ,[Telephone] ,[Mobile] ,[windows_user], User_level, Use_logo FROM " + databasePrefix + "User";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

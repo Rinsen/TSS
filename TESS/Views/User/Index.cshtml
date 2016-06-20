@@ -44,6 +44,18 @@
                                     </div>
                                 </div>
                             }
+                            else if (pi.Name == "Use_logo")
+                            {
+                                <div class="form-group">
+                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                            <option value="true">Yes</option>
+                                            <option value="false">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            }
                             else
                             {
                                 <div class="form-group">
