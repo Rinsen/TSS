@@ -1,25 +1,28 @@
 ﻿<row>
     <div class="col-md-12">
-        <div class="form-group">
-            <label for="crm-select-user">Inhabitant level:</label>
-            <select name="user" id="inhabitant-select" class="form-control selectpicker" data-live-search="true">
-                @foreach (float inhabitantLevel in ViewBag.InhabitantLevel)
-                {
-                    <option value="@inhabitantLevel" selected>@inhabitantLevel</option>
-                }
-                <option selected> - </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="crm-select-customer">Price category:</label>
-            <select name="customer" id="price-select" class="form-control selectpicker" data-live-search="true">
-                @foreach (float priceCategory in ViewBag.PriceCategory)
-                {
-                    <option value="@priceCategory" selected>@priceCategory</option>
-                }
-                <option selected> - </option>
-            </select>
-        </div>
+        <form style="margin-bottom: 0.8em;" class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-user">Inhabitant level:</label>
+                <select name="user" id="inhabitant-select" class="form-control selectpicker" data-live-search="true">
+                    @foreach (float inhabitantLevel in ViewBag.InhabitantLevel)
+                    {
+                        <option value="@inhabitantLevel" selected>@inhabitantLevel</option>
+                    }
+                    <option selected> - </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="crm-select-customer">Price category:</label>
+                <select name="customer" id="price-select" class="form-control selectpicker" data-live-search="true">
+                    @foreach (float priceCategory in ViewBag.PriceCategory)
+                    {
+                        <option value="@priceCategory" selected>@priceCategory</option>
+                    }
+                    <option selected> - </option>
+                </select>
+            </div>
+        </form>
+        
     </div>
     <div class="col-md-12">
         <table draggable="true" id="tariff-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
