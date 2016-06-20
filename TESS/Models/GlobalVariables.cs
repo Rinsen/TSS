@@ -32,7 +32,6 @@ namespace TietoCRM.Models
             else
                 return true;
         }
-
         // read-write variable
         public static string ApplicationName
         {

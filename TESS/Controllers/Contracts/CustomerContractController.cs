@@ -418,7 +418,7 @@ namespace TietoCRM.Controllers.Contracts
                         else if (pi.Name == "Term_of_notice")
                             variables.Add(pi.Name, contract.getStringTON());
                         else if (pi.Name == "Customer")
-                            variables.Add(pi.Name, System.Web.HttpUtility.HtmlEncode(contract.Customer));
+                            continue;
                         else
                             variables.Add(pi.Name, pi.GetValue(contract));
                     }

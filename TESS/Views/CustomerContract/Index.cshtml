@@ -18,7 +18,7 @@
                 <th data-field="#" data-sortable="false">#</th>
                 @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
                 {
-                    if (@property.Name != "SSMA_timestamp" && !property.Name.StartsWith("_"))
+                    if (@property.Name != "SSMA_timestamp" && !property.Name.StartsWith("_") && @property.Name != "Customer")
                     {
                         String PropertyName = property.Name.Replace("_", " ");
                         <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
@@ -913,7 +913,7 @@
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
 
-            if (@PropertyInfo.Name != "SSMA_timestamp" && !PropertyInfo.Name.StartsWith("_"))
+            if (@PropertyInfo.Name != "SSMA_timestamp" && !PropertyInfo.Name.StartsWith("_") && @PropertyInfo.Name != "Customer")
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
@@ -953,12 +953,8 @@
                         "targets": 0
                     },
                     {
-                        "width": "180px",
-                        "targets": 1
-                    },
-                    {
                         "width": "210px",
-                        "targets": 2
+                        "targets": 1
                     },
                     {
                         "width": "80px",
@@ -966,11 +962,11 @@
                     },
                     {
                         "width": "70px",
-                        "targets": 6
+                        "targets": 7
                     },
                     {
                         "width": "180px",
-                        "targets": 8
+                        "targets": 9
                     },
                     {
                         "width": "70px",

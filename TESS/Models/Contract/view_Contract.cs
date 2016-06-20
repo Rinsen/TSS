@@ -22,6 +22,9 @@ namespace TietoCRM.Models
         private String customer;
         public String Customer { get { return customer; } set { customer = value; } }
 
+        private String title;
+        public String Title { get { return title; } set { title = value; } }
+
         private String contract_type;
         public String Contract_type { get { return contract_type; } set { contract_type = value; } }
 
@@ -32,6 +35,9 @@ namespace TietoCRM.Models
         /// </summary>
         /// <returns>Term_of_notice + "months(s)"</returns>
         public String getStringTON() { return Term_of_notice + " month(s)"; }
+
+        private double? extension;
+        public double? Extension { get { return extension; } set { extension = value ?? 0; } }
 
         private String status;
         public String Status { get { return status; } set { status = value; } }
@@ -45,8 +51,6 @@ namespace TietoCRM.Models
         private String main_contract_id;
         public String Main_contract_id { get { return main_contract_id; } set { main_contract_id = value; } }
 
-        private double? extension;
-        public double? Extension { get { return extension; } set { extension = value ?? 0; } }
         /// <summary>
         ///     Returns Extension with months include in the string
         /// </summary>
@@ -123,8 +127,8 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Term_of_notice] ,[Status] ,[Valid_from] ,[Valid_through] ,";
-                command.CommandText += "[Main_contract_id] ,[Extension] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,";
+                command.CommandText = "SELECT [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status] ,[Valid_from] ,[Valid_through] ,";
+                command.CommandText += "[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,";
                 command.CommandText += "[Option_date] ,[Sign], Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
                 //command.CommandText = "SELECT * FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
 
@@ -213,7 +217,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Term_of_notice] ,[Status] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Extension] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
+                command.CommandText = "SELECT [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
 
                 command.Prepare();
                
@@ -267,8 +271,8 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = @"SELECT vc.[Contract_id] ,vc.[Customer] ,vc.[Contract_type] ,vc.[Term_of_notice] ,vc.[Status] ,vc.[Valid_from] ,vc.[Valid_through] ,
-                    vc.[Main_contract_id] ,vc.[Extension] ,vc.[Expire] ,vc.[Observation] ,vc.[Note] ,vc.[Contact_person] ,vc.[Created] ,
+                command.CommandText = @"SELECT vc.[Contract_id] ,vc.[Customer], vc.[Title] ,vc.[Contract_type] ,vc.[Term_of_notice] ,vc.[Extension] ,vc.[Status] ,vc.[Valid_from] ,vc.[Valid_through] ,
+                    vc.[Main_contract_id] ,vc.[Expire] ,vc.[Observation] ,vc.[Note] ,vc.[Contact_person] ,vc.[Created] ,
                     vc.[Updated] ,vc.[Option_date], vc.[Sign], Resigned_contract, CAST(vc.SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
                    FROM " + databasePrefix + "Contract as vc, " + databasePrefix + "Customer as cus where cus.Representative = @sign and vc.Customer = cus.Customer and vc.status = 'Giltigt' and vc.Contract_type = 'huvudavtal'";
 
