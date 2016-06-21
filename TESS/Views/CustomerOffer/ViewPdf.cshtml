@@ -30,7 +30,7 @@
                 </ul>
             </div>
             <!--<button type="button" class="btn btn-success navbar-btn">Save</button>-->
-            <button type="button" onclick="window.location = '/CustomerOffer/Index?selected-offer=@Url.Encode(Request["selected-offer"])';" class="btn btn-default navbar-btn">Back</button>
+            <button type="button" onclick="window.location = '/CustomerOffer/Index?selected-offer=@Url.Encode(Request["selected-offer"])&search=@Url.Encode(Request["search"])';" class="btn btn-default navbar-btn">Back</button>
             <span style="margin-left: 1em"></span>
             <a class="btn btn-primary navbar-btn" href="Pdf?selected-offer=@Request["selected-offer"]" target="_blank">PDF</a>
         </div><!-- /.container-fluid -->
