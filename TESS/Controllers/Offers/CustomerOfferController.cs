@@ -117,7 +117,10 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                offerInfo.Module = module.Module;
+                if (offerRow.Alias == null || offerRow.Alias == "")
+                    offerInfo.Module = module.Module;
+                else
+                    offerInfo.Module = offerRow.Alias;
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
                 offerInfo.License = offerRow.License;
@@ -192,7 +195,10 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                offerInfo.Module = module.Module;
+                if (offerRow.Alias == null || offerRow.Alias == "")
+                    offerInfo.Module = module.Module;
+                else
+                    offerInfo.Module = offerRow.Alias;
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
                 offerInfo.License = offerRow.License;
@@ -761,6 +767,7 @@ namespace TietoCRM.Controllers
                     if(dict.Keys.Contains("License"))
                         License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
                     Decimal Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",","."), NumberFormatInfo.InvariantInfo);
+                    String Alias = dict["Alias"].ToString();
 
                     view_OfferRow offerRow = new view_OfferRow();
                     offerRow.Offer_number = Offer_number;
@@ -768,6 +775,7 @@ namespace TietoCRM.Controllers
                     offerRow.License = Convert.ToDecimal(License);
                     offerRow.Maintenance = Convert.ToDecimal(Maintenance);
                     offerRow.Include_status = false;
+                    offerRow.Alias = Alias;
                     offerRow.Insert();
                 }
 

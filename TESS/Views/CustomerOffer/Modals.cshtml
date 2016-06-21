@@ -280,11 +280,20 @@ else if (Request["modal"] == "articles")
                                             {
                                                 @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."));
                                             }
-                                            data-maintenance="@or.Maintenance.ToString().Replace(",", ".")">
+                                            data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
+                                            data-alias="@or.Alias">
                                         <table>
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
-                                                <td>@module.Module</td>
+                                                @if (or.Alias.IsEmpty())
+                                                { 
+                                                    <td>@module.Module</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@or.Alias</td>
+                                                }
+                                                
                                                 @if(module.System != "Lärportal")
                                                 {
                                                     <td>@License</td>
@@ -426,6 +435,7 @@ else if (Request["modal"] == "articles")
         var $articleBtn = $editButton.parent().parent().parent().find("td button");
         var oldLicenseVal = parseFloat($articleBtn.data("license")).toFixed(2);
         var oldMaintenanceVal = parseFloat($articleBtn.data("maintenance")).toFixed(2);
+        var oldAlias = $articleBtn.data("alias");
         var articleName = $articleBtn.find(".art-nr").next().html();
         var articleNr = $articleBtn.find(".art-nr").html();
         var licenseText = "";
@@ -437,6 +447,12 @@ else if (Request["modal"] == "articles")
                                 </div>                                                                                                                  \
                             </div>  ";
         }
+        var aliasText = " <div class='form-group'>                                                                                                      \
+                                <label for='license-text' class='col-sm-2 control-label'>Alias</label>                                                  \
+                                <div class='col-sm-10'>                                                                                                 \
+                                    <input class='form-control' id='alias-text' name='Alias' value='" + oldAlias + "'>                                  \
+                                </div>                                                                                                                  \
+                            </div>  ";
         bootbox.dialog({
             backdrop: false,
             closebutton: false,
@@ -450,7 +466,7 @@ else if (Request["modal"] == "articles")
                             </div>                                                                                                                  \
                         </div>                                                                                                                      \
                         " + licenseText  + "                                                                                                        \
-                      </form>"
+                     " + aliasText + " </form>"
                 ,
                 buttons: {
                     close: {                
@@ -466,6 +482,7 @@ else if (Request["modal"] == "articles")
                         callback: function () {
                             var $licenseEl = $("#license-text");
                             var $maintenanceEl = $("#maintenance-text");
+                            var $aliasEl = $("#alias-text");
                             // Update article data attrs
                             if(typeof $licenseEl != "undefined" && typeof $licenseEl != false){
                                 $articleBtn.attr("data-license", $licenseEl.val());
@@ -475,6 +492,11 @@ else if (Request["modal"] == "articles")
                             $articleBtn.attr("data-maintenance", $maintenanceEl.val());
                             $articleBtn.data("maintenance", $maintenanceEl.val());
                             $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
+
+                            $articleBtn.attr("data-alias", $aliasEl.val());
+                            $articleBtn.data("alias", $aliasEl.val());
+                            $articleBtn.find(".alias").html($aliasEl.val());
+                            
 
                             $(".small-modal").remove();
                             
@@ -512,12 +534,13 @@ else if (Request["modal"] == "articles")
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
+                                            data-alias='" + article.Module + "'                                      \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
                                             + usedCell +                                                            
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
-                                            <td title='" + artComm + "'>" + article.Module + "</td>                                         \
+                                            <td class='alias' title='" + artComm + "'>" + article.Module + "</td>                                         \
                                             <td class='maintenance' style='float: right; width:auto;'>" + formatCurrency(article.Price_category) + "</td>\
                                         </tr>                                                                       \
                                     </table>                                                                        \
@@ -535,12 +558,13 @@ else if (Request["modal"] == "articles")
                                             data-selected='false'                                                   \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
+                                            data-alias='" + article.Module + "'                                      \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
                                             + usedCell +                                                            
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
-                                            <td title = '" + artComm + "'>" + article.Module + "</td>                                         \
+                                            <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             <td class='license'>" + formatCurrency(article.License) + "</td>        \
                                             <td class='maintenance'>" + formatCurrency(article.Maintenance) + "</td>\
                                         </tr>                                                                       \
@@ -690,10 +714,12 @@ else if (Request["modal"] == "articles")
             var buttonArt = $button.find(".art-nr").html();
             var buttonLicense = $button.data("license");
             var buttonMaintenance = $button.data("maintenance");
+            var buttonAlias = $button.data("alias");
 
             // "Create a new article" to store in an array to use for server side db update.
             var newArticle = {
                 "Article_number":  buttonArt,
+                "Alias": buttonAlias,
                 "License": buttonLicense,
                 "Maintenance": buttonMaintenance
             }

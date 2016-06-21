@@ -617,6 +617,7 @@
                                                         data-selected="true"
                                                         @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."))  ; }
                                                         data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
+                                                        data-alias="@or.Alias"
                                                         @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; } ; }
                                                         @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; } ; }
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
@@ -627,16 +628,37 @@
                                                             {
                                                                 if (or.Removed == true)
                                                                 {
-                                                                    <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
+                                                                    if (or.Alias.IsEmpty())
+                                                                    {
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Alias</td>
+                                                                    }
                                                                 }
                                                                 else
                                                                 {
-                                                                    <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@module.Module</td>
+                                                                    if (or.Alias.IsEmpty())
+                                                                    {
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@module.Module</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@or.Alias</td>
+                                                                    }
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
+                                                                if (or.Alias.IsEmpty())
+                                                                {
+                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@or.Alias</td>
+                                                                }
                                                             }
                                                             @if (module.System != "Lärportal")
                                                             {

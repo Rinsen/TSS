@@ -160,7 +160,10 @@ namespace TietoCRM.Controllers.Contracts
                 dynamic contractInfo = new ExpandoObject();
                 contractInfo.Article_number = module.Article_number;
                 contractInfo.Contract_id = contractRow.Contract_id;
-                contractInfo.Module = module.Module;
+                if(contractRow.Alias == null || contractRow.Alias == "")
+                    contractInfo.Module = module.Module;
+                else
+                    contractInfo.Module = contractRow.Alias;
                 contractInfo.System = module.System;
                 contractInfo.Classification = module.Classification;
                 contractInfo.License = contractRow.License;
@@ -872,6 +875,8 @@ namespace TietoCRM.Controllers.Contracts
             {
                 view_Module module = new view_Module();
                 module.Select("Article_number = " + cRow.Article_number);
+                if (cRow.Alias != null && cRow.Alias != "")
+                    module.Module = cRow.Alias;
 
                 var obj = new
                 {
@@ -1122,12 +1127,14 @@ namespace TietoCRM.Controllers.Contracts
                     double Maintenance = double.Parse(dict["Maintenance"].ToString().Replace(",", "."), CultureInfo.InvariantCulture);
                     int RowType = Convert.ToInt32(dict["Rowtype"]);
 
+
                     view_ContractRow offerRow = new view_ContractRow();
                     offerRow.Customer = contract.Customer;
                     offerRow.Contract_id = contract.Contract_id;
                     offerRow.Article_number = Article_number;
                     offerRow.License = Convert.ToDecimal(License);
                     offerRow.Maintenance = Convert.ToDecimal(Maintenance);
+                    offerRow.Alias = dict["Alias"].ToString();
                     if (RowType == 3)
                     {
                         offerRow.New = false;
