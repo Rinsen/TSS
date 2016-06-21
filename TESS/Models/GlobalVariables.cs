@@ -25,7 +25,7 @@ namespace TietoCRM.Models
         public static bool isAuthorized(String site)
         {
             view_User user = new view_User();
-            user.Select("Sign='" + System.Web.HttpContext.Current.GetUser().Sign + "'");
+            user.Select("windows_user='" + WindowsIdentity.GetCurrent().Name + "'");
             System.Web.HttpContext.Current.UpdateUser(user);
             if (user.User_level > 2 && (site == "CustomerContract" || site == "CustomerOffer" || site == "Users"))
                 return false;

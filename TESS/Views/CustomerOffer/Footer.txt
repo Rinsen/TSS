@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <script>
@@ -23,6 +23,7 @@ function subst() {
 	    max-width: 100%;
 	}
 	.page-numbers{
+  		font-family: Arial;
 		text-align: center;
 		position: absolute;
 		display: block;
@@ -43,11 +44,4 @@ function subst() {
 		height: 80px;
 	}
 </style>
-</head><body onload='subst()'>
-                            <div class='container'>
-	                            <div class='page-numbers'>
-     	                            Sida <span class='page'></span> av <span class='topage'></span>
-                                    </div></div>
-                    </body>
-                    </html>
-                    
+</head>

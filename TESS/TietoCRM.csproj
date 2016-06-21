@@ -1085,6 +1085,8 @@
     <Content Include="Views\CustomerContract\Header.cshtml" />
     <Content Include="Views\CustomerOffer\Footer.html" />
     <Content Include="Views\CustomerOffer\Header.html" />
+    <Content Include="Views\CustomerOffer\Footer.txt" />
+    <Content Include="Views\CustomerOffer\Header.txt" />
     <Content Include="Views\Shared\Footer.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

@@ -1,0 +1,714 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+    <meta charset="utf-8" />
+    <style>
+.crm-pdf {
+  font-family: Arial;
+  height: 100%;
+  position: relative;
+  margin-left: 0.5cm;
+  margin-right: 0.5cm;
+}
+.crm-pdf img {
+  max-width: 100%;
+}
+.crm-pdf div {
+  width: 100%;
+  display: block;
+  vertical-align: top;
+  color: black;
+}
+.crm-pdf p {
+  margin: 0;
+}
+.crm-pdf .small-divider {
+  width: 20%;
+  border-bottom: 1px solid black;
+  margin: 2em 0;
+  display: block;
+}
+.crm-pdf .large-divider {
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid black;
+}
+.crm-pdf .crm-pdf-30 {
+  width: 30%;
+  display: inline-block;
+}
+.crm-pdf .crm-pdf-40 {
+  width: 39%;
+  display: inline-block;
+}
+.crm-pdf .crm-pdf-50 {
+  width: 50%;
+  display: inline-block;
+}
+.crm-pdf .crm-pdf-60 {
+  width: 60%;
+  display: inline-block;
+}
+.crm-pdf .crm-pdf-70 {
+  width: 70%;
+  display: inline-block;
+}
+.crm-pdf div.crm-pdf-head {
+  /*border: medium;*/
+  border: none;
+  margin-bottom: 1em;
+}
+.crm-pdf div.crm-pdf-head table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-head table#crm-pdf-head-table td {
+  width: 33.33%;
+}
+.crm-pdf div.crm-pdf-head table#crm-pdf-head-table td.text-center span {
+  display: block;
+}
+.crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info {
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info td.crm-table-title {
+  width: 10%;
+}
+.crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info td {
+  text-align: left;
+}
+.crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info td span {
+  padding-left: 1em;
+}
+.crm-pdf div.crm-pdf-head span#crm-pdf-todays-date {
+  font-size: 12px;
+}
+.crm-pdf div.crm-pdf-head span#crm-pdf-tieto-logo-com {
+  width: 110px;
+  float: right;
+  margin-top: -5px;
+}
+.crm-pdf div.crm-pdf-header-section {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.crm-pdf div.crm-pdf-header-section table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-header-section table td {
+  width: 50%;
+}
+.crm-pdf div.crm-pdf-header-section table td.crm-table-title {
+  background-color: #d7d7d7;
+}
+.crm-pdf div.crm-pdf-header-section h4 {
+  font-weight: normal;
+}
+.crm-pdf div.crm-pdf-main-contract-header-prolog p {
+  margin: 0 0 10.5px;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows-title.educational-portal,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows-title.educational-portal {
+  margin-top: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows {
+  page-break-before: auto;
+  margin-top: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.price-headings,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.price-headings,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.price-headings,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.price-headings {
+  width: 36%;
+  text-align: right;
+  float: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.price-headings table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.price-headings table,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.price-headings table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.price-headings table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.price-headings table td.pull-right {
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row table,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info {
+  margin-left: 0.6em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info td,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info td,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info td,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row table.crm-pdf-module-row-info td {
+  padding: 0.2em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row div.crm-pdf-module-row-name,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row div.crm-pdf-module-row-name,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row div.crm-pdf-module-row-name,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row div.crm-pdf-module-row-name {
+  font-size: 90%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(1) {
+  width: 4.5em;
+  padding-right: 2.5em;
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row div.crm-pdf-30 table td:nth-child(2) {
+  width: 3.5em;
+  text-align: right;
+  padding-right: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum {
+  margin-top: 0.2em;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum div span.pull-right {
+  margin-right: 2.5em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum table td:nth-child(1) {
+  width: 4.5em;
+  padding-right: 2.5em;
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-module-rows div.crm-pdf-module-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-module-rows div.crm-pdf-module-row-sum table td:nth-child(2) {
+  width: 3.5em;
+  text-align: right;
+  padding-right: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows {
+  page-break-before: auto;
+  /*margin-top: 1em;*/
+
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.price-headings,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.price-headings,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.price-headings,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.price-headings {
+  width: 36%;
+  text-align: right;
+  float: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.price-headings table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.price-headings table,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.price-headings table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.price-headings table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.price-headings table td.pull-right {
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.price-headings table td span,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.price-headings table td span,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.price-headings table td span,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.price-headings table td span {
+  margin-right: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row table,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info {
+  margin-left: 0.6em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info td,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info td,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info td,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row table.crm-pdf-educational-portal-row-info td {
+  padding: 0.2em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(1) {
+  width: 4.5em;
+  padding-right: 2.5em;
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row div.crm-pdf-30 table td:nth-child(2) {
+  width: 3.5em;
+  text-align: right;
+  padding-right: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum {
+  margin-top: 0.2em;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum div span.pull-right {
+  margin-right: 2.5em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(1) {
+  width: 4.5em;
+  padding-right: 2.5em;
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-old-educational-portal-rows div.crm-pdf-educational-portal-row-sum table td:nth-child(2) {
+  width: 3.5em;
+  text-align: right;
+  padding-right: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows {
+  page-break-before: auto;
+  margin-top: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.price-headings,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.price-headings {
+  width: 36%;
+  text-align: right;
+  float: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.price-headings table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.price-headings table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.price-headings table td.pull-right {
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row table.crm-pdf-option-row-info,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row table.crm-pdf-option-row-info {
+  margin-left: 0.6em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row table.crm-pdf-option-row-info td,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row table.crm-pdf-option-row-info td {
+  padding: 0.2em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row div.crm-pdf-30 table td:nth-child(1) {
+  width: 4.5em;
+  padding-right: 2.5em;
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row div.crm-pdf-30 table td:nth-child(2) {
+  width: 3.5em;
+  text-align: right;
+  padding-right: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum {
+  margin-top: 0.2em;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum div span.pull-right {
+  margin-right: 2.5em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum table td:nth-child(1) {
+  width: 4.5em;
+  padding-right: 2.5em;
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-option-rows div.crm-pdf-option-row-sum table td:nth-child(2) {
+  width: 3.5em;
+  text-align: right;
+  padding-right: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div.crm-pdf-module-section-text,
+.crm-pdf div.crm-pdf-old-module-section div.crm-pdf-module-section-text {
+  margin-top: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows {
+  page-break-before: auto;
+  margin-top: 1em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.price-headings,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.price-headings {
+  width: 39%;
+  text-align: right;
+  float: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.price-headings table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.price-headings table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.price-headings table td.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.price-headings table td.pull-right {
+  text-align: right;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.price-headings table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.price-headings table td:nth-child(1) {
+  width: 20%;
+  text-align: center;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.price-headings table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.price-headings table td:nth-child(2) {
+  text-align: right;
+  width: 40%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.price-headings table td:nth-child(3),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.price-headings table td:nth-child(3) {
+  text-align: right;
+  width: 40%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row table,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row table {
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row table.crm-pdf-service-row-info td,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row table.crm-pdf-service-row-info td {
+  padding-bottom: 0.2em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-30 table td:nth-child(1),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-40 table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-40 table td:nth-child(1) {
+  width: 20%;
+  text-align: center;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-30 table td:nth-child(2),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-40 table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-40 table td:nth-child(2) {
+  text-align: right;
+  width: 40%;
+  /*padding-right: 1em;*/
+
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-30 table td:nth-child(3),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-30 table td:nth-child(3),
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-40 table td:nth-child(3),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row div.crm-pdf-40 table td:nth-child(3) {
+  text-align: right;
+  /*padding-right: 1em;*/
+  width: 40%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum {
+  margin-top: 0.2em;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum div span.crm-service-info-text,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum div span.crm-service-info-text {
+  font-size: 8.5pt;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum div span.pull-right,
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum div span.pull-right {
+  margin-right: 2.5em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum table td:nth-child(1),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum table td:nth-child(1) {
+  width: 4.5em;
+}
+.crm-pdf div.crm-pdf-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum table td:nth-child(2),
+.crm-pdf div.crm-pdf-old-module-section div#crm-pdf-service-rows div.crm-pdf-service-row-sum table td:nth-child(2) {
+  width: 3.5em;
+  text-align: right;
+  padding-right: 1em;
+}
+.crm-pdf div.crm-pdf-footer-section {
+  page-break-before: auto;
+}
+.crm-pdf div.crm-pdf-footer-section div#crm-pdf-footer-info {
+  margin-top: 1.5em;
+}
+.crm-pdf div#crm-pdf-signing-section {
+  margin-top: 1em;
+}
+.crm-pdf div#crm-pdf-signing-section table {
+  empty-cells: show;
+  width: 100%;
+}
+.crm-pdf div#crm-pdf-signing-section table td {
+  width: 50%;
+}
+.crm-pdf div#crm-pdf-signing-section table td.crm-table-title {
+  background-color: #d7d7d7;
+}
+.crm-pdf div#crm-pdf-signing-section table td.crm-empty-signing-field {
+  height: 2.5em;
+  vertical-align: bottom;
+}
+.crm-pdf div#crm-pdf-signing-section table td.crm-empty-signing-field span.signing-line {
+  border-bottom: 1px solid black;
+  width: 80%;
+  display: block;
+  margin-bottom: 0.5em;
+}
+.crm-pdf div.crm-pdf-foot {
+  width: 100%;
+  display: block;
+  height: 80px;
+}
+.crm-pdf div.crm-pdf-foot div.crm-pdf-foot-logo {
+  width: 10%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: block;
+}
+.crm-pdf div.crm-pdf-subheader_1 table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subheader_1 table td:nth-child(1) {
+  width: 60%;
+  text-align: left;
+  font-weight: bold;
+}
+.crm-pdf div.crm-pdf-subheader_1 table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+}
+.crm-pdf div.crm-pdf-subheader_1 table td:nth-child(3) {
+  text-align: right;
+  width: 16%;
+}
+.crm-pdf div.crm-pdf-subheader_1 table td:nth-child(4) {
+  text-align: right;
+  width: 16%;
+}
+.crm-pdf div.crm-pdf-subrows_1 table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subrows_1 table td:nth-child(1) {
+  width: 60%;
+  text-align: left;
+}
+.crm-pdf div.crm-pdf-subrows_1 table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_1 table td:nth-child(3) {
+  text-align: right;
+  width: 16%;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_1 table td:nth-child(4) {
+  text-align: right;
+  width: 16%;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_2 table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subrows_2 table td:nth-child(1) {
+  padding-left: 0.5em;
+  width: 20%;
+  text-align: left;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_2 table td:nth-child(2) {
+  width: 10%;
+  text-align: left;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_2 table td:nth-child(3) {
+  width: 38%;
+  text-align: left;
+}
+.crm-pdf div.crm-pdf-subrows_2 table td:nth-child(4) {
+  text-align: right;
+  width: 16%;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_2 table td:nth-child(5) {
+  text-align: right;
+  width: 16%;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subsum_1 table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subsum_1 table td:nth-child(1) {
+  width: 40%;
+  text-align: left;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subsum_1 table td:nth-child(2) {
+  width: 28%;
+  text-align: right;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subsum_1 table td:nth-child(3) {
+  text-align: right;
+  width: 16%;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subsum_1 table td:nth-child(4) {
+  text-align: right;
+  width: 16%;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subheader_terminate table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subheader_terminate table td:nth-child(1) {
+  width: 40%;
+  text-align: left;
+}
+.crm-pdf div.crm-pdf-subheader_terminate table td:nth-child(2) {
+  width: 30%;
+  text-align: left;
+}
+.crm-pdf div.crm-pdf-subheader_terminate table td:nth-child(3) {
+  text-align: left;
+  width: 15%;
+}
+.crm-pdf div.crm-pdf-subheader_terminate table td:nth-child(4) {
+  text-align: right;
+  width: 15%;
+}
+.crm-pdf div.crm-pdf-subrows_terminate table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subrows_terminate table td:nth-child(1) {
+  width: 7%;
+  text-align: left;
+}
+.crm-pdf div.crm-pdf-subrows_terminate table td:nth-child(2) {
+  width: 33%;
+  text-align: left;
+}
+.crm-pdf div.crm-pdf-subrows_terminate table td:nth-child(3) {
+  width: 30%;
+  text-align: left;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_terminate table td:nth-child(4) {
+  text-align: left;
+  width: 15%;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_terminate table td:nth-child(5) {
+  text-align: right;
+  width: 15%;
+  vertical-align: text-top;
+}
+.area-newline {
+  white-space: pre-wrap;
+}
+td.RewrittenRemoved {
+  text-decoration: line-through;
+}
+td.RewrittenRewritten {
+  text-decoration: underline;
+}
+
+    </style>
+    <style>
+        body{
+            font-family: Arial;
+        }
+        #crm-pdf-head-contract-info{
+            font-size: 12px !important;
+        }
+        .crm-contract-title span{
+            font-size: 15px !important;
+        }
+        #template-Title{
+            font-size: 17px !important;
+        }
+        .crm-pdf{
+            margin: 0 1.4cm 0 2.1cm !important;
+            padding-top: 1.6cm;
+        }
+        #crm-pdf-todays-date{
+            font-size: 12px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="crm-pdf">
+
+<div class='crm-pdf-head'>
+    <table id="crm-pdf-head-table">
+        <tr>
+            <td style="width: 35%">
+                <table id="crm-pdf-head-contract-info">
+                        <tr>
+                            <td class="crm-table-title" >Avtalsbeteckning:</td>
+                            <td>EDU ELU 2016-06-13 01</td>
+                        </tr>
+                                    </table>
+            </td>
+            <td class="crm-contract-title" style="text-align:center">
+                <span><strong>Huvudavtal</strong></span>
+            </td>
+            <td style="text-align:right">
+                <span id="crm-pdf-tieto-logo-com">
+                    <img id ="tieto-logo" src="C:\Users\sjostlin\Source\Repos\TSS\TESS\Content\img\tieto-logo-com.png" alt=""  />
+                </span>
+            </td>
+        </tr>
+    </table>
+</div>
+    </div>
+</body>
+</html>
+

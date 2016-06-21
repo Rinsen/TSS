@@ -29,6 +29,9 @@ namespace TietoCRM.Models
         private DateTime ssma_timestamp;
         public DateTime SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
+        private String alias;
+        public String Alias { get { return alias; } set { alias = value; } }
+
         public view_OfferRow()
             : base("OfferRow")
         {
@@ -77,7 +80,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, sortnr, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        FROM " + databasePrefix + "OfferRow WHERE " + "Offer_number = @offerNumber";
+                                        ,Alias FROM " + databasePrefix + "OfferRow WHERE " + "Offer_number = @offerNumber";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);

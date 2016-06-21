@@ -53,7 +53,10 @@ public class view_ContractRow : SQLBaseClass
         private DateTime ssma_timestamp;
 		public DateTime SSMA_timestamp { get{ return ssma_timestamp; } set{ ssma_timestamp = value; } }
 
-		public view_ContractRow() : base("ContractRow")
+        private String alias;
+        public String Alias { get { return alias; } set { alias = value; } }
+
+        public view_ContractRow() : base("ContractRow")
 		{
 			//ctr
 		}
@@ -77,7 +80,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
                                         FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer";
 
                 command.Prepare();
@@ -129,7 +132,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -174,7 +177,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM qry_ValidContractRow WHERE " + "Customer = @customer";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE " + "Customer = @customer";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -219,7 +222,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM qry_ValidContractRow WHERE Article_number=@articleNumber";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@articleNumber", articleNumber);
@@ -275,7 +278,8 @@ public class view_ContractRow : SQLBaseClass
                     [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
                     [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
                     [view_ContractRow].[sortnr] ,
-                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp 
+                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp ,
+                    [view_ContractRow].[Alias] 
                     FROM " + databasePrefix + @"ContractRow 
                     INNER JOIN " + databasePrefix + @"Contract ON 
                     view_Contract.Customer=view_ContractRow.Customer and 

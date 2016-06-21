@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <style type="text/css">
@@ -24,9 +24,4 @@
     float: right;
   }
 </style>
-</head><body>
-                        <div class='header'>
-                            <div id='date' class='date'>2016-06-21</div></div>
-                        </body>
-                        </html>
-                    
+</head>

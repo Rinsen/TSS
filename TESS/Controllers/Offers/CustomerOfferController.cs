@@ -15,7 +15,7 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
-
+using System.IO;
 
 namespace TietoCRM.Controllers
 {
@@ -117,7 +117,10 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                offerInfo.Module = module.Module;
+                if (offerRow.Alias == null || offerRow.Alias == "")
+                    offerInfo.Module = module.Module;
+                else
+                    offerInfo.Module = offerRow.Alias;
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
                 offerInfo.License = offerRow.License;
@@ -152,6 +155,8 @@ namespace TietoCRM.Controllers
             user.Select("Sign = '" + customer.Representative + "'");
             ViewData.Add("Representative", user);
 
+            ViewData.Add("UseLogo", user.Use_logo);
+
             this.ViewData["Title"] = "Customer Offer";
 
             string offerRequest = Request["offer-section"];
@@ -179,6 +184,8 @@ namespace TietoCRM.Controllers
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             ViewData.Add("CustomerOffer", co);
 
+            ViewData.Add("UseLogo", System.Web.HttpContext.Current.GetUser().Use_logo);
+
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
 
@@ -188,7 +195,10 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                offerInfo.Module = module.Module;
+                if (offerRow.Alias == null || offerRow.Alias == "")
+                    offerInfo.Module = module.Module;
+                else
+                    offerInfo.Module = offerRow.Alias;
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
                 offerInfo.License = offerRow.License;
@@ -222,9 +232,15 @@ namespace TietoCRM.Controllers
             view_User user = new view_User();
             user.Select("Sign = '" + customer.Representative + "'");
             ViewData.Add("Representative", user);
-            String footerFilePath = "file:///" + Server.MapPath("~/Views/Shared/Footer.html").Replace("\\", "/");
-            String headerFilePath = "file:///" + Server.MapPath("~/Views/CustomerOffer/Header.html").Replace("\\", "/");
+            String footerPath = Server.MapPath("~/Views/Shared/Footer_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
+            String footerFilePath = "file:///" + footerPath;
+
+            String headerPath = Server.MapPath("~/Views/CustomerOffer/Header_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
+            String headerFilePath = "file:///" + headerPath;
             string cusomtSwitches = string.Format("--print-media-type --header-spacing 4 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
+
+            FileStream ffs = updateFooter(footerPath, user);
+            FileStream hfs = updateHeader(headerPath, user);
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.CustomSwitches = cusomtSwitches;
 
@@ -234,7 +250,64 @@ namespace TietoCRM.Controllers
             ViewData["Title"] = fileName;
             Response.Headers["Content-disposition"] = "inline; filename=" + fileName;
 
+            ffs.Close();
+            hfs.Close();
+
             return pdf;
+        }
+
+        public FileStream updateFooter(String footerPath, view_User user)
+        {
+            String footerTxtPath = Server.MapPath("~/Views/CustomerOffer/Footer.txt").Replace("\\", "/");
+            String content = System.IO.File.ReadAllText(footerTxtPath);
+            FileStream fs = new FileStream(footerPath, FileMode.Create, FileAccess.ReadWrite);
+            content += @"<body onload='subst()'>
+                            <div class='container'>
+	                            <div class='page-numbers'>
+     	                            Sida <span class='page'></span> av <span class='topage'></span>
+                                    </div>";
+            if (user.Use_logo)
+                content += @"<div class='footer-logo'>
+                            <img src='../../Content/img/tieto-logo.png' alt='tieto-logo' />
+                        </div>";
+            content += @"</div>
+                    </body>
+                    </html>
+                    ";
+            StreamWriter writer = new StreamWriter(fs);
+            writer.Write(content);
+
+            writer.Close();
+            return fs;
+        }
+
+
+
+
+        public FileStream updateHeader(String headerPath, view_User user)
+        {
+            String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
+            String content = System.IO.File.ReadAllText(headerTxtPath);
+            FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
+            content += @"<body>
+                        <div class='header'>
+                            <div id='date' class='date'>" + DateTime.Now.ToString("yyy-MM-dd") +"</div>";
+            if (user.Use_logo)
+            {
+                content += @"<div class='logo'>
+                            <img src='../../Content/img/tieto-logo-com.png' />
+                            </div> ";
+            }
+            content += @"</div>
+                        </body>
+                        </html>
+                    ";
+            StreamWriter writer = new StreamWriter(fs);
+            writer.Write(String.Empty);
+            writer.Write(content);
+
+            writer.Close();
+            return fs;
         }
 
         public ActionResult Footer()
@@ -694,6 +767,7 @@ namespace TietoCRM.Controllers
                     if(dict.Keys.Contains("License"))
                         License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
                     Decimal Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",","."), NumberFormatInfo.InvariantInfo);
+                    String Alias = dict["Alias"].ToString();
 
                     view_OfferRow offerRow = new view_OfferRow();
                     offerRow.Offer_number = Offer_number;
@@ -701,6 +775,7 @@ namespace TietoCRM.Controllers
                     offerRow.License = Convert.ToDecimal(License);
                     offerRow.Maintenance = Convert.ToDecimal(Maintenance);
                     offerRow.Include_status = false;
+                    offerRow.Alias = Alias;
                     offerRow.Insert();
                 }
 
@@ -994,6 +1069,11 @@ namespace TietoCRM.Controllers
 
             return "1";
 
+        }
+
+        public String UseLogo()
+        {
+            return System.Web.HttpContext.Current.GetUser().Use_logo.ToString();
         }
     }
 }

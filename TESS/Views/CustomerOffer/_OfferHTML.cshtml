@@ -50,10 +50,13 @@
     {
         <div class="crm-pdf-head">
             <span id="crm-pdf-todays-date">@currentDate</span>
+            @if(ViewBag.UseLogo)
+            {
             <span id="crm-pdf-tieto-logo-com">
                 <img src="@GetWorkingUrl("/Content/img/tieto-logo-com.png")" alt=""/>
 
             </span>
+            }
         </div>
     }
     <div class="crm-pdf-header-section">
@@ -123,10 +126,12 @@
         @if (!IsPdf())
         {
         <div class="crm-pdf-foot">
-           
+            @if(ViewBag.UseLogo)
+            {
             <div class="crm-pdf-foot-logo">
                 <img src="@GetWorkingUrl("/Content/img/tieto-logo.png")" alt="tieto-logo" />
             </div>
+            }
         </div>
         }   
     </div>

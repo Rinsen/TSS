@@ -76,74 +76,13 @@ var fillArticleList = function(System, classification){
     });
 }
 
-var editSelectArticle = function (editButton) {
-    var $editButton = $(editButton);
-    var $articleBtn = $editButton.closest("button");
-    var oldLicenseVal = parseFloat($articleBtn.data("license")).toFixed(2);
-    var oldMaintenanceVal = parseFloat($articleBtn.data("maintenance")).toFixed(2);
-    var articleName = $articleBtn.find(".art-nr").next().html();
-    var articleNr = $articleBtn.find(".art-nr").html();
-    var licenseText = "";
-    if (typeof $articleBtn.data("license") != "undefined" && typeof $articleBtn.data("license") != false) {
-        licenseText = " <div class='form-group'>                                                                                                    \
-                                <label for='license-text' class='col-sm-2 control-label'>License</label>                                                \
-                                <div class='col-sm-10'>                                                                                                 \
-                                    <input class='form-control' id='license-text' name='License' value='" + oldLicenseVal + "'>                         \
-                                </div>                                                                                                                  \
-                            </div>  ";
-    }
-    bootbox.dialog({
-        backdrop: false,
-        closebutton: false,
-        className: "small-modal",
-        title: "Edit Article:  " + articleNr + " " + articleName,
-        message: "<form class='form-horizontal'>                                                                                                \                                                                                                                    \
-                        <div class='form-group'>                                                                                                    \
-                            <label for='maintenance-text' class='col-sm-2 control-label'>Maintenance</label>                                        \
-                            <div class='col-sm-10'>                                                                                                 \
-                                <input class='form-control' id='maintenance-text' name='Maintenance' value='" + oldMaintenanceVal + "'>             \
-                            </div>                                                                                                                  \
-                        </div>                                                                                                                      \
-                        " + licenseText + "                                                                                                        \
-                      </form>"
-            ,
-        buttons: {
-            close: {
-                label: "Close",
-                className: "btn-close",
-                callback: function () {
-                    $(".small-modal").remove();
-                }
-            },
-            success: {
-                label: "Save",
-                className: "btn-success",
-                callback: function () {
-                    var $licenseEl = $("#license-text");
-                    var $maintenanceEl = $("#maintenance-text");
-                    // Update article data attrs
-                    if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
-                        $articleBtn.attr("data-license", $licenseEl.val());
-                        $articleBtn.data("license", $licenseEl.val());
-                        $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
-                    }
-                    $articleBtn.attr("data-maintenance", $maintenanceEl.val());
-                    $articleBtn.data("maintenance", $maintenanceEl.val());
-                    $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
-
-                    calculateSums();
-                    $(".small-modal").remove();
-                },
-            },
-        }
-    });
-}
 
 var editArticle = function(editButton){
     var $editButton = $(editButton);
     var $articleBtn = $editButton.parent().parent().parent().find("td button");
     var oldLicenseVal = Math.round($articleBtn.data("license"), 0);
     var oldMaintenanceVal = Math.round($articleBtn.data("maintenance"), 0);
+    var oldAlias = $articleBtn.data("alias");
     var articleName = $articleBtn.find(".art-nr").next().html();
     var articleNr = $articleBtn.find(".art-nr").html();
     var licenseText = "";
@@ -155,6 +94,12 @@ var editArticle = function(editButton){
                                 </div>                                                                                                                  \
                             </div>  ";
     }
+    var aliasText = " <div class='form-group'>                                                                                                          \
+                                <label for='license-text' class='col-sm-2 control-label'>Alias</label>                                                  \
+                                <div class='col-sm-10'>                                                                                                 \
+                                    <input class='form-control' id='alias-text' name='Alias' value='" + oldAlias + "'>                                  \
+                                </div>                                                                                                                  \
+                            </div>  ";
     bootbox.dialog({
         backdrop: false,
         closebutton: false,
@@ -168,7 +113,7 @@ var editArticle = function(editButton){
                             </div>                                                                                                                  \
                         </div>                                                                                                                      \
                         " + licenseText + "                                                                                                        \
-                      </form>"
+                      " + aliasText + " </form>"
             ,
         buttons: {
             close: {
@@ -184,6 +129,7 @@ var editArticle = function(editButton){
                 callback: function () {
                     var $licenseEl = $("#license-text");
                     var $maintenanceEl = $("#maintenance-text");
+                    var $aliasEl = $("#alias-text");
                     // Update article data attrs
                     if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
                         $articleBtn.attr("data-license", $licenseEl.val());
@@ -193,6 +139,10 @@ var editArticle = function(editButton){
                     $articleBtn.attr("data-maintenance", $maintenanceEl.val());
                     $articleBtn.data("maintenance", $maintenanceEl.val());
                     $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
+
+                    $articleBtn.attr("data-alias", $aliasEl.val());
+                    $articleBtn.data("alias", $aliasEl.val());
+                    $articleBtn.find(".alias").html($aliasEl.val());
 
                     $(".small-modal").remove();
 
@@ -224,16 +174,17 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 $tr.html("<th></th><th>Art. nr</th><th>Module</th><th>Price category</th>");
                 hasFixedRows = true;
             }
-            $newButton = $("<button onclick='moveItem(event, this)'                                             \
+            $newButton = $("<button onclick='moveItem(event, this)'                                                 \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
+                                            data-alias='" + article.Module + "'                                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
                                         + usedCell +
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
-                                            <td title = '" + artComm + "'>" + article.Module + "</td>                                         \
+                                            <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             <td class='maintenance' style='float: right; width:auto;'>" + formatCurrency(article.Price_category) + "</td>\
                                         </tr>                                                                       \
                                     </table>                                                                        \
@@ -248,6 +199,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
             $newButton = $("<button onclick='moveItem(event, this)'                                             \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
+                                            data-alias='" + article.Module + "'                                      \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             type='button'>                                                          \
@@ -255,7 +207,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                         <tr>                                                                        "
                                         + usedCell +
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
-                                            <td title = '" + artComm + "'>" + article.Module + "</td>                                         \
+                                            <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             <td class='license'>" + formatCurrency(article.License) + "</td>        \
                                             <td class='maintenance'>" + formatCurrency(article.Maintenance) + "</td>\
                                         </tr>                                                                       \
@@ -352,11 +304,12 @@ var updateSelectedItems = function () {
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
+                                data-alias='" + module.Alias + "'                                   \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
                                     <td class='art-nr'>" + module.Article_number + "</td>           \
-                                    <td>" + module.Article + "</td>                                 \
+                                    <td class='alias'>" + module.Alias + "</td>                                 \
                                     <td style='float: right; width:auto;'>" + module.Price_category + "</td>                          \
                                 </tr>                                                               \
                             </table>                                                                \
@@ -370,6 +323,7 @@ var updateSelectedItems = function () {
                                 type='button'                                                       \
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
+                                data-alias='" + module.Alias + "'                                   \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
                                 data-rowtype='3'>                                                   \
@@ -378,17 +332,17 @@ var updateSelectedItems = function () {
                                     <td class='art-nr'>" + module.Article_number + "</td>";
                     if (module.Rewritten) {
                         if (module.NewArt) {
-                            html += "<td>New " + module.Article + "</td>";
+                            html += "<td class='alias'>New " + module.Alias + "</td>";
                         }
-                        if (module.Removed) {
-                            html += "<td> Del " + module.Article + "</td>";
+                        else if (module.Removed) {
+                            html += "<td class='alias'> Del " + module.Alias + "</td>";
                         }
                         else {
-                            html += "<td>" + module.Article + "</td>";
+                            html += "<td class='alias'>" + module.Alias + "</td>";
                         }
                     }
                     else {
-                        html += "<td>" + module.Article + "</td>";
+                        html += "<td class='alias'>" + module.Alias + "</td>";
                     }
                     html +=         "<td>" + formatCurrency(module.License) + "</td>                                \
                                     <td>" + formatCurrency(module.Maintenance) + "</td>                             \
@@ -527,11 +481,13 @@ var saveArticlesFunction = function () {
         var buttonArt = $button.find(".art-nr").html();
         var buttonLicense = $button.data("license");
         var buttonMaintenance = $button.data("maintenance");
+        var buttonAlias = $button.data("alias");
         var buttonRowtype = $button.data("rowtype");
 
         // "Create a new article" to store in an array to use for server side db update.
         var newArticle = {
-            "Article_number":  buttonArt,
+            "Article_number": buttonArt,
+            "Alias": buttonAlias,
             "License": buttonLicense,
             "Maintenance": buttonMaintenance,
             "Rowtype" : buttonRowtype
