@@ -55,7 +55,7 @@ namespace TietoCRM.Models
             int amountExpiringContracts = 0;
             foreach (view_Contract contract in contracts.Where(m => m.Status == "Giltigt").ToList())
             {
-                if (contract.Valid_through.Value != null)
+                if (contract.Valid_through != null)
                 {
                     if ((contract.Valid_through.Value - DateTime.Now).TotalDays <= 30)
                     {
