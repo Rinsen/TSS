@@ -60,6 +60,7 @@
             console.log($el)
             bootbox.dialog({
                 title: "Edit " + $el.text(),
+                draggable: true,
                 message: (function () {
                     var rdata = "";
                     $.ajax({
@@ -86,7 +87,7 @@
                         },
                     },
                 }
-            });
+            }).find('.modal-content').draggable();
         }
 
     </script>

@@ -15,7 +15,7 @@
     </thead>
 </table>
 
-<div class="modal fade bs-example-modal-lg" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -231,7 +231,7 @@
                     }
                 }
                 $("#save-service-changes").attr("data-service", selectedId);
-                $("#serviceModal").appendTo("body").modal("show");
+                $("#serviceModal").appendTo("body").modal("show").draggable();
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -239,7 +239,7 @@
 
         $selRowContainer.append("<div id='create-service-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-service-button").bind("click", function () {
-            $("#serviceModal").appendTo("body").modal("show");
+            $("#serviceModal").appendTo("body").modal("show").draggable();
             $("#save-service-changes").removeAttr("data-service");
             var $selectedTds = $("#service-table tr.selected td").not(".radios");
             var tdLen = $selectedTds.length;

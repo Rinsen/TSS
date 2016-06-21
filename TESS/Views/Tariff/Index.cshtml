@@ -44,7 +44,7 @@
     </div>
 </row>
 
-        <div class="modal fade bs-example-modal-lg" id="tariffModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal fade bs-example-modal-lg" id="tariffModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
             <div class="modal-dialog contact-modal" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -287,7 +287,7 @@
                             }
                         }
                         $("#save-tariff-changes").attr("data-tariff", selectedId);
-                        $("#tariffModal").appendTo("body").modal("show");
+                        $("#tariffModal").appendTo("body").modal("show").draggable();
                     }
                     else
                         triggerAlert("You have to select a row to edit first.", "info");
@@ -295,7 +295,7 @@
 
                 $selRowContainer.append("<div id='create-tariff-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
                 $("#create-tariff-button").bind("click", function () {
-                    $("#tariffModal").appendTo("body").modal("show");
+                    $("#tariffModal").appendTo("body").modal("show").draggable();
                     $("#save-tariff-changes").removeAttr("data-tariff");
                     var $selectedTds = $("#tariff-table tr.selected td").not(".radios");
                     var tdLen = $selectedTds.length;

@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
 
     $("#modulesFromContracts-modal-button").click(function () {
-        $("#modulesFromContractsModal").appendTo("body").modal("show");
+        $("#modulesFromContractsModal").appendTo("body").modal("show").find('.modal-content').draggable();
     });
 
     $("#modulesFromContractsModal #check-all-options").click(function () {

@@ -16,7 +16,7 @@
 </table>
 
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
-<div class="modal fade bs-example-modal-lg" id="priceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="priceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -241,7 +241,7 @@
                     }
                 }
                 $("#save-price-changes").attr("data-price", selectedId);
-                $("#priceModal").appendTo("body").modal("show");
+                $("#priceModal").appendTo("body").modal("show").draggable();
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -250,7 +250,7 @@
         $selRowContainer.append("<div id='create-price-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-price-button").on("click", function () {
             $("#id_pk-text").removeAttr("readonly");
-            $("#priceModal").appendTo("body").modal("show");
+            $("#priceModal").appendTo("body").modal("show").draggable();
             $("#save-price-changes").removeAttr("data-price");
             var $selectedTds = $("#price-table tr.selected td").not(".radios");
             var tdLen = $selectedTds.length;

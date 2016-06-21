@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $("#optionsFromActive-modal-button").click(function () {
-        $("#optionsFromActiveModal").appendTo("body").modal("show");
+        $("#optionsFromActiveModal").appendTo("body").modal("show").find('.modal-content').draggable();
     });
 
     $("#optionsFromActiveModal #check-all-options").click(function () {

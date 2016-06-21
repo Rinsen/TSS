@@ -16,7 +16,7 @@
 </table>
 
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
-<div class="modal fade bs-example-modal-lg" id="PopulationModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="PopulationModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -244,7 +244,7 @@
                     }
                 }
                 $("#save-Population-changes").attr("data-Population", selectedId);
-                $("#PopulationModal").appendTo("body").modal("show");
+                $("#PopulationModal").appendTo("body").modal("show").draggable();
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -253,7 +253,7 @@
         $selRowContainer.append("<div id='create-Population-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Population-button").bind("click", function () {
             $("#id_pk-text").removeAttr("readonly");
-            $("#PopulationModal").appendTo("body").modal("show");
+            $("#PopulationModal").appendTo("body").modal("show").draggable();
             $("#save-Population-changes").removeAttr("data-Population");
             var $selectedTds = $("#Population-table tr.selected td").not(".radios");
             var tdLen = $selectedTds.length;

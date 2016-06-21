@@ -16,7 +16,7 @@
         </tr>
     </thead>
 </table>
-<div class="modal fade bs-example-modal-lg" id="customer-modal" tabindex="-1" role="dialog">
+<div class="modal fade bs-example-modal-lg" id="customer-modal" data-backdrop="static" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -434,7 +434,7 @@
             }
         }
         // Show modal
-        $("#customer-modal").appendTo("body").modal("show");
+        $("#customer-modal").appendTo("body").modal("show").draggable();
         // Remove old saveCustomerInformation() binding and add a new one.
         //$("#customer-modal form").validate();
         //$("#save-customer-changes").unbind("click");
@@ -469,7 +469,7 @@
         }
 
 
-        $("#customer-modal").appendTo("body").modal("show");
+        $("#customer-modal").appendTo("body").modal("show").draggable();
         // Remove old saveCustomerInformation() binding and add a new one.
         //$("#customer-modal form").validate();
         //$("#save-customer-changes").unbind("click");

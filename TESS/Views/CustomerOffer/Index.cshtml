@@ -8,7 +8,7 @@
                     <option value="@Customer">@Customer</option>
                 }
             </select>
-            <button type='button' class='btn-xs btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            <button type='button' class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
         </div>
         </div>
     </div>
@@ -85,14 +85,14 @@
 </div>*@
 <!--#endregion-->
 <style>
-    table#reminder-table {
+    /*table#reminder-table {
         width: 100%;
     }
 
     table#reminder-table th, table#reminder-table td {
         border: 1px solid black;
         padding: 3px;
-    }
+    }*/
 </style>
 
 <div class="modal fade bs-example-modal-lg" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -104,11 +104,8 @@
             </div>
             <div id="reminder-modal" class="modal-body">
                 <form class="form-inline" id="reminders-form">
-                    <table id="reminder-table">
-                        <col style="width:10%">
-                        <col style="width:75%">
-                        <col style="width:5%">
-                        <col style="width:10%; text-align:center">
+                    <table class="table table-striped table-bordered" id="reminder-table">
+                        
                        <thead>
                             <tr>
                                 <th>Start date</th>
@@ -130,7 +127,7 @@
     </div>
 </div>
 
-<div class="modal fade bs-example-modal-lg" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -195,7 +192,7 @@
     </div>
 </div>
 
-<div class="modal fade bs-example-modal-lg" id="newRowModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="newRowModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -372,7 +369,7 @@
     var currentPerson;
     var $contactSelect = $("#crm-select-customer");
     $("#contact-modal-button").click(function(){
-        $("#contactModal").appendTo("body").modal("show");
+        $("#contactModal").appendTo("body").modal("show").draggable();
     });
 
     var loadContactData = function()
@@ -410,7 +407,7 @@
     }
 
     $("#remind-modal-button").click(function(){
-        $("#reminderModal").appendTo("body").modal("show");
+        $("#reminderModal").appendTo("body").modal("show").draggable();
     });
     var loadReminders = function()
     {
@@ -936,7 +933,7 @@
 
         $("#crm-add-row").click(function(){
             loadNewContactData();
-            $("#newRowModal").appendTo("body").modal("show");
+            $("#newRowModal").appendTo("body").modal("show").draggable();
         });
     }
 
@@ -949,7 +946,7 @@
             drawButtons();
             $("#crm-add-row").click(function(){
                 loadNewContactData();
-                $("#newRowModal").appendTo("body").modal("show");
+                $("#newRowModal").appendTo("body").modal("show").draggable();
             });
         });
 
