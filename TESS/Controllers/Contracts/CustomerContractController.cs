@@ -321,8 +321,12 @@ namespace TietoCRM.Controllers.Contracts
 
             this.GenerateThings();
 
-            String footerFilePath = "file:///" + Server.MapPath("~/Views/Shared/Footer.html").Replace("\\", "/");
+            String footerPath = Server.MapPath("~/Views/Shared/Footer_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
+            String footerFilePath = "file:///" + footerPath;
             String headerFilePath = "file:///" + GenerateStaticHeader(/*Request["selected-contract"].ToString()*/);
+            view_User user = ViewBag.Representative;
+
+            FileStream ffs = updateFooter(footerPath, user);
 
             string cusomtSwitches = string.Format("--print-media-type --header-spacing 4 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
@@ -337,7 +341,59 @@ namespace TietoCRM.Controllers.Contracts
 
             return pdf;
         }
+        public FileStream updateFooter(String footerPath, view_User user)
+        {
+            String footerTxtPath = Server.MapPath("~/Views/CustomerOffer/Footer.txt").Replace("\\", "/");
+            String content = System.IO.File.ReadAllText(footerTxtPath);
+            FileStream fs = new FileStream(footerPath, FileMode.Create, FileAccess.ReadWrite);
+            content += @"<body onload='subst()'>
+                            <div class='container'>
+	                            <div class='page-numbers'>
+     	                            Sida <span class='page'></span> av <span class='topage'></span>
+                                    </div>";
+            if (user.Use_logo)
+                content += @"<div class='footer-logo'>
+                            <img src='../../Content/img/tieto-logo.png' alt='tieto-logo' />
+                        </div>";
+            content += @"</div>
+                    </body>
+                    </html>
+                    ";
+            StreamWriter writer = new StreamWriter(fs);
+            writer.Write(content);
 
+            writer.Close();
+            return fs;
+        }
+
+
+
+
+        public FileStream updateHeader(String headerPath, view_User user)
+        {
+            String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
+            String content = System.IO.File.ReadAllText(headerTxtPath);
+            FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
+            content += @"<body>
+                        <div class='header'>
+                            <div id='date' class='date'>" + DateTime.Now.ToString("yyy-MM-dd") + "</div>";
+            if (user.Use_logo)
+            {
+                content += @"<div class='logo'>
+                            <img src='../../Content/img/tieto-logo-com.png' />
+                            </div> ";
+            }
+            content += @"</div>
+                        </body>
+                        </html>
+                    ";
+            StreamWriter writer = new StreamWriter(fs);
+            writer.Write(String.Empty);
+            writer.Write(content);
+
+            writer.Close();
+            return fs;
+        }
         public ActionResult Header()
                     {
             return View("Header");

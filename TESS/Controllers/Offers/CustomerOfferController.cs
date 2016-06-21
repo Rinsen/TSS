@@ -108,8 +108,6 @@ namespace TietoCRM.Controllers
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             ViewData.Add("CustomerOffer", co);
 
-            ViewData.Add("UseLogo", System.Web.HttpContext.Current.GetUser().Use_logo);
-
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
 
@@ -153,6 +151,8 @@ namespace TietoCRM.Controllers
             view_User user = new view_User();
             user.Select("Sign = '" + customer.Representative + "'");
             ViewData.Add("Representative", user);
+
+            ViewData.Add("UseLogo", user.Use_logo);
 
             this.ViewData["Title"] = "Customer Offer";
 
