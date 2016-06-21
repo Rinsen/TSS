@@ -239,7 +239,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="create-offer-btn" class="btn btn-primary">Save Offer</button>
+                <button type="button" id="create-offer-btn" class="btn btn-primary">Save and Preview</button>
             </div>
         </div>
     </div>
@@ -350,6 +350,11 @@
                     drawButtons();
                     triggerAlert("Successfully added new offer.", "success");
                     $("#newRowModal").modal("toggle");
+
+                    window.history.pushState(null,null,["Index?selected-offer=" + data]);
+
+                    window.location = "ViewPdf?selected-offer=" + data;
+
                 }
                 else {
                     triggerAlert("Failed to add new offer.", "warning");

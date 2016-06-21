@@ -238,7 +238,7 @@
             <div class="modal-footer">
                 @*<button type="button" id="set-defaults-btn" class="btn btn-default">Set defaults</button>*@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="create-contract-btn" class="btn btn-primary">Save Contract</button>
+                <button type="button" id="create-contract-btn" class="btn btn-primary">Save and Preview</button>
             </div>
         </div>
     </div>
@@ -475,7 +475,7 @@
                     "json": JSON.stringify(newContract)
                 },
                 "success": function(data){
-                    if(data > 0){
+                    if(data != "0" || data != "-1"){
                         updateDataTable($("#crm-select-customer").val(), function(){
                             drawButtons();
                             $("#crm-add-row").click(function(){
@@ -490,6 +490,11 @@
                         console.log("success");
                         triggerAlert("Successfully added new contract.", "success");
                         $("#newRowModal").modal("toggle");
+
+                        window.history.pushState(null,null,["Index?contract-id=" + data + "&customer=" + newContract.Customer ]);
+
+                        window.location = "ViewPdf?contract-id=" + data + "&customer=" + newContract.Customer;
+
                     }
                     else {
                         triggerAlert("Failed to add new contract.", "warning");

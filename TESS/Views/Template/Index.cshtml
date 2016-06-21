@@ -203,7 +203,7 @@
                 tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'body5');
                 tinymce.EditorManager.execCommand('mceAddEditor', true, 'opening5');
                 tinymce.EditorManager.execCommand('mceAddEditor', true, 'body5');
-                console.log(func);
+                
                 setTimeout(func, 200);
                
          
@@ -433,7 +433,7 @@
                 if (data.length > 0) {
                     var textTemplate = JSON.parse(data);
                     //$selectType = $("#crm-type-select5");
-                    console.log(textTemplate);
+                    
                     $("#crm-type-select5").html("");
 
                     setFields5(textTemplate.Document_type);

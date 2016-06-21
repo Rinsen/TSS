@@ -621,7 +621,7 @@ namespace TietoCRM.Controllers.Contracts
 
                 a.Insert();
 
-                return "1";
+                return a.Contract_id.ToString();
             }
             catch (Exception e)
             {

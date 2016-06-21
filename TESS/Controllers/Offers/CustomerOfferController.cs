@@ -938,7 +938,10 @@ namespace TietoCRM.Controllers
 
                 a.Insert();
 
-                return "1";
+                List<view_CustomerOffer> allOffers = view_CustomerOffer.getAllCustomerOffers(a.Customer.ToString());
+                allOffers.OrderByDescending(c => c._Offer_number);
+
+                return allOffers.Last()._Offer_number.ToString();
             }
             catch (Exception e)
             {
