@@ -900,8 +900,9 @@
             else if(rows.length <= 0)
             {
                 window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
-
-                window.location = "ViewPdf?selected-offer=" + selectedId;
+                $input = $("#CustomerOffer-table_filter").find(":input");
+                val = $input.val()
+                window.location = "ViewPdf?selected-offer=" + selectedId + "&search=" + val;
             }
             else
             {
@@ -1066,7 +1067,12 @@
             drawButtons();
             if($customerSelect.val() == "")
                 $("#crm-add-row").unbind("click");
-        });
+
+            $input = $("#CustomerOffer-table_filter").find(":input");
+            @Html.Raw("$input.val('" + Request["search"] + "');");
+            $input.trigger($.Event("keyup", { keyCode: 13} ));
+            
+            });
 
         
 

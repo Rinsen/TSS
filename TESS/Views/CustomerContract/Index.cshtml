@@ -860,11 +860,11 @@
 
             var i = 0, j = 0;
             var insertValue;
-       
+
             for (var name in aData) {
 
                 var $td;
-            
+
                 if(i == 0)
                 {
                     $td = $('td:eq(' + i + ')', nRow);
@@ -874,7 +874,7 @@
                         selectRow(this.firstChild);
 
                     });
-                    
+
                     var object = {Contract_id: aData["Contract_id"], Customer: aData["Customer"]}
                     $td.html("<input type='radio' value='" + aData["Contract_id"] + "' name='selected-contract' onClick=''/>");
                     if ($td.parent().hasClass("selected") && $td.find("input").val() == selectedId) {
@@ -884,7 +884,7 @@
                         $td.parent().removeClass("selected");
                     }
                     i++;
-                
+
                 }
                 else if (i >= 1) {
                     $td = $('td:eq(' + i + ')', nRow);
@@ -989,18 +989,18 @@
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
                 if($currInput.attr("type") == "date"){
-                    
+
                     var today = new Date();
                     if($currInput.attr("name") == "Valid_through"){
                         today.setYear(today.getFullYear() + 3);
                     }
                     $currInput.val($.datepicker.formatDate('yy-mm-dd', today));
-                    
+
                 }
                 else if($currInput.attr("name") == "Term_of_notice"){
                     $currInput.val("3");
                 }
-                
+
             else {
                     $currInput.val("");
             }
@@ -1017,7 +1017,7 @@
 
             $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
             $selRowContainer.append("<div id='crm-edit-contract' class='crm-table-btn'><button type='button' class='btn btn-default'>Preview</button></div>");
-       
+
             $("#crm-edit-contract").bind("click", function(){
                 //get selected item and add so the url is correct.
                 if(typeof selectedId == "undefined" || selectedId == null)
@@ -1026,10 +1026,12 @@
                 {   contract = selectedId;
                     //console.log(contract.Contract_id);
                 window.history.pushState(null,null,["Index?contract-id=" + contract["Contract_id"] + "&customer=" + contract["Customer"] ]);
+                    $input = $("#CustomerContract-table_filter").find(":input");
+                    val = $input.val();
 
-                    window.location = "ViewPdf?contract-id=" + contract + "&customer=" + $customerSelect.val();
+                    window.location = "ViewPdf?contract-id=" + contract + "&customer=" + $customerSelect.val() + "&search=" + val;
                 }
-               
+
                 $("#crm-add-row").click(function(){
                     loadNewContactData();
                     loadCustomer();
@@ -1037,9 +1039,9 @@
                     setDefaultValues();
                     $("#newRowModal").appendTo("body").modal("show").draggable();
                 });
-                
+
             });
-            
+
         }
         $("#crm-add-row").click(function(){
             loadNewContactData();
@@ -1050,7 +1052,7 @@
             $("#newRowModal").appendTo("body").modal("show").draggable();
         });
     $(document).ready(function () {
-        
+
         $('.selectpicker').selectpicker();
 
         $customerSelect = $("#crm-select-customer");
@@ -1208,17 +1210,17 @@
             @{
             foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
             {
-                    
+
                 if(pi.PropertyType == typeof(DateTime?))
                 {
-                    @Html.Raw("\t\t\t$('#" + pi.Name.ToLower() + "-date').datepicker();\n");  
+                    @Html.Raw("\t\t\t$('#" + pi.Name.ToLower() + "-date').datepicker();\n");
                 }
 
             }
         }
         }
 
-        
+
 
 
         $customerSelect.val("@Html.Raw(ViewBag.Customer)");
@@ -1241,6 +1243,9 @@
                     $("#newRowModal").appendTo("body").modal("show").draggable();
                 });
             }
+            $input = $("#CustomerContract-table_filter").find(":input");
+            @Html.Raw("$input.val('" + Request["search"] + "');");
+            $input.trigger($.Event("keyup", { keyCode: 13} ));
         });
     });
 </script>

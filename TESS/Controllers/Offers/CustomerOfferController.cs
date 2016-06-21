@@ -99,7 +99,9 @@ namespace TietoCRM.Controllers
         public ActionResult ViewPdf()
         {
             GlobalVariables.checkIfAuthorized("CustomerOffer");
-            string request = Request["selected-offer"];
+            String request = Request["selected-offer"];
+            String search = Request["search"];
+            ViewData.Add("Search", search);
             int offerID = 0;
             if (!String.IsNullOrEmpty(request))
             {
