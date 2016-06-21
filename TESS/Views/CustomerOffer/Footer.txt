@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <script>
@@ -43,11 +43,4 @@ function subst() {
 		height: 80px;
 	}
 </style>
-</head><body onload='subst()'>
-                            <div class='container'>
-	                            <div class='page-numbers'>
-     	                            Sida <span class='page'></span> av <span class='topage'></span>
-                                    </div></div>
-                    </body>
-                    </html>
-                    
+</head>
