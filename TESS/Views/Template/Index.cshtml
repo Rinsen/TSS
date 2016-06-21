@@ -88,7 +88,7 @@
                     <div class="form-group">
                         <label for="opening5" class="col-sm-2 control-label">Opening</label>
                         <div class="col-sm-10">
-                            <textarea rows="2" class="form-control" name="Opening" id="opening5"></textarea>
+                            <textarea rows="2" class="form-control mceEditor" name="Opening" id="opening5"></textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -112,7 +112,7 @@
                     <div class="form-group">
                         <label for="body5" class="col-sm-2 control-label">Text body</label>
                         <div class="col-sm-10">
-                            <textarea rows="4" class="form-control" name="Text" id="body5"></textarea>
+                            <textarea rows="4" class="form-control mceEditor" name="Text" id="body5"></textarea>
                         </div>
                     </div>
                 </form>
@@ -124,7 +124,7 @@
         </div>
     </div>
 </div>
-
+<script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
 <script>
 
     $deluhTitleObj = $("#deluhtitle5");
@@ -154,36 +154,72 @@
     var setFields5 = function (docTyp) {
         if (docTyp == "Offert") {
             //$selectType.append($("<option></option>").attr("value", textTemplate.Document_type).html(textTemplate.Document_type));
-            $deluhTitleObj.prop("disabled", true);
-            $deluhTextObj.prop("disabled", true);
-            $bodytitleObj.prop("disabled", true);
-            $short_descrObj.prop("disabled", false);
+            
+            $deluhTitleObj.parent().parent().hide();
+            
+            $deluhTextObj.parent().parent().hide();
+            
+            $bodytitleObj.parent().parent().hide();
+           
             $titleObj.prop("disabled", false);
-            $openingObj.prop("disabled", false);
-            $bodyObj.prop("disabled", false);
+            $bodyObj.parent().parent().show();
         }
         if (docTyp == "Tilläggsavtal" || docTyp == "Tjänsteavtal") {
             //$selectType.append($("<option></option>").attr("value", "Tjänsteavtal").html("Tjänsteavtal"));
             //$selectType.append($("<option></option>").attr("value", "Tilläggsavtal").html("Tilläggsavtal"));
-            $deluhTitleObj.prop("disabled", false);
-            $deluhTextObj.prop("disabled", false);
-            $bodytitleObj.prop("disabled", false);
+
+            $deluhTitleObj.parent().parent().show();
+            $deluhTextObj.parent().parent().show();
+            $bodytitleObj.parent().parent().show();
+
             $short_descrObj.prop("disabled", false);
             $titleObj.prop("disabled", false);
-            $openingObj.prop("disabled", false);
-            $bodyObj.prop("disabled", false);
+            $bodyObj.parent().parent().show();
         }
         if (docTyp == "Modulavslut") {
             //$selectType.append($("<option></option>").attr("value", "Modulavslut").html("Modulavslut"));
-            $deluhTitleObj.prop("disabled", true);
-            $deluhTextObj.prop("disabled", true);
-            $bodytitleObj.prop("disabled", true);
+            $deluhTitleObj.parent().parent().show();
+            $deluhTextObj.parent().parent().show();
+            $bodytitleObj.parent().parent().show();
             $short_descrObj.prop("disabled", false);
             $titleObj.prop("disabled", true);
-            $openingObj.prop("disabled", false);
-            $bodyObj.prop("disabled", true);
+           // $openingObj.prop("disabled", false);
+            // $bodyObj.prop("disabled", true);
+            $bodyObj.parent().parent().hide();
         }
+        
+       
+       // initMCE(function () { });
+       
+
+
     };
+
+    var initMCE = function(func)
+    {
+        if (tinyMCE.editors.length != 0) {
+            
+                tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'opening5');
+                tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'body5');
+                tinymce.EditorManager.execCommand('mceAddEditor', true, 'opening5');
+                tinymce.EditorManager.execCommand('mceAddEditor', true, 'body5');
+                console.log(func);
+                setTimeout(func, 200);
+               
+         
+        } else {
+            tinyMCE.init({
+                mode: "specific_textareas",
+                editor_selector: "mceEditor",
+                setup: function (editor) {
+                    editor.on('init', function () {
+                        setTimeout(func, 200);
+                    });
+                }
+            });
+        }
+        
+    }
 
     //Start - selectRow function Aktiveras när man markerar en rad/klickar i en radiobutton
     var selectRow = function (element) {
@@ -329,7 +365,7 @@
 
         $("#edit-template-modal-button").click(function () {
             if (selectedId != null) {
-                $("#templateModal").appendTo("body").modal("show").draggable();
+                $("#templateModal").appendTo("body").modal("show");
                 $("#save-template-btn").attr("onclick", "save('update');");
                 getTemplate();
             }
@@ -352,15 +388,24 @@
             $selectType.append($("<option></option>").attr("value", "Modulavslut").html("Modulavslut"));
 
             $("#short_descr5").val("");
-            $("#opening5").val("");
-            $("#body5").val("");
+           // $("#opening5").val("");
+           // $("#body5").val("");
             $("#bodytitle5").val("");
             $("#deluhtitle5").val("");
             $("#deluhtext5").val("");
 
-            $("#templateModal").appendTo("body").modal("show").draggable();
+           
 
             setFields5("Offert");
+            
+            
+           
+            $("#templateModal").appendTo("body").modal("show");
+            
+            initMCE(function () {
+                tinymce.get('opening5').setContent("");
+                tinymce.get('body5').setContent("");
+            });
 
             $("#save-template-btn").attr("onclick", "save('insert');");
         });
@@ -388,7 +433,7 @@
                 if (data.length > 0) {
                     var textTemplate = JSON.parse(data);
                     //$selectType = $("#crm-type-select5");
-                    console.log(textTemplate.Document_type);
+                    console.log(textTemplate);
                     $("#crm-type-select5").html("");
 
                     setFields5(textTemplate.Document_type);
@@ -397,11 +442,23 @@
                     $("#crm-type-select5").prop("disabled", true);
                     $("#short_descr5").val(textTemplate.Short_descr);
                     $("#title5").val(textTemplate.Title);
-                    $("#opening5").val(textTemplate.Page_head);
-                    $("#body5").val(textTemplate.Document_foot);
+                    //$("#opening5").val(textTemplate.Page_head);
+                    //$("#body5").val(textTemplate.Document_foot);
                     $bodytitleObj.val(textTemplate.Document_foot_title);
                     $deluhTitleObj.val(textTemplate.Delivery_maint_title);
                     $deluhTextObj.val(textTemplate.Delivery_maint_text);
+
+                    initMCE(function () {
+                        tinymce.get('opening5').setContent(textTemplate.Page_head);
+                        tinymce.get('body5').setContent(textTemplate.Document_foot);
+                    });
+
+                   
+                    
+                   
+                    
+
+
                 }
             }
         });
@@ -440,6 +497,7 @@
     //Start - Save function
     var save = function (method)
     {
+        tinymce.triggerSave();
         if ($("#template-modal form").valid()) {
 
 
@@ -457,9 +515,11 @@
                     //Template_number: templateNumber,
                     Document_type: $selectType.val(),
                     Short_descr: $("#short_descr5").val(),
-                    Document_head: $("#title5").val(),
-                    Page_head: $("#opening5").val(),
-                    Document_foot: $("#body5").val(),
+                    Document_head: $("#title5").val(),  
+                    //Page_head: $("#opening5").val(),
+                    Page_head: tinyMCE.get('opening5').getContent(),
+                    //Document_foot: $("#body5").val(),
+                    Document_foot: tinyMCE.get('body5').getContent(),
                     Document_foot_title: "",
                     Delivery_maint_title: "",
                     Delivery_maint_text: ""
@@ -473,8 +533,10 @@
                     Document_type: $selectType.val(),
                     Short_descr: $("#short_descr5").val(),
                     Title: $("#title5").val(),
-                    Page_head: $("#opening5").val(),
-                    Document_foot: $("#body5").val(),
+                    //Page_head: $("#opening5").val(),
+                    Page_head: tinyMCE.get('opening5').getContent(),
+                    //Document_foot: $("#body5").val(),
+                    Document_foot: tinyMCE.get('body5').getContent(),
                     Document_foot_title: $("#bodytitle5").val(),
                     Delivery_maint_title: $("#deluhtitle5").val(),
                     Delivery_maint_text: $("#deluhtext5").val()
@@ -489,7 +551,8 @@
                     Document_type: $selectType.val(),
                     Short_descr: $("#short_descr5").val(),
                     Document_head: "",
-                    Page_head: $("#opening5").val(),
+                    //Page_head: $("#opening5").val(),
+                    Page_head: tinyMCE.get('opening5').getContent(),
                     Document_foot: "",
                     Document_foot_title: "",
                     Delivery_maint_title: "",
@@ -523,6 +586,7 @@
 
     $(document).ready(function () {
 
+        
         $('.selectpicker').selectpicker();
         $("#crm-select-user").change(function () {
             updateDataTable(this.value);
@@ -583,6 +647,13 @@
         updateDataTable($("#crm-select-user").val());
         drawButtons();
 
+        // prevent Bootstrap from hijacking TinyMCE modal focus    
+        $(document).on('focusin', function (e) {
+            if ($(e.target).closest(".mce-window").length) {
+                e.stopImmediatePropagation();
+            }
+        });
+        
     });
     
 </script>

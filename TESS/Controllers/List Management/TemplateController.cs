@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -110,7 +113,21 @@ namespace TietoCRM.Controllers.List_Management
                    Delivery_maint_text = ""
                };
            }
-           return (new JavaScriptSerializer()).Serialize(j);
+
+            // Custom JsonSerializer to support HTML chars.
+            StringBuilder returnString = new StringBuilder();
+            returnString.Append("{");
+            foreach (var prop in j.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
+                returnString.Append("\"" + prop.Name + "\":\"" + prop.GetValue(j, null) + "\",");
+                Console.WriteLine("Name: {0}, Value: {1}", prop.Name, prop.GetValue(j, null));
+            }
+            returnString.Remove(returnString.Length - 1, 1);
+            returnString.Append("}");
+            
+           
+            // Replace any carrige return / new lines with a break line instead.
+            return (new Regex("(\r\n|\r|\n)")).Replace(returnString.ToString(), "<br>");
         }
 
         public String TemplateJsonData()
@@ -146,6 +163,7 @@ namespace TietoCRM.Controllers.List_Management
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
         }
 
+        [HttpPost, ValidateInput(false)]
         public String SaveTemplate()
         {
             try
