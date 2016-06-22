@@ -169,6 +169,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Statistics.cs" />
+    <Compile Include="Models\view_Appointment.cs" />
     <Compile Include="Models\view_CustomerMissingProductReport.cs" />
     <Compile Include="Models\Cloner.cs" />
     <Compile Include="Models\Contract\view_ContractExpirationList.cs" />
@@ -788,8 +789,16 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>del "$(ProjectDir)Content\Site.css"
+del "$(ProjectDir)Content\sidebar.css"
+del "$(ProjectDir)Content\OfferPdf.css"
+del "$(ProjectDir)Content\ContractPdf.css"
+del "$(ProjectDir)Content\ExpPdfStyle.css" 
+"$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\Site.less" "$(ProjectDir)Content\Site.css"
+"$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\sidebar.less" "$(ProjectDir)Content\sidebar.css"
+"$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\OfferPdf.less" "$(ProjectDir)Content\OfferPdf.css"
+"$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\ContractPdf.less" "$(ProjectDir)Content\ContractPdf.css"
+"$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\ExpPdfStyle.less" "$(ProjectDir)Content\ExpPdfStyle.css"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

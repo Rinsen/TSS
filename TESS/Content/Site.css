@@ -152,7 +152,7 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   border-radius: 0;
   color: white;
   font-weight: bold;
-  font-size: 150%;
+  font-size: 120%;
 }
 .crm-widget .panel-heading {
   color: white;
@@ -174,8 +174,20 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
 #crm-widget-refresh-all {
   cursor: pointer;
 }
+.form-group label {
+  font-size: 10pt;
+}
+.form-group .form-control {
+  font-size: 9pt;
+}
 .dataTable tr {
   position: relative;
+}
+.dataTable th {
+  font-size: 11pt !important;
+}
+.dataTable td {
+  font-size: 10pt !important;
 }
 .dataTable td input {
   background-color: white;
@@ -184,8 +196,8 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   border-radius: 4px;
   color: #4e7987;
   display: block;
-  font-size: 15px;
-  height: 45px;
+  font-size: 10pt;
+  height: 20px;
   line-height: 1.42857;
   padding: 10px 15px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
@@ -905,6 +917,27 @@ a.tooltips > span:after {
   padding-top: 0px !important;
   margin-top: 0px !important;
 }
-td#user-table {
-  border: solid 1px black;
+#user-table,
+.dataTable {
+  border: none !important;
+}
+#user-table td,
+.dataTable td {
+  padding: 0.4em !important;
+  white-space: nowrap;
+}
+/*--------------Reminders----------------*/
+
+#reminder-table td:nth-child(1) {
+  width: 10%;
+}
+#reminder-table td:nth-child(2) {
+  width: 75%;
+}
+#reminder-table td:nth-child(3) {
+  width: 5%;
+}
+#reminder-table td:nth-child(4) {
+  width: 10%;
+  text-align: center;
 }
