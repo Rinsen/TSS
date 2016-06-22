@@ -1,4 +1,5 @@
 ﻿@using TietoCRM.Models;
+@using TietoCRM.Extensions;
 <table draggable="true" id="Reminder-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
         <tr>
@@ -56,7 +57,14 @@
                                                     <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                         @foreach (view_User User in ViewBag.Representatives)
                                                         {
-                                                            <option value="@User.Sign">@User.Name</option>
+                                                            if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
+                                                            {
+                                                                <option value="@User.Sign" selected>@User.Name</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@User.Sign">@User.Name</option>
+                                                            }
                                                         }
                                                     </select>
                                                 }
@@ -72,7 +80,6 @@
                                                 else if (pi.Name == "Customer_name")
                                                 {
                                                     <select class="form-control" id="@pi.Name.ToLower()-select" name="@pi.Name">
-                                                        <option value="null">---</option>
                                                         @foreach (String types in ViewBag.Customers)
                                                         {
                                                             <option value="@types">@types</option>
@@ -345,10 +352,7 @@
                             $currInput.val("");
                         }
                         if ($currInput.attr("name") == "Sign") {
-                            $currInput.val(System.Web.HttpContext.Current.GetUser().Windows_user);
-                        }
-                        if ($currInput.attr("name") == "Customer_name") {
-                            $currInput.val("null");
+                            $currInput.val(@System.Web.HttpContext.Current.GetUser().Sign);
                         }
                 //    }
                 //}
