@@ -1218,7 +1218,39 @@
     //    tinyMCE.execCommand('mceAddControl', false, 'prolog-text');
     //});
 
-
+    $('#templatesModal').bind('shown.bs.modal', function () {
+        loadTextData();
+        tinymce.init({
+            selector: "#page-head-text",
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                   
+                });
+            }
+        });
+        tinymce.init({
+            selector: "#deluhtext",
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                    
+                });
+            }
+        });
+        tinymce.init({
+            selector: "#document-foot-text",
+            setup: function (editor) {
+                editor.on('init', function (e) {
+                    
+                });
+            }
+        });
+        tinyMCE.execCommand('mceAddControl', false, 'page-head-text');
+        tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
+        tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
+    });
+    $('#templatesModal').bind('hidden.bs.modal', function () {
+        tinyMCE.remove();
+    });
     $('#mainTemplatesModal').bind('shown.bs.modal', function () {
 
         tinymce.init({
