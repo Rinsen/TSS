@@ -1593,6 +1593,7 @@ namespace TietoCRM.Controllers.Contracts
            
         }
 
+        [ValidateInput(false)]
         public String SaveContractText()
         {
             try

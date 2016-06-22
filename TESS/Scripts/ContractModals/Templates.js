@@ -10,7 +10,7 @@
             loadTopHeadText();
         }
         else {
-            loadSelectData();
+            //loadSelectData();
             loadTextData();
             $("#templatesModal").appendTo("body").modal("show").find('.modal-content').draggable();
         }
@@ -30,11 +30,14 @@
         var text = {};
         text["Contract_type"] = $("#document-type-text").val();
         text["Title"] = $("#title-text").val();
-        text["Page_head"] = $("#page-head-text").val();
-        text["Document_foot"] = $("#document-foot-text").val();
+        //text["Page_head"] = $("#page-head-text").val();
+        text["Page_head"] = tinymce.get('page-head-text').getContent();
+        //text["Document_foot"] = $("#document-foot-text").val();
+        text["Document_foot"] = tinymce.get('document-foot-text').getContent();
         text["Document_foot_title"] = $("#bodytitle").val(),
         text["Delivery_maint_title"] = $("#deluhtitle").val(),
-        text["Delivery_maint_text"] = $("#deluhtext").val()
+        //text["Delivery_maint_text"] = $("#deluhtext").val()
+        text["Delivery_maint_text"] = tinymce.get('deluhtext').getContent();
         text["Contract_id"] = contractId;
         text["Customer"] = customerName;
         text["Page_foot"] = "";
