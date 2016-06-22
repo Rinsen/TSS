@@ -9,7 +9,8 @@
                     <option value="@Customer">@Customer</option>
                 }
             </select>
-            <button type='button' class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            <button type='button' class='btn hidden btn-warning form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
+            <button type='button' class='btn hidden btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
         </div>
     </div>
     <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
@@ -125,6 +126,43 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" id="save-contact-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog appointment-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Create Appointment</h4>
+            </div>
+            <div id="appointment-modal" class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="Text" class="col-sm-2 control-label">Text</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Text" id="text" placeholder="Text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date" class="col-sm-2 control-label">Date</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Date" id="date" placeholder="Date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Event_type" class="col-sm-2 control-label">Event type</label>
+                        <div class="col-sm-10">
+                            <input type="search" class="form-control" name="Event_type" id="eventType" placeholder="Event type">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="create-appointment" class="btn btn-primary">Create</button>
             </div>
         </div>
     </div>
@@ -330,9 +368,6 @@
                 if (data == "1") {
                     $("#remind-modal-button").show();
                 }
-                else {
-                    $("#remind-modal-button").hide();
-                }
             }
         });
     }
@@ -454,6 +489,34 @@
         setDefaultValues();
     });
 
+    $("#create-appointment").click(function(){
+        $("#appointmentModal form").find(":input");
+        var newAppointment = {}
+        var $formInputs = $("#appointmentModal form").find(":input");
+        var frmInpLen = $formInputs.length;
+        for (var i = 0; i < frmInpLen; i++) {
+            var $currInput = $($formInputs[i]);
+            newAppointment[$currInput.attr("name")] = $currInput.val();
+        }
+
+        $.ajax({
+            "url": "@Url.Content("~/CustomerContract/InsertAppointment/")",
+            "type": "POST",
+            "data": {
+                "customer": $contactSelect.val(),
+                "json": JSON.stringify(newAppointment)
+            },
+            "success": function(data){
+                if(data >= 0){
+                    $("#appointmentModal").modal("toggle");
+                    triggerAlert("Successfully created an appointment.", "success");
+                }
+                else{
+                    triggerAlert("failed to create an appointment.", "warning");
+                }
+            }
+        });
+    });
 
     $("#create-contract-btn").click(function(){
 
@@ -465,6 +528,7 @@
         for (var i = 0; i < frmInpLen; i++) {
             var $currInput = $($formInputs[i]);
             newContract[$currInput.attr("name")] = $currInput.val();
+            triggerAlert("Successfully created a new appointment.", "success");
         }
         newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
 
@@ -771,6 +835,10 @@
                 ]);
             }
         }
+
+    var openModal = function(){
+        $("#appointmentModal").appendTo("body").modal("show").draggable();
+    }
     var selectedContract = {};
         var selectRow = function(element){
             var $td = $(element);
@@ -1145,6 +1213,7 @@
             }
         });
 
+
         $formValidation = $("#contactModal form").validate({
             ignore: ".ignore",
             rules: {
@@ -1217,8 +1286,11 @@
                 }
 
             }
+            }
         }
-        }
+        $("#date").datetimepicker({
+            dateFormat: 'yy-mm-dd'
+        });
 
 
 

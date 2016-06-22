@@ -8,8 +8,8 @@ namespace TietoCRM.Models
 {
     public class view_Appointment : SQLBaseClass
     {
-        private int id;
-        public int ID { get; set; }
+        private int _id;
+        public int _ID { get; set; }
 
         private String customer;
         public String Customer { get; set; }
