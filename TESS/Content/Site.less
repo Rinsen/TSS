@@ -218,7 +218,7 @@ ul.nav.navbar-nav ol.breadcrumb{
     color: #4e7987;
     display: block;
     font-size: 10pt;
-    height: 45px;
+    height: 20px;
     line-height: 1.42857;
     padding: 10px 15px;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
@@ -771,8 +771,12 @@ a.tooltips > span:after {
     margin-top: 0px !important;
     
 }
- td#user-table{
-     border: solid 1px black;
+#user-table, .dataTable{
+     border: none !important;
+     td{
+         padding: 0.4em !important;
+         white-space: nowrap; 
+     }
  }
 
  /*--------------Reminders----------------*/

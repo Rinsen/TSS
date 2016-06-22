@@ -1,21 +1,19 @@
-﻿@*<table draggable="true" id="user-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">*@
-<div >
-    <table draggable="true" id="user-table" style="vertical-align: text-top; font-size: 13px" class="ExplizitTable">
-        <thead>
-            <tr>
-                <th data-field="#" data-sortable="false" style="border-bottom: 1px solid gray; padding: 5px; height: 45px; vertical-align: bottom">#</th>
-                @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+﻿<table draggable="true" id="user-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false" >#</th>
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                if (@PropertyName != "SSMA timestamp")
                 {
-                    String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                    if (@PropertyName != "SSMA timestamp")
-                    {
-                        <th data-field="@PropertyInfo.Name" data-sortable="true" style="border-bottom: 1px solid gray; padding: 5px; height: 45px; vertical-align: bottom">@PropertyName</th>
-                    }
+                    <th data-field="@PropertyInfo.Name" data-sortable="true" >@PropertyName</th>
                 }
-            </tr>
-        </thead>
-    </table>
-</div> 
+            }
+        </tr>
+    </thead>
+ </table>
+
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog contact-modal" role="document">
@@ -261,6 +259,7 @@
             ],
             //"scrollY": ($("#page-content-wrapper").height() - 170),
             //"scrollY": "600px",
+           
             "scrollX": "1200px",
             "fnRowCallback": drawCallBack
         });
