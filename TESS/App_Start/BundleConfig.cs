@@ -23,14 +23,16 @@ namespace TietoCRM
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js",
-                      "~/Scripts/jquery-ui-1.11.4-min.js"));
+                      "~/Scripts/jquery-ui-1.11.4-min.js",
+                      "~/Scripts/jquery-ui-timepicker-addon.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.min.css",
                       "~/Content/site.css",
                       "~/Content/sidebar.css",
                       "~/Content/bootstrap-select.min.css",
-                      "~/Content/bootstrap-table.css"));
+                      "~/Content/bootstrap-table.css",
+                      "~/Content/jquery-ui-timepicker-addon.css"));
             // Less integration
             bundles.Add(new LessBundle("~/Content/less").Include(
                 "~/Content/Site.less",

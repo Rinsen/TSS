@@ -2207,5 +2207,28 @@ namespace TietoCRM.Controllers.Contracts
 
         }
 
+        public String InsertAppointment()
+        {
+            String json = Request["json"];
+            String customer = Request["customer"];
+            Dictionary<String, dynamic> map = null;
+            try
+            {
+                map = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
+            }
+            catch(Exception e)
+            {
+                return "-1";
+            }
+
+            view_Appointment appointment = new view_Appointment();
+            appointment.Customer = customer;
+            appointment.Date = DateTime.Parse(map["Date"]);
+            appointment.Event_type = map["Event_type"];
+            appointment.Text = map["Text"];
+            appointment.Insert();
+
+            return "0";
+        }
     }
 }

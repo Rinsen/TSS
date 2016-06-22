@@ -339,6 +339,7 @@
     <Content Include="Content\img\Signatures\SLT.png" />
     <Content Include="Content\img\tieto-logo-com.png" />
     <Content Include="Content\img\tieto-logo.png" />
+    <Content Include="Content\jquery-ui-timepicker-addon.css" />
     <Content Include="Content\OfferPdf.css" />
     <Content Include="Content\OfferPdf.less" />
     <Content Include="Content\ContractPdf.less" />
@@ -595,6 +596,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.11.4-min.js" />
+    <Content Include="Scripts\jquery-ui-timepicker-addon.min.js" />
     <Content Include="Scripts\jquery.bsAlerts.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
