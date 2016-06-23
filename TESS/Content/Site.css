@@ -941,3 +941,15 @@ a.tooltips > span:after {
   width: 10%;
   text-align: center;
 }
+/* --------- Sold Products Report ----------*/
+
+#report-table.sold-products td:nth-child(1),
+#report-table.sold-products th:nth-child(1) {
+  width: 2% !important;
+  font-size: 70%;
+}
+#report-table.sold-products td:nth-child(2),
+#report-table.sold-products th:nth-child(2) {
+  font-size: 70%;
+  width: 2% !important;
+}
