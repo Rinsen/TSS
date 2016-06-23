@@ -1,7 +1,11 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<style>
+    div.mce-fullscreen {
+        top: 60px;
+    }
+</style>
 <div class="row col-sm-12">
     <div class="form-inline">
         <button class="btn btn-default" type="button" style="float:right; margin-bottom: 10px; margin-left:10px;" id="back-button">Back</button>
@@ -33,13 +37,19 @@
 <script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
     tinymce.init({
-        selector: "#epilog-text"
+        selector: "#epilog-text",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars
     });
     tinymce.init({
-        selector: "#prolog-text"
+        selector: "#prolog-text",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars
     });
     tinymce.init({
-        selector: "#module-text"
+        selector: "#module-text",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars
     });
 </script>
 

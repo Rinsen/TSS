@@ -167,13 +167,19 @@
     <script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
     tinymce.init({
-        selector: "#page-head-text"
+        selector: "#page-head-text",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars
     });
     tinymce.init({
-        selector: "#page-foot-text"
+        selector: "#page-foot-text",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars
     });
     tinymce.init({
-        selector: "#document-foot-text"
+        selector: "#document-foot-text",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars
     });
     </script>
     <!-- #endregion -->
