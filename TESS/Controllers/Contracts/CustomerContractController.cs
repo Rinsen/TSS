@@ -293,7 +293,7 @@ namespace TietoCRM.Controllers.Contracts
             List<System.Reflection.PropertyInfo> properties;
             if (contract.Status == "Sänt")
             {
-                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "Main_contract_id" || p.Name == "Contract_type" ||
+                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Title" || p.Name == "Status" || p.Name == "Main_contract_id" || p.Name == "Contract_type" ||
                                                                      p.Name == "Term_of_notice" || p.Name == "Status" || p.Name == "Valid_from" || p.Name == "Valid_through" ||
                                                                      p.Name == "Extension" || p.Name == "Expire" || p.Name == "Observation" || p.Name == "Note" ||
                                                                      p.Name == "Sign").ToList();
