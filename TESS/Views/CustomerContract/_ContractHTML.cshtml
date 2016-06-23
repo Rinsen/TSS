@@ -105,8 +105,8 @@
         }
         else
         {
-            <h5 id="template-Delivery_maint_title">@ViewBag.ContractText.Delivery_maint_title</h5>
-            <div id="template-Delivery_maint_text" class="area-newline">@ViewBag.ContractText.Delivery_maint_text</div>
+            <h5 id="template-Delivery_maint_title">@Html.Raw(ViewBag.ContractText.Delivery_maint_title)</h5>
+            <div id="template-Delivery_maint_text" class="area-newline">@Html.Raw(ViewBag.ContractText.Delivery_maint_text)</div>
         }
     </div>
     <div class="crm-pdf-module-section">
@@ -138,8 +138,8 @@
             <div class="crm-pdf-footer-section">
 
                 <div id="crm-pdf-footer-info">
-                    <h5 id="template-Document_foot_title">@ViewBag.ContractText.Document_foot_title</h5>
-                    <div id="template-Document_foot" class="area-newline">@ViewBag.ContractText.Document_foot</div>
+                    <h5 id="template-Document_foot_title">@Html.Raw(ViewBag.ContractText.Document_foot_title)</h5>
+                    <div id="template-Document_foot" class="area-newline">@Html.Raw(ViewBag.ContractText.Document_foot)</div>
                 </div>
                 <div id="crm-pdf-signing-section">
                     @try
