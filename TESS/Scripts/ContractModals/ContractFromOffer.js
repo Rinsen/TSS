@@ -37,7 +37,7 @@
             obj.Article_number = $input.attr("data-id");
             obj.License = $input.attr("data-license");
             obj.Maintenance = $input.attr("data-maintenance");
-
+            obj.Alias = $input.attr("data-alias");
             moduleList.push(obj);
         }
 

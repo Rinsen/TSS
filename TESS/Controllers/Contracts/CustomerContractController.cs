@@ -273,7 +273,7 @@ namespace TietoCRM.Controllers.Contracts
             {
                 foreach (view_OfferRow offerRow in offer._OfferRows)
                 {
-                    if (!modules.Contains(offerRow))
+                    //if (!modules.Contains(offerRow))
                         modules.Add(offerRow);
                 }
                 foreach (view_ConsultantRow consultantRow in offer._ConsultantRows)
@@ -726,6 +726,7 @@ namespace TietoCRM.Controllers.Contracts
                     cRow.New = true;
                     cRow.Rewritten = false;
                     cRow.Removed = false;
+                    cRow.Alias = article["Alias"].ToString();
 
                     cRow.Delete("Article_number = " + cRow.Article_number + " AND Contract_id = '" + cRow.Contract_id + "' AND Customer = '" + cRow.Customer + "'");
                     cRow.Insert();
@@ -875,12 +876,12 @@ namespace TietoCRM.Controllers.Contracts
             {
                 view_Module module = new view_Module();
                 module.Select("Article_number = " + cRow.Article_number);
-                if (cRow.Alias != null && cRow.Alias != "")
+                if (!String.IsNullOrEmpty(cRow.Alias))
                     module.Module = cRow.Alias;
 
                 var obj = new
                 {
-                    Article = module.Module,
+                    Module = module.Module,
                     Article_number = module.Article_number,
                     Maintenance = cRow.Maintenance,
                     License = cRow.License,

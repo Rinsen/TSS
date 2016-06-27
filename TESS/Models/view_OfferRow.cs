@@ -59,7 +59,10 @@ namespace TietoCRM.Models
             }
 
             // Return true if the fields match:
-            return (this.Article_number == p.Article_number);
+            if (String.IsNullOrEmpty(this.Alias))
+                return (this.Article_number == p.Article_number);
+            else
+                return (this.Alias == p.Alias);
         }
 
         /// <summary>

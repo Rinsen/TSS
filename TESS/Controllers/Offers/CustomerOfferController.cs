@@ -265,10 +265,10 @@ namespace TietoCRM.Controllers
 	                            <div class='page-numbers'>
      	                            Sida <span class='page'></span> av <span class='topage'></span>
                                     </div>";
-            if (user.Use_logo)
+            /*if (user.Use_logo)
                 content += @"<div class='footer-logo'>
                             <img src='../../Content/img/tieto-logo.png' alt='tieto-logo' />
-                        </div>";
+                        </div>";*/
             content += @"</div>
                     </body>
                     </html>
@@ -291,12 +291,12 @@ namespace TietoCRM.Controllers
             content += @"<body>
                         <div class='header'>
                             <div id='date' class='date'>" + DateTime.Now.ToString("yyy-MM-dd") +"</div>";
-            if (user.Use_logo)
+            /*if (user.Use_logo)
             {
                 content += @"<div class='logo'>
                             <img src='../../Content/img/tieto-logo-com.png' />
                             </div> ";
-            }
+            }*/
             content += @"</div>
                         </body>
                         </html>
