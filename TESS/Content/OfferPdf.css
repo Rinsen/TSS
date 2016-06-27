@@ -178,7 +178,6 @@
 }
 .crm-pdf div.crm-pdf-offer-section div#crm-pdf-service-rows {
   page-break-before: auto;
-  page-break-after: avoid;
   margin-top: 1em;
 }
 .crm-pdf div.crm-pdf-offer-section div#crm-pdf-service-rows div.price-headings {
@@ -244,7 +243,6 @@
   padding-right: 1em;
 }
 .crm-pdf div.crm-pdf-footer-section {
-  background-color: blue !important;
   page-break-inside: auto !important;
 }
 .crm-pdf div.crm-pdf-footer-section div#crm-pdf-footer-info {

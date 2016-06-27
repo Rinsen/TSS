@@ -129,7 +129,7 @@ namespace TietoCRM.Controllers.List_Management
             // Replace any carrige return / new lines with a break line instead.
             if((new Regex(@"<\s*([^ >]+)[^>]*>.*?<\s*/\s*\1\s*>").IsMatch(returnString.ToString())))
             {
-                return returnString.ToString();
+                return (new Regex("(\r\n|\r|\n)")).Replace(returnString.ToString(), "");
             }
             else
             {
