@@ -127,7 +127,14 @@ namespace TietoCRM.Controllers.List_Management
             
            
             // Replace any carrige return / new lines with a break line instead.
-            return (new Regex("(\r\n|\r|\n)")).Replace(returnString.ToString(), "<br>");
+            if((new Regex(@"<\s*([^ >]+)[^>]*>.*?<\s*/\s*\1\s*>").IsMatch(returnString.ToString())))
+            {
+                return returnString.ToString();
+            }
+            else
+            {
+                return (new Regex("(\r\n|\r|\n)")).Replace(returnString.ToString(), "<br>");
+            }
         }
 
         public String TemplateJsonData()

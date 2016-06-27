@@ -13,9 +13,6 @@
         vertical-align: top;
         color: black;
     }
-    p {
-        margin: 0;
-    }
     .small-divider {
         width: 20%;
         border-bottom: 1px solid black;
@@ -211,6 +208,7 @@
 
         div#crm-pdf-service-rows {
             page-break-before: auto;
+           
             margin-top: 1em;
             div.price-headings {
                 width: 36%;
@@ -283,10 +281,21 @@
                 }
             }
         }
+
     }
+    page-break-inside: auto !important;
     div.crm-pdf-footer-section {
-        page-break-before: auto;
+        
+       
+        page-break-inside: auto !important;
+            
+         
+        
         div#crm-pdf-footer-info {
+            page-break-inside: auto !important;
+            p{
+                page-break-inside: auto !important;
+            }
             margin-top: 1.5em;
         }
         div#crm-pdf-footer-regards {

@@ -290,7 +290,7 @@ namespace TietoCRM.Controllers
             FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
             content += @"<body>
                         <div class='header'>
-                            <div id='date' class='date'>" + DateTime.Now.ToString("yyy-MM-dd") +"</div>";
+                            <div style='font-family: Arial;' id='date' class='date'>" + DateTime.Now.ToString("yyy-MM-dd") +"</div>";
             if (user.Use_logo)
             {
                 content += @"<div class='logo'>

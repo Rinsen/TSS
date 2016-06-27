@@ -2,6 +2,7 @@
   position: relative;
   height: 100%;
   margin: 0 0.5cm;
+  page-break-inside: auto !important;
 }
 .crm-pdf img {
   max-width: 100%;
@@ -11,9 +12,6 @@
   display: block;
   vertical-align: top;
   color: black;
-}
-.crm-pdf p {
-  margin: 0;
 }
 .crm-pdf .small-divider {
   width: 20%;
@@ -180,6 +178,7 @@
 }
 .crm-pdf div.crm-pdf-offer-section div#crm-pdf-service-rows {
   page-break-before: auto;
+  page-break-after: avoid;
   margin-top: 1em;
 }
 .crm-pdf div.crm-pdf-offer-section div#crm-pdf-service-rows div.price-headings {
@@ -245,10 +244,15 @@
   padding-right: 1em;
 }
 .crm-pdf div.crm-pdf-footer-section {
-  page-break-before: auto;
+  background-color: blue !important;
+  page-break-inside: auto !important;
 }
 .crm-pdf div.crm-pdf-footer-section div#crm-pdf-footer-info {
+  page-break-inside: auto !important;
   margin-top: 1.5em;
+}
+.crm-pdf div.crm-pdf-footer-section div#crm-pdf-footer-info p {
+  page-break-inside: auto !important;
 }
 .crm-pdf div.crm-pdf-footer-section div#crm-pdf-footer-regards {
   margin-top: 1em;
