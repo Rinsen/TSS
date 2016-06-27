@@ -10,7 +10,7 @@
             loadTopHeadText();
         }
         else {
-            //loadSelectData();
+            loadSelectData();
             loadTextData();
             $("#templatesModal").appendTo("body").modal("show").find('.modal-content').draggable();
         }
@@ -151,9 +151,16 @@ var loadTextData = function (templateID) {
                 $("#title-text").val(template.Title);
                 $("#page-head-text").val(template.Page_head);
                 $("#document-foot-text").val(template.Document_foot);
-                $("#bodytitle").val(template.Document_foot_title),
-                $("#deluhtitle").val(template.Delivery_maint_title),
-                $("#deluhtext").val(template.Delivery_maint_text)
+                $("#bodytitle").val(template.Document_foot_title);
+                $("#deluhtitle").val(template.Delivery_maint_title);
+                $("#deluhtext").val(template.Delivery_maint_text);
+
+                for (var i = 0; i < tinyMCE.editors.length; i++) {
+                    var currentED = tinyMCE.editors[i];
+                    currentED.setContent($('#' + currentED.id).val());
+                }
+
+
             }
 
         }
