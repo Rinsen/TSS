@@ -1121,7 +1121,8 @@
         });
     $(document).ready(function () {
 
-        $('.selectpicker').selectpicker();
+        $('.selectpicker').val('@Request["customer"]');
+        $('.selectpicker').selectpicker('refresh');
 
         $customerSelect = $("#crm-select-customer");
         $customerSelect.change(function () {

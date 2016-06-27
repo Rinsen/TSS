@@ -891,14 +891,14 @@
                 clearInterval(btnTimeout); // Clear button timeout if request succeeded
             });
     }
-    
+
     function drawButtons()
     {
         var $selRowContainer = $("#CustomerOffer-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
         $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $selRowContainer.append("<div id='crm-edit-offer' class='crm-table-btn'><button type='button' class='btn btn-default'>Preview</button></div>");
-        
+
         var $editBtn = $("#crm-save-updates");
         $("#crm-edit-offer").bind("click", function(){
             //get selected item and add so the url is correct.
@@ -952,7 +952,8 @@
     }
 
     $(document).ready(function () {
-        $('.selectpicker').selectpicker();
+        $('.selectpicker').val('@Request["customer"]');
+        $('.selectpicker').selectpicker('refresh');
         $("#crm-select-customer").change(function () {
             selectedId = null;
             updateDataTable(this.value);
@@ -1001,7 +1002,7 @@
                     required: true,
                     date: true
                 },
-                
+
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
@@ -1034,7 +1035,7 @@
                 "Notes": {
                     maxlength: 255,
                 }
-                
+
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
@@ -1078,10 +1079,10 @@
             $input = $("#CustomerOffer-table_filter").find(":input");
             @Html.Raw("$input.val('" + Request["search"] + "');");
             $input.trigger($.Event("keyup", { keyCode: 13} ));
-            
+
             });
 
-        
+
 
     });
 </script>
