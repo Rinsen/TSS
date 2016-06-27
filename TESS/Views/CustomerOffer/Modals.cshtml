@@ -160,6 +160,9 @@
     </script>
     <script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
+    $('.bootbox').bind('hidden.bs.modal', function () {
+        tinyMCE.remove();
+    });
     tinymce.init({
         selector: "#page-head-text",
         plugins: tinyDefaultPlugins,
