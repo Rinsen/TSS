@@ -197,11 +197,19 @@
                                                         @{ view_Module article = new view_Module();
                                                     article.Select("Article_number = " + module.Article_number);
                                                         }
-                                                        @article.Article_number   -   @article.Module
+                                                        @if (!String.IsNullOrEmpty(module.Alias))
+                                                        {
+                                                            <span>@article.Article_number - @module.Alias</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@article.Article_number - @article.Module</span>
+                                                        }
+
                                                     </span>
                                                     <!--
                                                     -->
-                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-id="@module.Article_number" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
+                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-id="@module.Article_number" data-alias="@module.Alias" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
                                                 </li>
                                             }
                                             }

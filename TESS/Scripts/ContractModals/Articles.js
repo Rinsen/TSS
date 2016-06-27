@@ -304,12 +304,12 @@ var updateSelectedItems = function () {
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
-                                data-alias='" + module.Alias + "'                                   \
+                                data-alias='" + module.Module + "'                                   \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
                                     <td class='art-nr'>" + module.Article_number + "</td>           \
-                                    <td class='alias'>" + module.Alias + "</td>                                 \
+                                    <td class='alias'>" + module.Module + "</td>                                 \
                                     <td style='float: right; width:auto;'>" + module.Price_category + "</td>                          \
                                 </tr>                                                               \
                             </table>                                                                \
@@ -323,7 +323,7 @@ var updateSelectedItems = function () {
                                 type='button'                                                       \
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
-                                data-alias='" + module.Alias + "'                                   \
+                                data-alias='" + module.Module + "'                                   \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
                                 data-rowtype='3'>                                                   \
@@ -332,17 +332,17 @@ var updateSelectedItems = function () {
                                     <td class='art-nr'>" + module.Article_number + "</td>";
                     if (module.Rewritten) {
                         if (module.NewArt) {
-                            html += "<td class='alias'>New " + module.Alias + "</td>";
+                            html += "<td class='alias'>New " + module.Module + "</td>";
                         }
                         else if (module.Removed) {
-                            html += "<td class='alias'> Del " + module.Alias + "</td>";
+                            html += "<td class='alias'> Del " + module.Module + "</td>";
                         }
                         else {
-                            html += "<td class='alias'>" + module.Alias + "</td>";
+                            html += "<td class='alias'>" + module.Module + "</td>";
                         }
                     }
                     else {
-                        html += "<td class='alias'>" + module.Alias + "</td>";
+                        html += "<td class='alias'>" + module.Module + "</td>";
                     }
                     html +=         "<td>" + formatCurrency(module.License) + "</td>                                \
                                     <td>" + formatCurrency(module.Maintenance) + "</td>                             \

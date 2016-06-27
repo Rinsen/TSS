@@ -234,6 +234,12 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="offerTitle4" class="col-sm-2 control-label">Offer Title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Title" id="offerTitle4" />
+                        </div>
+                    </div>
                    
                 </form>
             </div>
@@ -336,6 +342,7 @@
         newOffer.Offer_created =  $("#created4").val();
         newOffer.Offer_valid =  $("#valid4").val();
         newOffer.Offer_status =  $("#offerStatus4").val();
+        newOffer.Title =  $("#offerTitle4").val();
         
         $.ajax({
             "url": "/CustomerOffer/Insert/",
@@ -884,14 +891,14 @@
                 clearInterval(btnTimeout); // Clear button timeout if request succeeded
             });
     }
-    
+
     function drawButtons()
     {
         var $selRowContainer = $("#CustomerOffer-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
         $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $selRowContainer.append("<div id='crm-edit-offer' class='crm-table-btn'><button type='button' class='btn btn-default'>Preview</button></div>");
-        
+
         var $editBtn = $("#crm-save-updates");
         $("#crm-edit-offer").bind("click", function(){
             //get selected item and add so the url is correct.
@@ -945,7 +952,8 @@
     }
 
     $(document).ready(function () {
-        $('.selectpicker').selectpicker();
+        $('.selectpicker').val('@Request["customer"]');
+        $('.selectpicker').selectpicker('refresh');
         $("#crm-select-customer").change(function () {
             selectedId = null;
             updateDataTable(this.value);
@@ -994,7 +1002,7 @@
                     required: true,
                     date: true
                 },
-                
+
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
@@ -1027,7 +1035,7 @@
                 "Notes": {
                     maxlength: 255,
                 }
-                
+
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
@@ -1071,10 +1079,10 @@
             $input = $("#CustomerOffer-table_filter").find(":input");
             @Html.Raw("$input.val('" + Request["search"] + "');");
             $input.trigger($.Event("keyup", { keyCode: 13} ));
-            
+
             });
 
-        
+
 
     });
 </script>

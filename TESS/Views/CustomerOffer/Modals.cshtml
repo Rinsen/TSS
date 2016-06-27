@@ -170,6 +170,9 @@
     </script>
     <script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
+    $('.bootbox').bind('hidden.bs.modal', function () {
+        tinyMCE.remove();
+    });
     tinymce.init({
         selector: "#page-head-text",
         plugins: tinyDefaultPlugins,
@@ -1144,6 +1147,12 @@ else if (Request["modal"] == "head-information")
                         }
                     }
                 </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="title-text" class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+                <input id="title-text" name="Title" type="text" class="form-control" value="@ViewBag.CustomerOffer.Title">
             </div>
         </div>
     </form>
