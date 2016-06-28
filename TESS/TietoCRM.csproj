@@ -146,6 +146,7 @@
     <Compile Include="Controllers\AccessController.cs" />
     <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\List Management\CustomerContactController.cs" />
     <Compile Include="Controllers\List Management\CustomerController.cs" />
     <Compile Include="Controllers\List Management\PopulationController.cs" />
@@ -653,7 +654,7 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
