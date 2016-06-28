@@ -32,7 +32,7 @@ namespace TietoCRM.Models
         /// Gets all users.
         /// </summary>
         /// <returns>A lsit of users.</returns>
-        public static List<view_Appointment> getAllReminders()
+        public static List<view_Appointment> getAllAppointments()
         {
             List<view_Appointment> list = new List<view_Appointment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -44,6 +44,39 @@ namespace TietoCRM.Models
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        view_Appointment k = new view_Appointment();
+                        int i = 0;
+                        while (reader.FieldCount > i)
+                        {
+                            k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                            i++;
+                        }
+                        list.Add(k);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public static List<view_Appointment> getAllAppointments(String customer)
+        {
+            List<view_Appointment> list = new List<view_Appointment>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                command.CommandText = "SELECT [ID], Customer, Date, Text, Event_type FROM " + databasePrefix + "Appointment WHERE Customer = @customer";
+
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.ExecuteNonQuery();
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {

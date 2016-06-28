@@ -902,6 +902,28 @@ a.tooltips > span:after {
 .disabled-link:hover {
   background-color: #d6d6d6 !important;
 }
+/*------------- Appointment modal ---------------*/
+
+#create-appointment {
+  float: right;
+  margin-bottom: 15px;
+}
+#appointment-table td:nth-child(1),
+#appointment-table th:nth-of-type(1) {
+  width: 20%;
+}
+#appointment-table td:nth-child(2),
+#appointment-table th:nth-of-type(2) {
+  width: 55%;
+}
+#appointment-table td:nth-child(3),
+#appointment-table th:nth-of-type(3) {
+  width: 13%;
+}
+#appointment-table td:nth-child(4),
+#appointment-table th:nth-of-type(4) {
+  width: 12%;
+}
 /*------------- Tariff---------------*/
 
 #tariff-table tr.selected {

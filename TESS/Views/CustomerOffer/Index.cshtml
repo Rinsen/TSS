@@ -8,7 +8,8 @@
                     <option value="@Customer">@Customer</option>
                 }
             </select>
-            <button type='button' class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
+            <button type='button' class='btn hidden btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
         </div>
         </div>
     </div>
@@ -187,6 +188,64 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" id="save-contact-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog appointment-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Create Appointment</h4>
+            </div>
+            <div id="appointment-modal" class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="Text" class="col-sm-2 control-label">Text</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Text" id="text" placeholder="Text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date" class="col-sm-2 control-label">Date</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Date" id="date" placeholder="Date">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Event_type" class="col-sm-2 control-label">Event type</label>
+                        <div class="col-sm-10">
+                            <input type="search" class="form-control" name="Event_type" id="eventType" placeholder="Event type">
+                        </div>
+                    </div>
+                </form>
+                <button type="button" id="create-appointment" class="btn btn-primary">Create</button>
+                <table class="table table-striped table-bordered" id="appointment-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Text</th>
+                            <th>Event type</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="appointment-body">
+                        @foreach (TietoCRM.Models.view_Appointment app in ViewBag.Appointments)
+                        {
+                            <tr>
+                                <td class='appointment-customer'>@app.Customer</td>
+                                <td class='appointment-text'>@app.Text</td>
+                                <td class='appointment-event-type'>@app.Event_type</td>
+                                <td class='appointment-date'>@app.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -561,6 +620,72 @@
         }
     });
 
+    $("#create-appointment").click(function(){
+        $("#appointmentModal form").find(":input");
+        var newAppointment = {}
+        var $formInputs = $("#appointmentModal form").find(":input");
+        var frmInpLen = $formInputs.length;
+        for (var i = 0; i < frmInpLen; i++) {
+            var $currInput = $($formInputs[i]);
+            newAppointment[$currInput.attr("name")] = $currInput.val();
+        }
+
+        $.ajax({
+            "url": "@Url.Content("~/CustomerContract/InsertAppointment/")",
+            "type": "POST",
+            "data": {
+                "customer": $contactSelect.val(),
+                "json": JSON.stringify(newAppointment)
+            },
+            "success": function(data){
+                if(data >= 0){
+                    loadAppointments();
+                    triggerAlert("Successfully created an appointment.", "success");
+                }
+                else{
+                    triggerAlert("failed to create an appointment.", "warning");
+                }
+            }
+    });
+    });
+
+    var loadAppointments = function()
+    {
+        $.ajax({
+            "url": "/CustomerContract/GetAppointments/",
+            "type": "POST",
+            "data": {
+                "customer": $contactSelect.val()
+            },
+            "success": function(data){
+                insertAppointmentToHtml(JSON.parse(data));
+            }
+        });
+    }
+
+    var insertAppointmentToHtml = function(json){
+        $newRows = $(".appointment-body");
+        $newRows.empty();
+        $newRows.html("");
+        $newRows.append("<tbody>");
+        for(var i = 0; i < json.length; i++)
+        {
+            var appointment = json[i];
+
+            var $row = $("<tr>                                                                                                \
+                                    <td class='appointment-customer'>" + appointment.Customer + "</td>                                   \
+                                    <td class='appointment-text'>" + appointment.Text + "</td>         \
+                                    <td class='appointment-event-type'>" + appointment.Event_type + "</td>         \
+                                    <td class='appointment-date'>" + appointment.Date + "</td>         \
+                                </tr>");
+            $newRows.append($row);
+        }
+        $newRows.append("<tbody>");
+    }
+
+    var openModal = function(){
+        $("#appointmentModal").appendTo("body").modal("show").draggable();
+    }
 
     $("#save-contact-changes").click(function(){
         $option = $("#crm-contact-select").find("option:selected");
@@ -956,6 +1081,7 @@
         $('.selectpicker').selectpicker('refresh');
         $("#crm-select-customer").change(function () {
             selectedId = null;
+            loadAppointments();
             updateDataTable(this.value);
             //checkReminder(this.value);
             drawButtons();
@@ -1050,7 +1176,9 @@
 
         var editState = false;
 
-
+        $("#date").datetimepicker({
+            dateFormat: 'yy-mm-dd'
+        });
 
         $("#crm-edit-contact").bind("click", function(){
 

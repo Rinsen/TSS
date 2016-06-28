@@ -57,6 +57,8 @@ namespace TietoCRM.Controllers
             else
                 on = ViewBag.Customers[0];
 
+            this.ViewData.Add("Appointments", view_Appointment.getAllAppointments(on).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date));
+
             if (Request["selected-offer"] != null && Request["selected-offer"] != "")
             {
                 int number = Convert.ToInt32(Request["selected-offer"]);

@@ -66,9 +66,16 @@ namespace TietoCRM.Controllers.Contracts
             this.ViewData["Title"] = "Customer Contract";
 
             if (Request.QueryString["customer"] == null || Request.QueryString["customer"] == "")
+            {
+                this.ViewData["Appointments"] = view_Appointment.getAllAppointments(on).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
                 ViewData.Add("Customer", on);
+            }
             else
+            {
+                this.ViewData["Appointments"] = view_Appointment.getAllAppointments(Request["customer"]).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
                 ViewData.Add("Customer", Request["customer"]);
+            }
+                
             
             return View();
         }
@@ -2231,6 +2238,20 @@ namespace TietoCRM.Controllers.Contracts
             appointment.Insert();
 
             return "0";
+        }
+
+        public String GetAppointments()
+        {
+            String customer = Request.Form["customer"];
+            List<view_Appointment> vA = view_Appointment.getAllAppointments(customer).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
+
+            String jsonData = (new JavaScriptSerializer()).Serialize(vA);
+            return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
+            {
+                DateTime dt = new DateTime(1970, 1, 1, 2, 0, 0, 0); // not sure how this works with summer time and winter time
+                dt = dt.AddMilliseconds(Convert.ToDouble(m.Groups[1].Value));
+                return dt.ToString("yyyy-MM-dd HH:mm");
+            });
         }
     }
 }
