@@ -227,7 +227,7 @@
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-        if (@PropertyName != "SSMA timestamp")
+        if (@PropertyName != "SSMA timestamp" || PropertyName != "File format")
         {
             DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
         }
