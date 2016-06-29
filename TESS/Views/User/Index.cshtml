@@ -1,11 +1,18 @@
-﻿<table draggable="true" id="user-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+﻿@{ 
+    List<String> SkipProp = new List<String>{
+        "File_format",
+        "SSMA_timestamp"
+    };
+  
+}
+<table draggable="true" id="user-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
         <tr>
             <th data-field="#" data-sortable="false" >#</th>
             @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                if (@PropertyName != "SSMA timestamp")
+                if (!SkipProp.Contains(PropertyInfo.Name))
                 {
                     <th data-field="@PropertyInfo.Name" data-sortable="true" >@PropertyName</th>
                 }
@@ -15,8 +22,8 @@
  </table>
 
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
-<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog contact-modal" role="document">
+<div class="modal fade bs-example-modal-lg"  data-backdrop="static" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -51,6 +58,21 @@
                                             <option value="true">Yes</option>
                                             <option value="false">No</option>
                                         </select>
+                                    </div>
+                                </div>
+                            }
+                            else if (pi.Name == "Offer_file_location" || pi.Name == "Contract_file_location")
+                            {
+                                <div class="form-group">
+                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">
+                                        @pName
+                                        <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true" 
+                                              data-toggle="tooltip" data-placement="top"
+                                              title="Here you can specify format of the file names. Just use &#64;ID &#64;TITLE &#64;REP &#64;CUSTOMER &#64;DATE"></span>
+                                    </label>
+                                    
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
                                     </div>
                                 </div>
                             }
@@ -227,7 +249,7 @@
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-        if (@PropertyName != "SSMA timestamp" || PropertyName != "File format")
+        if (!SkipProp.Contains(PropertyInfo.Name))
         {
             DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
         }
@@ -408,8 +430,14 @@
                     }
                     i++;
                 }
+                console.log(name);
 
-                if (i < 13) {
+                if (name == "File_format")
+                {
+                    continue;
+                }
+
+                if (i < 12) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
                     $td.html(String(aData[name]));
@@ -421,6 +449,10 @@
     }
 
     $('document').ready(function () {
+
+       
+        $('[data-toggle="tooltip"]').tooltip()
+        
 
         $('#user-table').DataTable({
             "destroy": true,

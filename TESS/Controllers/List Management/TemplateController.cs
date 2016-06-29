@@ -113,6 +113,8 @@ namespace TietoCRM.Controllers.List_Management
                    Delivery_maint_text = ""
                };
            }
+            
+            return (new JavaScriptSerializer()).Serialize(j);
 
             // Custom JsonSerializer to support HTML chars.
             StringBuilder returnString = new StringBuilder();
@@ -120,7 +122,6 @@ namespace TietoCRM.Controllers.List_Management
             foreach (var prop in j.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
                 returnString.Append("\"" + prop.Name + "\":\"" + prop.GetValue(j, null) + "\",");
-                Console.WriteLine("Name: {0}, Value: {1}", prop.Name, prop.GetValue(j, null));
             }
             returnString.Remove(returnString.Length - 1, 1);
             returnString.Append("}");

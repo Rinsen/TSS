@@ -243,9 +243,12 @@ namespace TietoCRM.Controllers
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.CustomSwitches = cusomtSwitches;
 
+       
+
             // Set title and file names.
-            String fileName = customer.Customer + " " + request + ".pdf";
-            fileName = fileName.Replace(" ", "_");
+            //String fileName = customer.Customer + " " + request + ".pdf";
+            String fileName = (new FileLocationMapping(user, co)).GetFilePath() + ".pdf";
+
             ViewData["Title"] = fileName;
             Response.Headers["Content-disposition"] = "inline; filename=" + fileName;
 

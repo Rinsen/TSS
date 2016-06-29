@@ -169,6 +169,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\FileLocationMapping.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\view_Appointment.cs" />
     <Compile Include="Models\view_CustomerMissingProductReport.cs" />

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace TietoCRM.Models
 {
     public class view_User : SQLBaseClass
 	{
+
 		private String sign;
 		public String Sign { get{ return sign; } set{ sign = value; } }
 
@@ -86,7 +88,8 @@ namespace TietoCRM.Models
                 }
             }
             return list;
-        }
+        }  
+
     }
 
 }

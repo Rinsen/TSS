@@ -334,10 +334,10 @@ namespace TietoCRM.Controllers.Contracts
             string cusomtSwitches = string.Format("--print-media-type --header-spacing 4 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.CustomSwitches = cusomtSwitches;
-           
+
             // Set title and file names.
-            String fileName = urlCustomer + " " + urlContractId + ".pdf";
-            fileName = fileName.Replace(" ", "_");
+            String fileName = (new FileLocationMapping(user, (view_Contract)ViewData["CustomerContract"])).GetFilePath() + ".pdf";
+           
             ViewData["Title"] = fileName;
             Response.Headers["Content-disposition"] = "inline; filename=" + fileName;
                 
@@ -1710,7 +1710,7 @@ namespace TietoCRM.Controllers.Contracts
                 
                 foreach (KeyValuePair<String, object> entry in map)
                 {
-                    if (String.IsNullOrEmpty(entry.Value.ToString()))
+                    if (entry.Value == null || String.IsNullOrEmpty(entry.Value.ToString()))
                     {
                         //short? nullString = null;
                         //a.SetValue(entry.Key, nullString);
