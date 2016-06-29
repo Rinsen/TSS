@@ -219,7 +219,7 @@ namespace TietoCRM.Models
 
                         SqlParameter sp = new SqlParameter("@" + pi.Name, sdt, -1);
 
-                        if (pi.GetType() == typeof(String))
+                        if (pi.GetType() == typeof(System.String))
                             sp.Value = AntiXssEncoder.HtmlEncode((String)pi.GetValue(this), false);
                         else
                             sp.Value = pi.GetValue(this) ?? DBNull.Value;

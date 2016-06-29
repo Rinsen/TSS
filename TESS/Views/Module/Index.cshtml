@@ -82,7 +82,7 @@
                         <label for="expired2" class="col-sm-2 control-label">Expired</label>
                         <div class="col-sm-10">
                             <div class="pull-left list-inline" style="width:14%; display:inline-block;">
-                                <input id="expired2" data-id="expired2" name="Expired_type" type="checkbox" />
+                                <input id="expired2" data-id="expired2" name="Expired" type="checkbox" />
                             </div>
                             @*<select class="form-control" name="Expired" id="expired2">
                                 <option value="false">false</option>
@@ -301,7 +301,7 @@
                             if($currTD.data("property") == $currInput.attr("name")){
                                 var name = $currInput.attr("name");
                                 if (name == "Discount_type" || name == "Multiple_type" || name == "Expired") {
-                                    if ($currTD.html() == "1") {
+                                    if ($currTD.html() == "true") {
                                         $currInput.prop("checked", true);
                                     }
                                     else {
@@ -367,6 +367,7 @@
                     "targets": 10
                 }
             ],
+            "bAutoWidth": false,
             "scrollY": ($("#page-content-wrapper").height() - 90),
             "scrollX": true,
             "fnRowCallback": drawCallBack

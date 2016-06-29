@@ -66,9 +66,16 @@ namespace TietoCRM.Controllers.Contracts
             this.ViewData["Title"] = "Customer Contract";
 
             if (Request.QueryString["customer"] == null || Request.QueryString["customer"] == "")
+            {
+                this.ViewData["Appointments"] = view_Appointment.getAllAppointments(on).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
                 ViewData.Add("Customer", on);
+            }
             else
+            {
+                this.ViewData["Appointments"] = view_Appointment.getAllAppointments(Request["customer"]).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
                 ViewData.Add("Customer", Request["customer"]);
+            }
+                
             
             return View();
         }
@@ -2207,30 +2214,6 @@ namespace TietoCRM.Controllers.Contracts
 
             return "1";
 
-        }
-
-        public String InsertAppointment()
-        {
-            String json = Request["json"];
-            String customer = Request["customer"];
-            Dictionary<String, dynamic> map = null;
-            try
-            {
-                map = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
-            }
-            catch(Exception e)
-            {
-                return "-1";
-            }
-
-            view_Appointment appointment = new view_Appointment();
-            appointment.Customer = customer;
-            appointment.Date = DateTime.Parse(map["Date"]);
-            appointment.Event_type = map["Event_type"];
-            appointment.Text = map["Text"];
-            appointment.Insert();
-
-            return "0";
         }
     }
 }
