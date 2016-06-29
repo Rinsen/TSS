@@ -1198,6 +1198,7 @@
         $customerSelect = $("#crm-select-customer");
         //@Html.Raw(@ViewBag.OfferNumber)
         $customerSelect.val("@Html.Raw(@ViewBag.OfferNumber)");
+        $(".selectpicker").selectpicker("refresh");
         updateDataTable("@Html.Raw(@ViewBag.OfferNumber)", function(){
             @Html.Raw("selectRow($(\"input[value='" + Request["selected-offer"] + "'][type='radio'][name='selected-offer']\").parent());")
             drawButtons();

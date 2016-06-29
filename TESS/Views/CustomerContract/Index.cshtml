@@ -1352,9 +1352,8 @@
         });
 
 
-
-
         $customerSelect.val("@Html.Raw(ViewBag.Customer)");
+        $(".selectpicker").selectpicker("refresh");
         updateDataTable("@Html.Raw(ViewBag.Customer)", function(){
             @Html.Raw("selectRow($(\"input[value='" + Request["contract-id"] + "'][type='radio'][name='selected-contract']\").parent());")
             drawButtons();
