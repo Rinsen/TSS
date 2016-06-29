@@ -1,0 +1,402 @@
+﻿@using TietoCRM.Models;
+@using TietoCRM.Extensions;
+<form>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="crm-select-customer">Customer:</label>
+            <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
+                @foreach (String Customer in ViewBag.Customers)
+                {
+                    <option value="@Customer">@Customer</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <table draggable="true" id="appointment-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+        <thead>
+            <tr>
+                <th data-field="#" data-sortable="false">#</th>
+                @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+                {
+                    if (PropertyInfo.Name != "_ID" && PropertyInfo.Name != "Customer")
+                    {
+                        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    }
+                }
+            </tr>
+        </thead>
+    </table>
+</form>
+@* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contact-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Appointment</h4>
+            </div>
+            <div id="appointment-modal" class="modal-body">
+                <form class="form-horizontal">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                @foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
+                                {
+                                    if (!pi.Name.StartsWith("_") && pi.Name != "Customer")
+                                    {
+
+                                        String pName = pi.Name.Replace("_", " ");
+
+                                        <div class="form-group">
+                                            <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
+                                            <div class="col-sm-9">
+                                                    @if (pi.Name == "Date")
+                                                    {
+                                                        <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
+                                                    }
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                             </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-appointment-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Slut på Modal*@
+
+<script>
+    //Sparar ändringar alternativ ny post
+    $customerSelect = $("#crm-select-customer");
+    var uploadToServer = function () {
+
+        var appointment = {}
+
+        var $formInputs = $("#appointmentModal form").find(":input");
+        console.log($formInputs);
+        var frmInpLen = $formInputs.length;
+        for (var i = 0; i < frmInpLen; i++) {
+            var $currInput = $($formInputs[i]);
+            appointment[$currInput.attr("name")] = ($currInput.val() == "null" ? null : $currInput.val());
+        }
+        appointment["Customer"] = $customerSelect.val();
+        if ($("#save-appointment-changes").html() != "Create") {
+            appointment["_ID"] = selectedId
+            $.ajax({
+                "url": "/Appointment/SaveAppointment/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(appointment)
+                },
+                "success": function (data) {
+                    if (data >= 0) {
+                        updateDataTable();
+                        $("#appointmentModal").modal("hide");
+                        triggerAlert("Successfully updated this appointment", "success");
+                    }
+                    else {
+                        triggerAlert("Something went wrong when trying to update the appointment on the server", "warning");
+                    }
+                }
+            });
+        }
+        else {
+            $.ajax({
+                "url": "/Appointment/InsertAppointment/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(appointment),
+                    "customer": appointment.Customer
+                },
+                "success": function (data) {
+                    if (data >= 0) {
+                        updateDataTable();
+                        $("#appointmentModal").modal("hide");
+                        triggerAlert("Successfully created this appointment", "success");
+                    }
+                    else {
+                        triggerAlert("Something went wrong when trying to create the appointment on the server", "warning");
+                    }
+                }
+            });
+        }
+        
+    }
+
+    $(document).ready(function () {
+        $("#date").datetimepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+        $("#save-appointment-changes").click(function () {
+            if ($("#appointment-modal form").valid()) {
+                uploadToServer();
+            }
+        });
+
+        $formValidation = $("#appointmentModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                "Text": {
+                    required: true,
+                },
+                "Date": {
+                    required: true,
+                    date: true,
+                },
+                "Event_type": {
+                    required: true,
+                },
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    var selectedId = null;
+
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        console.log($row);
+        var $table = $("#appointment-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+
+    @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        if(PropertyInfo.Name != "Customer" && PropertyInfo.Name != "_ID")
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function (onSuccess) {
+        getIndexData($customerSelect.val());
+        var $selRowContainer = $("#appointment-table_length");
+    }
+
+    function drawButtons() {
+        var $selRowContainer = $("#appointment-table_wrapper").find(".row").first().find(".col-sm-6").first();
+        $selRowContainer.append("<div id='crm-edit-appointment' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        $("#crm-edit-appointment").bind("click", function () {
+            if (selectedId != null) {
+                $("#id_pk-text").prop("readonly", true);
+                $("#save-appointment-changes").attr("data-appointment", selectedId);
+                var $selectedTds = $("#appointment-table tr.selected td").not(".radios");
+                var tdLen = $selectedTds.length;
+
+                var $formInputs = $("#appointmentModal form").find(":input");
+
+                var frmInpLen = $formInputs.length;
+                for (var i = 0; i < frmInpLen; i++) {
+                    var $currInput = $($formInputs[i]);
+                    for (var j = 0; j < tdLen; j++) {
+                        var $currTD = $($selectedTds[j]);
+                        if ($currTD.data("property") == $currInput.attr("name")) {
+                            if ($currInput.attr("name") == "Active") {
+                                if ($currTD.html() == "1") {
+                                    $currInput.prop("checked", true);
+                                }
+                                else {
+                                    $currInput.prop("checked", false);
+                                }
+                            }
+                            else
+                            {
+                                $currInput.val($currTD.html());
+                            }
+                        }
+                    }
+                }
+                $("#save-appointment-changes").attr("data-appointment", selectedId);
+                $("#appointmentModal").appendTo("body").modal("show").draggable();
+                $("#myModalLabel").html("Edit Appointment");
+                $("#save-appointment-changes").html("Save Changes");
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+        });
+
+        $selRowContainer.append("<div id='create-appointment-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-appointment-button").bind("click", function () {
+            $("#id_pk-text").removeAttr("readonly");
+            $("#appointmentModal").appendTo("body").modal("show").draggable();
+            $("#save-appointment-changes").removeAttr("data-appointment");
+            var $selectedTds = $("#appointment-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#appointmentModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                $currInput.val("");
+            }
+            $("#myModalLabel").html("Create Appointment");
+            $("#save-appointment-changes").html("Create");
+
+        });
+
+        $selRowContainer.append("<div id='delete-appointment-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
+        $("#delete-appointment-button").bind("click", function () {
+            bootbox.dialog({
+                title: 'Do you want to delete?',
+                className: "crm-delete-confirm",
+                message: "You are about to delete the selected Appointment, are you sure you want to delete it?",
+                buttons: {
+                    'cancel': {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    },
+                    'yes': {
+                        label: 'Yes',
+                        className: 'btn-danger pull-right',
+                        callback: function () {
+                            $.ajax({
+                                "url": "/Appointment/DeleteAppointment/",
+                                "type": "POST",
+                                "data": {
+                                    "ID": selectedId,
+                                },
+                                "success": function (data) {
+                                    if (data > 0) {
+                                        updateDataTable();
+                                        console.log("success");
+                                        triggerAlert("Successfully deleted appointment", "success");
+                                    }
+                                    else {
+                                        console.log("failure");
+                                        triggerAlert("Something went wrong when trying to delete this appointment", "warning");
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    'no': {
+                        label: 'No',
+                        className: 'pull-right',
+                    }
+                },
+            });
+        });
+
+    }
+
+    var triggerAlert = function (msg, priorty) {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        var i = 0, j = 0;
+        var insertValue;
+        for (var name in aData) {
+            var $td;
+            if (i == 0) {
+                $td = $('td:eq(' + i + ')', nRow);
+
+                $td.parent().click(function () {
+
+                    selectRow(this.firstChild);
+                    console.log("asd");
+                });
+
+                $td.html("<input type='radio' value=" + aData["_ID"] + " name='selected-contact' onClick=''/>");
+                $td.addClass("radios");
+                if ($td.find("input").val() == selectedId) {
+                    selectRow($td);
+                }
+                else if ($td.find("input").val() != selectedId) {
+                    $td.parent().removeClass("selected");
+                }
+                i++;
+            }
+
+            if (name != "_ID" && name != "Customer") {
+                if (i < 5) {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                }
+                i++;
+            }
+            
+        }
+    }
+
+    $('document').ready(function () {
+        var customer = "AA-stor kund";
+        $customerSelect = $("#crm-select-customer");
+        $customerSelect.change(function () {
+            selectedId = null;
+            getIndexData($customerSelect.val());
+        });
+        getIndexData(customer);
+    });
+
+    var getIndexData = function (customer) {
+        $('#appointment-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "/Appointment/AppointmentJsonData/",
+                "type": "POST",
+                "data": {
+                    "customer": customer
+                }
+            },
+            "initComplete": function (settings, json) {
+                drawButtons();
+            },
+            "defaultContent": "",
+            "order": [[1, "asc"]],
+            "columns": [@Html.Raw(DataObject)],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                },
+
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+    };
+</script>

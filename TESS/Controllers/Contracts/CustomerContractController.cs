@@ -2215,43 +2215,5 @@ namespace TietoCRM.Controllers.Contracts
             return "1";
 
         }
-
-        public String InsertAppointment()
-        {
-            String json = Request["json"];
-            String customer = Request["customer"];
-            Dictionary<String, dynamic> map = null;
-            try
-            {
-                map = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
-            }
-            catch(Exception e)
-            {
-                return "-1";
-            }
-
-            view_Appointment appointment = new view_Appointment();
-            appointment.Customer = customer;
-            appointment.Date = DateTime.Parse(map["Date"]);
-            appointment.Event_type = map["Event_type"];
-            appointment.Text = map["Text"];
-            appointment.Insert();
-
-            return "0";
-        }
-
-        public String GetAppointments()
-        {
-            String customer = Request.Form["customer"];
-            List<view_Appointment> vA = view_Appointment.getAllAppointments(customer).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
-
-            String jsonData = (new JavaScriptSerializer()).Serialize(vA);
-            return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
-            {
-                DateTime dt = new DateTime(1970, 1, 1, 2, 0, 0, 0); // not sure how this works with summer time and winter time
-                dt = dt.AddMilliseconds(Convert.ToDouble(m.Groups[1].Value));
-                return dt.ToString("yyyy-MM-dd HH:mm");
-            });
-        }
     }
 }

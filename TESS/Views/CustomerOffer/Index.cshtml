@@ -631,7 +631,7 @@
         }
 
         $.ajax({
-            "url": "@Url.Content("~/CustomerContract/InsertAppointment/")",
+            "url": "@Url.Content("~/Appointment/InsertAppointment/")",
             "type": "POST",
             "data": {
                 "customer": $contactSelect.val(),
@@ -652,7 +652,7 @@
     var loadAppointments = function()
     {
         $.ajax({
-            "url": "/CustomerContract/GetAppointments/",
+            "url": "/Appointment/GetAppointments/",
             "type": "POST",
             "data": {
                 "customer": $contactSelect.val()

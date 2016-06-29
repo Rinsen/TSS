@@ -908,17 +908,38 @@ a.tooltips > span:after {
   float: right;
   margin-bottom: 15px;
 }
+#appointmentModal #appointment-table td:nth-child(1),
+#appointmentModal #appointment-table th:nth-of-type(1) {
+  width: 20%;
+}
+#appointmentModal #appointment-table td:nth-child(2),
+#appointmentModal #appointment-table th:nth-of-type(2) {
+  width: 55%;
+}
+#appointmentModal #appointment-table td:nth-child(3),
+#appointmentModal #appointment-table th:nth-of-type(3) {
+  width: 13%;
+}
+#appointmentModal #appointment-table td:nth-child(4),
+#appointmentModal #appointment-table th:nth-of-type(4) {
+  width: 12%;
+}
+/*------------- Appointment---------------*/
+
+#appointment-table tr.selected {
+  background-color: lightblue;
+}
 #appointment-table td:nth-child(1),
 #appointment-table th:nth-of-type(1) {
-  width: 20%;
+  width: 1%;
 }
 #appointment-table td:nth-child(2),
 #appointment-table th:nth-of-type(2) {
-  width: 55%;
+  width: 13%;
 }
 #appointment-table td:nth-child(3),
 #appointment-table th:nth-of-type(3) {
-  width: 13%;
+  width: 75%;
 }
 #appointment-table td:nth-child(4),
 #appointment-table th:nth-of-type(4) {
@@ -962,6 +983,9 @@ a.tooltips > span:after {
 #reminder-table td:nth-child(4) {
   width: 10%;
   text-align: center;
+}
+#Reminder-table tr.selected {
+  background-color: lightblue;
 }
 /* --------- Sold Products Report ----------*/
 

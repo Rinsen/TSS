@@ -147,6 +147,7 @@
     <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\List Management\AppointmentController.cs" />
     <Compile Include="Controllers\List Management\CustomerContactController.cs" />
     <Compile Include="Controllers\List Management\CustomerController.cs" />
     <Compile Include="Controllers\List Management\PopulationController.cs" />
@@ -737,6 +738,7 @@
     <Content Include="Views\SaleReport\Pdf.cshtml" />
     <Content Include="Views\ContractSoldProductsReport\Index.cshtml" />
     <Content Include="Views\ContractSoldProductsReport\Pdf.cshtml" />
+    <Content Include="Views\Appointment\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

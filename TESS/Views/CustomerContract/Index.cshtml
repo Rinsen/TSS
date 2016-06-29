@@ -523,10 +523,10 @@
         }
 
         $.ajax({
-            "url": "@Url.Content("~/CustomerContract/InsertAppointment/")",
+            "url": "@Url.Content("~/Appointment/InsertAppointment/")",
             "type": "POST",
             "data": {
-                "customer": $contactSelect.val(),
+                "customer": $customerSelect.val(),
                 "json": JSON.stringify(newAppointment)
             },
             "success": function(data){
@@ -544,10 +544,10 @@
     var loadAppointments = function()
     {
         $.ajax({
-            "url": "/CustomerContract/GetAppointments/",
+            "url": "/Appointment/GetAppointments/",
             "type": "POST",
             "data": {
-                "customer": $contactSelect.val()
+                "customer": $customerSelect.val()
             },
             "success": function(data){
                 insertAppointmentToHtml(JSON.parse(data));
@@ -632,7 +632,7 @@
 -->
 <script>
     var currentPerson;
-    var $contactSelect = $("#crm-select-customer");
+    var $customerSelect = $("#crm-select-customer");
     $("#contact-modal-button").click(function(){
         $("#contactModal").appendTo("body").modal("show").draggable();
     });
@@ -783,7 +783,7 @@
             var person = {}
             $option = $("#crm-contact-select").find("option:selected");
 
-            person.Customer = $contactSelect.val();
+            person.Customer = $customerSelect.val();
             person.Contact_person = $("#fullName3").val();
             person.Email = $("#inputEmail3").val();
             person.Telephone = $("#phoneNumber3").val();
@@ -832,7 +832,7 @@
                 person.oldEmail = oldPerson.Email;
                 if(selectedId != null)
                     person. contractNumber = selectedId;
-                person.Customer = $contactSelect.val();
+                person.Customer = $customerSelect.val();
                 person.Contact_person = $("#fullName3").val();
                 person.Email = $("#inputEmail3").val();
                 person.Telephone = $("#phoneNumber3").val();
