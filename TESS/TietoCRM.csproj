@@ -150,6 +150,7 @@
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
     <Compile Include="Controllers\List Management\CustomerContactController.cs" />
     <Compile Include="Controllers\List Management\CustomerController.cs" />
+    <Compile Include="Controllers\List Management\InformationController.cs" />
     <Compile Include="Controllers\List Management\PopulationController.cs" />
     <Compile Include="Controllers\List Management\PriceController.cs" />
     <Compile Include="Controllers\List Management\ReminderController.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Models\view_CustomerContact.cs" />
     <Compile Include="Models\view_CustomerOffer.cs" />
     <Compile Include="Models\view_CustomerProductRow.cs" />
+    <Compile Include="Models\view_Information.cs" />
     <Compile Include="Models\view_Module.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
     <Compile Include="Models\view_Reminder.cs" />
@@ -743,6 +745,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Information\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

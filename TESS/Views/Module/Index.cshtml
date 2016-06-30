@@ -154,7 +154,7 @@
             fillClassificationSelect(this.value);
         });
 
-        @{String DataObject =  "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+        @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
             if (PropertyInfo.Name != "SSMA_timestamp")
@@ -220,7 +220,9 @@
     });
 
     var drawButtons = function(){
-        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+        //var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+        var $selRowContainer = $('#module-table_wrapper').find('.col-sm-6').first();
+        console.log($selRowContainer);
 
         $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $selRowContainer.append("<div id='crm-edit' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
@@ -286,7 +288,12 @@
 
         $("#crm-edit").bind("click", function(){
             if(selectedId != null){
-                fillClassificationSelect($("#system2").val(), function(){
+                var $selectedTds = $("#module-table tr.selected td").not(".radios");
+               
+                var system = $("#module-table tr.selected td[data-property='System']").not(".radios").html();
+
+
+                fillClassificationSelect(system, function(){
                     $("#article-number2").prop("readonly",true);
                     var $selectedTds = $("#module-table tr.selected td").not(".radios");
                     var tdLen = $selectedTds.length;
@@ -312,14 +319,14 @@
                                     $currInput.val($currTD.html());
                                 }
                             }
-                            // console.log($currTD.data("property"));
-                            // console.log($currInput.attr("name"));
+                            //console.log($currTD.data("property"));
+                           //console.log($currInput.attr("name"));
                         }
                     }
                     $("#save-module-changes").attr("data-Article-number",selectedId);
-                    
+
                     $("#moduleModal").appendTo("body").modal().draggable();
-                    
+
                 });
             }
             else
@@ -348,31 +355,26 @@
             //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax":"@Url.Content("~/Module/ModuleData/")",
             "defaultContent": "",
+            "bFilter": true,
+            "bPaginate": false,
             "order": [[ 1, "asc" ]],
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
             "columns": [@Html.Raw(DataObject)
             ],
-            "columnDefs": [
+            "aoColumnDefs": [
                 {
                     "data": null,
                     "defaultContent": "",
                     "targets": 0
-                },
-                {
-                    "width": "30%",
-                    "targets": 3
-                },
-                {
-                    "width": "20%",
-                    "targets": 10
                 }
             ],
+            
             "bAutoWidth": false,
             "scrollY": ($("#page-content-wrapper").height() - 90),
             "scrollX": true,
             "fnRowCallback": drawCallBack
         });
-        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+        //var $selRowContainer = $('#module-table_wrapper').find('.col-sm-6').first();
     //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
     //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
     //$('#crm-save-btn').on('click', save);
