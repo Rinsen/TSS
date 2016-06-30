@@ -11,17 +11,23 @@ namespace TietoCRM.Models
         private int _id;
         public int _ID { get; set; }
 
-        private String customer;
-        public String Customer { get; set; }
+        private DateTime date;
+        public DateTime Date { get; set; }
 
         private String event_type;
         public String Event_type { get; set; }
 
+        private String customer;
+        public String Customer { get; set; }
+
+        private String title;
+        public String Title { get; set; }
+
         private String text;
         public String Text { get; set; }
 
-        private DateTime date;
-        public DateTime Date { get; set; }
+        private String contact_person;
+        public String Contact_person { get; set; }
 
         public view_Appointment() : base("Appointment")
         {
@@ -39,7 +45,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [ID], Customer, Date, Text, Event_type FROM " + databasePrefix + "Appointment ";
+                String query = "SELECT [ID], Date, Event_type, Customer, Title, Text, Contact_person FROM " + databasePrefix + "Appointment ";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -71,7 +77,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                command.CommandText = "SELECT [ID], Customer, Event_type, Text, Date FROM " + databasePrefix + "Appointment WHERE Customer = @customer";
+                command.CommandText = "SELECT [ID], Date, Event_type, Customer, Title, Text, Contact_person FROM " + databasePrefix + "Appointment WHERE Customer = @customer";
 
 
                 command.Prepare();

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Web.Security.AntiXss;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace TietoCRM.Models
 {
@@ -211,7 +212,7 @@ namespace TietoCRM.Models
 
                         SqlDbType sdt = SqlDbType.NVarChar;
                         if (pi.PropertyType == typeof(DateTime?) || pi.PropertyType == typeof(DateTime))
-                            sdt = SqlDbType.Date;
+                            sdt = SqlDbType.DateTime;
                         else if (pi.PropertyType == typeof(Decimal?))
                             sdt = SqlDbType.Money;
                         else if (pi.PropertyType == typeof(bool))
@@ -378,7 +379,7 @@ namespace TietoCRM.Models
 
                         SqlDbType sdt = SqlDbType.NVarChar;
                         if (pi.PropertyType == typeof(DateTime?))
-                            sdt = SqlDbType.Date;
+                            sdt = SqlDbType.DateTime;
                         else if (pi.PropertyType == typeof(Decimal?))
                             sdt = SqlDbType.Money;
                         else if (pi.PropertyType == typeof(bool))

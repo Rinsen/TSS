@@ -27,9 +27,8 @@ namespace TietoCRM.Controllers.List_Management
 
         public String AppointmentJsonData()
         {
-            String customer = Request.Form["customer"];
             this.Response.ContentType = "text/plain";
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Appointment.getAllAppointments(customer)) + "}";
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Appointment.getAllAppointments()) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
@@ -58,6 +57,8 @@ namespace TietoCRM.Controllers.List_Management
             appointment.Date = DateTime.Parse(map["Date"]);
             appointment.Event_type = map["Event_type"];
             appointment.Text = map["Text"];
+            appointment.Contact_person = map["Contact_person"];
+            appointment.Title = map["Title"];
             appointment.Insert();
 
             return "0";
@@ -65,27 +66,40 @@ namespace TietoCRM.Controllers.List_Management
 
         public String SaveAppointment()
         {
-            String json = Request["json"];
-            String customer = Request["customer"];
-            Dictionary<String, dynamic> map = null;
             try
             {
-                map = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
+                String json = Request["json"];
+                String customer = Request["customer"];
+                Dictionary<String, dynamic> map = null;
+                try
+                {
+                    map = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
+                }
+                catch (Exception e)
+                {
+                    return "-1";
+                }
+
+                DateTime dt = DateTime.Parse("2016-06-30");
+                String a = dt.ToString();
+                view_Appointment appointment = new view_Appointment();
+                appointment.Customer = map["Customer"];
+                appointment.Date = DateTime.Parse(map["Date"]);
+                String b = appointment.Date.ToString();
+                appointment.Event_type = map["Event_type"];
+                appointment.Text = map["Text"];
+                appointment._ID = Int32.Parse(map["_ID"]);
+                appointment.Title = map["Title"];
+                appointment.Contact_person = map["Contact_person"];
+                appointment.Update("ID=" + appointment._ID);
+
+                return "0";
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                return "-1";
+                return "-2";
             }
-
-            view_Appointment appointment = new view_Appointment();
-            appointment.Customer = map["Customer"];
-            appointment.Date = DateTime.Parse(map["Date"]);
-            appointment.Event_type = map["Event_type"];
-            appointment.Text = map["Text"];
-            appointment._ID = Int32.Parse(map["_ID"]);
-            appointment.Update("ID=" + appointment._ID);
-
-            return "0";
+            
         }
 
         public String GetAppointments()
