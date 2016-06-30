@@ -182,7 +182,7 @@ namespace TietoCRM.Models
         /// <param name="condition">
         /// is what condition you want to use for the SQL query to know what row to affect. For example "ID = 1".
         /// </param>
-        public void Update(string condition)
+        public virtual void Update(string condition)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -343,7 +343,7 @@ namespace TietoCRM.Models
         /// <summary>
         /// Inserts this object into the SQL server.
         /// </summary>
-        public void Insert()
+        public virtual void Insert()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

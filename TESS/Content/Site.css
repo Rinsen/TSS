@@ -143,7 +143,7 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
 }
 .crm-widget-dashboard .panel-default > .panel-heading {
   color: white;
-  background-color: #28677b;
+  background-color: #4e7987;
   border-color: #ecf0f1;
   border-radius: 0;
 }
@@ -160,6 +160,15 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   border-color: #ecf0f1;
   border-radius: 0;
   font-size: 80%;
+}
+ul.crm-info-list {
+  list-style: none;
+  padding: 0;
+}
+ul.crm-info-list .panel-body {
+  color: white;
+  font-size: 11pt;
+  font-weight: normal;
 }
 .crm-loading {
   background: white;

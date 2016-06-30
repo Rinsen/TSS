@@ -279,6 +279,8 @@
             "ajax": {
                 "url": "@Url.Content("~/CustomerContact/ContactData/")",
             },
+            "bFilter": true,
+            "bPaginate": false,
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
                     onSuccess();
@@ -432,6 +434,8 @@
             "ajax": {
                 "url": "@Url.Content("~/CustomerContact/ContactData/")",
             },
+            "bFilter": true,
+            "bPaginate": false,
             "initComplete": function (settings, json) {
                 drawButtons();
             },
