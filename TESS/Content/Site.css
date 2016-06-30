@@ -944,15 +944,23 @@ a.tooltips > span:after {
 }
 #appointment-table td:nth-child(2),
 #appointment-table th:nth-of-type(2) {
-  width: 13%;
+  width: 10%;
 }
 #appointment-table td:nth-child(3),
 #appointment-table th:nth-of-type(3) {
-  width: 75%;
+  width: 9%;
 }
 #appointment-table td:nth-child(4),
 #appointment-table th:nth-of-type(4) {
-  width: 12%;
+  width: 17%;
+}
+#appointment-table td:nth-child(5),
+#appointment-table th:nth-of-type(5) {
+  width: 50%;
+}
+#appointment-table td:nth-child(6),
+#appointment-table th:nth-of-type(6) {
+  width: 13%;
 }
 /*------------- Tariff---------------*/
 

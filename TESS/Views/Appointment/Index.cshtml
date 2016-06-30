@@ -1,25 +1,13 @@
 ﻿@using TietoCRM.Models;
 @using TietoCRM.Extensions;
 <form>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label for="crm-select-customer">Customer:</label>
-            <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
-                @foreach (String Customer in ViewBag.Customers)
-                {
-                    <option value="@Customer">@Customer</option>
-                }
-            </select>
-        </div>
-    </div>
-
     <table draggable="true" id="appointment-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
         <thead>
             <tr>
                 <th data-field="#" data-sortable="false">#</th>
                 @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
                 {
-                    if (PropertyInfo.Name != "_ID" && PropertyInfo.Name != "Customer")
+                    if (PropertyInfo.Name != "_ID")
                     {
                         String PropertyName = PropertyInfo.Name.Replace("_", " ");
                         <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
@@ -44,7 +32,7 @@
                             <td>
                                 @foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                                 {
-                                    if (!pi.Name.StartsWith("_") && pi.Name != "Customer")
+                                    if (!pi.Name.StartsWith("_"))
                                     {
 
                                         String pName = pi.Name.Replace("_", " ");
@@ -55,6 +43,23 @@
                                                     @if (pi.Name == "Date")
                                                     {
                                                         <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
+                                                    }
+                                                    else if (pi.Name == "Event_type")
+                                                    {
+                                                        <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                            <option>Meeting</option>
+                                                            <option>Online</option>
+                                                            <option>Telephone</option>
+                                                        </select>
+                                                    }
+                                                    else if (pi.Name == "Customer")
+                                                    {
+                                                        <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                            @foreach(String customer in ViewBag.Customers)
+                                                            {
+                                                                <option value="@customer">@customer</option>
+                                                            }
+                                                        </select>
                                                     }
                                                     else
                                                     {
@@ -79,8 +84,8 @@
 @*Slut på Modal*@
 
 <script>
+    $customerSelect = $("#customer");
     //Sparar ändringar alternativ ny post
-    $customerSelect = $("#crm-select-customer");
     var uploadToServer = function () {
 
         var appointment = {}
@@ -145,7 +150,7 @@
                 uploadToServer();
             }
         });
-
+        $customerSelect = $("#customer");
         $formValidation = $("#appointmentModal form").validate({
             ignore: ".ignore",
             rules: {
@@ -156,7 +161,7 @@
                     required: true,
                     date: true,
                 },
-                "Event_type": {
+                "Title": {
                     required: true,
                 },
             },
@@ -194,14 +199,14 @@
     @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
-        if(PropertyInfo.Name != "Customer" && PropertyInfo.Name != "_ID")
+        if(PropertyInfo.Name != "_ID")
         {
             DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
         }
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function (onSuccess) {
-        getIndexData($customerSelect.val());
+        getIndexData();
         var $selRowContainer = $("#appointment-table_length");
     }
 
@@ -260,7 +265,8 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                $currInput.val("");
+                if ($currInput.attr("name") != "Customer" && $currInput.attr("name") != "Event_type")
+                    $currInput.val("");
             }
             $("#myModalLabel").html("Create Appointment");
             $("#save-appointment-changes").html("Create");
@@ -347,8 +353,8 @@
                 i++;
             }
 
-            if (name != "_ID" && name != "Customer") {
-                if (i < 5) {
+            if (name != "_ID") {
+                if (i < 7) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
                     $td.html(aData[name]);
@@ -360,31 +366,21 @@
     }
 
     $('document').ready(function () {
-        var customer = "AA-stor kund";
-        $customerSelect = $("#crm-select-customer");
-        $customerSelect.change(function () {
-            selectedId = null;
-            getIndexData($customerSelect.val());
-        });
-        getIndexData(customer);
+        getIndexData();
     });
 
-    var getIndexData = function (customer) {
+    var getIndexData = function () {
         $('#appointment-table').DataTable({
             "destroy": true,
             "processing": true,
             "ajax": {
                 "url": "/Appointment/AppointmentJsonData/",
-                "type": "POST",
-                "data": {
-                    "customer": customer
-                }
             },
             "initComplete": function (settings, json) {
                 drawButtons();
             },
             "defaultContent": "",
-            "order": [[1, "asc"]],
+            "order": [[1, "desc"]],
             "columns": [@Html.Raw(DataObject)],
             "columnDefs": [
                 {
