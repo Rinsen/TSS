@@ -30,8 +30,8 @@ namespace TietoCRM.Models
         private String classification;
         public String Classification { get { return classification; } set { classification = value; } }
 
-        private int? sort_number;
-        public int? Sort_number { get { return sort_number; } set { sort_number = value; } }
+        private bool? fixed_price;
+        public bool? Fixed_price { get { return fixed_price; } set { fixed_price = value; } }
 
         private bool? expired;
         public bool? Expired { get { return expired; } set { expired = value; } }
@@ -66,7 +66,7 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 String query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
-                query += "[System] ,[Classification] ,[Sort_number] ,[Expired] ,[Comment], Discount_type, Multiple_type ,CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount_type, Multiple_type ,CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

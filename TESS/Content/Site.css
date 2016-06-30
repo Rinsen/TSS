@@ -910,19 +910,23 @@ a.tooltips > span:after {
 }
 #appointmentModal #appointment-table td:nth-child(1),
 #appointmentModal #appointment-table th:nth-of-type(1) {
-  width: 20%;
+  width: 6%;
 }
 #appointmentModal #appointment-table td:nth-child(2),
 #appointmentModal #appointment-table th:nth-of-type(2) {
-  width: 55%;
+  width: 5%;
 }
 #appointmentModal #appointment-table td:nth-child(3),
 #appointmentModal #appointment-table th:nth-of-type(3) {
-  width: 13%;
+  width: 9%;
 }
 #appointmentModal #appointment-table td:nth-child(4),
 #appointmentModal #appointment-table th:nth-of-type(4) {
-  width: 12%;
+  width: 25%;
+}
+#appointmentModal #appointment-table td:nth-child(5),
+#appointmentModal #appointment-table th:nth-of-type(5) {
+  width: 9%;
 }
 /*------------- Appointment---------------*/
 
@@ -935,22 +939,26 @@ a.tooltips > span:after {
 }
 #appointment-table td:nth-child(2),
 #appointment-table th:nth-of-type(2) {
-  width: 10%;
+  width: 7%;
 }
 #appointment-table td:nth-child(3),
 #appointment-table th:nth-of-type(3) {
-  width: 9%;
+  width: 6%;
 }
 #appointment-table td:nth-child(4),
 #appointment-table th:nth-of-type(4) {
-  width: 17%;
+  width: 15%;
 }
 #appointment-table td:nth-child(5),
 #appointment-table th:nth-of-type(5) {
-  width: 50%;
+  width: 15%;
 }
 #appointment-table td:nth-child(6),
 #appointment-table th:nth-of-type(6) {
+  width: 47%;
+}
+#appointment-table td:nth-child(7),
+#appointment-table th:nth-of-type(7) {
   width: 13%;
 }
 /*------------- Tariff---------------*/

@@ -126,7 +126,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Classification = module.Classification;
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
-                offerInfo.SortNr = offerRow.Sortnr;
+                offerInfo.Fixed_price = offerRow.Fixed_price;
 
                 if (module.System != "Lärportal")
                 {
@@ -138,7 +138,7 @@ namespace TietoCRM.Controllers
                 }
             }
 
-            articles = articles.OrderBy(a => a.SortNr).ThenBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Article_number).ToList();
             educationPortals = educationPortals.OrderBy(a => a.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
@@ -204,7 +204,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Classification = module.Classification;
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
-                offerInfo.SortNr = offerRow.Sortnr;
+                offerInfo.Fixed_price = offerRow.Fixed_price;
 
                 if (module.System != "Lärportal")
                 {
@@ -599,7 +599,7 @@ namespace TietoCRM.Controllers
                     connection.Open();
 
                     String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
-                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Comment
+                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Comment
                                         FROM view_Module                                                                                       
                                         JOIN view_Tariff                                                                                       
                                         on view_Module.Price_category = view_Tariff.Price_category
@@ -643,6 +643,13 @@ namespace TietoCRM.Controllers
                                 result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                                 result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
                                 result["System"] = result["System"].ToString();
+                                result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
+                                if((bool)result["Fixed_price"])
+                                {
+                                    result["Maintenance"] = result["Price_category"];
+                                    result["License"] = "0";
+
+                                }
                                 resultList.Add(result);
                             }
                         }
@@ -678,7 +685,7 @@ namespace TietoCRM.Controllers
                     connection.Open();
 
                     String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
-                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Comment
+                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Comment
                                         FROM view_Module                                                                                       
                                         JOIN view_Tariff                                                                                       
                                         on view_Module.Price_category = view_Tariff.Price_category
@@ -721,6 +728,7 @@ namespace TietoCRM.Controllers
                                 result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                                 result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
                                 result["System"] = result["System"].ToString();
+                                result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
                                 resultList.Add(result);
                             }
                         }

@@ -114,9 +114,9 @@
                     <td>@article.System</td>
                     <td>@article.Classification</td>
                     <td>
-                    @if(ViewBag.CustomerContract.Valid_from != null)
+                    @if (ViewBag.CustomerContract.Valid_from != null)
                     {
-                        ViewBag.CustomerContract.Valid_from.ToString("d");
+                        <span>@ViewBag.CustomerContract.Valid_from.ToString("d")</span>
                     }
                     </td>
 
@@ -137,7 +137,7 @@
                     <td>
                     @if (ViewBag.CustomerContract.Valid_from != null)
                     {
-                        ViewBag.CustomerContract.Valid_from.ToString("d");
+                        <span>@ViewBag.CustomerContract.Valid_from.ToString("d")</span>
                     }</td>
                 </tr>
             </table>

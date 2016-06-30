@@ -47,8 +47,8 @@ public class view_ContractRow : SQLBaseClass
 		private DateTime? closure_date;
 		public DateTime? Closure_date { get{ return closure_date; } set{ closure_date = value; } }
 
-        private int sortnr;
-        public int Sortnr { get ; set ; }
+        private int fixed_price;
+        public int Fixed_price { get ; set ; }
 
         private DateTime ssma_timestamp;
 		public DateTime SSMA_timestamp { get{ return ssma_timestamp; } set{ ssma_timestamp = value; } }
@@ -79,7 +79,7 @@ public class view_ContractRow : SQLBaseClass
 
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
-                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
+                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
                                         FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer";
 
@@ -131,7 +131,7 @@ public class view_ContractRow : SQLBaseClass
 
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
-                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
+                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer";
 
                 command.Prepare();
@@ -176,7 +176,7 @@ public class view_ContractRow : SQLBaseClass
 
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
-                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
+                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE " + "Customer = @customer";
 
                 command.Prepare();
@@ -221,7 +221,7 @@ public class view_ContractRow : SQLBaseClass
 
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
-                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], sortnr, 
+                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber";
 
                 command.Prepare();
@@ -277,7 +277,7 @@ public class view_ContractRow : SQLBaseClass
                     [view_ContractRow].[Created] ,[view_ContractRow].[Updated] ,
                     [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
                     [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
-                    [view_ContractRow].[sortnr] ,
+                    [view_ContractRow].[Fixed_price] ,
                      CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp ,
                     [view_ContractRow].[Alias] 
                     FROM " + databasePrefix + @"ContractRow 

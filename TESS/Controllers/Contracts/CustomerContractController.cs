@@ -175,7 +175,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Classification = module.Classification;
                 contractInfo.License = contractRow.License;
                 contractInfo.Maintenance = contractRow.Maintenance;
-                contractInfo.Sortnr = contractRow.Sortnr;
+                contractInfo.Fixed_price = contractRow.Fixed_price;
                 if (contractRow.Rewritten == true) ctrResign = true;
 
                 if (module.System != "Lärportal")
@@ -1359,6 +1359,13 @@ namespace TietoCRM.Controllers.Contracts
                             result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
+                            result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
+                            if ((bool)result["Fixed_price"])
+                            {
+                                result["Maintenance"] = result["Price_category"];
+                                result["License"] = "0";
+
+                            }
                             resultList.Add(result);
                         }
                     }
