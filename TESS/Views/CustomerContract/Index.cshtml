@@ -9,8 +9,8 @@
                     <option value="@Customer">@Customer</option>
                 }
             </select>
-            <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-            <button type='button' class='btn hidden btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            @*<button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>*@
+            <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
         </div>
     </div>
     <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">

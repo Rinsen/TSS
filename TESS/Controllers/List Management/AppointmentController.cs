@@ -15,6 +15,7 @@ namespace TietoCRM.Controllers.List_Management
         // GET: Appointment
         public ActionResult Index()
         {
+            ViewData["Title"] = "Appointment";
             GlobalVariables.checkIfAuthorized("CustomerContract");
             if (System.Web.HttpContext.Current.GetUser().User_level > 1)
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));

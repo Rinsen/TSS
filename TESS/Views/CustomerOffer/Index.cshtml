@@ -8,82 +8,82 @@
                     <option value="@Customer">@Customer</option>
                 }
             </select>
-            <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-            <button type='button' class='btn hidden btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
-        </div>
-        </div>
-    </div>
-    <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
-        <thead>
-            <tr>
-
-                @foreach (String ColumnName in ViewBag.Properties)
-                {
-                    String PropertyName = ColumnName.Replace("_", " ");
-                    if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
-                    {
-                        <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
-                    }
-                    else if (@PropertyName != "SSMA timestamp") // this is for #
-                    {
-                        <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
-                    }
-
-                }
-            </tr>
-        </thead>
-    </table>
-    <div class="bottom-wrapper" style="margin-top:30px; margin-bottom:30px">
-        <div id='crm-edit-contact' class='crm-table-btn'>
-            <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
-        </div>
-        
-    </div>
-</form>
-
-<!-- #region reminders -->
-
-@*<div class="modal fade bs-example-modal-lg" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog reminders-modal" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Reminders on customer</h4>
+            @*<button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>*@
+                <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
             </div>
-            <div id="reminder-modal" class="modal-body"> 
-                <form class="form-inline" id="reminders-form">
-                    <table id="reminders-table">
-                        <tr>
-                            <td valign="top">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">Active Reminders</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <table style="margin-left: 0.8em;">
-                                            <tr>
-                                                <th></th>
-                                                <th>Start date</th>
-                                                <th>Reminder text</th>
-                                                <th>Deactivate</th>
-                                            </tr>
-                                        </table>
-                                        <div id="active-reminders" class="list-group">
+            </div>
+        </div>
+        <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+
+                    @foreach (String ColumnName in ViewBag.Properties)
+                    {
+                        String PropertyName = ColumnName.Replace("_", " ");
+                        if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
+                        {
+                            <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                        }
+                        else if (@PropertyName != "SSMA timestamp") // this is for #
+                        {
+                            <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
+                        }
+
+                    }
+                </tr>
+            </thead>
+        </table>
+        <div class="bottom-wrapper" style="margin-top:30px; margin-bottom:30px">
+            <div id='crm-edit-contact' class='crm-table-btn'>
+                <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- #region reminders -->
+
+    @*<div class="modal fade bs-example-modal-lg" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog reminders-modal" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Reminders on customer</h4>
+                </div>
+                <div id="reminder-modal" class="modal-body">
+                    <form class="form-inline" id="reminders-form">
+                        <table id="reminders-table">
+                            <tr>
+                                <td valign="top">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h3 class="panel-title">Active Reminders</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <table style="margin-left: 0.8em;">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Start date</th>
+                                                    <th>Reminder text</th>
+                                                    <th>Deactivate</th>
+                                                </tr>
+                                            </table>
+                                            <div id="active-reminders" class="list-group">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="save-reminders" class="btn btn-primary">Save deactivation</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="save-reminders" class="btn btn-primary">Save deactivation</button>
+                </div>
             </div>
         </div>
-    </div>
-</div>*@
+    </div>*@
 <!--#endregion-->
 <style>
     /*table#reminder-table {
