@@ -68,7 +68,7 @@
         </form>
     </div>
     <div class="col-md-12">
-        <table draggable="true" id="report-table" class="table table-bordered table-hover sold-products" data-sort-name="name" data-sort-order="desc">
+        <table draggable="true" id="appointment-report-table" class="table table-bordered table-hover sold-products" data-sort-name="name" data-sort-order="desc">
             <thead>
                 <tr>
                     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
@@ -103,7 +103,7 @@
 
         var updateDataTable = function()
         {
-            $('#report-table').DataTable({
+            $('#appointment-report-table').DataTable({
                 "destroy": true,
                 "processing": true,
                 "bFilter": true,

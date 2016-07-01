@@ -8,7 +8,7 @@
 {
     <style>
         td:nth-child(1) {
-            width: 8em !important;
+            width: 10em !important;
         }
 
         td:nth-child(2) {
@@ -22,7 +22,7 @@
             width: 10em !important;
         }
         td:nth-child(5) {
-            width: 32em !important;
+            width: 30em !important;
         }
     </style>
     <div class="crm-print-block">
@@ -45,7 +45,7 @@
                         {
                             if (@pi.Name == "Date")
                             {
-                                <td>@app.Date.ToString("yyyy-MM-dd")</td>
+                                <td>@app.Date.ToString("yyyy-MM-dd HH:mm")</td>
                             }
                             else
                             {
