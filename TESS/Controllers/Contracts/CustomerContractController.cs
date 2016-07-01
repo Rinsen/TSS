@@ -201,8 +201,8 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("RemEducationPortals", remEducationPortals);
             ViewData.Add("CtrResign", ctrResign);
 
-            articles = articles.OrderBy(a => a.Sortnr).ThenBy(a => a.Article_number).ToList();
-            remArticles = remArticles.OrderBy(a => a.Sortnr).ThenBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Fixed_price).ThenBy(a => a.Article_number).ToList();
+            remArticles = remArticles.OrderBy(a => a.Fixed_price).ThenBy(a => a.Article_number).ToList();
             educationPortals = educationPortals.OrderBy(a => a.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
