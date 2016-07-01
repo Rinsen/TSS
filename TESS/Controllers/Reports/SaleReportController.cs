@@ -73,6 +73,7 @@ namespace TietoCRM.Controllers.Reports
                 {
                     if (offer.Offer_status == "Öppen")
                     {
+
                         foreach (view_OfferRow row in offer._OfferRows)
                         {
                             totalMaintenance += row.Maintenance;
@@ -85,7 +86,8 @@ namespace TietoCRM.Controllers.Reports
                 dict.Add("customer_type", customer.Customer_type);
                 dict.Add("maintenance", String.Format(se, "{0:C2}", totalMaintenance).Replace(".", " "));
                 dict.Add("license", String.Format(se, "{0:C2}", totalLicense).Replace(".", " "));
-                rows.Add(dict);
+                if(totalMaintenance != 0 && totalLicense != 0)
+                    rows.Add(dict);
             }
             return rows;
         }

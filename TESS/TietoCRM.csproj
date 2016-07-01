@@ -159,6 +159,7 @@
     <Compile Include="Controllers\List Management\TemplateController.cs" />
     <Compile Include="Controllers\List Management\UserController.cs" />
     <Compile Include="Controllers\Offers\CustomerOfferController.cs" />
+    <Compile Include="Controllers\Reports\AppointmentReportController.cs" />
     <Compile Include="Controllers\Reports\ContractSoldProductsReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerMissingProductReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerProductReportController.cs" />
@@ -742,7 +743,8 @@
     <Content Include="Views\ContractSoldProductsReport\Index.cshtml" />
     <Content Include="Views\ContractSoldProductsReport\Pdf.cshtml" />
     <Content Include="Views\Appointment\Index.cshtml" />
-    <Content Include="Views\Information\Index.cshtml" />
+    <Content Include="Views\AppointmentReport\Index.cshtml" />
+    <Content Include="Views\AppointmentReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

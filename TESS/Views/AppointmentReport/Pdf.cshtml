@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+
+}
+@using TietoCRM.Models;
+
+@if (ViewBag.ValidDate)
+{
+    <style>
+        td:nth-child(1) {
+            width: 10em !important;
+        }
+
+        td:nth-child(2) {
+            width: 7em !important;
+        }
+
+        td:nth-child(3) {
+            width: 12em !important;
+        }
+        td:nth-child(4) {
+            width: 10em !important;
+        }
+        td:nth-child(5) {
+            width: 30em !important;
+        }
+    </style>
+    <div class="crm-print-block">
+        <table class="table table-striped table-bordered cpr-table">
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                if (!ViewBag.Unprintable.Contains(PropertyInfo.Name))
+                {
+                    <th>@PropertyName</th>
+                }
+
+            }
+            @foreach (view_Appointment app in ViewBag.Appointments)
+            {
+                <tr class="">
+                    @foreach (System.Reflection.PropertyInfo pi in app.GetType().GetProperties())
+                    {
+                        if (!ViewBag.Unprintable.Contains(pi.Name))
+                        {
+                            if (@pi.Name == "Date")
+                            {
+                                <td>@app.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                            }
+                            else
+                            {
+                                <td>@pi.GetValue(app)</td>
+                            }
+                        }
+                    }
+                </tr>
+
+            }
+
+
+        </table>
+    </div>
+
+}
+else
+{
+    <h1>Invalid dates.</h1>
+}
