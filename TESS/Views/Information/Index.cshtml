@@ -50,6 +50,15 @@
                                         {
                                             <textarea  class="form-control" id="@pi.Name.ToLower()" name="@pi.Name"></textarea>
                                         }
+                                        else if (pi.Name == "Author")
+                                        {
+                                            <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                @foreach (KeyValuePair<String,String> rep in ViewBag.Representatives)
+                                                {
+                                                    <option value="@rep.Key">@rep.Key - @rep.Value</option>
+                                                }
+                                            </select>
+                                        }
                                         else
                                         {
                                             <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
@@ -151,10 +160,7 @@
         $formValidation = $("#informationModal form").validate({
             ignore: ".ignore",
             rules: {
-                "Author": {
-                    required: true,
-                    maxlength: 3,
-                },
+                
                 "Title": {
                     required: true,
                    
@@ -168,6 +174,7 @@
                     maxlength: 50,
                 },
                 "Expires": {
+                    required: true,
                     maxlength: 100,
                     date: true
                 }
@@ -408,6 +415,9 @@
 
 
         $('[data-toggle="tooltip"]').tooltip()
+        $('#author').selectpicker();
+        $('#type').selectpicker();
+
 
         updateDataTable(function () {
            

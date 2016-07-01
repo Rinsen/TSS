@@ -102,6 +102,8 @@ namespace TietoCRM.Controllers
 
         }
 
+        
+
         public string GetAllInformation()
         {
             List<view_Information> allInfo = view_Information.getAllValidInformation();
