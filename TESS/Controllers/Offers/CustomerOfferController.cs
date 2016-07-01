@@ -601,14 +601,18 @@ namespace TietoCRM.Controllers
                     String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
                                         view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Comment
                                         FROM view_Module                                                                                       
-                                        JOIN view_Tariff                                                                                       
-                                        on view_Module.Price_category = view_Tariff.Price_category
+                                        INNER JOIN view_Tariff                                                                                       
+                                        on view_Module.Price_category = view_Tariff.Price_category or 1=1
                                         WHERE System = @System AND Classification = @classification AND Expired = 0
                                         AND Inhabitant_level = (
                                             Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer
                                         )
                                         order by Article_number asc";
+
+                    /*queryText = @"SELECT * FROM view_Module WHERE System = @System AND Classification = @classification AND Expired = 0 
+                                union all
+                                SELECT  view_Tariff.License, view_Tariff.Maintenance FROM view_Tariff WHERE view_Tariff.Price_category = view_Module.Price_category";*/
 
                     // Default query
                     command.CommandText = queryText;
