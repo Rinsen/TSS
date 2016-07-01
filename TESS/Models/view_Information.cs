@@ -20,6 +20,9 @@ namespace TietoCRM.Models
         String message;
         public String Message { get; set; }
 
+        String type;
+        public String Type { get; set; }
+
         DateTime _created;
         public DateTime Created { get; set; }
 
@@ -67,7 +70,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [ID], Author, Title, Message, Created, Updated, Expires FROM " + databasePrefix + "Information ";
+                String query = "SELECT [ID], Author, Title, Message, Type, Created, Updated, Expires FROM " + databasePrefix + "Information ";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -89,6 +92,19 @@ namespace TietoCRM.Models
                 }
             }
             return list;
+        }
+
+        public static List<view_Information> getAllValidInformation()
+        {
+            List<view_Information> allInfo = view_Information.getAllInformation();
+            return allInfo.Where(a => DateTime.Compare(a.Expires,DateTime.Now) >= 0 ).ToList();
+        }
+
+        public string getAuthorName()
+        {
+            view_User user = new view_User();
+            user.Select("Sign = " + this.Author);
+            return user.Name;
         }
 
     }

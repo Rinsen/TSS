@@ -7,7 +7,9 @@ using TietoCRM.Models;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 using TietoCRM.Extensions;
-
+using System.Dynamic;
+using System.Reflection;
+using System.Collections.ObjectModel;
 
 namespace TietoCRM.Controllers
 {
@@ -17,6 +19,7 @@ namespace TietoCRM.Controllers
         {
             var cName = User.Identity.Name;
             this.ViewData["Title"] = cName;
+
             return View();
         }
 
@@ -97,6 +100,34 @@ namespace TietoCRM.Controllers
 
             return "1";
 
+        }
+
+        public string GetAllInformation()
+        {
+            List<view_Information> allInfo = view_Information.getAllValidInformation();
+            allInfo.Sort((a,b) => b.Updated.CompareTo(a.Updated));
+            List<Dictionary<string, string>> returnList = new List<Dictionary<string, string>>();
+            
+            foreach (view_Information info in allInfo)
+            {
+               
+                Dictionary<string, string> returnDic = new Dictionary<string, string>();
+                
+                returnDic.Add("AuthorFullName", info.getAuthorName());
+                foreach(PropertyInfo pi in typeof(view_Information).GetProperties())
+                {
+                    returnDic.Add(pi.Name, pi.GetValue(info, null).ToString());
+                }    
+                returnList.Add(returnDic);
+            }
+
+            String jsonData = (new JavaScriptSerializer()).Serialize(returnList);
+            return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
+            {
+                DateTime dt = new DateTime(1970, 1, 1, 2, 0, 0, 0); // not sure how this works with summer time and winter time
+                dt = dt.AddMilliseconds(Convert.ToDouble(m.Groups[1].Value));
+                return dt.ToString("yyyy-MM-dd H:m:s");
+            });
         }
 
     }

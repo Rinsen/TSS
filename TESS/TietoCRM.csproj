@@ -742,10 +742,10 @@
     <Content Include="Views\ContractSoldProductsReport\Index.cshtml" />
     <Content Include="Views\ContractSoldProductsReport\Pdf.cshtml" />
     <Content Include="Views\Appointment\Index.cshtml" />
+    <Content Include="Views\Information\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Information\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

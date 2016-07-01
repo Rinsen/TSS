@@ -55,16 +55,23 @@
         <div class="panel panel-default crm-widget-dashboard">
             <div class="panel-heading">
                 Important Information
-                <span class="pull-right">
+                <span id="info-refresh-all" class="pull-right">
                     <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                 </span>
             </div>
-            <div class="panel-body">
+            <div class="panel-body crm-info-container">
                 <ul class="crm-info-list">
-                    <li>
+                    <li style="display: none" class="crm-loading">
+                        <img src="~/Content/img/crm-loading.gif" />
+                    </li>
+                    @*<li>
                         <div class="panel panel-default crm-widget">
                             <div class="panel-heading">Information heading 1</div>
                             <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aut nostrum minima necessitatibus impedit earum suscipit laborum quia ex quidem error dolorum, odit molestias nemo magnam placeat ipsam rerum, repellendus?</div>
+                            <div class="panel-footer">
+                                <div class="info-author">Erik Lundmark</div>
+                                <div class="info-updated">Updated: <span>30-06-2016 08:36</span></div>
+                            </div>
                         </div>
                     </li>
                     <li>
@@ -78,7 +85,7 @@
                             <div class="panel-heading">Information heading 3</div>
                             <div class="panel-body">Amet eligendi ex doloribus explicabo perspiciatis itaque inventore libero voluptate accusantium optio, aspernatur dicta repellendus rerum, quidem esse eum consectetur, modi expedita. Saepe ad commodi dolorem ea. Eveniet eaque, iure?</div>
                         </div>
-                    </li>
+                    </li>*@
                 </ul>
             </div>
         </div>
@@ -123,23 +130,95 @@
             }
         });
     }
+
+    var getAllInformation =  function(StatisticsRefresh)
+    {
+        var StatisticsRefresh = StatisticsRefresh === true ? StatisticsRefresh : false;
+        console.log(StatisticsRefresh);
+
+        var $infoList = $('.crm-info-list');
+        var $laodingContainer = $infoList.find('.crm-loading');
+        $infoList.html($laodingContainer);
+        $.ajax({
+            "url": "/Home/GetAllInformation/",
+            "type": "POST",
+            "dataType": "json",
+            "beforeSend": function () {
+                $laodingContainer.show();
+            },
+            "success": function (data) {
+                setTimeout(function () {
+                    $laodingContainer.hide();
+                    $(data).each(function () {
+                        var infoObj = this;
+                        var infoHtml = createInformationHtml(infoObj);
+                        $infoList.append(infoHtml);
+                        if (StatisticsRefresh)
+                        {
+                            getAllStatistics();
+                        } 
+                    })
+                }, 500);
+               
+            },
+            "error": function (jqXHR, textStatus, errorThrown) {
+                $laodingContainer.hide();
+                triggerAlert("Update failed. Please check your internet connection.", "warning");
+            }
+        });
+    }
+
+    var createInformationHtml = function(infoObj)
+    {
+        var rawHtml = "<li class='info-item'>                                               \
+                           <div class='panel panel-default crm-widget'>                     \
+                               <div class='panel-heading info-title'>                       \
+                                   <span class='info-title-text'></span>                    \
+                                   <span class='glyphicon pull-right'></span>               \
+                               </div>                                                       \
+                               <div class='panel-body info-message'></div>                  \
+                               <div class='panel-footer'>                                   \
+                                   <div class='info-author'></div>                          \
+                                   <div class='info-updated'>Updated: <span></span></div>   \
+                               </div>                                                       \
+                           </div>                                                           \
+                       </li>";
+        var $htmlObj = $(rawHtml);
+        if (infoObj.Type == "Warning")
+        {
+            $htmlObj.addClass('info-warning');
+            $htmlObj.find('.glyphicon').addClass('glyphicon-warning-sign');
+        }
+        else
+        {
+            $htmlObj.addClass('info-normal');
+            $htmlObj.find('.glyphicon').addClass('glyphicon-info-sign');
+        }
+        $htmlObj.attr("data-info-id", infoObj._ID);
+        $htmlObj.find('.info-title-text').html(infoObj.Title);
+        $htmlObj.find('.info-message').html(infoObj.Message);
+        $htmlObj.find('.info-author').html(infoObj.AuthorFullName);
+        $htmlObj.find('.info-updated span').html(infoObj.Updated);
+        return $htmlObj;
+    }
+
+    var $openOffersWidget = $('#open-offers');
+    var $sentContractsWidget = $('#sent-contracts');
+    var $expiringContractsWidget = $('#expiring-contracts');
+
+    var getAllStatistics = function () {
+        getStatisticsValue("/Home/GetAmountOpenOffers/", $openOffersWidget);
+        getStatisticsValue("/Home/GetAmountSentContracts/", $sentContractsWidget);
+        getStatisticsValue("/Home/GetAmountExpiringContracts/", $expiringContractsWidget);
+    }
+
     $(document).ready(function () {
 
-        console.log('test1');
-        var $openOffersWidget = $('#open-offers');
-        var $sentContractsWidget = $('#sent-contracts');
-        var $expiringContractsWidget = $('#expiring-contracts');
-        
-        var getAllStatistics = function()
-        {
-            getStatisticsValue("/Home/GetAmountOpenOffers/", $openOffersWidget);
-            getStatisticsValue("/Home/GetAmountSentContracts/", $sentContractsWidget);
-            getStatisticsValue("/Home/GetAmountExpiringContracts/", $expiringContractsWidget);
-        }
-
         $('#crm-widget-refresh-all').click(getAllStatistics);
+        $('#info-refresh-all').click(getAllInformation);
   
-        getAllStatistics();
+        
+        getAllInformation(true);
         
         
     });

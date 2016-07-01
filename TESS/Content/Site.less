@@ -176,16 +176,62 @@ ul.nav.navbar-nav ol.breadcrumb{
     font-weight: bold;
     font-size: 120%;
 }
-
+.crm-info-container{
+    overflow-y: auto;
+    max-height: 500px;
+}
 ul.crm-info-list{
     list-style: none;
     padding: 0;
+    color: white;
+    .crm-loading
+    {
+        border: none;
+    }
     .panel-body{
-        color: white;
         font-size: 11pt;
         font-weight: normal;
+        border-bottom: none;
+    }
+    .panel-footer{
+        border: none;
+        font-size: 8pt;
+        margin: 0;
+        padding-top: 0.2em;
+        font-weight: normal !important;
+        .info-author{
+            display: inline-block;
+        }
+        .info-updated{
+            display: inline-block;
+            float: right;
+        }
+    }
+    li.info-normal{
+         background-color: #6197AA !important;
+        .panel-heading {
+            background-color: #4e7987 !important;
+        }
+        .panel-footer{
+            background-color: #6197AA !important;
+        }
+    }
+    li.info-warning{
+         
+
+        .panel-heading {
+            background-color: #F39C12 !important;
+        }
+        .panel-body{
+            background-color: #6197AA !important;
+        }
+        .panel-footer{
+            background-color: #6197AA !important;
+        }
+        
     }
 }
+
 
 .crm-loading {
     background: white;
@@ -200,7 +246,7 @@ ul.crm-info-list{
 }
 
 
-#crm-widget-refresh-all{
+#crm-widget-refresh-all, #info-refresh-all{
     cursor: pointer;
 }
 // -------- Index Global Subpages -------------
