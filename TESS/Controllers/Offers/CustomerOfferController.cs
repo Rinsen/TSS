@@ -619,21 +619,24 @@ namespace TietoCRM.Controllers
                 {
                     connection.Open();
 
-                    String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
+                    /*String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
                                         view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Comment
                                         FROM view_Module                                                                                       
                                         INNER JOIN view_Tariff                                                                                       
-                                        on view_Module.Price_category = view_Tariff.Price_category or 1=1
+                                        on view_Module.Price_category = view_Tariff.Price_category
                                         WHERE System = @System AND Classification = @classification AND Expired = 0
                                         AND Inhabitant_level = (
                                             Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer
                                         )
-                                        order by Article_number asc";
+                                        order by Article_number asc";*/
 
-                    /*queryText = @"SELECT * FROM view_Module WHERE System = @System AND Classification = @classification AND Expired = 0 
-                                union all
-                                SELECT  view_Tariff.License, view_Tariff.Maintenance FROM view_Tariff WHERE view_Tariff.Price_category = view_Module.Price_category";*/
+                    String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Fixed_price, M.Comment, C.Inhabitant_level 
+					                                    from view_Module M, view_Customer C
+					                                    Where C.Customer = @customer And M.Expired = 0) A
+	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
+	                                    Where A.System = @System AND A.Classification = @classification";
 
                     // Default query
                     command.CommandText = queryText;
@@ -668,7 +671,7 @@ namespace TietoCRM.Controllers
                                 result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                                 result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
                                 result["System"] = result["System"].ToString();
-                                result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
+                               // result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
                                 if((bool)result["Fixed_price"])
                                 {
                                     result["Maintenance"] = result["Price_category"];
