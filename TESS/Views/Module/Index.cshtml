@@ -452,7 +452,6 @@
             "type": "POST",
             "data": {
                 "System": System,
-
             },
             "success": function (data) {
                 if (data.length > 0) {
@@ -460,7 +459,13 @@
                     var classificationsLen = Object.keys(classifications).length;
                     $classificationSelect.empty();
                     for(var i = 0 ; i < classificationsLen ; i++){
-                        $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
+                        if(classifications[i] == "Modul"){
+                            $classificationSelect.append($("<option></option>").attr("value",classifications[i]).attr("selected","selected").html(classifications[i]));
+                        }
+                        else{
+                            $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
+                        }
+
                     }
                     if(typeof onSuccess != "undefined")
                         onSuccess();
