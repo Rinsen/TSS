@@ -23,6 +23,9 @@ namespace TietoCRM.Models
         private decimal? total_price;
         public decimal? Total_price { get { return total_price; } set { total_price = value; } }
 
+        private String alias;
+        public String Alias { get { return alias; } set { alias = value; } }
+
         private DateTime? created;
         public DateTime? Created { get { return created; } set { created = value; } }
 
@@ -52,7 +55,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [Contract_id] ,[Code] ,[Customer] ,[Amount] ,[Total_price] ,[Created] ,[Updated] FROM " + databasePrefix + "ContractConsultantRow WHERE " + "Contract_id = @contractID AND Customer = @customer";
+                command.CommandText = "SELECT [Contract_id] ,[Code] ,[Customer] ,[Amount] ,[Total_price], [Alias] ,[Created] ,[Updated] FROM " + databasePrefix + "ContractConsultantRow WHERE " + "Contract_id = @contractID AND Customer = @customer";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@contractID", contractID);
@@ -101,7 +104,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [Contract_id] ,[Code] ,[Customer] ,[Amount] ,[Total_price] ,[Created] ,[Updated] FROM " + databasePrefix + "ContractConsultantRow WHERE " + "Customer = @customer";
+                command.CommandText = "SELECT [Contract_id] ,[Code] ,[Customer] ,[Amount] ,[Total_price], [Alias] ,[Created] ,[Updated] FROM " + databasePrefix + "ContractConsultantRow WHERE " + "Customer = @customer";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
