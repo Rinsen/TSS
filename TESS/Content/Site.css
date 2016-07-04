@@ -118,7 +118,7 @@ ul.nav.navbar-nav ol.breadcrumb li a {
 ul.nav.navbar-nav ol.breadcrumb li.active span {
   color: white;
 }
-#page-content-wrapper {
+#page-content-wrapper.bg {
   background: url("img/bg2.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
