@@ -57,7 +57,28 @@ namespace TietoCRM.Controllers
             else
                 on = ViewBag.Customers[0];
 
-            this.ViewData.Add("Appointments", view_Appointment.getAllAppointments(on).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date));
+            if (Request.QueryString["customer"] == null || Request.QueryString["customer"] == "")
+            {
+                List<view_Appointment> vA = view_Appointment.getAllAppointments(on).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
+                if (vA.Count > 0)
+                {
+                    view_Appointment lastVisit = List_Management.AppointmentController.GetLastVisit(on);
+                    vA.Add(lastVisit);
+                }
+                ViewData["Appointments"] = vA;
+                ViewData.Add("Customer", on);
+            }
+            else
+            {
+                List<view_Appointment> vA = view_Appointment.getAllAppointments(Request["customer"]).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
+                if (vA.Count > 0)
+                {
+                    view_Appointment lastVisit = List_Management.AppointmentController.GetLastVisit(Request["customer"]);
+                    vA.Add(lastVisit);
+                }
+                ViewData["Appointments"] = vA;
+                ViewData.Add("Customer", Request["customer"]);
+            }
 
             if (Request["selected-offer"] != null && Request["selected-offer"] != "")
             {
