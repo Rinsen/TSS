@@ -789,6 +789,7 @@ else if (Request["modal"] == "services")
                                     if (offer._ConsultantRows.Any(c => c.Code == service.Code))
                                     {
                                         view_ConsultantRow ccr = offer._ConsultantRows.First(c => c.Code == service.Code);
+
                                         price = String.Format(se, "{0:C2}", ccr.Total_price / ccr.Amount).Replace(".", " ");
                                         cost = Convert.ToInt32(ccr.Total_price / ccr.Amount);
                                     }
@@ -809,10 +810,12 @@ else if (Request["modal"] == "services")
                                                 <label>@price</label>
                                                 <span class="service-amount"></span>
                                                 <br />
-                                                @service.Description
-                                            </button>
-                                        </td>
-                                    </table>
+                                                <span id="description-title">@service.Description</span>
+                                              </button>
+  
+                                          </td>
+  
+                                      </table>
                                 }
                             </div>
                         </div>
@@ -827,20 +830,24 @@ else if (Request["modal"] == "services")
                         <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                             <div id="selected-services" class="list-group">
                                 @{
-                                //view_CustomerOffer offer = new view_CustomerOffer("Offer_number = " + Request["selected-offer"]);
-                                foreach (view_ConsultantRow row in offer._ConsultantRows)
-                                {
-                                    view_Service service = new view_Service();
-                                    service.Select("Code = " + row.Code);
+                                    //view_CustomerOffer offer = new view_CustomerOffer("Offer_number = " + Request["selected-offer"]);
+                                    foreach (view_ConsultantRow row in offer._ConsultantRows)
+                                    {
+                                        view_Service service = new view_Service();
+                                        service.Select("Code = " + row.Code);
+                                        if (!String.IsNullOrEmpty(row.Alias))
+                                        {
+                                            service.Description = row.Alias;
+                                        }
 
-                                    String price = String.Format(se, "{0:C2}", row.Total_price / row.Amount);
-                                    int cost = Convert.ToInt32(row.Total_price / row.Amount);
+                                        String price = String.Format(se, "{0:C2}", row.Total_price / row.Amount);
+                                        int cost = Convert.ToInt32(row.Total_price / row.Amount);
 
                                     <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
                                         <label>@price</label>
                                         <span class="service-amount">@row.Amount</span>
                                         <br />
-                                        @service.Description
+                                        <span id="description-title">@service.Description</span>
                                     </button>
                                 }
                                 }
@@ -861,7 +868,7 @@ else if (Request["modal"] == "services")
 
 <script>
     var services = [];
-    var addService = function(code, cost, amount)
+    var addService = function(code, cost, amount, desc)
     {
         if(typeof amount == "undefined")
             amount = 1;
@@ -873,6 +880,7 @@ else if (Request["modal"] == "services")
             if(services[i].id == code){
                 services[i].amount += amount;
                 services[i].total += amount*cost;
+                services[i].desc = desc;
                 if(services[i].amount <= 0)
                 {
                     services.splice(i, 1);
@@ -886,6 +894,7 @@ else if (Request["modal"] == "services")
     }
 
     var setTotalCost = function(amount, cost){
+        cost = parseFloat(cost);
         $h4 = $("#total-cost-container");
         total = parseInt($h4.html().replace("kr","").replace(/\s+/g, ''));
         total += amount*cost;
@@ -926,6 +935,8 @@ else if (Request["modal"] == "services")
         $span = $(span);
         $tr = $span.parent().parent();
         $label = $tr.find("label");
+        $desc = $tr.find("#description-title");
+        var desc = $desc.html();
         var value = $label.html();
         value = value.replace(" kr", "");
         value = value.replace(" ", "");
@@ -937,11 +948,17 @@ else if (Request["modal"] == "services")
             title: "Edit service",
             message: "<form class='form-horizontal'>                                                                                                \
                     <div class='form-group'>                                                                                                    \
-                        <label for='license-text' class='col-sm-2 control-label'>Cost</label>                                                \
+                        <label for='cost-text' class='col-sm-2 control-label'>Cost</label>                                                \
                         <div class='col-sm-10'>                                                                                                 \
                             <input class='form-control' id='cost-text' name='Cost' value='" + value + "'>                         \
                         </div>                                                                                                                  \
-                    </div>                                                                                                                      \                                                                                                                  \
+                    </div>                                                                                                                  \
+                    <div class='form-group'>                                                                                                    \
+                        <label for='alias-text' class='col-sm-2 control-label'>Alias</label>                                                \
+                        <div class='col-sm-10'>                                                                                                 \
+                            <input class='form-control' id='alias-text' name='Alias' value='" + desc + "'>                         \
+                        </div>                                                                                                                  \
+                    </div>   \                                                                                                                  \
                     </form>"
                 ,
             buttons: {
@@ -957,9 +974,11 @@ else if (Request["modal"] == "services")
                     className: "btn-success",
                     callback: function () {
                         newCost = formatCurrency($("#cost-text").val());
+                        newAlias = $("#alias-text").val()
                         $button = $tr.find("button");
                         var code = $button.attr("data-code");
                         $label.html(newCost);
+                        $desc.html(newAlias);
                         $("#selected-services button[data-code='" + code + "'] label").html(newCost);
                     
                         $button.attr("onclick", "newItem(this, " + $("#cost-text").val() + ");");
@@ -1005,10 +1024,12 @@ else if (Request["modal"] == "services")
                 highlightItem($amountLabel.parent(), "highlight-item-blue");
 
                 setTotalCost(1 ,price);
-                services.push({id:$newButton.attr("data-code"), amount:1, total:price});
+                services.push({id:$newButton.attr("data-code"), amount:1, total:price, desc:$button.find("#description-title").html()});
             }
             else{
-                $amountLabel = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']").find(".service-amount");
+                $selectedButton = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']");
+
+                $amountLabel = $selectedButton.find(".service-amount");
                 var amount = parseInt($amountLabel.html());
                 amount += 1;
 
@@ -1016,7 +1037,9 @@ else if (Request["modal"] == "services")
                 $amountLabel.parent().removeClass("highlight-item-red");
                 highlightItem($amountLabel.parent(), "highlight-item-blue");
 
-                addService($button.attr("data-code"), price, 1);
+                $selectedButton.find("#description-title").html($button.find("#description-title").html());
+
+                addService($button.attr("data-code"), price, 1, $button.find("#description-title").html());
             }
         }
         else{
@@ -1028,11 +1051,11 @@ else if (Request["modal"] == "services")
                 $amountLabel.parent().removeClass("highlight-item-blue");
                 highlightItem($amountLabel.parent(), "highlight-item-red");
 
-                addService($button.attr("data-code"), price, -1);
+                addService($button.attr("data-code"), price, -1, $button.find("#description-title").html());
             }
             else{
                 $button.attr("data-selected", "false");
-                addService($button.attr("data-code"), price, -1);
+                addService($button.attr("data-code"), price, -1, $button.find("#description-title").html());
                 $button.remove();
             }
         }

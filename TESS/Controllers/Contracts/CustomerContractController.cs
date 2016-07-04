@@ -985,6 +985,12 @@ namespace TietoCRM.Controllers.Contracts
             {
                 view_Service service = new view_Service();
                 service.Select("Code = " + ccRow.Code);
+                if (!String.IsNullOrEmpty(ccRow.Alias))
+                {
+                    service.Description = ccRow.Alias;
+                }
+
+
 
                 var obj = new
                 {
@@ -1281,10 +1287,12 @@ namespace TietoCRM.Controllers.Contracts
                 int id = Convert.ToInt32(dict["id"]);
                 int amount = Convert.ToInt32(dict["amount"]);
                 int total = Convert.ToInt32(dict["total"]);
+                String alias = dict["desc"].ToString();
 
                 view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
                 consultantRow.Contract_id = contract.Contract_id;
                 consultantRow.Customer = contract.Customer;
+                consultantRow.Alias = alias;
                 consultantRow.Code = id;
                 consultantRow.Amount = amount;
                 consultantRow.Total_price = total;

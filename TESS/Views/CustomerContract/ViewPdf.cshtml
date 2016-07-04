@@ -918,7 +918,7 @@
                                                             <label>@price</label>
                                                             <span class="service-amount"></span>
                                                             <br />
-                                                            @service.Description
+                                                            <span id="description-title">@service.Description</span>
                                                         </button>
                                                     </td>
                                                 </table>
@@ -936,19 +936,23 @@
                                     <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                                         <div id="selected-services" class="list-group">
                                             @{
-                                                            foreach (view_ContractConsultantRow row in contract._ContractConsultantRows)
-                                                            {
-                                                            view_Service service = new view_Service();
-                                                            service.Select("Code = " + row.Code);
+                                                foreach (view_ContractConsultantRow row in contract._ContractConsultantRows)
+                                                {
+                                                    view_Service service = new view_Service();
+                                                    service.Select("Code = " + row.Code);
+                                                    if (!String.IsNullOrEmpty(row.Alias))
+                                                    {
+                                                        service.Description = row.Alias;
+                                                    }
 
-                                                            String price = String.Format(se, "{0:C2}", row.Total_price/row.Amount);
-                                                            int cost = Convert.ToInt32(row.Total_price / row.Amount);
+                                                    String price = String.Format(se, "{0:C2}", row.Total_price/row.Amount);
+                                                    int cost = Convert.ToInt32(row.Total_price / row.Amount);
 
                                                                 <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
                                                                     <label>@price</label>
                                                                     <span class="service-amount">@row.Amount</span>
                                                                     <br />
-                                                                    @service.Description
+                                                                    <span id="description-title">@service.Description</span>
                                                                 </button>
                                                             }
                                             }
