@@ -221,7 +221,8 @@ ul.crm-info-list li.info-warning .panel-footer {
   width: 25%;
 }
 #crm-widget-refresh-all,
-#info-refresh-all {
+#info-refresh-all,
+.add-to-select {
   cursor: pointer;
 }
 .form-group label {
@@ -1064,4 +1065,31 @@ a.tooltips > span:after {
 #report-table.sold-products th:nth-child(2) {
   font-size: 70%;
   width: 2% !important;
+}
+/* --------- Appointment Report ----------*/
+
+#appointment-report-table td:nth-child(1),
+#appointment-report-table th:nth-child(1) {
+  width: 5% !important;
+  font-size: 70%;
+}
+#appointment-report-table td:nth-child(2),
+#appointment-report-table th:nth-child(2) {
+  font-size: 70%;
+  width: 7% !important;
+}
+#appointment-report-table td:nth-child(3),
+#appointment-report-table th:nth-child(3) {
+  font-size: 70%;
+  width: 15% !important;
+}
+#appointment-report-table td:nth-child(4),
+#appointment-report-table th:nth-child(4) {
+  font-size: 70%;
+  width: 15% !important;
+}
+#appointment-report-table td:nth-child(5),
+#appointment-report-table th:nth-child(5) {
+  font-size: 70%;
+  width: 44% !important;
 }

@@ -29,9 +29,9 @@
 <row>
     <div class="col-md-12">
         <form method="get" action="~/CustomerProductReport/Pdf" target="_blank" class="form-inline">
+            <label for="start-date">User:</label>
             <div class="form-group">
-                <label for="start-date">User:</label>
-                <select class="form-control" name="user" id="user">
+                <select data-live-search="true" class="form-control" name="user" id="user">
                     @foreach (TietoCRM.Models.view_User user in ViewBag.Users)
                     {
                         if (user.Windows_user.ToLower() == User.Identity.Name.ToLower())
@@ -149,6 +149,7 @@
         $(document).ready(function () {
             var $startDate = $("#start-date");
             var $stopDate = $("#stop-date");
+            $("#user").selectpicker();
 
             $('#fetch-data').click(function () {
                 var uri = updateQueryStringParameter(updateQueryStringParameter('', "start", $startDate.val()), "stop", $stopDate.val());

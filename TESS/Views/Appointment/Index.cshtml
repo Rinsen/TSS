@@ -54,10 +54,19 @@
                                                     }
                                                     else if (pi.Name == "Customer")
                                                     {
-                                                        <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                        <select data-live-search="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
                                                             @foreach(String customer in ViewBag.Customers)
                                                             {
                                                                 <option value="@customer">@customer</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                    else if (pi.Name == "Contact_person")
+                                                    {
+                                                        <select data-live-search="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                            @foreach (view_CustomerContact contact in ViewBag.Contacts)
+                                                            {
+                                                                <option value="@contact.Contact_person">@contact.Contact_person</option>
                                                             }
                                                         </select>
                                                     }
@@ -141,6 +150,16 @@
         
     }
 
+    var addToSelect = function(self)
+    {
+        var customerID = $(self).parent().parent().parent().parent().find('button').attr('data-id');
+        var searchText = $(self).parent().parent().parent().find('.bs-searchbox input').val();
+        var $selectPicker = $("#" + customerID);
+        $selectPicker.append('<option value="' + searchText + '">' + searchText + '<option>');
+        $selectPicker.val(searchText);
+        $selectPicker.selectpicker("refresh");
+    }
+
     $(document).ready(function () {
         $("#date").datetimepicker({
             dateFormat: 'yy-mm-dd'
@@ -151,6 +170,14 @@
             }
         });
         $customerSelect = $("#customer");
+        $customerSelect.selectpicker();
+        
+        $contactSelect = $("#contact_person");
+        $contactSelect.selectpicker({
+            noneResultsText: "No results found. <strong onclick='addToSelect(this)' class='add-to-select'>Add {0} to list</strong>"
+        });
+
+
         $formValidation = $("#appointmentModal form").validate({
             ignore: ".ignore",
             rules: {
