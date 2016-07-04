@@ -54,7 +54,7 @@
         
         <div class="panel panel-default crm-widget-dashboard">
             <div class="panel-heading">
-                Important Information
+                Information Messages
                 <span id="info-refresh-all" class="pull-right">
                     <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                 </span>
@@ -64,28 +64,9 @@
                     <li style="display: none" class="crm-loading">
                         <img src="~/Content/img/crm-loading.gif" />
                     </li>
-                    @*<li>
-                        <div class="panel panel-default crm-widget">
-                            <div class="panel-heading">Information heading 1</div>
-                            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A aut nostrum minima necessitatibus impedit earum suscipit laborum quia ex quidem error dolorum, odit molestias nemo magnam placeat ipsam rerum, repellendus?</div>
-                            <div class="panel-footer">
-                                <div class="info-author">Erik Lundmark</div>
-                                <div class="info-updated">Updated: <span>30-06-2016 08:36</span></div>
-                            </div>
-                        </div>
+                    <li class="crm-empty-list">
+                        As for now there are no messasges to show.
                     </li>
-                    <li>
-                        <div class="panel panel-default crm-widget">
-                            <div class="panel-heading">Information heading 2</div>
-                            <div class="panel-body">Rem officiis, quae nostrum nisi, culpa recusandae velit optio minus placeat architecto quo accusamus commodi iste totam voluptatum vitae rerum adipisci id quis iusto, esse animi labore illum quas! Optio.</div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="panel panel-default crm-widget">
-                            <div class="panel-heading">Information heading 3</div>
-                            <div class="panel-body">Amet eligendi ex doloribus explicabo perspiciatis itaque inventore libero voluptate accusantium optio, aspernatur dicta repellendus rerum, quidem esse eum consectetur, modi expedita. Saepe ad commodi dolorem ea. Eveniet eaque, iure?</div>
-                        </div>
-                    </li>*@
                 </ul>
             </div>
         </div>
@@ -130,7 +111,18 @@
             }
         });
     }
+    var handleEmptyInfoMesg = function(show)
+    {
+        var $container = $('.crm-empty-list');
+        if (show == true || show == 'show')
+        {
+            $container.show(); console.log('showing');
+        }         
+        else
+            $container.hide();
 
+        return $container;
+    }
     var getAllInformation =  function(StatisticsRefresh)
     {
         var StatisticsRefresh = StatisticsRefresh === true ? StatisticsRefresh : false;
@@ -138,28 +130,45 @@
 
         var $infoList = $('.crm-info-list');
         var $laodingContainer = $infoList.find('.crm-loading');
+        var $emptyMsg = $('.crm-empty-list');
         $infoList.html($laodingContainer);
+        $infoList.append($emptyMsg);
+
         $.ajax({
             "url": "/Home/GetAllInformation/",
             "type": "POST",
             "dataType": "json",
             "beforeSend": function () {
                 $laodingContainer.show();
+                handleEmptyInfoMesg('hide');
             },
             "success": function (data) {
                 setTimeout(function () {
-                    $laodingContainer.hide();
-                    $(data).each(function () {
-                        var infoObj = this;
-                        var infoHtml = createInformationHtml(infoObj);
-                        $infoList.append(infoHtml);
-                        if (StatisticsRefresh)
-                        {
+                    if (data.length == 0 || data == "" || typeof data == 'undefined')
+                    {
+                        handleEmptyInfoMesg('show');
+                        $laodingContainer.hide();
+                        if (StatisticsRefresh) {
                             getAllStatistics();
-                        } 
-                    })
+                        }
+                   
+                    }
+                    else
+                    {
+                        handleEmptyInfoMesg('hide');
+                   
+                            $laodingContainer.hide();
+                            $(data).each(function () {
+                                var infoObj = this;
+                                var infoHtml = createInformationHtml(infoObj);
+                                $infoList.append(infoHtml);
+                                if (StatisticsRefresh) {
+                                    getAllStatistics();
+                                }
+                            })
+                    
+                    }  
                 }, 500);
-               
             },
             "error": function (jqXHR, textStatus, errorThrown) {
                 $laodingContainer.hide();
