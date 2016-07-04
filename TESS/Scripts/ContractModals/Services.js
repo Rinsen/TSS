@@ -19,7 +19,7 @@
             for (var i = 0; i < length; i++) {
                 service = servicesData[i];
                 
-                services.push({ id: service.Code, amount: service.Amount, total: service.Total });
+                services.push({ id: service.Code, amount: service.Amount, total: service.Total, desc:service.Alias });
                 setTotalCost(service.Amount, service.Price);
             }
         }
@@ -27,7 +27,7 @@
 });
 
 var services = [];
-var addService = function(code, cost, amount)
+var addService = function(code, cost, amount, desc)
 {
     if(typeof amount == "undefined")
         amount = 1;
@@ -38,7 +38,8 @@ var addService = function(code, cost, amount)
     {
         if(services[i].id == code){
             services[i].amount += amount;
-            services[i].total += amount*cost;
+            services[i].total += amount * cost;
+            services[i].desc = desc;
             if(services[i].amount <= 0)
             {
                 services.splice(i, 1);
@@ -51,7 +52,8 @@ var addService = function(code, cost, amount)
 
 }
 
-var setTotalCost = function(amount, cost){
+var setTotalCost = function (amount, cost) {
+    cost = parseFloat(cost);
     $h4 = $("#servicesModal #total-cost-container");
     total = parseInt($h4.html().replace("kr","").replace(/\s+/g, ''));
     total += amount*cost;
@@ -92,6 +94,8 @@ var editService = function(span)
     $span = $(span);
     $tr = $span.parent().parent();
     $label = $tr.find("label");
+    $desc = $tr.find("#description-title");
+    var desc = $desc.html();
     var value = $label.html();
     value = value.replace(" kr", "");
     value = value.replace(" ", "");
@@ -103,11 +107,17 @@ var editService = function(span)
         title: "Edit service",
         message: "<form class='form-horizontal'>                                                                                                \
                     <div class='form-group'>                                                                                                    \
-                        <label for='license-text' class='col-sm-2 control-label'>Cost</label>                                                \
+                        <label for='license-text' class='col-sm-2 control-label'>Cost</label>                                                   \
                         <div class='col-sm-10'>                                                                                                 \
-                            <input class='form-control' id='cost-text' name='Cost' value='" + value + "'>                         \
+                            <input class='form-control' id='cost-text' name='Cost' value='" + value + "'>                                       \
                         </div>                                                                                                                  \
-                    </div>                                                                                                                      \                                                                                                                  \
+                    </div>                                                                                                                      \
+                    <div class='form-group'>                                                                                                    \
+                        <label for='alias-text' class='col-sm-2 control-label'>Alias</label>                                                    \
+                        <div class='col-sm-10'>                                                                                                 \
+                            <input class='form-control' id='alias-text' name='Alias' value='" + desc + "'>                                      \
+                        </div>                                                                                                                  \
+                    </div>                                                                                                                      \
                     </form>"
             ,
         buttons: {
@@ -123,9 +133,11 @@ var editService = function(span)
                 className: "btn-success",
                 callback: function () {
                     newCost = formatCurrency($("#cost-text").val());
+                    newAlias = $("#alias-text").val()
                     $button = $tr.find("button");
                     var code = $button.attr("data-code");
                     $label.html(newCost);
+                    $desc.html(newAlias);
                     $("#selected-services button[data-code='" + code + "'] label").html(newCost);
                     
                     $button.attr("onclick", "newItem(this, " + $("#cost-text").val() + ");");
@@ -171,10 +183,12 @@ var newItem = function(element, price){
             highlightItem($amountLabel.parent(), "highlight-item-blue");
 
             setTotalCost(1 ,price);
-            services.push({id:$newButton.attr("data-code"), amount:1, total:price});
+            services.push({ id: $newButton.attr("data-code"), amount: 1, total: price, desc: $button.find("#description-title").html() });
         }
         else{
-            $amountLabel = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']").find(".service-amount");
+            $selectedButton = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']");
+
+            $amountLabel = $selectedButton.find(".service-amount");
             var amount = parseInt($amountLabel.html());
             amount += 1;
 
@@ -182,7 +196,9 @@ var newItem = function(element, price){
             $amountLabel.parent().removeClass("highlight-item-red");
             highlightItem($amountLabel.parent(), "highlight-item-blue");
 
-            addService($button.attr("data-code"), price, 1);
+            $selectedButton.find("#description-title").html($button.find("#description-title").html());
+
+            addService($button.attr("data-code"), price, 1, $button.find("#description-title").html());
         }
     }
     else{
@@ -194,11 +210,11 @@ var newItem = function(element, price){
             $amountLabel.parent().removeClass("highlight-item-blue");
             highlightItem($amountLabel.parent(), "highlight-item-red");
 
-            addService($button.attr("data-code"), price, -1);
+            addService($button.attr("data-code"), price, -1, $button.find("#description-title").html());
         }
         else{
             $button.attr("data-selected", "false");
-            addService($button.attr("data-code"), price, -1);
+            addService($button.attr("data-code"), price, -1, $button.find("#description-title").html());
             $button.remove();
         }
     }
@@ -229,7 +245,7 @@ var updateServiceSelected = function () {
                     " + service.Description + "                                                                                         \
                 </button>                                                                                                               \
                 ");
-                services.push({ id: service.Code, amount: service.Amount, total: service.Total });
+                services.push({ id: service.Code, amount: service.Amount, total: service.Total, desc: service.Description});
                 setTotalCost(service.Amount, service.Price);
             }
         }

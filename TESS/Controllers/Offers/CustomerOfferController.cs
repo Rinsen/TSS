@@ -592,9 +592,11 @@ namespace TietoCRM.Controllers
                     int id = Convert.ToInt32(dict["id"]);
                     int amount = Convert.ToInt32(dict["amount"]);
                     int total = Convert.ToInt32(dict["total"]);
+                    String alias = dict["desc"].ToString();
 
                     view_ConsultantRow consultantRow = new view_ConsultantRow();
                     consultantRow.Offer_number = offer;
+                    consultantRow.Alias = alias;
                     consultantRow.Code = id;
                     consultantRow.Amount = amount;
                     consultantRow.Total_price = total;
