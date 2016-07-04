@@ -157,16 +157,16 @@
                     {
                         handleEmptyInfoMesg('hide');
                    
-                            $laodingContainer.hide();
-                            $(data).each(function () {
-                                var infoObj = this;
-                                var infoHtml = createInformationHtml(infoObj);
-                                $infoList.append(infoHtml);
-                                if (StatisticsRefresh) {
-                                    getAllStatistics();
-                                }
-                            })
-                    
+                        $laodingContainer.hide();
+                        $(data).each(function () {
+                            var infoObj = this;
+                            var infoHtml = createInformationHtml(infoObj);
+                            $infoList.append(infoHtml);
+                               
+                        })
+                        if (StatisticsRefresh) {
+                            getAllStatistics();
+                        }
                     }  
                 }, 500);
             },
