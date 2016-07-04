@@ -45,7 +45,7 @@ namespace TietoCRM.Controllers.List_Management
             {
                 DateTime dt = new DateTime(1970, 1, 1, 2, 0, 0, 0); // not sure how this works with summer time and winter time
                 dt = dt.AddMilliseconds(Convert.ToDouble(m.Groups[1].Value));
-                return dt.ToString("yyyy-MM-dd H:m:s");
+                return dt.ToString("yyyy-MM-dd HH:mm");
             });
         }
 

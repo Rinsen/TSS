@@ -118,18 +118,16 @@ namespace TietoCRM.Controllers
                 returnDic.Add("AuthorFullName", info.getAuthorName());
                 foreach(PropertyInfo pi in typeof(view_Information).GetProperties())
                 {
-                    returnDic.Add(pi.Name, pi.GetValue(info, null).ToString());
+                    if(pi.Name == "Created" || pi.Name == "Updated")
+                        returnDic.Add(pi.Name, ((DateTime)pi.GetValue(info, null)).ToString("yyyy-MM-dd HH:mm"));
+                    else
+                        returnDic.Add(pi.Name, pi.GetValue(info, null).ToString());
                 }    
                 returnList.Add(returnDic);
             }
 
             String jsonData = (new JavaScriptSerializer()).Serialize(returnList);
-            return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
-            {
-                DateTime dt = new DateTime(1970, 1, 1, 2, 0, 0, 0); // not sure how this works with summer time and winter time
-                dt = dt.AddMilliseconds(Convert.ToDouble(m.Groups[1].Value));
-                return dt.ToString("yyyy-MM-dd H:m:s");
-            });
+            return jsonData;
         }
 
     }
