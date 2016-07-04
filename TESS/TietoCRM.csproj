@@ -747,10 +747,11 @@
     <Content Include="Views\AppointmentReport\Index.cshtml" />
     <Content Include="Views\AppointmentReport\Pdf.cshtml" />
     <Content Include="Views\Information\Index.cshtml" />
+    <Content Include="Views\ValidContractsReport\Index.cshtml" />
+    <Content Include="Views\ValidContractsReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\ValidContractsReport\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

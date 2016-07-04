@@ -15,7 +15,7 @@ namespace TietoCRM.Controllers.Reports
         public ActionResult Index()
         {
             ViewData.Add("Users", view_User.getAllUsers());
-            ViewData.Add("Title", "Sale Report");
+            ViewData.Add("Title", "Valid Contract Report");
 
             return View();
         }
@@ -23,64 +23,53 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, String>> offers = this.generateSaleReport(Request["user"]);
-            ViewData.Add("Offers", offers);
+            List<Dictionary<String, String>> contracts = this.GenerateValidContracts();
+            ViewData.Add("Contracts", contracts);
 
-            decimal? totalM = 0;
-            decimal? totalL = 0;
-
-            foreach (Dictionary<String, String> offer in offers)
-            {
-                totalM += decimal.Parse(offer["maintenance"].Replace(" ", "").Replace("kr", ""));
-                totalL += decimal.Parse(offer["license"].Replace(" ", "").Replace("kr", ""));
-            }
-            CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
-
-            ViewData.Add("totalM", String.Format(se, "{0:C2}", totalM).Replace(".", " "));
-            ViewData.Add("totalL", String.Format(se, "{0:C2}", totalL).Replace(".", " "));
-            this.ViewData["Title"] = "Sale Report";
+            this.ViewData["Title"] = "Valid Contracts Report";
 
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
-            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["user"] + "\"";
-            pdf.RotativaOptions.CustomSwitches += " --header-center \"Sale Report\"";
+            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"\"";
+            pdf.RotativaOptions.CustomSwitches += " --header-center \"Valid Contracts Report\"";
 
             return pdf;
 
 
         }
 
-        public String User()
+        public String ValidContacts()
         {
-            String user = Request.Form["user"];
-
-
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.generateSaleReport(user)) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateValidContracts()) + "}";
         }
 
-        public List<Dictionary<String, String>> generateSaleReport(String user)
+        public List<Dictionary<String, String>> GenerateValidContracts()
         {
-            List<view_Customer> customers = view_Customer.getAllCustomers(user);
+            List<view_Customer> customers = view_Customer.getAllCustomers();
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_Customer customer in customers)
             {
                 Dictionary<String, String> dict = new Dictionary<String, String>();
-                decimal? totalMaintenance = 0;
-                decimal? totalLicense = 0;
-                foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
+                int amountValidContracts = 0;
+                List<view_Contract> contracts = view_Contract.GetContracts(customer.Customer);
+                foreach (view_Contract contract in contracts)
                 {
-                    if (offer.Offer_status == "Öppen")
+                    if (contract.Status == "Giltigt")
                     {
-                        foreach (view_OfferRow row in offer._OfferRows)
-                        {
-                            totalMaintenance += row.Maintenance;
-                            totalLicense += row.License;
-                        }
+                        amountValidContracts++;
                     }
                 }
                 dict.Add("customer", customer.Customer);
                 dict.Add("customer_type", customer.Customer_type);
-                if (totalMaintenance != 0 && totalLicense != 0)
+                dict.Add("representative", customer.Representative);
+                dict.Add("it_manager", customer.IT_manager);
+
+                List<view_Contract> mainContracts = contracts.Where(c => c.Contract_type == "Huvudavtal" && c.Status == "Giltigt").ToList();
+                if(mainContracts.Count > 0)
+                {
+                    dict.Add("main_contract_id", mainContracts[0].Contract_id);
+                    dict.Add("amount", amountValidContracts.ToString());
                     rows.Add(dict);
+                }
             }
             return rows;
         }

@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12">
+        <form method="get" action="~/ValidContractsReport/Pdf" target="_blank" class="form-inline">
+            <button style="margin-top: 1.7em;" class="btn btn-default" type="submit">PDF</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="customer" data-sortable="true">Customer</th>
+                    <th data-field="customer_type" data-sortable="true">Customer Type</th>
+                    <th data-field="representative" data-sortable="true">Representative</th>
+                    <th data-field="it_manager" data-sortable="true">IT manager</th>
+                    <th data-field="main_contract_id" data-sortable="true">Main contract id</th>
+                    <th data-field="amount" data-sortable="true">Amount</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script>
+    @{String DataObject = "\r\n";}
+    @{
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "representative" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "it_manager" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "main_contract_id" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "amount" + "\"  },\r\n";
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(user)
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bPaginate": false,
+            "ajax": {
+                "url": "/ValidContractsReport/ValidContacts/",
+                "type": "POST",
+
+            },
+            "defaultContent": "",
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+    $('document').ready(function () {
+
+        $('.selectpicker').selectpicker();
+
+        $userContainer = $("#crm-select-user");
+
+        updateDataTable($userContainer.val());
+
+        $userContainer.change(function () {
+            updateDataTable(this.value)
+
+        });
+    });
+
+    </script>
+</row>
