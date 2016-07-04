@@ -279,8 +279,7 @@
             "ajax": {
                 "url": "@Url.Content("~/CustomerContact/ContactData/")",
             },
-            "bFilter": true,
-            "bPaginate": false,
+
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
                     onSuccess();
@@ -298,6 +297,7 @@
                     "targets": 0
                 }
             ],
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
             "scrollY": ($("#page-content-wrapper").height() - 170),
             "scrollX": true,
             "fnRowCallback": drawCallBack
@@ -434,8 +434,7 @@
             "ajax": {
                 "url": "@Url.Content("~/CustomerContact/ContactData/")",
             },
-            "bFilter": true,
-            "bPaginate": false,
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
             "initComplete": function (settings, json) {
                 drawButtons();
             },

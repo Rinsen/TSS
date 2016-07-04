@@ -100,7 +100,7 @@
             }
 
             var $formInputs = $("#informationModal form").find(":input");
-            console.log($formInputs);
+           
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
@@ -131,11 +131,18 @@
             var info = {}
 
             var $formInputs = $("#informationModal form").find(":input");
+            $('#author').selectpicker('refresh');
+            $('#type').selectpicker('refresh');
 
             var frmInpLen = $formInputs.length;
+          
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                info[$currInput.attr("name")] = $currInput.val();
+                if (!$currInput.is("button"))
+                {
+                    info[$currInput.attr("name")] = $currInput.val();                 
+                }
+                   
             }
             $.ajax({
                 "url": "/Information/InsertInformation/",
@@ -207,7 +214,7 @@
     var selectRow = function (element) {
         var $td = $(element);
         var $row = $(element).parent();
-        var $table = $("#user-table");
+        var $table = $("#information-table");
 
         $td.find("input").prop("checked", true);
 
@@ -240,8 +247,8 @@
                     onSuccess();
                 drawButtons();
             },
-            "bFilter": true,
-            "bPaginate": false,
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
+           
             "defaultContent": "",
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
             "order": [[1, "asc"]],
@@ -272,13 +279,14 @@
         $selRowContainer.append("<div id='crm-edit-information' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-information").bind("click", function () {
             if (selectedId != null) {
+               
                 $("#sign-text").prop("readonly", true);
                 $("#save-information-changes").attr("data-information", selectedId);
                 var $selectedTds = $("#information-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;
 
                 var $formInputs = $("#informationModal form").find(":input");
-                console.log($formInputs);
+               
 
                 var frmInpLen = $formInputs.length;
                 for (var i = 0; i < frmInpLen; i++) {
@@ -290,6 +298,8 @@
                         }
                     }
                 }
+                $('#author').selectpicker('refresh');
+                $('#type').selectpicker('refresh');
                 $("#save-information-changes").attr("data-information", selectedId);
                 $("#informationModal").appendTo("body").modal("show").draggable();
             }
@@ -310,13 +320,12 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                for (var j = 0; j < tdLen; j++) {
-                    var $currTD = $($selectedTds[j]);
-                    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "Type") {
-                        $currInput.val("");
-                    }
-                }
+                if (!$currInput.is('button') || !$currInput.is('input.date'))
+                    $currInput.val("");
+                
             }
+            $('#author').selectpicker('refresh');
+            $('#type').selectpicker('refresh');
         });
 
         $selRowContainer.append("<div id='delete-user-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
@@ -345,6 +354,7 @@
                                         updateDataTable();
                                         console.log("success");
                                         triggerAlert("Successfully deleted row", "success");
+                                        selectedId = null;
                                     }
                                     else {
                                         console.log("failure");
@@ -385,7 +395,7 @@
                 $td.parent().click(function () {
 
                     selectRow(this.firstChild);
-                    console.log("asd");
+                    
                 });
 
                 $td.html("<input type='radio' value=" + aData["_ID"] + " name='selected-contact' onClick=''/>");
@@ -400,7 +410,7 @@
             }
 
             if (name != "_ID") {
-                console.log(name);
+                
                 if (i < 7) {
                     
                     $td = $('td:eq(' + i + ')', nRow);
