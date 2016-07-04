@@ -22,7 +22,33 @@ namespace TietoCRM.Controllers.List_Management
             else
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames());
             this.ViewData.Add("Properties", typeof(view_Appointment).GetProperties());
+            ViewData.Add("Contacts", view_CustomerContact.getAllCustomerContacts().Where(c => ((List<String>)ViewData["Customers"]).Contains(c.Customer)));
             return View();
+        }
+
+        public static view_Appointment GetLastVisit(String customer)
+        {
+            List<view_Appointment> appointments = view_Appointment.getAllAppointments(customer);
+            view_Appointment lastVisit = null;
+            int i;
+            for(i = 0; i < appointments.Count; i++)
+            {
+                view_Appointment app = appointments[i];
+                if(app.Date >= DateTime.Now)
+                {
+                    if (i > 0)
+                    {
+                        lastVisit = appointments[i - 1];
+                        break;
+                    }
+                    else
+                        break;
+                }
+            }
+            if (lastVisit == null && i != 0)
+                lastVisit = appointments.Last();
+
+            return lastVisit;
         }
 
         public String AppointmentJsonData()
@@ -107,6 +133,11 @@ namespace TietoCRM.Controllers.List_Management
         {
             String customer = Request.Form["customer"];
             List<view_Appointment> vA = view_Appointment.getAllAppointments(customer).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
+            if(vA.Count > 0)
+            {
+                view_Appointment lastVisit = GetLastVisit(customer);
+                vA.Add(lastVisit);
+            }
 
             String jsonData = (new JavaScriptSerializer()).Serialize(vA);
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>

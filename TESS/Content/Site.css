@@ -226,7 +226,8 @@ ul.crm-info-list li.info-warning .panel-footer {
   width: 25%;
 }
 #crm-widget-refresh-all,
-#info-refresh-all {
+#info-refresh-all,
+.add-to-select {
   cursor: pointer;
 }
 .form-group label {

@@ -212,7 +212,16 @@
                         </tr>
                     </thead>
                     <tbody class="appointment-body">
-                        @foreach (TietoCRM.Models.view_Appointment app in ViewBag.Appointments)
+                        @{
+                            List<TietoCRM.Models.view_Appointment> appointments = ViewBag.Appointments;
+                            TietoCRM.Models.view_Appointment appt = null;
+                            if (appointments.Count > 0)
+                            {
+                                appt = appointments[appointments.Count - 1];
+                                appointments.RemoveAt(appointments.Count - 1);
+                            }
+                        }
+                        @foreach (TietoCRM.Models.view_Appointment app in appointments)
                         {
                             <tr>
                                 <td class='appointment-date'>@app.Date.ToString("yyyy-MM-dd HH:mm")</td>
@@ -221,6 +230,32 @@
                                 <td class='appointment-text'>@app.Text</td>
                                 <td class='appointment-contact-person'>@app.Contact_person</td>
                             </tr>
+                        }
+                    </tbody>
+                </table>
+                <h5>Last meeting with this customer</h5>
+                <table class="table table-striped table-bordered" id="appointment-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event type</th>
+                            <th>Title</th>
+                            <th>Text</th>
+                            <th>Contact person</th>
+                        </tr>
+                    </thead>
+                    <tbody id="last-appointment" class="appointment-body">
+                        @{
+                            if (appointments.Count > 0 && appt != null)
+                            {
+                                <tr>
+                                    <td class='appointment-date'>@appt.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                                    <td class='appointment-event-type'>@appt.Event_type</td>
+                                    <td class='appointment-title'>@appt.Title</td>
+                                    <td class='appointment-text'>@appt.Text</td>
+                                    <td class='appointment-contact-person'>@appt.Contact_person</td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
@@ -621,6 +656,12 @@
         $newRows.empty();
         $newRows.html("");
         $newRows.append("<tbody>");
+        var lastVisit;
+        if(json.length > 0){
+            lastVisit = json[json.length - 1];
+            json.splice(json.length - 1, 1);
+        }
+
         for(var i = 0; i < json.length; i++)
         {
             var appointment = json[i];
@@ -630,11 +671,27 @@
                                     <td class='appointment-event-type'>" + appointment.Event_type + "</td>         \
                                     <td class='appointment-title'>" + appointment.Title + "</td>         \
                                     <td class='appointment-text'>" + appointment.Text + "</td>         \
-                                    <td class='appointment-contact-person'>" + appointment.Contact_person + "</td> \
+                                    <td class='appointment-contact-person'>" + appointment.Contact_person + "</td>         \
                                 </tr>");
             $newRows.append($row);
         }
         $newRows.append("<tbody>");
+
+        $newRow = $("#last-appointment");
+        $newRow.empty();
+        $newRow.html("");
+        $newRow.append("<tbody>");
+        if(json.length > 0 && lastVisit != null){
+            var $row = $("<tr>                                                                                                \
+                        <td class='appointment-date'>" + lastVisit.Date + "</td>                                   \
+                        <td class='appointment-event-type'>" + lastVisit.Event_type + "</td>         \
+                        <td class='appointment-title'>" + lastVisit.Title + "</td>         \
+                        <td class='appointment-text'>" + lastVisit.Text + "</td>         \
+                        <td class='appointment-contact-person'>" + lastVisit.Contact_person + "</td>         \
+                    </tr>");
+            $newRow.append($row);
+        }
+        $newRow.append("<tbody>");
     }
 
     var openModal = function(){
