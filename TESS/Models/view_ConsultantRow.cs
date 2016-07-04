@@ -23,6 +23,9 @@ namespace TietoCRM.Models
         private bool? include_status;
         public bool? Include_status { get { return include_status; } set { include_status = value; } }
 
+        private String alias;
+        public String Alias { get { return alias; } set { alias = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -72,7 +75,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT Offer_number ,Code ,Amount ,Total_price ,Include_status ,CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ConsultantRow WHERE " + "Offer_number = @offerNumber";
+                command.CommandText = "SELECT Offer_number ,Code ,Amount ,Total_price ,Include_status, Alias, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ConsultantRow WHERE " + "Offer_number = @offerNumber";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
