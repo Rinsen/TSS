@@ -26,6 +26,12 @@ namespace TietoCRM.Controllers.List_Management
             });
             ViewData.Add("Properties", typeof(view_Information).GetProperties());
 
+            Dictionary<String, String> repNames = new Dictionary<String,String>();
+            foreach (view_User user in view_User.getAllUsers())
+            {
+                repNames.Add(user.Sign,user.Name);
+            }
+            ViewData.Add("Representatives", repNames);
 
             return View();
         }
@@ -40,6 +46,17 @@ namespace TietoCRM.Controllers.List_Management
                 dt = dt.AddMilliseconds(Convert.ToDouble(m.Groups[1].Value));
                 return dt.ToString("yyyy-MM-dd H:m:s");
             });
+        }
+
+        public string GetAllRepresentatives()
+        {
+            List<String> repNames = new List<string>();
+            foreach (view_User user in view_User.getAllUsers())
+            {
+                repNames.Add(user.Sign);
+            }
+
+            return (new JavaScriptSerializer()).Serialize(repNames);
         }
 
         public String SaveInformation()
