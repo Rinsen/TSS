@@ -24,6 +24,7 @@ namespace TietoCRM.Controllers.List_Management
                 "Created",
                 "Updated"
             });
+            ViewData.Add("Title", "Information Messages");
             ViewData.Add("Properties", typeof(view_Information).GetProperties());
 
             Dictionary<String, String> repNames = new Dictionary<String,String>();
@@ -124,7 +125,7 @@ namespace TietoCRM.Controllers.List_Management
         {
             try
             {
-                String ID = Request.Form["ID"];
+                String ID = Request.Form["_ID"];
                 view_Information a = new view_Information();
                 a.Delete("ID = " + ID);
             }
