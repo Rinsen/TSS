@@ -896,6 +896,9 @@ form#service-form .highlight-item-fade {
 #module-table tr.selected {
   background-color: lightblue;
 }
+#articles-table td {
+  word-break: break-all;
+}
 /*------------- Customer ---------------*/
 
 #customer-table tr.selected {
@@ -1097,4 +1100,7 @@ a.tooltips > span:after {
 #appointment-report-table th:nth-child(5) {
   font-size: 70%;
   width: 44% !important;
+}
+.dataTable tr.selected {
+  background-color: lightblue;
 }

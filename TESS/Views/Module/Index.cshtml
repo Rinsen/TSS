@@ -1,4 +1,4 @@
-﻿<table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+﻿<table draggable="true" id="@ViewBag.ControllerName-table" width="100%" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
         <tr>
             <th data-field="#" data-sortable="false">#</th>
@@ -354,14 +354,12 @@
     var updateDataTable = function()
     {
 
-        $@{@ViewBag.ControllerName}Table = $('#@ViewBag.ControllerName-table').DataTable({
+        var dt = $@{@ViewBag.ControllerName}Table = $('#@ViewBag.ControllerName-table').DataTable({
             "destroy": true,
             "processing": true,
-            //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax":"@Url.Content("~/Module/ModuleData/")",
             "defaultContent": "",
-            "bFilter": true,
-            "bPaginate": false,
+           
             "order": [[ 1, "asc" ]],
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
             "columns": [@Html.Raw(DataObject)
@@ -373,12 +371,14 @@
                     "targets": 0
                 }
             ],
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
             
             "bAutoWidth": false,
-            "scrollY": ($("#page-content-wrapper").height() - 90),
+            //"scrollY": ($("#page-content-wrapper").height() - 90),
             "scrollX": true,
             "fnRowCallback": drawCallBack
         });
+        dt.columns.adjust().draw();
         //var $selRowContainer = $('#module-table_wrapper').find('.col-sm-6').first();
     //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
     //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");

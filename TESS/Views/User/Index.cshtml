@@ -272,6 +272,7 @@
             "order": [[1, "asc"]],
             "columns": [@Html.Raw(DataObject)
             ],
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
             "columnDefs": [
                 {
                     "data": null,
@@ -437,9 +438,35 @@
                     continue;
                 }
 
+               
+
                 if (i < 12) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
+
+                    if (name == "User_level") {
+                        var titleString = "";
+                        var userLevel = aData[name];
+                        switch(userLevel)
+                        {
+                            case 0:
+                                titleString = "Supervisor";
+                                break;
+                            case 1:
+                                titleString = "Supervisor";
+                                break;
+                            case 2:
+                                titleString = "Salesperson";
+                                break;
+                            case 3:
+                                titleString = "Product owner";
+                                break;
+                            default:
+                                titleString = "Unspecified"
+                        }
+                        $td.attr("title", titleString);
+                    }
+                    
                     $td.html(String(aData[name]));
                 }
 
@@ -471,6 +498,7 @@
                 { "data": null, "defaultContent": "", "targets": 0 },
 
             ],
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
             //"scrollY": ($("#page-content-wrapper").height() - 170),
             //"scrollY": "600px",
             "scrollX": "1200px",
