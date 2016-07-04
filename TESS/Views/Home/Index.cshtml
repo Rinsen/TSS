@@ -1,11 +1,9 @@
 ﻿
-<div class="crm-overlay-backgorund-filter">
-    <div class="crm-overlay-background-image"></div>
-</div>
 <div class="row">
     <div class="col-md-6 crm-widget-dashboard">
         <div class="panel panel-default crm-widget-dashboard">
-            <div class="panel-heading">Counters 
+            <div class="panel-heading">
+                Counters
                 <span id="crm-widget-refresh-all" class="pull-right">
                     <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                 </span>
@@ -51,7 +49,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="panel panel-default crm-widget-dashboard">
             <div class="panel-heading">
                 Information Messages
@@ -74,6 +72,8 @@
     <div class="col-md-6 crm-widget-dashboard">
     </div>
 </div>
+
+
 <script>
     var handleLoadingIcon = function($widget, action)
     {
@@ -157,16 +157,16 @@
                     {
                         handleEmptyInfoMesg('hide');
                    
-                            $laodingContainer.hide();
-                            $(data).each(function () {
-                                var infoObj = this;
-                                var infoHtml = createInformationHtml(infoObj);
-                                $infoList.append(infoHtml);
-                                if (StatisticsRefresh) {
-                                    getAllStatistics();
-                                }
-                            })
-                    
+                        $laodingContainer.hide();
+                        $(data).each(function () {
+                            var infoObj = this;
+                            var infoHtml = createInformationHtml(infoObj);
+                            $infoList.append(infoHtml);
+                               
+                        })
+                        if (StatisticsRefresh) {
+                            getAllStatistics();
+                        }
                     }  
                 }, 500);
             },

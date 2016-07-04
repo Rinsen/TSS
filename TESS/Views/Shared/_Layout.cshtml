@@ -108,87 +108,10 @@
         </div>
     </div>
     <div id="wrapper" class="">
-        <div id="sidebar-wrapper">
-            <div class="nav-side-menu">
-                <div class="menu-list">
-                    <ul id="menu-content" class="menu-content collapse out">
-                        <div class="brand"></div>
-                        <li data-toggle="collapse" data-target="#products" class="collapsed">
-                            <a href="#">Basic information</a>
-                        </li>
-                        <ul class="sub-menu collapse" id="products">
-                            <li><a href="~/Module/">- Articles</a></li>
-                            <li><a href="~/Template/">- Templates</a></li>
-                            <li><a href="~/CustomerContact/">- Contact persons</a></li>
-                            <li><a href="~/Customer/">- Customers</a></li>
-                            <li><a href="~/Tariff/">- Tariff</a></li>
-                            <li><a href="~/Service/">- Services</a></li>
-                            @if (TietoCRM.Models.GlobalVariables.isAuthorized("Users"))
-                            {
-                            <li><a href="~/User/">- Users</a></li>
-                            }
-                            <li><a href="~/Population/">- Population levels</a></li>
-                            <li><a href="~/Price/">- Price category</a></li>
-                            <li><a href="~/Sector/">- System/Classification</a></li>
-                            <li><a href="~/Reminder/">- Reminders</a></li>
-                            <li><a href="~/Appointment/">- Appointment</a></li>
-                            @*<li><a href="#">List of value</a></li>*@
-                        </ul>
-                        <li data-toggle="collapse" data-target="#reports" class="collapsed">
-                            <a href="#"> Reports </a>
-                        </li>
-                        <ul class="sub-menu collapse" id="reports">
-                            <li><a href="~/CustomerProductReport/">- Customer products</a></li>
-                            <li><a href="~/CustomerMissingProductReport/">- "Missing" products</a></li>
-                            <li><a href="~/ContractSupervision/">- Supervision</a></li>
-                            <li><a href="~/ContractSoldProductsReport/">- Sold products</a></li>
-                            <li><a href="~/SaleReport/">- Sale report</a></li>
-                            <li><a href="~/ModuleReport/">- Module report</a></li>
-                            <li><a href="~/AppointmentReport/">- Appointment Report</a></li>
-                            <li><a href="~/ValidContractsReport/">- Valid Contracts Report</a></li>
-                            @*<li><a href="#">My contacts</a></li>
-                                <li><a href="#">Offer & Outturn </a></li>
-                                <li><a href="#">Product customers</a></li>
-                                <li><a href="#">Sold modules</a></li>*@
-                        </ul>
-                        @if(TietoCRM.Models.GlobalVariables.isAuthorized("CustomerOffer"))
-                            {
-                        <li data-toggle="collapse" data-target="#offers" class="collapsed">
-                            <a href="#"> Offers </a>
-                        </li>
-                        <ul class="sub-menu collapse" id="offers">
-                            <li><a href="~/CustomerOffer/">- Customer offers</a></li>
-                            @*<li><a href="#">Summary</a></li>*@
-                        </ul>
-                        }
-                        @if(TietoCRM.Models.GlobalVariables.isAuthorized("CustomerContract"))
-                        {
-                        <li data-toggle="collapse" data-target="#contracts" class="collapsed">
-                            <a href="#"> Contracts </a>
-                        </li>
-                        <ul class="sub-menu collapse" id="contracts">
+        @{ 
+            Html.RenderPartial("_Sidebar", null, new ViewDataDictionary(ViewData));
+        }
 
-                            <li><a href="~/CustomerContract/">- Customer contracts</a></li>
-                            <li><a href="~/ContractExpirationList/">- Expiration List</a></li>
-                            @*<li><a href="#">Customer visit</a></li>
-                            <li><a href="#">Modual closure</a></li>
-                            <li><a href="#">Summary</a></li>*@
-                        </ul>
-                        }
-                        <li data-toggle="collapse" data-target="#installations" class="collapsed">
-                            <a href="#"> Installations </a>
-                        </li>
-                        <ul class="sub-menu collapse" id="installations">
-                            <li><a href="~/Features/">- Features</a></li>
-
-                        </ul>
-                        <li class=" crm-close-menu active menu-toggle">
-                            <a href="#"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
         <!-- /#sidebar-wrapper -->
         <!-- Page Content -->
         <div id="page-content-wrapper">

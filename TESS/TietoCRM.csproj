@@ -333,6 +333,7 @@
     <Content Include="Content\DataTables\swf\flashExport.swf" />
     <Content Include="Content\ExpPdfStyle.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\img\bg2.jpg" />
     <Content Include="Content\img\crm-loading.gif" />
     <Content Include="Content\img\Signatures\AHD.png" />
     <Content Include="Content\img\Signatures\JAA.png" />
@@ -749,6 +750,7 @@
     <Content Include="Views\Information\Index.cshtml" />
     <Content Include="Views\ValidContractsReport\Index.cshtml" />
     <Content Include="Views\ValidContractsReport\Pdf.cshtml" />
+    <Content Include="Views\Shared\_Sidebar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
