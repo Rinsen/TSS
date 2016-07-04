@@ -342,3 +342,25 @@ var tinyDefaultPlugins = [
 var tinyDefaultToolbars = 'insertfile undo redo | styleselect         \
     | bold italic | alignleft aligncenter alignright alignjustify |   \
     bullist numlist outdent indent | fullscreen';
+
+/* Cookies */
+var bakeCRMCookie = function()
+{
+    var CRMSessionData = {
+        sites: [
+            {
+                location: "/Home/",
+                search: "",
+                selectedId: null
+            }   
+        ]
+    }
+    Cookies.set('CRMSessionData', CRMSessionData);
+    return CRMSessionData;
+}
+
+var appendCRMCookieWithCurrent = function()
+{
+    var currentCookie = typeof Cookies.get('CRMSessionData') !== undefined ? Cookies.get('CRMSessionData') : bakeCRMCookie();
+
+}
