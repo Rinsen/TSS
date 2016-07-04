@@ -13,7 +13,9 @@
     {
         <title>@ViewBag.Title</title>
     }
-
+    @{
+        var controllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    }
     <!-- Style section-->
     @Styles.Render("~/Content/css")
 
@@ -112,10 +114,15 @@
         @{ 
             Html.RenderPartial("_Sidebar", null, new ViewDataDictionary(ViewData));
         }
-
+       
         <!-- /#sidebar-wrapper -->
         <!-- Page Content -->
-        <div id="page-content-wrapper">
+        <div id="page-content-wrapper" 
+            @if (controllerName == "Home")
+            { 
+                @:class="bg"
+            } 
+        >
             <div class="container-fluid body-content">
                 <div class="crm-alert-message" id="crm-alert-message" data-fade="3000" data-alerts="alerts"></div>
                 @RenderBody()

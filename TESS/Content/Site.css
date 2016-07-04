@@ -118,27 +118,7 @@ ul.nav.navbar-nav ol.breadcrumb li a {
 ul.nav.navbar-nav ol.breadcrumb li.active span {
   color: white;
 }
-.crm-overlay-backgorund-filter {
-  opacity: 80%;
-  background-color: #c8c8c8;
-  position: initial;
-  top: 60px;
-  width: 100%;
-  height: 100%;
-  margin: -60px -30px;
-}
-.crm-overlay-background-image {
-  background: url("img/overlay-bg.jpg") no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: initial;
-}
-#page-content-wrapper {
+#page-content-wrapper.bg {
   background: url("img/bg2.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
