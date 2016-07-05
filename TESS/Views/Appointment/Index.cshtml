@@ -160,6 +160,29 @@
         $selectPicker.selectpicker("refresh");
     }
 
+    var updateContactPersons = function (customer) {
+        console.log("gogo");
+        $.ajax({
+            "url": "/Appointment/GetContacts/",
+            "type": "POST",
+            "data": {
+                "customer": customer,
+            },
+            "success": function (data) {
+                json = JSON.parse(data);
+                $contact = $("#contact_person");
+                console.log(json);
+                $contact.html("");
+                var max = json.length;
+                for (var i = 0; i < max; i++) {
+                    contact = json[i];
+                    $contact.append("<option value='" + contact.Contact_person + "'>" + contact.Contact_person + "</option>");
+                }
+                $contact.selectpicker("refresh");
+            }
+        });
+    }
+
     $(document).ready(function () {
         $("#date").datetimepicker({
             dateFormat: 'yy-mm-dd'
@@ -170,6 +193,11 @@
             }
         });
         $customerSelect = $("#customer");
+        $customerSelect.on('change', function () {
+            var selected = $(this).find("option:selected").val();
+            updateContactPersons(selected);
+        });
+        updateContactPersons($customerSelect.val());
         $customerSelect.selectpicker();
         
         $contactSelect = $("#contact_person");

@@ -52,6 +52,20 @@ namespace TietoCRM.Controllers.List_Management
             return lastVisit;
         }
 
+        public String GetContacts()
+        {
+            String customer = Request.Form["customer"];
+            List<view_CustomerContact> l = view_CustomerContact.getAllCustomerContacts(customer);
+            foreach (view_CustomerContact contact in l)
+            {
+                contact.Customer = System.Web.HttpUtility.HtmlEncode(contact.Customer);
+                contact.Contact_person = System.Web.HttpUtility.HtmlEncode(contact.Contact_person);
+                contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
+            }
+
+            return (new JavaScriptSerializer()).Serialize(l);
+        }
+
         public String AppointmentJsonData()
         {
             this.Response.ContentType = "text/plain";
