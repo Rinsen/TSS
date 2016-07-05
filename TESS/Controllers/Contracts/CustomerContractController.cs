@@ -204,7 +204,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
             }
 
-            oldArticles = oldArticles.OrderBy(a => a.Sortnr).ThenBy(a => a.Article_number).ToList();
+            oldArticles = oldArticles.OrderBy(a => a.Article_number).ToList();
             oldEducationPortals = oldEducationPortals.OrderBy(a => a.Article_number).ToList();
             remEducationPortals = remEducationPortals.OrderBy(a => a.Article_number).ToList();
 
@@ -910,8 +910,8 @@ namespace TietoCRM.Controllers.Contracts
                     Removed = cRow.Removed,
                     NewMod = cRow.New,
                 };
-
-                modules.Add(obj);
+                if(System.Web.HttpContext.Current.GetUser().Default_system == module.Area || System.Web.HttpContext.Current.GetUser().Default_system == "*")
+                    modules.Add(obj);
             }
 
             return (new JavaScriptSerializer()).Serialize(modules);
@@ -1309,7 +1309,7 @@ namespace TietoCRM.Controllers.Contracts
         public String GetModules()
         {
             String customer = Request.Form["customer"];
-            String System = Request.Form["System"];
+            String system = Request.Form["System"];
             String classification = Request.Form["classification"];
             String ctr = Request.Form["contracttype"];
 
@@ -1321,7 +1321,7 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Fixed_price, M.Comment, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Comment, C.Inhabitant_level 
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -1343,7 +1343,7 @@ namespace TietoCRM.Controllers.Contracts
                 command.CommandText = queryText;
 
                 command.Prepare();
-                command.Parameters.AddWithValue("@System", System);
+                command.Parameters.AddWithValue("@System", system);
                 command.Parameters.AddWithValue("@classification", classification);
                 command.Parameters.AddWithValue("@customer", customer);
 
@@ -1378,7 +1378,10 @@ namespace TietoCRM.Controllers.Contracts
                                 result["License"] = "0";
 
                             }
-                            resultList.Add(result);
+                            view_User user = System.Web.HttpContext.Current.GetUser();
+
+                            if (user.Default_system == result["Area"].ToString() || user.Default_system == "*")
+                                resultList.Add(result);
                         }
                     }
                 }

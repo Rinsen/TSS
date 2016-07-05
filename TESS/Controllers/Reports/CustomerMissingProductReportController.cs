@@ -40,13 +40,13 @@ namespace TietoCRM.Controllers
             HashSet<String> SystemNames = new HashSet<String>();
             foreach (view_CustomerMissingProductReport row in CustomerMissingProducts)
             {
-                SystemNames.Add(row.SortNo + "#" + row.System);
+                SystemNames.Add(row.Fixed_price + "#" + row.System);
             }
             List<String> OrderedSystemNames = SystemNames.ToList();
 
             OrderedSystemNames.Sort();
 
-            CustomerMissingProducts.OrderBy(m => m.SortNo).ThenBy(m => m.Classification).ThenBy(m => m.Status).ThenBy(m => m.Article_number);
+            CustomerMissingProducts.OrderBy(m => m.Classification).ThenBy(m => m.Status).ThenBy(m => m.Article_number);
 
             ViewData.Add("CustomerMissingProducts", CustomerMissingProducts);
             ViewData.Add("SystemNames", OrderedSystemNames);
@@ -68,7 +68,7 @@ namespace TietoCRM.Controllers
 
             List<view_CustomerMissingProductReport> ProductReportRows = view_CustomerMissingProductReport.getCustomerMissingProducts(customer);
 
-            ProductReportRows.OrderBy(m => m.SortNo).ThenBy(m => m.Classification).ThenBy(m => m.Status).ThenBy(m => m.Article_number);
+            ProductReportRows.OrderBy(m => m.Classification).ThenBy(m => m.Status).ThenBy(m => m.Article_number);
 
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_CustomerMissingProductReport cpr in ProductReportRows)

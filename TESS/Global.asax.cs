@@ -15,7 +15,12 @@ namespace TietoCRM.Extensions
     {
         public static view_User GetUser(this HttpContext current)
         {
-            return current != null ? (view_User)current.Session["__User"] : null;
+            if((view_User)current.Session["__User"] == null)
+            {
+                current.Session["__User"] = new view_User();
+                ((view_User)(current.Session["__User"])).Select("windows_user='" + System.Security.Principal.WindowsPrincipal.Current.Identity.Name + "'");
+            }
+            return (view_User)current.Session["__User"];
         }
         public static String GetUserRedirectUrl(this HttpContext current)
         {

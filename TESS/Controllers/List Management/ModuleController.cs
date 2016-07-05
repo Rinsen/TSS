@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Web.Security.AntiXss;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 
 namespace TietoCRM.Controllers
@@ -74,7 +75,7 @@ namespace TietoCRM.Controllers
         public String ModuleJsonData()
         {
             this.Response.ContentType = "text/plain";
-            List<view_Module> l = view_Module.getAllModules();
+            List<view_Module> l = view_Module.getAllModules().Where(m => System.Web.HttpContext.Current.GetUser().Default_system == m.Area || System.Web.HttpContext.Current.GetUser().Default_system == "*").ToList();
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
         }
 
