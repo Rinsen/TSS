@@ -7,6 +7,8 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
+using System.IO;
+
 namespace TietoCRM.Extensions
 {
     public static class Extensions
@@ -67,6 +69,18 @@ namespace TietoCRM
             }    
        }
 
-        
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception exception = Server.GetLastError();
+
+            view_Exception.UploadException(exception);
+
+            Server.ClearError();
+            Response.Redirect("/Error/Index");
+
+
+        }
+
+
     }
 }
