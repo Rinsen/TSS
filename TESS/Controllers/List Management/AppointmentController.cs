@@ -29,6 +29,7 @@ namespace TietoCRM.Controllers.List_Management
         public static view_Appointment GetLastVisit(String customer)
         {
             List<view_Appointment> appointments = view_Appointment.getAllAppointments(customer);
+            appointments.Sort((a, b) => DateTime.Compare(a.Date, b.Date));
             view_Appointment lastVisit = null;
             int i;
             for(i = 0; i < appointments.Count; i++)
