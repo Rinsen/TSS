@@ -95,11 +95,11 @@ namespace TietoCRM.Controllers.List_Management
             }
 
             view_Appointment appointment = new view_Appointment();
-            appointment.Customer = customer;
+            appointment.Customer = customer ?? "";
             appointment.Date = DateTime.Parse(map["Date"]);
             appointment.Event_type = map["Event_type"];
             appointment.Text = map["Text"];
-            appointment.Contact_person = map["Contact_person"];
+            appointment.Contact_person = map["Contact_person"] ?? "";
             appointment.Title = map["Title"];
             appointment.Insert();
 
@@ -125,14 +125,14 @@ namespace TietoCRM.Controllers.List_Management
                 DateTime dt = DateTime.Parse("2016-06-30");
                 String a = dt.ToString();
                 view_Appointment appointment = new view_Appointment();
-                appointment.Customer = map["Customer"];
+                appointment.Customer = map["Customer"] ?? "";
                 appointment.Date = DateTime.Parse(map["Date"]);
                 String b = appointment.Date.ToString();
                 appointment.Event_type = map["Event_type"];
                 appointment.Text = map["Text"];
                 appointment._ID = Int32.Parse(map["_ID"]);
                 appointment.Title = map["Title"];
-                appointment.Contact_person = map["Contact_person"];
+                appointment.Contact_person = map["Contact_person"] ?? null;
                 appointment.Update("ID=" + appointment._ID);
 
                 return "0";

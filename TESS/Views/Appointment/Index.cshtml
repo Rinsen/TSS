@@ -50,6 +50,7 @@
                                                             <option>Meeting</option>
                                                             <option>Online</option>
                                                             <option>Telephone</option>
+                                                            <option>User gathering</option>
                                                         </select>
                                                     }
                                                     else if (pi.Name == "Customer")
@@ -178,6 +179,10 @@
                     contact = json[i];
                     $contact.append("<option value='" + contact.Contact_person + "'>" + contact.Contact_person + "</option>");
                 }
+                if(json.length > 0)
+                    $contact.val(json[0].Contact_person);
+                else
+                    $contact.val("null");
                 $contact.selectpicker("refresh");
             }
         });
@@ -187,12 +192,16 @@
         $("#date").datetimepicker({
             dateFormat: 'yy-mm-dd'
         });
+        $event = $("#event_type");
+        $contactSelect = $("#contact_person");
+        $customerSelect = $("#customer");
+        $customerSelect.val("@ViewBag.Customers[0]");
+
         $("#save-appointment-changes").click(function () {
             if ($("#appointment-modal form").valid()) {
                 uploadToServer();
             }
         });
-        $customerSelect = $("#customer");
         $customerSelect.on('change', function () {
             var selected = $(this).find("option:selected").val();
             updateContactPersons(selected);
@@ -200,7 +209,6 @@
         updateContactPersons($customerSelect.val());
         $customerSelect.selectpicker();
         
-        $contactSelect = $("#contact_person");
         $contactSelect.selectpicker({
             noneResultsText: "No results found. <strong onclick='addToSelect(this)' class='add-to-select'>Add {0} to list</strong>"
         });
