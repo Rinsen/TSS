@@ -237,7 +237,7 @@ namespace TietoCRM.Controllers
                 }
             }
 
-            articles = articles.OrderBy(a => a.SortNr).ThenBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Article_number).ToList();
             educationPortals = educationPortals.OrderBy(a => a.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
@@ -592,7 +592,9 @@ namespace TietoCRM.Controllers
                     int id = Convert.ToInt32(dict["id"]);
                     int amount = Convert.ToInt32(dict["amount"]);
                     int total = Convert.ToInt32(dict["total"]);
-                    String alias = dict["desc"].ToString();
+                    String alias = "";
+                    if (dict.Keys.Contains("desc"))
+                        alias = dict["desc"].ToString();
 
                     view_ConsultantRow consultantRow = new view_ConsultantRow();
                     consultantRow.Offer_number = offer;
