@@ -327,8 +327,6 @@ function get_browser() {
     return M[0];
 }
 
-console.log(get_browser());
-
 var webkit = get_browser() == "Chrome" ||
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     get_browser() == "Opera";
@@ -343,24 +341,106 @@ var tinyDefaultToolbars = 'insertfile undo redo | styleselect         \
     | bold italic | alignleft aligncenter alignright alignjustify |   \
     bullist numlist outdent indent | fullscreen';
 
-/* Cookies */
-var bakeCRMCookie = function()
+function isJSONString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+/* CRMCookies Namespace */
+var CRMCookie = function()
 {
+    // Constructor
+    var _ic = Cookies.getJSON("CRMSessionData");
+    this.sites = _ic === undefined || _ic.sites === undefined ? this.bake().sites : _ic.sites;
+     
+}
+
+CRMCookie.prototype.bake = function () {
+    console.log("Baking, mmm");
     var CRMSessionData = {
-        sites: [
-            {
-                location: "/Home/",
-                search: "",
-                selectedId: null
-            }   
-        ]
+        sites: []
     }
     Cookies.set('CRMSessionData', CRMSessionData);
+
     return CRMSessionData;
 }
 
-var appendCRMCookieWithCurrent = function()
-{
-    var currentCookie = typeof Cookies.get('CRMSessionData') !== undefined ? Cookies.get('CRMSessionData') : bakeCRMCookie();
-
+CRMCookie.prototype.findSite = function (site) {
+    for (var i = 0; i < this.sites.length; i++) {
+        if (site == this.sites[i].location)
+            return i;
+    }
+    return -1;
 }
+
+CRMCookie.prototype.hasSite = function (site) {
+    if (this.findSite(site) != -1)
+        return true;
+    else
+        return false;
+}
+
+CRMCookie.prototype.updateCookie = function () {
+    Cookies.set('CRMSessionData', {
+        sites: this.sites
+    });
+}
+
+
+CRMCookie.prototype.getCurrentSiteName = function () {
+    return window.location.pathname.split('/')[1];
+}
+
+CRMCookie.prototype.getCurrentSite = function () {
+    // Make sure that the current site exists.
+    this.appendCurrentSite();
+
+    // Find the site and update its properties
+    var _siteID = this.findSite(this.getCurrentSiteName());
+    return this.sites[_siteID];
+}
+
+CRMCookie.prototype.appendCurrentSite = function () {
+    var currentSiteName = this.getCurrentSiteName();
+    if (!this.hasSite(currentSiteName)) {
+        this.sites.push({
+            location: currentSiteName,
+            search: undefined,
+            selectedId: undefined
+        });
+        return true;
+    }
+    else
+        return false;     
+}
+
+/*
+ * Update the current page with current search data and selected id.
+ * @param [string]  search filter string
+ * @param [int]     the id of the currently selected row
+ */
+CRMCookie.prototype.updateSite = function (search, selectedId) {
+    var _search = search === undefined ? null : search;
+    var _selectedId = selectedId === undefined ? null : selectedId;
+
+    // Make sure that the current site exists.
+    this.appendCurrentSite();
+
+    // Find the site and update its properties
+    var _siteID = this.findSite(this.getCurrentSiteName());
+    if(_search != null)
+        this.sites[_siteID].search = _search;
+    if(_selectedId != null)
+        if (isJSONString(_selectedId))
+            this.sites[_siteID].selectedId = JSON.parse(_selectedId);
+        else
+            this.sites[_siteID].selectedId = _selectedId;
+        
+    // Update the cookie
+    this.updateCookie();
+}
+

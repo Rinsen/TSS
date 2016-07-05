@@ -234,11 +234,29 @@
         $td.find("input").prop("checked", true);
 
         selectedId = $td.find("input").val();
+        StateCookie.updateSite(null, selectedId);
 
         $table.find("tr.selected").removeClass("selected");
 
         $row.addClass("selected");
     }
+
+    var handleStates = function(){
+        var stateSearch = StateCookie.getCurrentSite().search;
+        console.log(stateSearch);
+        var $searchBox = $("#customer-table_filter").find(":input");
+
+        if(stateSearch !== undefined)
+        {
+            $searchBox.val(String(stateSearch));
+            $searchBox.trigger($.Event("keyup", { keyCode: 13} ));
+        }  
+            
+        $searchBox.bind('keyup', function(){
+            StateCookie.updateSite($searchBox.val());
+        });
+    }
+
     $(document).ready(function () {
         var uniqueRowNumber = 0;
         var $delBtns;
@@ -254,7 +272,7 @@
         }
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}
 
-        var updateTable = function() {
+        var updateTable = function(onSuccess) {
             $@{@ViewBag.ControllerName}Table = $('#@ViewBag.ControllerName-table').DataTable({
                 "destroy": true,
                 "processing": true,
@@ -267,6 +285,10 @@
                 "columnDefs": [
                     {"data": null,"defaultContent": "","targets": 0}
                 ],
+                "initComplete": function(settings, json) {
+                    if(typeof onSuccess != "undefined")
+                        onSuccess();
+                },
                 "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
                 "scrollY": ($("#page-content-wrapper").height() - 10),
                 "scrollX": true,
@@ -282,6 +304,9 @@
                     //    j++;
                     //}
                     j = 0;
+
+                    var StateSelId = StateCookie.getCurrentSite().selectedId;
+
                     for (var name in aData) {
                         var $td;
                         if (i == 0) {
@@ -293,7 +318,7 @@
                             });
                             $td.addClass("radios");
                             $td.html("<input value='" + aData["Customer"] + "' type='radio' name='selected-contact' onClick=''/>");
-                            if($td.parent().hasClass("selected") && $td.find("input").val() == selectedId){
+                            if($td.find("input").val() == StateSelId){
                                 selectRow($td);
                             }
                             else if($td.parent().hasClass("selected") && $td.find("input").val() != selectedId){
@@ -363,7 +388,7 @@
             "success": function(data){
                 $(document).trigger("clear-alerts");
                 if(data > 0){
-                    updateTable();
+                    updateTable(handleStates);
                     drawButtons();
                     addButonListeners();
                     $("#customer-modal").modal("hide");
@@ -501,7 +526,7 @@
         });
     }
 
-    updateTable();
+    updateTable(handleStates);
     drawButtons();
     addButonListeners();
 

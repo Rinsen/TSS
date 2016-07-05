@@ -782,6 +782,7 @@
         selectedId = $td.find("input").val();
         if(selectedId !== null)
             generateSelectedOffer($row);
+        StateCookie.updateSite(null, selectedId);
         $table.find("tr.selected").removeClass("selected");
         $row.addClass("selected");
         var $selRowContainer = $("#CustomerOffer-table_wrapper").find(".row").first().find(".col-sm-6").first();
@@ -832,6 +833,22 @@
             $selRowContainer.find("#crm-delete-offer").remove();
         }
     }
+
+    var handleStates = function () {
+        var stateSearch = StateCookie.getCurrentSite().search;
+        console.log(stateSearch);
+        var $searchBox = $("#CustomerOffer-table_filter").find(":input");
+
+        if (stateSearch !== undefined) {
+            $searchBox.val(String(stateSearch));
+            $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
+        }
+
+        $searchBox.bind('keyup', function () {
+            StateCookie.updateSite($searchBox.val());
+        });
+    }
+
     var generateSelectedOffer = function($selectedRow){
         selectedOffer.Customer = $selectedRow.find('[data-property="Customer"]').html();
         selectedOffer.Offer_number = $selectedRow.find('[data-property="Offer_number"]').html();
@@ -844,6 +861,7 @@
     var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
         var i = 0, j = 0;
+        var StateSelId = StateCookie.getCurrentSite().selectedId;
         var insertValue;
         var selectOptions = "@Html.Raw(HttpUtility.JavaScriptStringEncode((new System.Web.Script.Serialization.JavaScriptSerializer()).Serialize( ViewBag.SelectOfferStatus)))";
         var selectArr = JSON.parse(selectOptions);
@@ -871,7 +889,7 @@
 
                 });
                 $td.html("<input type='radio' value='" + aData["Offer_number"] + "' name='selected-offer' onClick=''/>");
-                if ($td.parent().hasClass("selected") && $td.find("input").val() == selectedId) {
+                if ($td.find("input").val() == StateSelId) {
                     selectRow($td);
                 }
                 else if ($td.parent().hasClass("selected") && $td.find("input").val() != selectedId) {
@@ -921,6 +939,7 @@
             "initComplete": function(settings, json) {
                 if(typeof onSuccess != "undefined")
                     onSuccess();
+                handleStates();
             },
             "defaultContent": "",
             "bPaginate": false,
@@ -1220,7 +1239,7 @@
             @Html.Raw("$input.val('" + Request["search"] + "');");
             $input.trigger($.Event("keyup", { keyCode: 13} ));
 
-            });
+       });
 
 
 

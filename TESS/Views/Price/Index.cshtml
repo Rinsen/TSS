@@ -167,9 +167,26 @@
 
         selectedId = $td.find("input").val();
 
+        StateCookie.updateSite(null, selectedId);
+
         $table.find("tr.selected").removeClass("selected");
 
         $row.addClass("selected");
+    }
+
+    var handleStates = function () {
+        var stateSearch = StateCookie.getCurrentSite().search;
+        console.log(stateSearch);
+        var $searchBox = $("#price-table_filter").find(":input");
+
+        if (stateSearch !== undefined) {
+            $searchBox.val(String(stateSearch));
+            $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
+        }
+
+        $searchBox.bind('keyup', function () {
+            StateCookie.updateSite($searchBox.val());
+        });
     }
 
     @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
@@ -192,6 +209,7 @@
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
                     onSuccess();
+                handleStates();
                 drawButtons();
             },
             "defaultContent": "",
@@ -329,6 +347,9 @@
 
         var i = 0, j = 0;
         var insertValue;
+
+        var StateSelId = StateCookie.getCurrentSite().selectedId;
+
         for (var name in aData) {
 
             var i = 0;
@@ -349,7 +370,7 @@
                     });
                     $td.html("<input style='margin-top: -1px; vertical-align: top' type='radio' value=" + aData["ID_PK"] + " name='selected-contact' onClick=''/>");
                     $td.addClass("radios");
-                    if ($td.find("input").val() == selectedId) {
+                    if ($td.find("input").val() == StateSelId) {
                         selectRow($td);
                     }
                     else if ($td.find("input").val() != selectedId) {
@@ -380,6 +401,7 @@
                 "url": "/price/priceJsonData/",
             },
             "initComplete": function (settings, json) {
+                handleStates();
                 drawButtons();
             },
             "defaultContent": "",

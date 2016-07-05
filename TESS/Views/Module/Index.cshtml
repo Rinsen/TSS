@@ -141,11 +141,30 @@
 
         selectedId = $td.find("input").val();
 
+        
+        StateCookie.updateSite(null, selectedId);
+
         $table.find("tr.selected").removeClass("selected");
 
         $row.addClass("selected");
         $td.find("input").prop("checked", "true");
 
+    }
+
+    var handleStates = function(){
+        var stateSearch = StateCookie.getCurrentSite().search;
+        console.log(stateSearch);
+        var $searchBox = $("#module-table_filter").find(":input");
+
+        if(stateSearch !== undefined)
+        {
+            $searchBox.val(String(stateSearch));
+            $searchBox.trigger($.Event("keyup", { keyCode: 13} ));
+        }  
+            
+        $searchBox.bind('keyup', function(){
+            StateCookie.updateSite($searchBox.val());
+        });
     }
 
     $(document).ready(function () {
@@ -168,8 +187,14 @@
         }
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}
 
-        updateDataTable();
+        
+
+        updateDataTable(handleStates);
+
         drawButtons();
+
+        $.bind()
+
         // Filter columns DISABLED for now.
 
         //var colvis = new $.fn.dataTable.ColVis($@{@ViewBag.ControllerName}Table);
@@ -351,7 +376,7 @@
         ]);
     }
 
-    var updateDataTable = function()
+    var updateDataTable = function(onSuccess)
     {
 
 
@@ -365,6 +390,10 @@
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
             "columns": [@Html.Raw(DataObject)
             ],
+            "initComplete": function(settings, json) {
+                if(typeof onSuccess != "undefined")
+                    onSuccess();
+            },
             "aoColumnDefs": [
                 {
                     "data": null,
@@ -391,6 +420,7 @@
 
         var i = 0, j = 0;
 
+        var StateSelid = StateCookie.getCurrentSite().selectedId;
 
         for (var name in aData) {
             var $td;
@@ -408,7 +438,7 @@
                 $td.addClass("radios");
                 $td.html("<input type='radio' value='" + aData["Article_number"] + "' name='selected-contact' onClick=''/>");
 
-                if( $td.find("input").val() == selectedId){
+                if( $td.find("input").val() == StateSelid){
 
                     selectRow($($td));
 
@@ -500,7 +530,7 @@
                 "success": function (data) {
                     if (data > 0) {
                         console.log("success");
-                        updateDataTable();
+                        updateDataTable(handleStates);
                         drawButtons();
                         triggerAlert("Successfully updated", "success");
                         $("#save-module-changes").removeAttr("data-Article-number");
@@ -547,7 +577,7 @@
 
 
                         console.log("success");
-                        updateDataTable();
+                        updateDataTable(handleStates);
                         drawButtons();
                         triggerAlert("Successfully added", "success");
                         $("#moduleModal").modal("toggle");

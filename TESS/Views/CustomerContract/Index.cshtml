@@ -919,6 +919,7 @@
             selectedId = $td.find("input").val();
             if(selectedId !== null)
                 generateSelectedContract($row);
+            StateCookie.updateSite(null, selectedId);
             $table.find("tr.selected").removeClass("selected");
             $row.addClass("selected");
 
@@ -971,6 +972,21 @@
             }
         }
 
+        var handleStates = function () {
+            var stateSearch = StateCookie.getCurrentSite().search;
+            console.log(stateSearch);
+            var $searchBox = $("#CustomerContract-table_filter").find(":input");
+
+            if (stateSearch !== undefined) {
+                $searchBox.val(String(stateSearch));
+                $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
+            }
+
+            $searchBox.bind('keyup', function () {
+                StateCookie.updateSite($searchBox.val());
+            });
+        }
+
         var generateSelectedContract = function($selectedRow){
             selectedContract.Contract_id = $selectedRow.find("td:nth-child(2)").html();
             selectedContract.Customer = $selectedRow.find('[data-data="Customer"]').html();
@@ -997,7 +1013,7 @@
 
             var i = 0, j = 0;
             var insertValue;
-
+            var StateSelId = StateCookie.getCurrentSite().selectedId;
             for (var name in aData) {
 
                 var $td;
@@ -1014,7 +1030,7 @@
 
                     var object = {Contract_id: aData["Contract_id"], Customer: aData["Customer"]}
                     $td.html("<input type='radio' value='" + aData["Contract_id"] + "' name='selected-contract' onClick=''/>");
-                    if ($td.parent().hasClass("selected") && $td.find("input").val() == selectedId) {
+                    if ($td.find("input").val() == StateSelId) {
                         selectRow($td);
                     }
                     else if ($td.parent().hasClass("selected") && $td.find("input").val() != selectedId) {
@@ -1065,6 +1081,7 @@
                 "initComplete": function(settings, json) {
                     if(typeof onSuccess != "undefined")
                         onSuccess();
+                    handleStates();
                 },
                 "defaultContent": "",
                 "bPaginate": false,

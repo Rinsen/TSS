@@ -255,10 +255,25 @@
         $td.find("input").prop("checked", true);
 
         selectedId = $td.find("input").val();
+        StateCookie.updateSite(null, selectedId);
 
         $table.find("tr.selected").removeClass("selected");
 
         $row.addClass("selected");
+    }
+    var handleStates = function () {
+        var stateSearch = StateCookie.getCurrentSite().search;
+        console.log(stateSearch);
+        var $searchBox = $("#Reminder-table_filter").find(":input");
+
+        if (stateSearch !== undefined) {
+            $searchBox.val(String(stateSearch));
+            $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
+        }
+
+        $searchBox.bind('keyup', function () {
+            StateCookie.updateSite($searchBox.val());
+        });
     }
 
     @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
@@ -273,7 +288,7 @@
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function (onSuccess) {
         var defSystem = "@ViewBag.DefaultSystem";
-        getIndexData(defSystem);
+        getIndexData(defSystem, handleStates);
         var $selRowContainer = $("#Reminder-table_length");
         //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
         //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
@@ -423,6 +438,8 @@
             var i = 0;
             var insertValue;
 
+            var StateSelId = StateCookie.getCurrentSite().selectedId;
+
             for (var name in aData) {
                 var $td;
 
@@ -437,7 +454,7 @@
                     });
                     $td.html("<input type='radio' value=" + aData["ID_PK"] + " name='selected-contact' onClick=''/>");
                     $td.addClass("radios");
-                    if ($td.find("input").val() == selectedId) {
+                    if ($td.find("input").val() == StateSelId) {
                         selectRow($td);
                     }
                     else if ($td.find("input").val() != selectedId) {
@@ -461,10 +478,10 @@
 
     $('document').ready(function () {
         var defSystem = "@ViewBag.DefaultSystem";
-        getIndexData(defSystem);
+        getIndexData(defSystem, handleStates);
     });
 
-    var getIndexData = function (defSys) {
+    var getIndexData = function (defSys, onSuccess) {
         $('#Reminder-table').DataTable({
             "destroy": true,
             "processing": true,
@@ -476,6 +493,8 @@
                 }
             },
             "initComplete": function (settings, json) {
+                if (typeof onSuccess != "undefined")
+                    onSuccess();
                 drawButtons();
             },
             "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
@@ -488,7 +507,7 @@
                     "defaultContent": "",
                     "width": "20px",
                     "targets": 0
-                },
+                }@*,
                 {
                     "width": "100px",
                     "targets": [1, 6]
@@ -509,7 +528,7 @@
                 {
                     "width": "50px",
                     "targets": [7, 8]
-                },
+                },*@
             ],
             "scrollY": ($("#page-content-wrapper").height() - 170),
             "scrollX": true,

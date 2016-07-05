@@ -138,7 +138,7 @@
             "success": function (data) {
                 if (data > 0) {
                     triggerAlert("Successfully deleted", "success");
-                    updateDataTable();
+                    updateDataTable(handleStates);
                     console.log("success");
                 }
                 else {
@@ -187,7 +187,7 @@
                         data.Email = person.Email;
                         selectedId = JSON.stringify(data);
 
-                        updateDataTable();
+                        updateDataTable(handleStates);
                         triggerAlert("Successfully updated", "success");
                         console.log("success");
                         $("#contactModal").modal("toggle");
@@ -227,7 +227,7 @@
                         data.Email = person.Email;
                         selectedId = JSON.stringify(data);
 
-                        updateDataTable();
+                        updateDataTable(handleStates);
                         triggerAlert("Successfully added", "success");
                         console.log("success");
                         $("#contactModal").modal("toggle");
@@ -258,10 +258,28 @@
 
         selectedId = $td.find("input").val();
 
+        StateCookie.updateSite(null, selectedId);
+
         $table.find("tr.selected").removeClass("selected");
 
         $row.addClass("selected");
     }
+
+    var handleStates = function () {
+        var stateSearch = StateCookie.getCurrentSite().search;
+        console.log(stateSearch);
+        var $searchBox = $("#contact-table_filter").find(":input");
+
+        if (stateSearch !== undefined) {
+            $searchBox.val(String(stateSearch));
+            $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
+        }
+
+        $searchBox.bind('keyup', function () {
+            StateCookie.updateSite($searchBox.val());
+        });
+    }
+
 
     @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
@@ -381,6 +399,7 @@
 
         var i = 0, j = 0;
         var insertValue;
+        var StateSelId = JSON.stringify(StateCookie.getCurrentSite().selectedId);
         for (var name in aData) {
 
             var i = 0;
@@ -400,7 +419,7 @@
                     });
                     var object = {Contact_person: aData["Contact_person"], Customer: aData["Customer"], Email: aData["Email"]}
                     $td.html("<input type='radio' value='" + JSON.stringify(object) + "' name='selected-contact' onClick=''/>");
-                    if ($td.find("input").val() == selectedId) {
+                    if ($td.find("input").val() == StateSelId) {
                         selectRow($td);
                     }
                     else if ($td.find("input").val() != selectedId) {
@@ -436,8 +455,10 @@
             },
             "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
             "initComplete": function (settings, json) {
+                handleStates();
                 drawButtons();
             },
+           
             "defaultContent": "",
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
             "order": [[1, "asc"]],
