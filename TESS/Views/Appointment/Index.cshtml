@@ -50,6 +50,7 @@
                                                             <option>Meeting</option>
                                                             <option>Online</option>
                                                             <option>Telephone</option>
+                                                            <option>User gathering</option>
                                                         </select>
                                                     }
                                                     else if (pi.Name == "Customer")
@@ -160,19 +161,54 @@
         $selectPicker.selectpicker("refresh");
     }
 
+    var updateContactPersons = function (customer) {
+        console.log("gogo");
+        $.ajax({
+            "url": "/Appointment/GetContacts/",
+            "type": "POST",
+            "data": {
+                "customer": customer,
+            },
+            "success": function (data) {
+                json = JSON.parse(data);
+                $contact = $("#contact_person");
+                console.log(json);
+                $contact.html("");
+                var max = json.length;
+                for (var i = 0; i < max; i++) {
+                    contact = json[i];
+                    $contact.append("<option value='" + contact.Contact_person + "'>" + contact.Contact_person + "</option>");
+                }
+                if(json.length > 0)
+                    $contact.val(json[0].Contact_person);
+                else
+                    $contact.val("null");
+                $contact.selectpicker("refresh");
+            }
+        });
+    }
+
     $(document).ready(function () {
         $("#date").datetimepicker({
             dateFormat: 'yy-mm-dd'
         });
+        $event = $("#event_type");
+        $contactSelect = $("#contact_person");
+        $customerSelect = $("#customer");
+        $customerSelect.val("@ViewBag.Customers[0]");
+
         $("#save-appointment-changes").click(function () {
             if ($("#appointment-modal form").valid()) {
                 uploadToServer();
             }
         });
-        $customerSelect = $("#customer");
+        $customerSelect.on('change', function () {
+            var selected = $(this).find("option:selected").val();
+            updateContactPersons(selected);
+        });
+        updateContactPersons($customerSelect.val());
         $customerSelect.selectpicker();
         
-        $contactSelect = $("#contact_person");
         $contactSelect.selectpicker({
             noneResultsText: "No results found. <strong onclick='addToSelect(this)' class='add-to-select'>Add {0} to list</strong>"
         });

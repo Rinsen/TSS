@@ -37,8 +37,8 @@ namespace TietoCRM.Models
         private int maintenance;
         public int Maintenance { get; set; }
 
-        private decimal sortNo;
-        public decimal SortNo { get; set; }
+        private decimal fixed_price;
+        public decimal Fixed_price { get; set; }
 
         public view_CustomerMissingProductReport()
             : base("CustomerMissingProductReport")
@@ -57,7 +57,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT * FROM " + databasePrefix + "CustomerProductsMissing Where Customer = @customer Order By sortno, classification, status, article_number";
+                String query = "SELECT * FROM " + databasePrefix + "CustomerProductsMissing Where Customer = @customer Order By Fixed_price, classification, status, article_number";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

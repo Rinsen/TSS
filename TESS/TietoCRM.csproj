@@ -168,11 +168,13 @@
     <Compile Include="Controllers\List Management\ModuleController.cs" />
     <Compile Include="Controllers\List Management\TariffController.cs" />
     <Compile Include="Controllers\Reports\ModuleReportController.cs" />
+    <Compile Include="Controllers\Reports\ProductReportController.cs" />
     <Compile Include="Controllers\Reports\SaleReportController.cs" />
     <Compile Include="Controllers\Reports\ValidContractsReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\view_Exception.cs" />
     <Compile Include="Models\FileLocationMapping.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\view_Appointment.cs" />
@@ -752,9 +754,12 @@
     <Content Include="Views\ValidContractsReport\Index.cshtml" />
     <Content Include="Views\ValidContractsReport\Pdf.cshtml" />
     <Content Include="Views\Shared\_Sidebar.cshtml" />
+    <Content Include="Views\ProductReport\Index.cshtml" />
+    <Content Include="Views\ProductReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Product\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

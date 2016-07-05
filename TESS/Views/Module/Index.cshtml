@@ -75,10 +75,7 @@
                     <div class="form-group">
                         <label for="fixed-price2" class="col-sm-2 control-label">Fixed price</label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="Fixed_price" id="fixed-price2">
-                                <option selected value="true">True</option>
-                                <option value="false">False</option>
-                            </select>
+                            <input id="fixed-price2" data-id="fixed-price2" name="Fixed_price" type="checkbox" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -306,7 +303,7 @@
                     $currInput.val("false");
                 }
                 else if ($currInput.prop("id") == "fixed-price2") {
-                    $currInput.val("true");
+                    $currInput.val("false");
                 }
                 else {
                     $currInput.val("");
@@ -337,7 +334,7 @@
                             var $currTD = $($selectedTds[j]);
                             if($currTD.data("property") == $currInput.attr("name")){
                                 var name = $currInput.attr("name");
-                                if (name == "Discount_type" || name == "Multiple_type" || name == "Expired") {
+                                if (name == "Discount_type" || name == "Multiple_type" || name == "Expired" || name == "Fixed_price") {
                                     if ($currTD.html() == "true") {
                                         $currInput.prop("checked", true);
                                     }
@@ -483,7 +480,6 @@
             "type": "POST",
             "data": {
                 "System": System,
-
             },
             "success": function (data) {
                 if (data.length > 0) {
@@ -491,7 +487,13 @@
                     var classificationsLen = Object.keys(classifications).length;
                     $classificationSelect.empty();
                     for(var i = 0 ; i < classificationsLen ; i++){
-                        $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
+                        if(classifications[i] == "Modul"){
+                            $classificationSelect.append($("<option></option>").attr("value",classifications[i]).attr("selected","selected").html(classifications[i]));
+                        }
+                        else{
+                            $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
+                        }
+
                     }
                     if(typeof onSuccess != "undefined")
                         onSuccess();

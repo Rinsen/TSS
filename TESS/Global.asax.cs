@@ -7,13 +7,20 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
+using System.IO;
+
 namespace TietoCRM.Extensions
 {
     public static class Extensions
     {
         public static view_User GetUser(this HttpContext current)
         {
-            return current != null ? (view_User)current.Session["__User"] : null;
+            if((view_User)current.Session["__User"] == null)
+            {
+                current.Session["__User"] = new view_User();
+                ((view_User)(current.Session["__User"])).Select("windows_user='" + System.Security.Principal.WindowsPrincipal.Current.Identity.Name + "'");
+            }
+            return (view_User)current.Session["__User"];
         }
         public static String GetUserRedirectUrl(this HttpContext current)
         {
@@ -67,6 +74,18 @@ namespace TietoCRM
             }    
        }
 
-        
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception exception = Server.GetLastError();
+
+            view_Exception.UploadException(exception);
+
+            Server.ClearError();
+            Response.Redirect("/Error/Index");
+
+
+        }
+
+
     }
 }

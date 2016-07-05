@@ -307,6 +307,10 @@ Konsulttjänster
             // Fetch Service from DB
             view_Service Service = new view_Service();
             Service.Select("Code = " + cr.Code);
+            if (!String.IsNullOrEmpty(cr.Alias))
+            {
+                Service.Description = cr.Alias;
+            }
 
             // Calculate total sums
             ServicesTotal += Convert.ToDecimal(cr.Total_price);

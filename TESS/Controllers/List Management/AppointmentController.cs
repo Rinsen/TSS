@@ -29,6 +29,7 @@ namespace TietoCRM.Controllers.List_Management
         public static view_Appointment GetLastVisit(String customer)
         {
             List<view_Appointment> appointments = view_Appointment.getAllAppointments(customer);
+            appointments.Sort((a, b) => DateTime.Compare(a.Date, b.Date));
             view_Appointment lastVisit = null;
             int i;
             for(i = 0; i < appointments.Count; i++)
@@ -49,6 +50,20 @@ namespace TietoCRM.Controllers.List_Management
                 lastVisit = appointments.Last();
 
             return lastVisit;
+        }
+
+        public String GetContacts()
+        {
+            String customer = Request.Form["customer"];
+            List<view_CustomerContact> l = view_CustomerContact.getAllCustomerContacts(customer);
+            foreach (view_CustomerContact contact in l)
+            {
+                contact.Customer = System.Web.HttpUtility.HtmlEncode(contact.Customer);
+                contact.Contact_person = System.Web.HttpUtility.HtmlEncode(contact.Contact_person);
+                contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
+            }
+
+            return (new JavaScriptSerializer()).Serialize(l);
         }
 
         public String AppointmentJsonData()
@@ -80,11 +95,11 @@ namespace TietoCRM.Controllers.List_Management
             }
 
             view_Appointment appointment = new view_Appointment();
-            appointment.Customer = customer;
+            appointment.Customer = customer ?? "";
             appointment.Date = DateTime.Parse(map["Date"]);
             appointment.Event_type = map["Event_type"];
             appointment.Text = map["Text"];
-            appointment.Contact_person = map["Contact_person"];
+            appointment.Contact_person = map["Contact_person"] ?? "";
             appointment.Title = map["Title"];
             appointment.Insert();
 
@@ -110,14 +125,14 @@ namespace TietoCRM.Controllers.List_Management
                 DateTime dt = DateTime.Parse("2016-06-30");
                 String a = dt.ToString();
                 view_Appointment appointment = new view_Appointment();
-                appointment.Customer = map["Customer"];
+                appointment.Customer = map["Customer"] ?? "";
                 appointment.Date = DateTime.Parse(map["Date"]);
                 String b = appointment.Date.ToString();
                 appointment.Event_type = map["Event_type"];
                 appointment.Text = map["Text"];
                 appointment._ID = Int32.Parse(map["_ID"]);
                 appointment.Title = map["Title"];
-                appointment.Contact_person = map["Contact_person"];
+                appointment.Contact_person = map["Contact_person"] ?? null;
                 appointment.Update("ID=" + appointment._ID);
 
                 return "0";

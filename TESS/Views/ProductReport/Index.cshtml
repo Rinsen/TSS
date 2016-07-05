@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12">
+        <form method="get" action="~/ProductReport/Pdf" target="_blank" class="form-inline">
+            <button style="margin-top: 1.7em;" class="btn btn-default" type="submit">PDF</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="article_number" data-sortable="true">Article number</th>
+                    <th data-field="name" data-sortable="true">Name</th>
+                    <th data-field="system" data-sortable="true">System</th>
+                    <th data-field="classification" data-sortable="true">Classification</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script>
+    @{String DataObject = "\r\n";}
+    @{
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "article_number" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "name" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "system" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "classification" + "\"  },\r\n";
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function()
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bPaginate": false,
+            "ajax": {
+                "url": "/ProductReport/Products/",
+                "type": "POST",
+
+            },
+            "defaultContent": "",
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+    $('document').ready(function () {
+
+        updateDataTable();
+
+    });
+
+    </script>
+</row>

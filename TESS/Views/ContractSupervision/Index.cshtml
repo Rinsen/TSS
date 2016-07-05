@@ -9,7 +9,14 @@
                 <select style="width:100px; " id="user-select" class="form-control selectpicker" data-live-search="true">
                     @foreach (TietoCRM.Models.view_User user in ViewBag.Users)
                     {
-                        <option value="@user.Sign">@user.Name</option>
+                        if (System.Web.HttpContext.Current.GetUser().Sign == user.Sign)
+                        {
+                            <option selected value="@user.Sign">@user.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@user.Sign">@user.Name</option>
+                        }
                     }
                 </select>
             </div>
