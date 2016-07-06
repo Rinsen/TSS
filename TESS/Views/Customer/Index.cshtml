@@ -30,7 +30,7 @@
                             <div class="form-group">
                                 <label for="representative-select" class="col-sm-3 control-label">Representative</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" name="Representative" id="representative-select">
+                                    <select class="form-control" name="Representative" id="representative-select" multiple data-live-search="true">
                                         @foreach (view_User User in ViewBag.Representatives)
                                         {
                                             <option value="@User.Sign">@User.Name</option>
@@ -258,6 +258,9 @@
     }
 
     $(document).ready(function () {
+
+        $('#representative-select').selectpicker();
+
         var uniqueRowNumber = 0;
         var $delBtns;
 
@@ -356,15 +359,20 @@
         for(var i = 0; i < formInputsLen; i++){
             var $currentInput = $($formInputs[i]);
             var currentProp = $currentInput.attr("name");
-            if(currentProp == "County" || currentProp == "Municipality")
+            if(!$currentInput.is(':button') && typeof currentProp != 'undefined')
             {
-                if($currentInput.val().length <= 0)
-                    customerData[currentProp] = 0;
-                else
+                console.log($currentInput + " " + currentProp);
+                if(currentProp == "County" || currentProp == "Municipality")
+                {
+                    if($currentInput.val().length <= 0)
+                        customerData[currentProp] = 0;
+                    else
+                        customerData[currentProp] = $currentInput.val();
+                } else {
                     customerData[currentProp] = $currentInput.val();
-            } else {
-                customerData[currentProp] = $currentInput.val();
+                }
             }
+            
 
         }
         // Control if to update or insert
@@ -464,7 +472,8 @@
         // Remove old saveCustomerInformation() binding and add a new one.
         //$("#customer-modal form").validate();
         //$("#save-customer-changes").unbind("click");
-
+        
+        $('#representative-select').selectpicker('refresh');
 
         $("#save-customer-changes").unbind("click");
         $("#save-customer-changes").bind("click", function(){
