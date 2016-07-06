@@ -19,11 +19,7 @@
                 <th data-field="#" data-sortable="false">#</th>
                 @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
                 {
-                    if(ViewBag.SkipProperties.Contains(property.Name))
-                    {
-                        continue; 
-                    }
-                    if (@property.Name != "SSMA_timestamp" && !property.Name.StartsWith("_") && @property.Name != "Customer")
+                    if (!property.Name.StartsWith("_") && @property.Name != "Customer" && !ViewBag.SkipProperties.Contains(property.Name))
                     {
                         String PropertyName = property.Name.Replace("_", " ");
                         <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
@@ -226,14 +222,16 @@
                                 int count = 0;
                                 foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                                 {
-                                    if (pi.Name != "SSMA_timestamp" && pi.Name != "Sign" && !pi.Name.StartsWith("_") && pi.Name != "Contract_id" && pi.Name != "Created" && pi.Name != "Updated" && pi.Name != "Resigned_contract")
+                                    if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_") 
+                                        && !ViewBag.SkipProperties.Contains(pi.Name) && pi.Name != "Area"
+                                        && pi.Name != "Contract_id")
                                     {
 
                                         String pName = pi.Name.Replace("_", " ");
 
-                                        if(count == 1 || count == 8)
+                                        if(count == 0 || count == 5)
                                         {
-                                            @Html.Raw("<td>")
+                                            @Html.Raw("<td valign=\"top\">")
                                         }
                                             
 
@@ -270,6 +268,7 @@
                                                 {
                                                     <select class="form-control" id="@pi.Name.ToLower()-select" name="@pi.Name"></select>
                                                 }
+                                                
                                                 else
                                                 {
                                                     String inputType = "";
@@ -302,12 +301,13 @@
 
                                             </div>
                                         </div>
-                                        if(count == 7 || count == ViewBag.Properties.Length -1)
+                                        if(count == 4 || count == ViewBag.Properties.Length -1)
                                         {
                                             @Html.Raw("</td>")
                                         }
+                                        count++;
                                     }
-                                    count++;
+
                                 }
                             }
                         </tr>
@@ -604,6 +604,7 @@
             triggerAlert("Successfully created a new appointment.", "success");
         }
         newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
+        newContract["Area"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Area)";
 
             $.ajax({
                 "url": "@Url.Content("~/CustomerContract/Insert/")",
@@ -1059,11 +1060,8 @@
         @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
-            if(ViewBag.SkipProperties.Contains(PropertyInfo.Name))
-            {
-                continue;
-            }
-            if (@PropertyInfo.Name != "SSMA_timestamp" && !PropertyInfo.Name.StartsWith("_") && @PropertyInfo.Name != "Customer")
+
+            if (!PropertyInfo.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name) && PropertyInfo.Name != "Customer")
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
@@ -1094,7 +1092,8 @@
                 "bPaginate": false,
                 "bInfo" : false,
                 //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
-                "order": [[14, "desc"],[1, "asc"]],
+                "order": [[1, "asc"]],
+                //[14, "desc"],
                 "columns": [@Html.Raw(DataObject)
                 ],
                 "columnDefs": [
@@ -1103,7 +1102,7 @@
                         "defaultContent": "",
                         "targets": 0
                     },
-                    {
+                    @*{
                         "width": "210px",
                         "targets": 1
                     },
@@ -1130,7 +1129,7 @@
                     {
                         "width": "17%",
                         "targets": 12
-                    },
+                    },*@
                 ],
                 "scrollY": ($("#page-content-wrapper").height() - 170),
                 "scrollX": true,
@@ -1238,8 +1237,6 @@
             rules: {
                 "Term_of_notice": {
                     digits: true
-                    //,
-                    //required: true
                 },
                 "Valid_from": {
                     date: true
@@ -1248,9 +1245,7 @@
                     date: true,
                 },
                 "Extension": {
-                    digits: true
-                    //,
-                    //required: true
+                    digits: true          
                 },
                 "Expire": {
                     date: true
@@ -1258,19 +1253,11 @@
                 "Observation": {
                     date: true,
                 },
-                //"Created": {
-                //    date: true
-                //    //,
-                //    //required: true
-                //},
-                //"Updated": {
-                //    date: true
-                //},
-                "Option_date": {
-                    date: true,
-                },
                 "Contact_person": {
                     maxlength: 100,
+                },
+                "Area": {
+                    required: true
                 },
                 "Main_contract_id": {
                     required: {

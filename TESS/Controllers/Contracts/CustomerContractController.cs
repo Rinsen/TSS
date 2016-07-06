@@ -47,7 +47,8 @@ namespace TietoCRM.Controllers.Contracts
             "Sign",
             "Term_of_notice",
             "_ID",
-            "Customer"
+            //"Customer",
+            "SSMA_timestamp"
         };
 
         //Request["selected-contract"]
@@ -495,6 +496,7 @@ namespace TietoCRM.Controllers.Contracts
             }
 
             List<view_Contract> customerContracts = view_Contract.GetContracts(customer);
+            
             List<Dictionary<String, dynamic>> contracts = new List<Dictionary<String, dynamic>>();
 
             foreach (view_Contract contract in customerContracts)
@@ -505,12 +507,8 @@ namespace TietoCRM.Controllers.Contracts
                 Dictionary<String, dynamic> variables = new Dictionary<String, dynamic>();
                 foreach (System.Reflection.PropertyInfo pi in contract.GetType().GetProperties())
                 {
-                    if(this.skipProp.Contains(pi.Name))
-                    {
-                        continue; 
-                    }
-
-                    if(!pi.Name.StartsWith("_"))
+                  
+                    if(!pi.Name.StartsWith("_") && !this.skipProp.Contains(pi.Name))
                     {
                         if (pi.Name == "Extension")
                             variables.Add(pi.Name, contract.getStringExtension());
