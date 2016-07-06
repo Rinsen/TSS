@@ -323,7 +323,7 @@ namespace TietoCRM.Models
         /// is what condition you want to use for the SQL query to know what row to affect. For example "ID = 1".
         /// </param>
 
-        public void Delete(string condition)
+        public virtual void Delete(string condition)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

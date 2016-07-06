@@ -89,13 +89,13 @@ namespace TietoCRM.Models
 		private long ssma_timestamp;
 		public long SSMA_timestamp { get{ return ssma_timestamp; } set{ ssma_timestamp = value; } }
 
-        public List<String> areas;
-        public List<String> _Areas { get { return areas; } set { areas = value; } }
+        public List<String> representatives;
+        public List<String> _Representatives { get { return representatives; } set { representatives = value; } }
 
         public view_Customer() : base("Customer")
 		{
-			//ctr
-		}
+            this._Representatives = new List<String>();
+        }
 
         public view_Customer(String condition) : base("Customer")
         {
@@ -107,22 +107,91 @@ namespace TietoCRM.Models
             bool returnVal = base.Select(condition);
             if (!condition.Contains(this.Customer) && condition.Contains(this._ID.ToString()))
             {
-                this._Areas = this.GetCustomerAreas();
+                this._Representatives = this.GetCustomerRepresentatives();
             }
             else
-                this._Areas = new List<String>();
+                this._Representatives = new List<String>();
 
             return returnVal;
         }
 
-        private List<String> GetCustomerAreas()
+        public override void Update(string condition)
+        {
+            if(this._Representatives.Count > 0)
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    String deleteQuery = "DELETE FROM " + databasePrefix + "CustomerDivision WHERE CustomerID=@id";
+
+                    SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection);
+
+                    deleteCommand.Prepare();
+                    deleteCommand.Parameters.AddWithValue("@id", this._ID);
+                    deleteCommand.ExecuteNonQuery();
+
+                    foreach (String rep in _Representatives)
+                    {
+                        String insertQuery = "INSERT INTO " + databasePrefix + "CustomerDivision (CustomerID,Representative) VALUES(@customerid,@rep)";
+
+                        SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
+
+                        insertCommand.Prepare();
+                        insertCommand.Parameters.AddWithValue("@customerid", this._ID);
+                        insertCommand.Parameters.AddWithValue("@rep", rep);
+                        insertCommand.ExecuteNonQuery();
+                    }
+                }
+            }
+            base.Update(condition);
+        }
+
+        public void Insert(List<String> representatives)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                foreach (String rep in _Representatives)
+                {
+                    String insertQuery = "INSERT INTO " + databasePrefix + "CustomerDivision (CustomerID,Representative) VALUES(@customerid,@rep)";
+
+                    SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
+
+                    insertCommand.Prepare();
+                    insertCommand.Parameters.AddWithValue("@customerid", this._ID);
+                    insertCommand.Parameters.AddWithValue("@rep", rep);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+            base.Insert();
+        }
+
+        public override void Delete(string condition)
+        {
+            if (this._Representatives.Count > 0)
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    String deleteQuery = "DELETE FROM " + databasePrefix + "CustomerDivision WHERE CustomerID=@id";
+
+                    SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection);
+
+                    deleteCommand.Prepare();
+                    deleteCommand.Parameters.AddWithValue("@id", this._ID);
+                    deleteCommand.ExecuteNonQuery();
+                }
+            }
+            base.Delete(condition);
+        }
+
+        private List<String> GetCustomerRepresentatives()
         {
             List<String> list = new List<String>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                String query = "SELECT Area FROM " + databasePrefix + "CustomerDepartment WHERE CustomerID=@id";
+                String query = "SELECT Representative FROM " + databasePrefix + "CustomerDivision WHERE CustomerID=@id";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
