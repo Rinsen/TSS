@@ -35,6 +35,21 @@ namespace TietoCRM.Controllers.Contracts
     }
     public class CustomerContractController : Controller
     {
+
+        private List<String> skipProp = new List<string>
+        {
+            "Observation",
+            "Extension",
+            "Created",
+            "Updated",
+            "Option_date",
+            "Resigned_contract",
+            "Sign",
+            "Term_of_notice",
+            "_ID",
+            "Customer"
+        };
+
         //Request["selected-contract"]
         // GET: CustomerContract
         public ActionResult Index()
@@ -61,6 +76,7 @@ namespace TietoCRM.Controllers.Contracts
             this.ViewData.Add("OfferNumber", on);
 
             this.ViewData.Add("Properties", typeof(view_Contract).GetProperties());
+            this.ViewData.Add("SkipProperties", this.skipProp);
             this.ViewData.Add("Statuses", GetStatuses());
             this.ViewData.Add("ContractTypes", GetContractTypes());
             this.ViewData["Title"] = "Customer Contract";
@@ -489,14 +505,17 @@ namespace TietoCRM.Controllers.Contracts
                 Dictionary<String, dynamic> variables = new Dictionary<String, dynamic>();
                 foreach (System.Reflection.PropertyInfo pi in contract.GetType().GetProperties())
                 {
+                    if(this.skipProp.Contains(pi.Name))
+                    {
+                        continue; 
+                    }
+
                     if(!pi.Name.StartsWith("_"))
                     {
                         if (pi.Name == "Extension")
                             variables.Add(pi.Name, contract.getStringExtension());
                         else if (pi.Name == "Term_of_notice")
                             variables.Add(pi.Name, contract.getStringTON());
-                        else if (pi.Name == "Customer")
-                            continue;
                         else
                             variables.Add(pi.Name, pi.GetValue(contract));
                     }
