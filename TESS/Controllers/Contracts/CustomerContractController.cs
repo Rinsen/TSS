@@ -498,29 +498,32 @@ namespace TietoCRM.Controllers.Contracts
             List<view_Contract> customerContracts = view_Contract.GetContracts(customer);
             
             List<Dictionary<String, dynamic>> contracts = new List<Dictionary<String, dynamic>>();
+            
 
             foreach (view_Contract contract in customerContracts)
             {
-                /*view_CustomerContact cc = new view_CustomerContact();
-                cc.Select("Customer = '" + contract.Customer + "' AND Contact_person = '" + contract.Contact_person + "'");*/
-
-                Dictionary<String, dynamic> variables = new Dictionary<String, dynamic>();
-                foreach (System.Reflection.PropertyInfo pi in contract.GetType().GetProperties())
+                
+                if(System.Web.HttpContext.Current.GetUser().IfSameArea(contract.Area))
                 {
-                  
-                    if(!pi.Name.StartsWith("_") && !this.skipProp.Contains(pi.Name))
+                    Dictionary<String, dynamic> variables = new Dictionary<String, dynamic>();
+                    foreach (System.Reflection.PropertyInfo pi in contract.GetType().GetProperties())
                     {
-                        if (pi.Name == "Extension")
-                            variables.Add(pi.Name, contract.getStringExtension());
-                        else if (pi.Name == "Term_of_notice")
-                            variables.Add(pi.Name, contract.getStringTON());
-                        else
-                            variables.Add(pi.Name, pi.GetValue(contract));
-                    }
-                        
-                }
 
-                contracts.Add(variables);
+                        if (!pi.Name.StartsWith("_") && !this.skipProp.Contains(pi.Name))
+                        {
+                            if (pi.Name == "Extension")
+                                variables.Add(pi.Name, contract.getStringExtension());
+                            else if (pi.Name == "Term_of_notice")
+                                variables.Add(pi.Name, contract.getStringTON());
+                            else
+                                variables.Add(pi.Name, pi.GetValue(contract));
+                        }
+
+                    }
+
+                    contracts.Add(variables);
+                }
+                
             }
 
             this.Response.ContentType = "text/plain";
