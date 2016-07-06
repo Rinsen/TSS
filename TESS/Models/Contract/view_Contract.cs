@@ -84,7 +84,7 @@ namespace TietoCRM.Models
         private String sign;
         public String Sign { get { return sign; } set { sign = value; } }
 
-        public String area;
+        private String area;
         public String Area { get { return area; } set { area = value; } }
 
         private String resigned_contract;
