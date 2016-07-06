@@ -31,63 +31,77 @@
             </div>
             <div id="user-modal" class="modal-body">
                 <form class="form-horizontal">
-                    @{
-                        foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
-                        {
+                    <table style="width: 100%;">
+                        @{
+                            int count = 0;
+                            foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
+                            {
 
-                            String pName = pi.Name.Replace("_", " ");
-                            if (pi.Name == "User_level")
-                            {
-                                <div class="form-group">
-                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
-                                    <div class="col-sm-10">
-                                        <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
-                                            <option value="1">Supervisor</option>
-                                            <option value="2">Salesperson</option>
-                                            <option value="3">Product owner</option>
-                                        </select>
+                                if (count == 0 || count == 7)
+                                {
+                                    @Html.Raw("<td valign=\"top\">")
+                                }
+
+                                String pName = pi.Name.Replace("_", " ");
+                                if (pi.Name == "User_level")
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                                <option value="1">Supervisor</option>
+                                                <option value="2">Salesperson</option>
+                                                <option value="3">Product owner</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                            else if (pi.Name == "Use_logo")
-                            {
-                                <div class="form-group">
-                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
-                                    <div class="col-sm-10">
-                                        <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
-                                            <option value="true">Yes</option>
-                                            <option value="false">No</option>
-                                        </select>
+                                }
+                                else if (pi.Name == "Use_logo")
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                                <option value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                            else if (pi.Name == "Offer_file_location" || pi.Name == "Contract_file_location")
-                            {
-                                <div class="form-group">
-                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">
-                                        @pName
-                                        <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true" 
-                                              data-toggle="tooltip" data-placement="top"
-                                              title="Here you can specify format of the file names. Just use &#64;ID &#64;TITLE &#64;REP &#64;CUSTOMER &#64;DATE"></span>
-                                    </label>
-                                    
-                                    <div class="col-sm-10">
-                                        <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                }
+                                else if (pi.Name == "Offer_file_location" || pi.Name == "Contract_file_location")
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">
+                                            @pName
+                                            <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"
+                                                  data-toggle="tooltip" data-placement="top"
+                                                  title="Here you can specify format of the file names. Just use &#64;ID &#64;TITLE &#64;REP &#64;CUSTOMER &#64;DATE"></span>
+                                        </label>
+
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="form-group">
-                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                }
+                                else
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                        </div>
                                     </div>
-                                </div>
+                                }
+
+                                if (count == 6 || count == ViewBag.Properties.Length - 1)
+                                {
+                                    @Html.Raw("</td>")
+                                }
+                                count++;
                             }
+
                         }
-                    }
-                    
+                    </table>
                 </form>
             </div>
             <div class="modal-footer">
@@ -214,6 +228,10 @@
                 "User_level": {
                     maxlength: 15,
                 },
+                "Area": {
+                    required: true,
+                },
+
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
