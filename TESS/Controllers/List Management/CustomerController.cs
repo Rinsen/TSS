@@ -98,11 +98,21 @@ namespace TietoCRM.Controllers
         {
             this.Response.ContentType = "text/plain";
             List<view_Customer> l = view_Customer.getAllCustomers();
-            foreach (view_Customer customer in l)
+            List<Dictionary<String, Object>> list = new List<Dictionary<String, Object>>();
+
+            foreach(view_Customer customer in l)
             {
                 customer.Customer = System.Web.HttpUtility.HtmlEncode(customer.Customer);
+                Dictionary<String, Object> dic = new Dictionary<String, Object>();
+                foreach (PropertyInfo info in typeof(view_Customer).GetProperties())
+                {
+                    if(info.Name != "_ID")
+                        dic.Add(info.Name, info.GetValue(customer));
+                }
+                list.Add(dic);
             }
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
+
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(list) + "}";
         }
 
         public String SaveCustomer()

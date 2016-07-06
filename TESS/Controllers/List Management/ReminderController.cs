@@ -31,7 +31,7 @@ namespace TietoCRM.Controllers.List_Management
             this.ViewData.Add("ControllerName", "CustomerContract");
 
             this.ViewData.Add("Representatives", view_User.getAllUsers());
-            this.ViewData.Add("DefaultSystem", System.Web.HttpContext.Current.GetUser().Default_system);
+            this.ViewData.Add("DefaultSystem", System.Web.HttpContext.Current.GetUser().Area);
 
             return View();
         }

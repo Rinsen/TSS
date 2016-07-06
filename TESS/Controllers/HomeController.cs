@@ -66,14 +66,14 @@ namespace TietoCRM.Controllers
         {
             view_Reminder vR = new view_Reminder();
 
-            String remindExist = vR.checkIfReminderHighPrio(System.Web.HttpContext.Current.GetUser().Default_system, System.Web.HttpContext.Current.GetUser().Sign);
+            String remindExist = vR.checkIfReminderHighPrio(System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
 
             return remindExist;
         }
 
         public String GetReminders()
         {
-            List<view_Reminder> vR = view_Reminder.getRemindersHighPrio(System.Web.HttpContext.Current.GetUser().Default_system, System.Web.HttpContext.Current.GetUser().Sign);
+            List<view_Reminder> vR = view_Reminder.getRemindersHighPrio(System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
 
             foreach (view_Reminder v in vR)
             {

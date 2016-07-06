@@ -684,7 +684,7 @@ namespace TietoCRM.Controllers
                                 }
                                 view_User user = System.Web.HttpContext.Current.GetUser();
 
-                                if (user.Default_system == result["Area"].ToString() || user.Default_system == "*")
+                                if (user.Area == result["Area"].ToString() || user.Area == "*")
                                     resultList.Add(result);
                             }
                         }
@@ -1084,7 +1084,7 @@ namespace TietoCRM.Controllers
 
             view_Reminder vR = new view_Reminder();
 
-            String remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Default_system, System.Web.HttpContext.Current.GetUser().Sign);
+            String remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
 
             return remindExist;
         }
@@ -1092,7 +1092,7 @@ namespace TietoCRM.Controllers
         public String GetReminders()
         {
             String customer = Request.Form["customer"];
-            List<view_Reminder> vR = view_Reminder.getRemindersPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Default_system, System.Web.HttpContext.Current.GetUser().Sign);
+            List<view_Reminder> vR = view_Reminder.getRemindersPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
 
             foreach (view_Reminder v in vR)
             {

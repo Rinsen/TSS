@@ -600,7 +600,7 @@ namespace TietoCRM.Controllers.Contracts
                         }
                         else
                         {
-                            contractId = System.Web.HttpContext.Current.GetUser().Default_system + " " + System.Web.HttpContext.Current.GetUser().Sign + " " + DateTime.Now.ToShortDateString() + " " + i.ToString("00");
+                            contractId = System.Web.HttpContext.Current.GetUser().Area + " " + System.Web.HttpContext.Current.GetUser().Sign + " " + DateTime.Now.ToShortDateString() + " " + i.ToString("00");
                         }
                         contract = new view_Contract();
                         contract.Select("Contract_id = '" + contractId + "'");
@@ -910,7 +910,7 @@ namespace TietoCRM.Controllers.Contracts
                     Removed = cRow.Removed,
                     NewMod = cRow.New,
                 };
-                if(System.Web.HttpContext.Current.GetUser().Default_system == module.Area || System.Web.HttpContext.Current.GetUser().Default_system == "*")
+                if(System.Web.HttpContext.Current.GetUser().Area == module.Area || System.Web.HttpContext.Current.GetUser().Area == "*")
                     modules.Add(obj);
             }
 
@@ -1382,7 +1382,7 @@ namespace TietoCRM.Controllers.Contracts
                             }
                             view_User user = System.Web.HttpContext.Current.GetUser();
 
-                            if (user.Default_system == result["Area"].ToString() || user.Default_system == "*")
+                            if (user.Area == result["Area"].ToString() || user.Area == "*")
                                 resultList.Add(result);
                         }
                     }
@@ -2203,7 +2203,7 @@ namespace TietoCRM.Controllers.Contracts
 
             view_Reminder vR = new view_Reminder();
 
-            String remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Default_system, System.Web.HttpContext.Current.GetUser().Sign);
+            String remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
 
             return remindExist;
         }
@@ -2211,7 +2211,7 @@ namespace TietoCRM.Controllers.Contracts
         public String GetReminders()
         {
             String customer = Request.Form["customer"];
-            List<view_Reminder> vR = view_Reminder.getRemindersPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Default_system, System.Web.HttpContext.Current.GetUser().Sign);
+            List<view_Reminder> vR = view_Reminder.getRemindersPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
 
             foreach (view_Reminder v in vR)
             {
