@@ -19,6 +19,10 @@
                 <th data-field="#" data-sortable="false">#</th>
                 @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
                 {
+                    if(ViewBag.SkipProperties.Contains(property.Name))
+                    {
+                        continue; 
+                    }
                     if (@property.Name != "SSMA_timestamp" && !property.Name.StartsWith("_") && @property.Name != "Customer")
                     {
                         String PropertyName = property.Name.Replace("_", " ");
@@ -1055,7 +1059,10 @@
         @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
-
+            if(ViewBag.SkipProperties.Contains(PropertyInfo.Name))
+            {
+                continue;
+            }
             if (@PropertyInfo.Name != "SSMA_timestamp" && !PropertyInfo.Name.StartsWith("_") && @PropertyInfo.Name != "Customer")
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
