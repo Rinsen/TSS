@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+}
+
+<div class="crm-print-block">
+    <table class="table table-striped table-bordered cancelled-contracts-table">
+        <th>Customer</th>
+        <th>Customer Type</th>
+        <th>Representative</th>
+        <th>IT manager</th>
+        <th>Main contract id</th>
+        <th>Amount</th>
+        @foreach (Dictionary<String, String> contracts in ViewBag.Contracts)
+        {
+            <tr class="">
+                @foreach (KeyValuePair<String, String> kp in contracts)
+                {
+                    <td>@kp.Value</td>
+                }
+            </tr>
+        }
+
+    </table>
+</div>

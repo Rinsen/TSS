@@ -89,8 +89,21 @@ namespace TietoCRM.Models
 		private long ssma_timestamp;
 		public long SSMA_timestamp { get{ return ssma_timestamp; } set{ ssma_timestamp = value; } }
 
-        public List<String> representatives;
+        private List<String> representatives;
         public List<String> _Representatives { get { return representatives; } set { representatives = value; } }
+
+        public String GetReprensentativesAsString()
+        {
+            String reps = "";
+            foreach (String rep in this._Representatives)
+            {
+                if (!String.IsNullOrEmpty(rep))
+                    reps += rep + ", ";
+            }
+            if (!String.IsNullOrEmpty(reps))
+                reps.Remove(reps.Length - 3, 2);
+            return reps;
+        }
 
         public view_Customer() : base("Customer")
 		{
@@ -132,14 +145,17 @@ namespace TietoCRM.Models
 
                     foreach (String rep in _Representatives)
                     {
-                        String insertQuery = "INSERT INTO " + databasePrefix + "CustomerDivision (CustomerID,Representative) VALUES(@customerid,@rep)";
+                        if(rep != null)
+                        {
+                            String insertQuery = "INSERT INTO " + databasePrefix + "CustomerDivision (CustomerID,Representative) VALUES(@customerid,@rep)";
 
-                        SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
+                            SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
 
-                        insertCommand.Prepare();
-                        insertCommand.Parameters.AddWithValue("@customerid", this._ID);
-                        insertCommand.Parameters.AddWithValue("@rep", rep);
-                        insertCommand.ExecuteNonQuery();
+                            insertCommand.Prepare();
+                            insertCommand.Parameters.AddWithValue("@customerid", this._ID);
+                            insertCommand.Parameters.AddWithValue("@rep", rep);
+                            insertCommand.ExecuteNonQuery();
+                        }
                     }
                 }
             }
@@ -213,7 +229,6 @@ namespace TietoCRM.Models
 
         public void SetRepresentative(String representative)
         {
-            
             this.Representative = representative;
         }
         /// <summary>

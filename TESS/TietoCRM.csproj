@@ -160,6 +160,7 @@
     <Compile Include="Controllers\List Management\UserController.cs" />
     <Compile Include="Controllers\Offers\CustomerOfferController.cs" />
     <Compile Include="Controllers\Reports\AppointmentReportController.cs" />
+    <Compile Include="Controllers\Reports\CancelledContractsReportController.cs" />
     <Compile Include="Controllers\Reports\ContractSoldProductsReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerMissingProductReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerProductReportController.cs" />
@@ -756,6 +757,8 @@
     <Content Include="Views\Shared\_Sidebar.cshtml" />
     <Content Include="Views\ProductReport\Index.cshtml" />
     <Content Include="Views\ProductReport\Pdf.cshtml" />
+    <Content Include="Views\CancelledContractsReport\Index.cshtml" />
+    <Content Include="Views\CancelledContractsReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
