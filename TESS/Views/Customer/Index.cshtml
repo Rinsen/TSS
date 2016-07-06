@@ -1,4 +1,5 @@
 ﻿@using TietoCRM.Models;
+@using TietoCRM.Extensions;
 <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-height="299" data-sort-name="Customer" data-sort-order="desc">
     <thead>
         <tr>
@@ -8,9 +9,18 @@
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 //if (@PropertyName != "Representative" && @PropertyName != "SSMA timestamp")
-                if (@PropertyName != "SSMA timestamp" && !PropertyInfo.Name.StartsWith("_"))
+                if (@PropertyName != "SSMA timestamp" && PropertyInfo.Name != "_ID"
+                    && PropertyInfo.Name != "Representative")
                 {
-                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    if (PropertyInfo.Name == "_Representatives")
+                    {
+                        <th class="hidden" data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    }
+                    else
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    }
+
                 }
             }
         </tr>
@@ -30,7 +40,7 @@
                             <div class="form-group">
                                 <label for="representative-select" class="col-sm-3 control-label">Representative</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" name="Representative" id="representative-select" multiple data-live-search="true">
+                                    <select class="form-control" name="_Representatives" id="representative-select" multiple data-live-search="true">
                                         @foreach (view_User User in ViewBag.Representatives)
                                         {
                                             <option value="@User.Sign">@User.Name</option>
@@ -243,7 +253,7 @@
 
     var handleStates = function(){
         var stateSearch = StateCookie.getCurrentSite().search;
-        console.log(stateSearch);
+       
         var $searchBox = $("#customer-table_filter").find(":input");
 
         if(stateSearch !== undefined)
@@ -268,7 +278,8 @@
         @{String DataObject =  "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
-            if (PropertyInfo.Name != "SSMA_timestamp" && !PropertyInfo.Name.StartsWith("_"))
+            if (PropertyInfo.Name != "SSMA_timestamp" && PropertyInfo.Name != "_ID"
+                && PropertyInfo.Name != "Representative")
             {
                 DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
             }
@@ -331,13 +342,25 @@
                             j++;
                         }
 
+                        
+
                         if (i >= 1) {
                             var tdInc = j;
-                            //if (name == "Representative")
-                            //    tdInc = 1;
+
                             $td = $('td:eq(' + tdInc + ')', nRow);
+
+                            if(name == "_Representatives")
+                            {
+                                $td.attr("data-rep", JSON.stringify(aData[name]));
+                                $td.hide();
+                            }
+                            
+                            
                             $td.attr("data-property", name);
                             $td.html(aData[name]);
+                            
+                           
+                           
                             j++;
                         }
                         i++;
@@ -361,7 +384,7 @@
             var currentProp = $currentInput.attr("name");
             if(!$currentInput.is(':button') && typeof currentProp != 'undefined')
             {
-                console.log($currentInput + " " + currentProp);
+               
                 if(currentProp == "County" || currentProp == "Municipality")
                 {
                     if($currentInput.val().length <= 0)
@@ -396,13 +419,19 @@
             "success": function(data){
                 $(document).trigger("clear-alerts");
                 if(data > 0){
+                   
+                    StateCookie.updateSite(null, customerData.Customer);
                     updateTable(handleStates);
                     drawButtons();
                     addButonListeners();
                     $("#customer-modal").modal("hide");
                     var msg = "Successfully updated Customer row.";
                     if(oldCustomer == null) // If null, for inserting a new customer.
+                    {
+                        
                         msg = "Successfully inserted new Customer row";
+                    }
+                        
                     $(document).trigger("add-alerts", [
                       {
                           'message': msg,
@@ -410,7 +439,7 @@
                       }
                     ]);
                 } else {
-                    console.log(data);
+                   
                     $(document).trigger("add-alerts", [
                      {
                          'message': "Failed to update Customer row.",
@@ -461,7 +490,15 @@
                             $currentInput.val(0);
                         else
                             $currentInput.val($td.html());
-                    } else {
+                    } 
+                    else if($tdProp == "_Representatives")
+                    {
+                        var reps = JSON.parse($td.attr("data-rep"));
+                        
+                        $('#representative-select').val(reps);
+                        $('#representative-select').selectpicker('refresh');
+                    }
+                    else {
                         $currentInput.val($td.html());
                     }
                 }
@@ -502,17 +539,19 @@
                 $currentInput.val(0);
             }
         }
-
+        $('#representative-select').val("@System.Web.HttpContext.Current.GetUser().Sign");
+        $('#representative-select').selectpicker("refresh");
 
         $("#customer-modal").appendTo("body").modal("show").draggable();
         // Remove old saveCustomerInformation() binding and add a new one.
         //$("#customer-modal form").validate();
         //$("#save-customer-changes").unbind("click");
 
+        
 
         $("#save-customer-changes").unbind("click");
         $("#save-customer-changes").bind("click", function(){
-            console.log("asd");
+          
             if($("#customer-modal form").valid()){
                 saveCustomerInformation($formInputs);
             }

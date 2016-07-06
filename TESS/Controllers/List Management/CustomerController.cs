@@ -106,8 +106,13 @@ namespace TietoCRM.Controllers
                 Dictionary<String, Object> dic = new Dictionary<String, Object>();
                 foreach (PropertyInfo info in typeof(view_Customer).GetProperties())
                 {
-                    if(info.Name != "_ID")
+                    if(info.Name != "_ID" && info.Name != "Representative" && info.Name != "SSMA_timestamp")
+                    {
+                        
                         dic.Add(info.Name, info.GetValue(customer));
+                       
+                    }
+                        
                 }
                 list.Add(dic);
             }
@@ -142,9 +147,13 @@ namespace TietoCRM.Controllers
 
                     foreach (KeyValuePair<String, object> customerVariable in customerVariables)
                     {
-                        if (customerVariable.Key == "Representative")
+                        if (customerVariable.Key == "_Representatives")
                         {
-                            customer.SetRepresentative(Convert.ToString(customerVariable.Value));
+                            foreach(String rep in ((System.Collections.ArrayList)customerVariable.Value))
+                            {
+                                customer._Representatives.Add(rep);
+                            }
+                            
                         }
                         else if (customerVariable.Key == "Customer" && customerVariable.Value.ToString() != oldCustomer)
                         {
@@ -200,10 +209,11 @@ namespace TietoCRM.Controllers
 
                     foreach (KeyValuePair<String, object> customerVariable in customerVariables)
                     {
-
-                        customer.SetValue(customerVariable.Key, customerVariable.Value);
+                        if(customerVariable.Key != "_Representatives")
+                            customer.SetValue(customerVariable.Key, customerVariable.Value);               
                     }
-                    customer.Insert();
+
+                    customer.Insert(((System.Collections.ArrayList)customerVariables["_Representatives"]).Cast<string>().ToList());
                 }
                 catch (Exception ex)
                 {

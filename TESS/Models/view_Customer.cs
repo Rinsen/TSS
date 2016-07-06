@@ -148,9 +148,12 @@ namespace TietoCRM.Models
 
         public void Insert(List<String> representatives)
         {
+            base.Insert();
+            base.Select("Customer = '" + this.Customer + "' AND Short_name = '" + this.Short_name + "'");
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                foreach (String rep in _Representatives)
+                connection.Open();
+                foreach (String rep in representatives)
                 {
                     String insertQuery = "INSERT INTO " + databasePrefix + "CustomerDivision (CustomerID,Representative) VALUES(@customerid,@rep)";
 
@@ -162,7 +165,7 @@ namespace TietoCRM.Models
                     insertCommand.ExecuteNonQuery();
                 }
             }
-            base.Insert();
+            
         }
 
         public override void Delete(string condition)
@@ -299,6 +302,7 @@ namespace TietoCRM.Models
                             k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
                             i++;
                         }
+                        k._Representatives = k.GetCustomerRepresentatives();
                         list.Add(k);
                     }
                 }
