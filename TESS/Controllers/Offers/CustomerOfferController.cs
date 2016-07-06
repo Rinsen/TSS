@@ -13,6 +13,7 @@ using System.Web.Script.Serialization;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
 using System.IO;
+using System.Reflection;
 
 namespace TietoCRM.Controllers
 {
@@ -31,7 +32,6 @@ namespace TietoCRM.Controllers
             }
         }
     }
-
     public class CustomerOfferController : Controller
     {
         // GET: CustomerOffer
@@ -97,6 +97,7 @@ namespace TietoCRM.Controllers
             columnNames.Add("Offer_valid");
             columnNames.Add("Offer_status");
             columnNames.Add("Contact_person");
+            columnNames.Add("Area");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
             offerStatus = GetOfferStatus();
@@ -399,7 +400,6 @@ namespace TietoCRM.Controllers
         public String CustomerOffer()
         {
             String customer = Request.Form["customer"];
-
             return (new JavaScriptSerializer()).Serialize(view_CustomerOffer.getAllCustomerOffers(customer));
         }
 
@@ -421,18 +421,21 @@ namespace TietoCRM.Controllers
 
             foreach (view_CustomerOffer co in customerOffers)
             {
-                var v = new
+                if(System.Web.HttpContext.Current.GetUser().IfSameArea(co.Area))
                 {
-                    Offer_number = co._Offer_number,
-                    Title = co.Title,
-                    Offer_created = co.Offer_created,
-                    Offer_valid = co.Offer_valid,
-                    Offer_status = co.Offer_status,
-                    Contact_person = co.Contact_person,
-                    SSMA_timestamp = co.SSMA_timestamp
-                };
-
-                customers.Add(v);
+                    var v = new
+                    {
+                        Offer_number = co._Offer_number,
+                        Title = co.Title,
+                        Offer_created = co.Offer_created,
+                        Offer_valid = co.Offer_valid,
+                        Offer_status = co.Offer_status,
+                        Contact_person = co.Contact_person,
+                        Area = co.Area,
+                        SSMA_timestamp = co.SSMA_timestamp
+                    };
+                    customers.Add(v);
+                }
             }
 
             //ViewData.Add("viewRemind", checkReminder(customer));
