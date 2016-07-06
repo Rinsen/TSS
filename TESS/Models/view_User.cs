@@ -16,8 +16,8 @@ namespace TietoCRM.Models
 		private String name;
 		public String Name { get{ return name; } set{ name = value; } }
 
-        private String default_system;
-        public String Default_system { get { return default_system; } set { default_system = value; } }
+        private String area;
+        public String Area { get { return area; } set { area = value; } }
 
         private String offer_file_location;
 		public String Offer_file_location { get{ return offer_file_location; } set{ offer_file_location = value; } }
@@ -66,7 +66,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [Sign] ,[Name], [Default_system] ,[Offer_file_location], [Contract_file_location] ,[File_format] ,[Address] ,[City] ,[Telephone] ,[Mobile] ,[windows_user], User_level, Use_logo FROM " + databasePrefix + "User";
+                String query = "SELECT * FROM " + databasePrefix + "User";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

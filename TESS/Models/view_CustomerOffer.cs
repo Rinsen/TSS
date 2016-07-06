@@ -14,6 +14,9 @@ namespace TietoCRM.Models
         private String customer;
         public String Customer { get { return customer; } set { customer = value; } }
 
+        public String area;
+        public String Area { get { return area; } set { area = value; } }
+
         private String contact_person;
         public String Contact_person { get { return contact_person; } set { contact_person = value; }}
         public void SetContactPerson(String person)
@@ -58,6 +61,8 @@ namespace TietoCRM.Models
 
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
+
+        public int _ID { get { return offer_number; } set { offer_number = value; } }
 
         /// <summary>
         /// This variable does not exist in the database, and therefor there is no "_"

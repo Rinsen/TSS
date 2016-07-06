@@ -20,6 +20,9 @@ namespace TietoCRM.Models
         private String customer;
         public String Customer { get; set; }
 
+        private String area;
+        public String Area { get; set; }
+
         private String title;
         public String Title { get; set; }
 
@@ -45,7 +48,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [ID], Date, Event_type, Customer, Title, Text, Contact_person FROM " + databasePrefix + "Appointment ";
+                String query = "SELECT * FROM " + databasePrefix + "Appointment ";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

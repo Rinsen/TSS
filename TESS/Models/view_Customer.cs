@@ -8,7 +8,10 @@ namespace TietoCRM.Models
 {
    public class view_Customer : SQLBaseClass
 	{
-		private String customer;
+        private int id;
+        public int _ID { get { return id; } set { id = value; } }
+
+        private String customer;
 		public String Customer { get{ return customer; } set{ customer = value; } }
 
         private String representative;
@@ -166,7 +169,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [Customer] ,[Representative] ,[Short_name] ,[Customer_type] ,[Address] ,[Zip_code] ,[City] ,[Telephone] ,[Fax] ,[Web_address] ,[Corporate_identity_number] ,[Email_format] ,[County] ,[Municipality] ,[IT_manager] ,[IT_manager_telephone] ,[IT_manager_mobile] ,[IT_manager_email] ,[EA_system] ,[PA_system] ,[Other_1] ,[Other_2] ,[PUL] ,[Note] ,[Inhabitant_level] FROM " + databasePrefix + "Customer";
+                String query = "SELECT [ID], [Customer] ,[Representative] ,[Short_name] ,[Customer_type] ,[Address] ,[Zip_code] ,[City] ,[Telephone] ,[Fax] ,[Web_address] ,[Corporate_identity_number] ,[Email_format] ,[County] ,[Municipality] ,[IT_manager] ,[IT_manager_telephone] ,[IT_manager_mobile] ,[IT_manager_email] ,[EA_system] ,[PA_system] ,[Other_1] ,[Other_2] ,[PUL] ,[Note] ,[Inhabitant_level] FROM " + databasePrefix + "Customer";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -198,7 +201,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [Customer] ,[Representative] ,[Short_name] ,[Customer_type] ,[Address] ,[Zip_code] ,[City] ,[Telephone] ,[Fax] ,[Web_address] ,[Corporate_identity_number] ,[Email_format] ,[County] ,[Municipality] ,[IT_manager] ,[IT_manager_telephone] ,[IT_manager_mobile] ,[IT_manager_email] ,[EA_system] ,[PA_system] ,[Other_1] ,[Other_2] ,[PUL] ,[Note] ,[Inhabitant_level] FROM " + databasePrefix + "Customer WHERE Representative = @representive";
+                String query = "SELECT [ID], [Customer] ,[Representative] ,[Short_name] ,[Customer_type] ,[Address] ,[Zip_code] ,[City] ,[Telephone] ,[Fax] ,[Web_address] ,[Corporate_identity_number] ,[Email_format] ,[County] ,[Municipality] ,[IT_manager] ,[IT_manager_telephone] ,[IT_manager_mobile] ,[IT_manager_email] ,[EA_system] ,[PA_system] ,[Other_1] ,[Other_2] ,[PUL] ,[Note] ,[Inhabitant_level] FROM " + databasePrefix + "Customer WHERE Representative = @representive";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

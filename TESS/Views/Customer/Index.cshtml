@@ -8,7 +8,7 @@
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 //if (@PropertyName != "Representative" && @PropertyName != "SSMA timestamp")
-                if (@PropertyName != "SSMA timestamp")
+                if (@PropertyName != "SSMA timestamp" && !PropertyInfo.Name.StartsWith("_"))
                 {
                     <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
                 }
@@ -265,7 +265,7 @@
         @{String DataObject =  "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
-            if (PropertyInfo.Name != "SSMA_timestamp")
+            if (PropertyInfo.Name != "SSMA_timestamp" && !PropertyInfo.Name.StartsWith("_"))
             {
                 DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
             }
