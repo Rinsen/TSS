@@ -32,7 +32,7 @@
                             <td>
                                 @foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                                 {
-                                    if (!pi.Name.StartsWith("_"))
+                                    if (!pi.Name.StartsWith("_") && pi.Name != "Area")
                                     {
 
                                         String pName = pi.Name.Replace("_", " ");

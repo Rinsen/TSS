@@ -70,7 +70,7 @@ namespace TietoCRM.Controllers.List_Management
         {
             this.Response.ContentType = "text/plain";
             List<String> customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Appointment.getAllAppointments().Where(a=> customerNames.Contains(a.Customer))) + "}";
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Appointment.getAllAppointments().Where(a=> customerNames.Contains(a.Customer) && System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area))) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
@@ -100,6 +100,7 @@ namespace TietoCRM.Controllers.List_Management
             appointment.Event_type = map["Event_type"];
             appointment.Text = map["Text"];
             appointment.Contact_person = map["Contact_person"] ?? "";
+            appointment.Area = System.Web.HttpContext.Current.GetUser().Area;
             appointment.Title = map["Title"];
             appointment.Insert();
 
@@ -133,6 +134,7 @@ namespace TietoCRM.Controllers.List_Management
                 appointment._ID = Int32.Parse(map["_ID"]);
                 appointment.Title = map["Title"];
                 appointment.Contact_person = map["Contact_person"] ?? null;
+                appointment.Area = System.Web.HttpContext.Current.GetUser().Area;
                 appointment.Update("ID=" + appointment._ID);
 
                 return "0";

@@ -88,7 +88,12 @@ namespace TietoCRM.Models
                 }
             }
             return list;
-        }  
+        }
+        
+        public bool IfSameArea(String area)
+        {
+            return area == this.Area || this.Area == "*";
+        } 
 
     }
 
