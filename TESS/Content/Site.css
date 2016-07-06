@@ -1040,10 +1040,14 @@ a.tooltips > span:after {
   width: 20%;
 }
 #reminder-table td:nth-child(3) {
-  width: 55%;
+  width: 65%;
 }
 #reminder-table td:nth-child(4) {
-  width: 10%;
+  width: 5%;
+  text-align: left;
+}
+#reminder-table td:nth-child(5) {
+  width: 5%;
   text-align: center;
 }
 #Reminder-table tr.selected {

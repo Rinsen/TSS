@@ -102,6 +102,8 @@
 
         var $formInputs = $("#appointmentModal form").find(":input");
         console.log($formInputs);
+        $("#contact_person").selectpicker('refresh');
+        $("#customer").selectpicker('refresh');
         var frmInpLen = $formInputs.length;
         for (var i = 0; i < frmInpLen; i++) {
             var $currInput = $($formInputs[i]);
@@ -338,7 +340,8 @@
             var tdLen = $selectedTds.length;
 
             var $formInputs = $("#appointmentModal form").find(":input");
-
+            $("#contact_person").selectpicker('refresh');
+            $("#customer").selectpicker('refresh');
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
