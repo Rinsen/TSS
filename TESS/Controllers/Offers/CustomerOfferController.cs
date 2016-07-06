@@ -687,7 +687,7 @@ namespace TietoCRM.Controllers
                                 }
                                 view_User user = System.Web.HttpContext.Current.GetUser();
 
-                                if (user.Area == result["Area"].ToString() || user.Area == "*")
+                                if (user.IfSameArea(result["Area"].ToString()))
                                     resultList.Add(result);
                             }
                         }
