@@ -409,7 +409,7 @@ namespace TietoCRM.Models
         /// <param name="condition">
         /// is what condition you want to use for the SQL query to know what row to affect. For example "ID = 1".
         /// </param>
-        public bool Select(String condition)
+        public virtual bool Select(String condition)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

@@ -89,7 +89,10 @@ namespace TietoCRM.Models
 		private long ssma_timestamp;
 		public long SSMA_timestamp { get{ return ssma_timestamp; } set{ ssma_timestamp = value; } }
 
-		public view_Customer() : base("Customer")
+        public List<String> areas;
+        public List<String> _Areas { get { return areas; } set { areas = value; } }
+
+        public view_Customer() : base("Customer")
 		{
 			//ctr
 		}
@@ -97,6 +100,46 @@ namespace TietoCRM.Models
         public view_Customer(String condition) : base("Customer")
         {
             this.Select(condition);
+        }
+
+        public override bool Select(String condition)
+        {
+            bool returnVal = base.Select(condition);
+            if (!condition.Contains(this.Customer) && condition.Contains(this._ID.ToString()))
+            {
+                this._Areas = this.GetCustomerAreas();
+            }
+            else
+                this._Areas = new List<String>();
+
+            return returnVal;
+        }
+
+        private List<String> GetCustomerAreas()
+        {
+            List<String> list = new List<String>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                String query = "SELECT Area FROM " + databasePrefix + "CustomerDepartment WHERE CustomerID=@id";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+
+                command.Parameters.AddWithValue("@id", this._ID);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        list.Add(reader.GetString(0));
+                    }
+                }
+            }
+            return list;
         }
 
         public void SetRepresentative(String representative)

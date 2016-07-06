@@ -37,6 +37,7 @@ namespace TietoCRM.Controllers
         // GET: CustomerOffer
         public ActionResult Index()
         {
+
             GlobalVariables.checkIfAuthorized("CustomerOffer");
             this.ViewData.Add("User_level", System.Web.HttpContext.Current.GetUser().User_level);
             if(System.Web.HttpContext.Current.GetUser().User_level > 1)
