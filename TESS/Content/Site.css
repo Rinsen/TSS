@@ -1037,10 +1037,10 @@ a.tooltips > span:after {
   width: 10%;
 }
 #reminder-table td:nth-child(2) {
-  width: 75%;
+  width: 20%;
 }
 #reminder-table td:nth-child(3) {
-  width: 5%;
+  width: 55%;
 }
 #reminder-table td:nth-child(4) {
   width: 10%;
