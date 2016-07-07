@@ -40,6 +40,9 @@ namespace TietoCRM.Models
         private decimal fixed_price;
         public decimal Fixed_price { get; set; }
 
+        private String area;
+        public String Area { get; set; }
+
         public view_CustomerMissingProductReport()
             : base("CustomerMissingProductReport")
         {

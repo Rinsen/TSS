@@ -64,7 +64,11 @@ namespace TietoCRM.Controllers
         }
         public String GetData()
         {
+            String sign = Request.Form["user"];
             String customer = Request.Form["customer"];
+
+            view_User user = new view_User();
+            user.Select("Sign=" + sign);
 
             List<view_CustomerMissingProductReport> ProductReportRows = view_CustomerMissingProductReport.getCustomerMissingProducts(customer);
 
@@ -73,28 +77,31 @@ namespace TietoCRM.Controllers
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_CustomerMissingProductReport cpr in ProductReportRows)
             {
-                Dictionary<String, String> dic = new Dictionary<String, String>();
-                foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
+                if(user.IfSameArea(cpr.Area))
                 {
-                    if (pi.Name != "SSMA_timestamp" && pi.Name != "Customer" && pi.Name != "Sign")
+                    Dictionary<String, String> dic = new Dictionary<String, String>();
+                    foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
                     {
-                        if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
+                        if (pi.Name != "SSMA_timestamp" && pi.Name != "Customer" && pi.Name != "Sign")
                         {
-                            if (pi.GetValue(cpr) != null)
-                                dic.Add(pi.Name, ((DateTime)pi.GetValue(cpr)).ToString("yyyy-MM-dd"));
+                            if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
+                            {
+                                if (pi.GetValue(cpr) != null)
+                                    dic.Add(pi.Name, ((DateTime)pi.GetValue(cpr)).ToString("yyyy-MM-dd"));
+                                else
+                                    dic.Add(pi.Name, null);
+                            }
                             else
-                                dic.Add(pi.Name, null);
-                        }
-                        else
-                        {
-                            if (pi.GetValue(cpr) != null)
-                                dic.Add(pi.Name, pi.GetValue(cpr).ToString());
-                            else
-                                dic.Add(pi.Name, null);
+                            {
+                                if (pi.GetValue(cpr) != null)
+                                    dic.Add(pi.Name, pi.GetValue(cpr).ToString());
+                                else
+                                    dic.Add(pi.Name, null);
+                            }
                         }
                     }
+                    rows.Add(dic);
                 }
-                rows.Add(dic);
             }
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";

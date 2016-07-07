@@ -60,7 +60,7 @@
         }
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function(customer)
+    var updateDataTable = function(customer, user)
     {
         $('#report-table').DataTable({
             "destroy": true,
@@ -77,6 +77,7 @@
                 "type": "POST",
                 "data": {
                     "customer": customer,
+                    "user": user
                 }
             },
             "defaultContent": "",
@@ -106,9 +107,9 @@
                     }
                     if(target == "CustomerNames")
                     {
-                        updateDataTable($("#crm-select-customer").val());
+                        updateDataTable($("#crm-select-customer").val(), $userContainer.val());
                     }
-                    $('.selectpicker').selectpicker("refresh");
+                    $('#crm-select-customer').selectpicker("refresh");
                 }
             }
         });
@@ -120,14 +121,15 @@
         $userContainer = $("#crm-select-user");
         $customerContainer = $("#crm-select-customer");
 
-        updateDataTable($customerContainer.val());
+        updateDataTable($customerContainer.val(), $userContainer.val());
 
         $userContainer.change(function () {
+            console.log("user click");
             getData("CustomerNames", $customerContainer, this.value);
-
         });
+
         $customerContainer.change(function () {
-            updateDataTable(this.value)
+            updateDataTable(this.value, $userContainer.val());
         });
 
     });

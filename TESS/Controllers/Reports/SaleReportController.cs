@@ -54,8 +54,6 @@ namespace TietoCRM.Controllers.Reports
         public String User()
         {
             String user = Request.Form["user"];
-           
-
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.generateSaleReport(user)) + "}";
         }
 
@@ -75,7 +73,6 @@ namespace TietoCRM.Controllers.Reports
                 {
                     if (offer.Offer_status == "Öppen" && vUser.IfSameArea(offer.Area))
                     {
-
                         foreach (view_OfferRow row in offer._OfferRows)
                         {
                             totalMaintenance += row.Maintenance;
@@ -88,7 +85,7 @@ namespace TietoCRM.Controllers.Reports
                 dict.Add("customer_type", customer.Customer_type);
                 dict.Add("maintenance", String.Format(se, "{0:C2}", totalMaintenance).Replace(".", " "));
                 dict.Add("license", String.Format(se, "{0:C2}", totalLicense).Replace(".", " "));
-                if(totalMaintenance != 0 && totalLicense != 0)
+                if(totalMaintenance != 0 || totalLicense != 0)
                     rows.Add(dict);
             }
             return rows;

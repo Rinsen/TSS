@@ -68,7 +68,8 @@
         updateDataTable($moduleContainer.val());
 
         $moduleContainer.change(function () {
-            updateDataTable(this.value)
+            if(this.value != "")
+                updateDataTable(this.value)
         });
 
     });

@@ -28,7 +28,7 @@ namespace TietoCRM.Controllers.List_Management
 
         public static view_Appointment GetLastVisit(String customer)
         {
-            List<view_Appointment> appointments = view_Appointment.getAllAppointments(customer);
+            List<view_Appointment> appointments = view_Appointment.getAllAppointments(customer).Where(a => System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area)).ToList();
             appointments.Sort((a, b) => DateTime.Compare(a.Date, b.Date));
             view_Appointment lastVisit = null;
             int i;
@@ -149,7 +149,8 @@ namespace TietoCRM.Controllers.List_Management
         public String GetAppointments()
         {
             String customer = Request.Form["customer"];
-            List<view_Appointment> vA = view_Appointment.getAllAppointments(customer).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 && (a.Date - DateTime.Now).TotalDays >= 0).OrderBy(a => a.Date).ToList();
+            List<view_Appointment> vA = view_Appointment.getAllAppointments(customer).Where(a => (a.Date - DateTime.Now).TotalDays <= 30 
+                && (a.Date - DateTime.Now).TotalDays >= 0 && System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area)).OrderBy(a => a.Date).ToList();
             if(vA.Count > 0)
             {
                 view_Appointment lastVisit = GetLastVisit(customer);

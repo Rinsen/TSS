@@ -294,66 +294,16 @@ namespace TietoCRM.Models
         /// <returns>A list of all a customers.</returns>
         public static List<view_Customer> getAllCustomers()
         {
-            List<view_Customer> list = new List<view_Customer>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                String query = "SELECT [ID], [Customer] ,[Representative] ,[Short_name] ,[Customer_type] ,[Address] ,[Zip_code] ,[City] ,[Telephone] ,[Fax] ,[Web_address] ,[Corporate_identity_number] ,[Email_format] ,[County] ,[Municipality] ,[IT_manager] ,[IT_manager_telephone] ,[IT_manager_mobile] ,[IT_manager_email] ,[EA_system] ,[PA_system] ,[Other_1] ,[Other_2] ,[PUL] ,[Note] ,[Inhabitant_level] FROM " + databasePrefix + "Customer";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Prepare();
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-        
-                    while (reader.Read())
-                    {
-                        view_Customer k = new view_Customer();
-                        int i = 0;
-                        while (reader.FieldCount > i)
-                        {
-                            k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
-                            i++;
-                        }
-                        k._Representatives = k.GetCustomerRepresentatives();
-                        list.Add(k);
-                    }
-                }
-            }
-            return list;
+            return getAllCustomers(null);
         }
 
         public static List<view_Customer> getAllCustomers(String representive)
         {
             List<view_Customer> list = new List<view_Customer>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            foreach(String id in GetCustomerIds(representive))
             {
-                connection.Open();
-
-                String query = "SELECT [ID], [Customer] ,[Representative] ,[Short_name] ,[Customer_type] ,[Address] ,[Zip_code] ,[City] ,[Telephone] ,[Fax] ,[Web_address] ,[Corporate_identity_number] ,[Email_format] ,[County] ,[Municipality] ,[IT_manager] ,[IT_manager_telephone] ,[IT_manager_mobile] ,[IT_manager_email] ,[EA_system] ,[PA_system] ,[Other_1] ,[Other_2] ,[PUL] ,[Note] ,[Inhabitant_level] FROM " + databasePrefix + "Customer WHERE Representative = @representive";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Prepare();
-                command.Parameters.AddWithValue("@representive", representive);
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-
-                    while (reader.Read())
-                    {
-                        view_Customer k = new view_Customer();
-                        int i = 0;
-                        while (reader.FieldCount > i)
-                        {
-                            k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
-                            i++;
-                        }
-                        list.Add(k);
-                    }
-                }
+                view_Customer c = new view_Customer("ID=" + id);
+                list.Add(c);
             }
             return list;
         }
@@ -362,19 +312,34 @@ namespace TietoCRM.Models
         /// Get the names of all customers
         /// </summary>
         /// <returns>A list of customer names</returns>
-        public static List<String> getCustomerNames()
+        public static List<String> getCustomerNames(String representive)
         {
-            List<view_Customer> ProductReportRows = getAllCustomers();
-            List<String> sortedNames = new List<String>();
-
-            foreach (view_Customer c in ProductReportRows)
+            List<String> list = new List<String>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                sortedNames.Add(c.Customer);
+                connection.Open();
+                String condition = "";
+                if (representive != null)
+                    condition = "WHERE Representative = @representive";
+
+                String query = "SELECT DISTINCT [Customer] FROM " + databasePrefix + "Customer " + condition;
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+                if (representive != null)
+                    command.Parameters.AddWithValue("@representive", representive);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        list.Add(reader.GetString(0));
+                    }
+                }
             }
-
-            sortedNames.Sort();
-
-            return sortedNames;
+            return list;
         }
 
         /// <summary>
@@ -382,26 +347,52 @@ namespace TietoCRM.Models
         /// </summary>
         /// <param name="representative">The sign of the representative.</param>
         /// <returns>A list of customer names</returns>
-        public static List<String> getCustomerNames(String representative)
+        public static List<String> getCustomerNames()
         {
-            List<view_Customer> ProductReportRows = getAllCustomers();
-            List<String> sortedNames = new List<String>();
-
-            foreach (view_Customer c in ProductReportRows)
-            {
-                foreach(String rep in c._Representatives)
-                {
-                    if (rep == representative)
-                        sortedNames.Add(c.Customer);
-                }    
-            }
-
-            sortedNames.Sort();
-
-            return sortedNames;
+            return getCustomerNames(null);
         }
 
-        
+        public static List<String> GetCustomerIds(String representive)
+        {
+            List<String> list = new List<String>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                String condition = "";
+                if (representive != null)
+                    condition = "WHERE Representative = @representive";
+
+                String query = "SELECT DISTINCT [CustomerID] FROM " + databasePrefix + "CustomerDivision " + condition;
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+                if (representive != null)
+                    command.Parameters.AddWithValue("@representive", representive);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        list.Add(reader.GetInt32(0).ToString());
+                    }
+                }
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Get the names of all customers with a specific representative
+        /// </summary>
+        /// <param name="representative">The sign of the representative.</param>
+        /// <returns>A list of customer names</returns>
+        public static List<String> GetCustomerIds()
+        {
+            return getCustomerNames(null);
+        }
+
+
 
     }
 
