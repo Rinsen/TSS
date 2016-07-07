@@ -57,7 +57,7 @@ namespace TietoCRM.Controllers.Reports
                         Dictionary<String, String> dict = new Dictionary<String, String>();
                         dict.Add("customer", customer.Customer);
                         dict.Add("customer_type", customer.Customer_type);
-                        dict.Add("representative", customer.Representative);
+                        dict.Add("representative", customer.GetReprensentativesAsString());
                         dict.Add("it_manager", customer.IT_manager);
                         dict.Add("contract_id", contract.Contract_id);
                         dict.Add("title", contract.Title);
