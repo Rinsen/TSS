@@ -9,7 +9,7 @@ namespace TietoCRM.Models
     public class view_Sector : SQLBaseClass
     {
         private decimal id_pk;
-        public decimal ID_PK { get { return id_pk; } set { id_pk = value; } }
+        public decimal _ID_PK { get { return id_pk; } set { id_pk = value; } }
 
         private String system;
         public String System { get { return system; } set { system = value; } }
