@@ -79,15 +79,15 @@ namespace TietoCRM.Controllers
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
         }
 
-        public List<String> GetAllSystemNames()
+        public List<Dictionary<String, String>> GetAllSystemNames()
         {
-            List<String> SystemList = new List<String>();
+            List<Dictionary<String, String>> SystemList = new List<Dictionary<String, String>>();
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
-                String queryTextClassification = @"SELECT DISTINCT Procapita FROM V_Procapita";
+                String queryTextClassification = @"SELECT DISTINCT Procapita, Area FROM V_Procapita";
                 command.CommandText = queryTextClassification;
                 command.Prepare();
 
@@ -96,7 +96,10 @@ namespace TietoCRM.Controllers
                 {
                     while (reader.Read())
                     {
-                        SystemList.Add(reader["Procapita"].ToString());
+                        Dictionary<String, String> dic = new Dictionary<String, String>();
+                        dic.Add("Area", reader["Area"].ToString());
+                        dic.Add("Procapita", reader["Procapita"].ToString());
+                        SystemList.Add(dic);
                     }
                 }
             }
