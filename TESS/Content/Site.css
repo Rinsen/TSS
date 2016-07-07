@@ -119,7 +119,8 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   color: white;
 }
 #currentUser {
-  padding: 13px 25px;
+  padding: 10px 25px;
+  line-height: 20px;
 }
 #currentUser span {
   display: block;

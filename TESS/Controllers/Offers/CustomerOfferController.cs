@@ -367,6 +367,7 @@ namespace TietoCRM.Controllers
             ViewData.Add("CustomerName", customer);
 
 
+
             ViewData.Add("Systems", GetAllSystemNames());
 
             ViewData.Add("Statuses", GetOfferStatus());
@@ -459,7 +460,7 @@ namespace TietoCRM.Controllers
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
-                String queryTextClassification = @"SELECT DISTINCT Procapita FROM V_Procapita";
+                String queryTextClassification = @"SELECT DISTINCT Procapita, Area FROM V_Procapita";
                 command.CommandText = queryTextClassification;
                 command.Prepare();
 
@@ -468,7 +469,8 @@ namespace TietoCRM.Controllers
                 {
                     while (reader.Read())
                     {
-                        SystemList.Add(reader["Procapita"].ToString());
+                        if(System.Web.HttpContext.Current.GetUser().IfSameArea(reader["Area"].ToString()))
+                            SystemList.Add(reader["Procapita"].ToString());
                     }
                 }
             }
