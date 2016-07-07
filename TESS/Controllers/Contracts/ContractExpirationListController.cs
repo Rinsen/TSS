@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 using TietoCRM.Models;
 using TietoCRM.Models.Contract;
 using System.Text.RegularExpressions;
+using TietoCRM.Extensions;
 
 namespace TietoCRM.Controllers.Contracts
 {
@@ -32,14 +33,15 @@ namespace TietoCRM.Controllers.Contracts
             String sign = Request.Form["sign"];
 
             this.Response.ContentType = "text/plain";
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_ContractExpirationList.GetContractExpirationList(sign)) + "}";
+            view_User user = new view_User();
+            user.Select("Sign=" + sign);
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_ContractExpirationList.GetContractExpirationList(sign).Where(c => user.IfSameArea(c.Area))) + "}";
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
                 DateTime dt = new DateTime(1970, 1, 1, 4, 0, 0, 0);
                 dt = dt.AddMilliseconds(Convert.ToDouble(m.Groups[1].Value));
                 return dt.ToString("yyyy-MM-dd");
             });
-
         }
 
         public String ExtendContracts()

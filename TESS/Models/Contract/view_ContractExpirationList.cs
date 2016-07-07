@@ -47,6 +47,9 @@ namespace TietoCRM.Models.Contract
         private String representative;
         public String Representative { get { return representative; } set { representative = value; } }
 
+        private String area;
+        public String Area { get { return area; } set { area = value; } }
+
 
         public view_ContractExpirationList()
             : base("ContractExpirationList")

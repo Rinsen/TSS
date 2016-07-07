@@ -63,6 +63,8 @@ namespace TietoCRM.Controllers.Reports
         {
             CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
             List<view_Customer> customers = view_Customer.getAllCustomers(user);
+            view_User vUser = new view_User();
+            vUser.Select("Sign=" + user);
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_Customer customer in customers)
             {
@@ -71,7 +73,7 @@ namespace TietoCRM.Controllers.Reports
                 decimal? totalLicense = 0;
                 foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
                 {
-                    if (offer.Offer_status == "Öppen")
+                    if (offer.Offer_status == "Öppen" && vUser.IfSameArea(offer.Area))
                     {
 
                         foreach (view_OfferRow row in offer._OfferRows)

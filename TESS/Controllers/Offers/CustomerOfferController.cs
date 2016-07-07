@@ -861,7 +861,8 @@ namespace TietoCRM.Controllers
                 }
                 foreach (Dictionary<String, object> d in map)
                 {
-                    SQLBaseClass a = new view_CustomerOffer();
+                    view_CustomerOffer a = new view_CustomerOffer();
+                    a.Area = System.Web.HttpContext.Current.GetUser().Area;
                     if (d.ContainsKey("insert"))
                     {
                         foreach (KeyValuePair<String, object> entry in d)
@@ -986,7 +987,7 @@ namespace TietoCRM.Controllers
                 {
                     return "0";
                 }
-
+                a.Area = System.Web.HttpContext.Current.GetUser().Area;
                 a.Insert();
 
                 List<view_CustomerOffer> allOffers = view_CustomerOffer.getAllCustomerOffers(a.Customer.ToString());

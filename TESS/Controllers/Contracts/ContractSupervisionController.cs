@@ -44,7 +44,9 @@ namespace TietoCRM.Controllers.Contracts
         public String GetData()
         {
             String sign = Request.Form["sign"];
-            List<dynamic> contracts = view_Contract.GetValidContracts(sign).OrderBy(c => c.Observation).Select(c => new
+            view_User user = new view_User();
+            user.Select("Sign=" + sign);
+            List<dynamic> contracts = view_Contract.GetValidContracts(sign).Where(c => user.IfSameArea(c.Area)).OrderBy(c => c.Observation).Select(c => new
                 {
                     Customer = c.Customer,
                     Contract_id = c.Contract_id,
