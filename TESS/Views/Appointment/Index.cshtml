@@ -197,7 +197,10 @@
         $event = $("#event_type");
         $contactSelect = $("#contact_person");
         $customerSelect = $("#customer");
-        $customerSelect.val("@ViewBag.Customers[0]");
+        @if(ViewBag.Customers.Count > 0)
+        {
+            @:$customerSelect.val("@ViewBag.Customers[0]");
+        }
 
         $("#save-appointment-changes").click(function () {
             if ($("#appointment-modal form").valid()) {

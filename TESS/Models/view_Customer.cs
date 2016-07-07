@@ -315,29 +315,10 @@ namespace TietoCRM.Models
         public static List<String> getCustomerNames(String representive)
         {
             List<String> list = new List<String>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            List<String> customerIds = GetCustomerIds(representive);
+            foreach (String id in customerIds)
             {
-                connection.Open();
-                String condition = "";
-                if (representive != null)
-                    condition = "WHERE Representative = @representive";
-
-                String query = "SELECT DISTINCT [Customer] FROM " + databasePrefix + "Customer " + condition;
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Prepare();
-                if (representive != null)
-                    command.Parameters.AddWithValue("@representive", representive);
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-
-                    while (reader.Read())
-                    {
-                        list.Add(reader.GetString(0));
-                    }
-                }
+                list.Add((new view_Customer("ID=" + id)).Customer);
             }
             return list;
         }
