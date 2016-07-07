@@ -102,9 +102,9 @@
                                                             inputVal = DateTime.Now.ToShortDateString();
                                                         }
                                                     }
-                                                    else if (pi.Name == "Default_system")
+                                                    else if (pi.Name == "Area")
                                                     {
-                                                        inputVal = ViewBag.DefaultSystem;
+                                                        inputVal = ViewBag.Area;
                                                     }
                                                     else
                                                     {
@@ -184,7 +184,7 @@
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(Reminder),
-                    "default_system": "IFO"
+                    "area": "IFO"
                 },
                 "success": function (data) {
                     if (data > 0) {
@@ -287,7 +287,7 @@
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function (onSuccess) {
-        var defSystem = "@ViewBag.DefaultSystem";
+        var defSystem = "@ViewBag.Area";
         getIndexData(defSystem, handleStates);
         var $selRowContainer = $("#Reminder-table_length");
         //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
@@ -477,7 +477,7 @@
     }
 
     $('document').ready(function () {
-        var defSystem = "@ViewBag.DefaultSystem";
+        var defSystem = "@ViewBag.Area";
         getIndexData(defSystem, handleStates);
     });
 
@@ -489,7 +489,7 @@
                 "url": "/Reminder/ReminderJsonData/",
                 "type": "POST",
                 "data": {
-                    "default_system": defSys
+                    "area": defSys
                 }
             },
             "initComplete": function (settings, json) {

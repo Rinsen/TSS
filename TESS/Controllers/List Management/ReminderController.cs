@@ -31,16 +31,16 @@ namespace TietoCRM.Controllers.List_Management
             this.ViewData.Add("ControllerName", "CustomerContract");
 
             this.ViewData.Add("Representatives", view_User.getAllUsers());
-            this.ViewData.Add("DefaultSystem", System.Web.HttpContext.Current.GetUser().Area);
+            this.ViewData.Add("Area", System.Web.HttpContext.Current.GetUser().Area);
 
             return View();
         }
 
         public String ReminderJsonData()
         {
-            String default_system = Request.Form["default_system"];
+            String area = Request.Form["area"];
             this.Response.ContentType = "text/plain";
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Reminder.getAllReminders(default_system)) + "}";
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Reminder.getAllReminders(area)) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
@@ -89,7 +89,7 @@ namespace TietoCRM.Controllers.List_Management
 
         public String InsertReminder()
         {
-            String default_system = Request.Form["default_system"];
+            String area = Request.Form["area"];
             try
             {
                 String json = Request.Form["json"];
@@ -102,8 +102,7 @@ namespace TietoCRM.Controllers.List_Management
                 {
                     return "0";
                 }
-
-                List<view_Reminder> services = view_Reminder.getAllReminders(default_system);
+                a._Area = System.Web.HttpContext.Current.GetUser().Area;
 
                 a.Insert();
 

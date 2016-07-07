@@ -32,8 +32,8 @@ namespace TietoCRM.Models
         private String sign;
         public String Sign { get; set; }
 
-        private String _default_system;
-        public String _Default_system { get; set; }
+        private String _area;
+        public String _Area { get; set; }
 
         public view_Reminder()
             : base("Reminder")
@@ -46,20 +46,20 @@ namespace TietoCRM.Models
         /// Gets all users.
         /// </summary>
         /// <returns>A lsit of users.</returns>
-        public static List<view_Reminder> getAllReminders(String default_system)
+        public static List<view_Reminder> getAllReminders(String area)
         {
             List<view_Reminder> list = new List<view_Reminder>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                String query = "SELECT [ID_PK], Start_date, Active, Prio, Customer_name, Reminder_text, _Creation_date, Sign, _Default_System FROM " + databasePrefix + "Reminder ";
-                query += " Where _Default_System = @default_system Order BY Start_date";
+                String query = "SELECT [ID_PK], Start_date, Active, Prio, Customer_name, Reminder_text, Creation_date, Sign, Area FROM " + databasePrefix + "Reminder ";
+                query += " Where Area = @area Order BY Start_date";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
-                command.Parameters.AddWithValue("@default_system", default_system);
+                command.Parameters.AddWithValue("@area", area);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -79,20 +79,20 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public String checkIfReminderPerCustomer(String customer, String default_system, String sign)
+        public String checkIfReminderPerCustomer(String customer, String area, String sign)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
                 String query = "SELECT ID_PK FROM " + databasePrefix + "Reminder";
-                query += " Where _Default_System = @default_system And Customer_name = @Customer and Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
+                query += " Where Area = @area And Customer_name = @Customer and Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@Customer", customer);
-                command.Parameters.AddWithValue("@default_system", default_system);
+                command.Parameters.AddWithValue("@area", area);
                 //command.Parameters.AddWithValue("@Sign", sign);
 
                 using (SqlDataReader reader = command.ExecuteReader())
@@ -109,21 +109,21 @@ namespace TietoCRM.Models
             }
         }
 
-        public static List<view_Reminder> getRemindersPerCustomer(String customer, String default_system, String sign)
+        public static List<view_Reminder> getRemindersPerCustomer(String customer, String area, String sign)
         {
             List<view_Reminder> list = new List<view_Reminder>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                String query = "SELECT [ID_PK], Convert(Char(10),Start_date,121) As Start_date, Active, Prio, Customer_name, Reminder_text, _Creation_date, Sign, _Default_System FROM " + databasePrefix + "Reminder";
-                query += " Where _Default_System = @default_system And Customer_name = @Customer and Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
+                String query = "SELECT [ID_PK], Convert(Char(10),Start_date,121) As Start_date, Active, Prio, Customer_name, Reminder_text, Creation_date, Sign, Area FROM " + databasePrefix + "Reminder";
+                query += " Where Area = @area And Customer_name = @Customer and Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@Customer", customer);
-                command.Parameters.AddWithValue("@default_system", default_system);
+                command.Parameters.AddWithValue("@area", area);
                 //command.Parameters.AddWithValue("@Sign", sign);
 
                 using (SqlDataReader reader = command.ExecuteReader())
@@ -144,19 +144,19 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public String checkIfReminderHighPrio(String default_system, String sign)
+        public String checkIfReminderHighPrio(String area, String sign)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
                 String query = "SELECT ID_PK FROM " + databasePrefix + "Reminder";
-                query += " Where _Default_System = @default_system And Sign = @sign And (Prio = 1 Or Customer_name is Null) And Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
+                query += " Where Area = @area And Sign = @sign And (Prio = 1 Or Customer_name is Null) And Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
-                command.Parameters.AddWithValue("@default_system", default_system);
+                command.Parameters.AddWithValue("@area", area);
                 command.Parameters.AddWithValue("@Sign", sign);
 
                 using (SqlDataReader reader = command.ExecuteReader())
@@ -172,20 +172,20 @@ namespace TietoCRM.Models
                 }
             }
         }
-        public static List<view_Reminder> getRemindersHighPrio(String default_system, String sign)
+        public static List<view_Reminder> getRemindersHighPrio(String area, String sign)
         {
             List<view_Reminder> list = new List<view_Reminder>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                String query = "SELECT [ID_PK], Start_date, Active, Prio, Customer_name, Reminder_text, _Creation_date, Sign, _Default_System FROM " + databasePrefix + "Reminder";
-                query += " Where _Default_System = @default_system And Sign = @sign And (Prio = 1 Or Customer_name is Null) and Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
+                String query = "SELECT [ID_PK], Start_date, Active, Prio, Customer_name, Reminder_text, Creation_date, Sign, Area FROM " + databasePrefix + "Reminder";
+                query += " Where Area = @area And Sign = @sign And (Prio = 1 Or Customer_name is Null) and Active = 1 And Start_date <= Convert(char(10),GetDate(),121) Order BY Start_date";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
-                command.Parameters.AddWithValue("@default_system", default_system);
+                command.Parameters.AddWithValue("@default_system", area);
                 command.Parameters.AddWithValue("@Sign", sign);
 
                 using (SqlDataReader reader = command.ExecuteReader())
