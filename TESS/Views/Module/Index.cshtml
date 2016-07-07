@@ -50,18 +50,12 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="area2" class="col-sm-2 control-label">Area</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Area" id="area2">
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="system2" class="col-sm-2 control-label">System</label>
                         <div class="col-sm-10">
                             <select class="form-control" name="System" id="system2">
-                                @foreach (String System in ViewBag.Systems)
+                                @foreach (Dictionary<String,String> System in ViewBag.Systems)
                                 {
-                                    <option value="@System">@System</option>
+                                    <option data-area="@System["Area"]" value="@System["Procapita"]">@System["Procapita"]</option>
                                 }
                             </select>
                         </div>
@@ -70,6 +64,12 @@
                         <label for="classification2" class="col-sm-2 control-label">Classification</label>
                         <div class="col-sm-10">
                             <select class="form-control" name="Classification" id="classification2"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="area2" class="col-sm-2 control-label">Area</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Area" id="area2" disabled>
                         </div>
                     </div>
                     <div class="form-group">
@@ -164,6 +164,7 @@
 
         $("#system2").change(function(){
             fillClassificationSelect(this.value);
+            $('#area2').val($(this).find(":selected").attr("data-area"));
         });
 
         @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
@@ -298,6 +299,9 @@
                     $currInput.val("");
                 }
             }
+            $("#system2 option:selected").prop("selected", false);
+            $("#system2 option:first").prop("selected", "selected");
+            $("#system2").trigger('change');
             $("#moduleModal").appendTo("body").modal().draggable();
         });
 
@@ -565,7 +569,7 @@
                 "success": function (data) {
                     if (data > 0) {
 
-
+                        StateCookie.updateSite(null, module.Article_number);
 
                         console.log("success");
                         updateDataTable(handleStates);
