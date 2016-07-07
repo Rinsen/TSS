@@ -172,6 +172,7 @@
     <Compile Include="Controllers\Reports\ProductReportController.cs" />
     <Compile Include="Controllers\Reports\SaleReportController.cs" />
     <Compile Include="Controllers\Reports\ValidContractsReportController.cs" />
+    <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -759,6 +760,7 @@
     <Content Include="Views\ProductReport\Pdf.cshtml" />
     <Content Include="Views\CancelledContractsReport\Index.cshtml" />
     <Content Include="Views\CancelledContractsReport\Pdf.cshtml" />
+    <Content Include="Views\Shared\_CurrentUserSection.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

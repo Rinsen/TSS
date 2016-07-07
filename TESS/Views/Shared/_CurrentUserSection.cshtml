@@ -1,0 +1,12 @@
+﻿@using TietoCRM.Extensions;
+<a id="currentUser" href="#">
+    @if (@HttpContext.Current.GetUser().Area == "*")
+    {
+        <span>Area: All</span>
+    }
+    else
+    {
+        <span>Area: @HttpContext.Current.GetUser().Area</span>
+    }
+    <span>User: @HttpContext.Current.GetUser().Name</span>
+</a>

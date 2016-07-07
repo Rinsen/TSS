@@ -114,6 +114,15 @@
 @*Slut på Modal*@
 
 <script>
+    var updateCurrentUserSection = function ()
+    {
+        $.ajax({
+            "url": "/Shared/CurrentUserSection/",
+            "success": function (data) {
+                $('#currentUserSection').html(data);
+            }
+        });
+    }
     var uploadToServer = function () {
         if (typeof $("#save-user-changes").attr("data-user") != "undefined") {
 
@@ -122,7 +131,7 @@
             var user = {}
 
             var $formInputs = $("#userModal form").find(":input");
-            console.log($formInputs);
+            
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
@@ -138,6 +147,7 @@
                 "success": function (data) {
                     if (data > 0) {
                         updateDataTable();
+                        updateCurrentUserSection();
                         console.log("success");
                         $("#userModal").modal("hide");
                         triggerAlert("Successfully updated this user", "success");
@@ -153,7 +163,7 @@
             var user = {}
 
             var $formInputs = $("#user-modal form").find(":input");
-            console.log($formInputs);
+            
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
@@ -322,7 +332,7 @@
                 var tdLen = $selectedTds.length;
 
                 var $formInputs = $("#userModal form").find(":input");
-                console.log($formInputs);
+               
 
                 var frmInpLen = $formInputs.length;
                 for (var i = 0; i < frmInpLen; i++) {

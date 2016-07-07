@@ -96,11 +96,12 @@
 
 
                 </ul>
-               <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a id="currentUser" href="#">Hello, @HttpContext.Current.GetUser().Name!</a>
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="currentUserSection">
+                        @Html.Partial("_CurrentUserSection")
                     </li>
                 </ul>
+
                 <!--<form class="navbar-form navbar-right" role="search">
                     <div class="form-group">
                         <input class="form-control" type="text" placeholder="Search">
