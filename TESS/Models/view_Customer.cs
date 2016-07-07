@@ -95,13 +95,17 @@ namespace TietoCRM.Models
         public String GetReprensentativesAsString()
         {
             String reps = "";
+            int count = 0;
             foreach (String rep in this._Representatives)
             {
-                if (!String.IsNullOrEmpty(rep))
+                count++;
+                if (!String.IsNullOrEmpty(rep) && count < (this._Representatives.Count - 1))
                     reps += rep + ", ";
+                else if (count < this._Representatives.Count)
+                    reps += rep + " and ";
+                else
+                    reps += rep;
             }
-            if (!String.IsNullOrEmpty(reps))
-                reps.Remove(reps.Length - 3, 2);
             return reps;
         }
 
