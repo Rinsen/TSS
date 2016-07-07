@@ -297,7 +297,15 @@
                 "columns": [@Html.Raw(DataObject)
                 ],
                 "columnDefs": [
-                    {"data": null,"defaultContent": "","targets": 0}
+                    {
+                        "data": null,
+                        "defaultContent": "",
+                        "targets": 0
+                    },
+                    {
+                        "type": "swedish-string",
+                        "targets": 1
+                    }
                 ],
                 "initComplete": function(settings, json) {
                     if(typeof onSuccess != "undefined")
