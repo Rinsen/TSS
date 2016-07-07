@@ -118,6 +118,12 @@ ul.nav.navbar-nav ol.breadcrumb li a {
 ul.nav.navbar-nav ol.breadcrumb li.active span {
   color: white;
 }
+#currentUser {
+  padding: 13px 25px;
+}
+#currentUser span {
+  display: block;
+}
 #page-content-wrapper.bg {
   background: url("img/bg2.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
