@@ -16,8 +16,8 @@
                     <th data-field="customer_type" data-sortable="true">Customer Type</th>
                     <th data-field="representative" data-sortable="true">Representative</th>
                     <th data-field="it_manager" data-sortable="true">IT manager</th>
-                    <th data-field="main_contract_id" data-sortable="true">Main contract id</th>
-                    <th data-field="amount" data-sortable="true">Amount</th>
+                    <th data-field="contract_id" data-sortable="true">Contract id</th>
+                    <th data-field="title" data-sortable="true">Title</th>
                 </tr>
             </thead>
         </table>
@@ -29,8 +29,8 @@
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "representative" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "it_manager" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "main_contract_id" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "amount" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contract_id" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "title" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(user)
