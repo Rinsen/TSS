@@ -162,6 +162,7 @@
     <Compile Include="Controllers\Reports\AppointmentReportController.cs" />
     <Compile Include="Controllers\Reports\CancelledContractsReportController.cs" />
     <Compile Include="Controllers\Reports\ContractSoldProductsReportController.cs" />
+    <Compile Include="Controllers\Reports\CustomerDivisionReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerMissingProductReportController.cs" />
     <Compile Include="Controllers\Reports\CustomerProductReportController.cs" />
     <Compile Include="Controllers\Installations\FeaturesController.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Controllers\Reports\ModuleReportController.cs" />
     <Compile Include="Controllers\Reports\ProductReportController.cs" />
     <Compile Include="Controllers\Reports\SaleReportController.cs" />
+    <Compile Include="Controllers\Reports\SentContractsReportController.cs" />
     <Compile Include="Controllers\Reports\ValidContractsReportController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Global.asax.cs">
@@ -761,6 +763,10 @@
     <Content Include="Views\CancelledContractsReport\Index.cshtml" />
     <Content Include="Views\CancelledContractsReport\Pdf.cshtml" />
     <Content Include="Views\Shared\_CurrentUserSection.cshtml" />
+    <Content Include="Views\SentContractsReport\Index.cshtml" />
+    <Content Include="Views\SentContractsReport\Pdf.cshtml" />
+    <Content Include="Views\CustomerDivisionReport\Index.cshtml" />
+    <Content Include="Views\CustomerDivisionReport\Pdf.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

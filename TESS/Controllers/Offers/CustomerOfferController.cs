@@ -459,7 +459,7 @@ namespace TietoCRM.Controllers
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
-                String queryTextClassification = @"SELECT DISTINCT Procapita FROM V_Procapita";
+                String queryTextClassification = @"SELECT DISTINCT System, Area FROM view_Sector";
                 command.CommandText = queryTextClassification;
                 command.Prepare();
 
@@ -468,7 +468,8 @@ namespace TietoCRM.Controllers
                 {
                     while (reader.Read())
                     {
-                        SystemList.Add(reader["Procapita"].ToString());
+                        if(System.Web.HttpContext.Current.GetUser().IfSameArea(reader["Area"].ToString()))
+                            SystemList.Add(reader["System"].ToString());
                     }
                 }
             }
