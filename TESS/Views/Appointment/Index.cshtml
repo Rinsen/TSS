@@ -322,6 +322,10 @@
                         }
                     }
                 }
+
+                $("#contact_person").selectpicker('refresh');
+                $("#customer").selectpicker('refresh');
+
                 $("#save-appointment-changes").attr("data-appointment", selectedId);
                 $("#appointmentModal").appendTo("body").modal("show").draggable();
                 $("#myModalLabel").html("Edit Appointment");

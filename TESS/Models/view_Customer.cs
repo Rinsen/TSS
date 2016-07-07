@@ -389,14 +389,20 @@ namespace TietoCRM.Models
 
             foreach (view_Customer c in ProductReportRows)
             {
-                if(c.Representative == representative)
-                    sortedNames.Add(c.Customer);
+                foreach(String rep in c._Representatives)
+                {
+                    if (rep == representative)
+                        sortedNames.Add(c.Customer);
+                }    
             }
 
             sortedNames.Sort();
 
             return sortedNames;
         }
+
+        
+
     }
 
 }
