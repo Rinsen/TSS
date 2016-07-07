@@ -78,8 +78,6 @@ namespace TietoCRM.Controllers.List_Management
                     return "0";
                 }
 
-                List<view_Sector> services = view_Sector.getAllSectors();
-
                 a.Insert();
 
                 return "1";
