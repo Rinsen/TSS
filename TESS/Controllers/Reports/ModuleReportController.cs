@@ -56,24 +56,24 @@ namespace TietoCRM.Controllers.Reports
             view_Module module = new view_Module();
             module.Select("Article_number=" + articleNumber);
 
-            foreach (view_ContractRow cr in ContractRows)
-            {
-                Dictionary<String, String> Customers = new Dictionary<String, String>();
-                if (contracts.FindIndex(m => m.Contract_id == cr.Contract_id) <= 0)
+            if (System.Web.HttpContext.Current.GetUser().IfSameArea(module.Area))
+                foreach (view_ContractRow cr in ContractRows)
                 {
-                    view_Contract c = new view_Contract("Contract_id = '" + cr.Contract_id + "'");
-                    contracts.Add(c);
+                    Dictionary<String, String> Customers = new Dictionary<String, String>();
+                    if (contracts.FindIndex(m => m.Contract_id == cr.Contract_id) <= 0)
+                    {
+                        view_Contract c = new view_Contract("Contract_id = '" + cr.Contract_id + "'");
+                        contracts.Add(c);
+                    }
+                    view_Contract contract = contracts[contracts.Count - 1];
+                    if (contract.Status == "Giltigt")
+                    {
+                        Customers.Add("Customer", cr.Customer);
+                        Customers.Add("Contract_id", cr.Contract_id);
+                        Customers.Add("Classification", module.Classification);
+                        rows.Add(Customers);
+                    }
                 }
-                view_Contract contract = contracts[contracts.Count - 1];
-
-                if (contract.Status == "Giltigt")
-                {
-                    Customers.Add("Customer", cr.Customer);
-                    Customers.Add("Contract_id", cr.Contract_id);
-                    Customers.Add("Classification", module.Classification);
-                    rows.Add(Customers);
-                }
-            }
             return rows;
         }
 

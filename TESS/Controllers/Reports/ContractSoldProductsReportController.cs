@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.Reports
@@ -115,12 +116,11 @@ namespace TietoCRM.Controllers.Reports
             List<view_Module> Modules = view_Module.getAllModules();
 
             Dictionary<int, Dictionary<String, dynamic>> ReturnModules = new Dictionary<int, Dictionary<String, dynamic>>();
-           
-            foreach (var cr in ContractRows)
+            foreach (view_ContractRow cr in ContractRows)
             {
-                foreach(var m in Modules)
+                foreach(view_Module m in Modules)
                 {
-                    if(m.Article_number == cr.Article_number)
+                    if(m.Article_number == cr.Article_number && System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area))
                     {
                         Dictionary<String, dynamic> SortedModule = new Dictionary<String, dynamic>();
                         SortedModule.Add("Count", 1);
@@ -146,7 +146,6 @@ namespace TietoCRM.Controllers.Reports
                     }
                 }
             }
-
             return ReturnModules;
 
             //ViewData.Add("ReturnModules", ReturnModules);

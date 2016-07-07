@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.Reports
@@ -83,7 +84,8 @@ namespace TietoCRM.Controllers.Reports
             List<String> customerNames = view_Customer.getCustomerNames(Request["user"]);
             DateTime start = DateTime.Parse(Request["start"]);
             DateTime stop = DateTime.Parse(Request["stop"]);
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Appointment.getAllAppointments().Where(a => a.Date <= stop && a.Date >= start && customerNames.Contains(a.Customer))) + "}";
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Appointment.getAllAppointments().Where(a => a.Date <= stop && a.Date >= start 
+            && customerNames.Contains(a.Customer) && System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area))) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
