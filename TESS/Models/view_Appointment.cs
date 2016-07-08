@@ -80,7 +80,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                command.CommandText = "SELECT [ID], Date, Event_type, Customer, Title, Text, Contact_person FROM " + databasePrefix + "Appointment WHERE Customer = @customer";
+                command.CommandText = "SELECT [ID], Date, Event_type, Customer, Area, Title, Text, Contact_person FROM " + databasePrefix + "Appointment WHERE Customer = @customer";
 
 
                 command.Prepare();
