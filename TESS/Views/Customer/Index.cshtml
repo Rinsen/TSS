@@ -292,7 +292,7 @@
                 "processing": true,
                 "ajax": "@Url.Content("~" + ViewBag.AjaxUrl)",
                 "defaultContent": "",
-                "order": [[ 1, "asc" ]],
+                "order": [[ 6, "asc" ]],
                 //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 50)),
                 "columns": [@Html.Raw(DataObject)
                 ],
@@ -586,8 +586,7 @@
     drawButtons();
     addButonListeners();
 
-
-    $formValidation = $("#customer-modal form").validate({
+    var validationSettings = {
         ignore: ".ignore",
         rules: {
             "Customer": {
@@ -653,7 +652,7 @@
             "Other_2": {
                 maxlength: 15
             },
-            "Representative": {
+            "_Representatives": {
                 required: true
             },
         },
@@ -663,10 +662,21 @@
         {
             error.next().addClass("tooltips");
             error.addClass("tooltips");
-            error.insertAfter(element);
+            console.log(element);
+            if (element.attr("name") == "_Representatives") {
+                error.insertAfter(".bootstrap-select");
+            } else {
+                error.insertAfter(element);
+            }
         }
+    };
+    
+    $('#customer-modal select').on('change', function(e) {
+        $('#customer-modal').validate(validationSettings).element($(this));
     });
 
+    $formValidation = $("#customer-modal form").validate(validationSettings);
+        
 
     // Filter columns DISABLED for now.
 
