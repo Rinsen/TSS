@@ -172,7 +172,6 @@
     }
 
     var updateContactPersons = function (customer) {
-        console.log("gogo");
         $.ajax({
             "url": "/Appointment/GetContacts/",
             "type": "POST",
@@ -193,6 +192,8 @@
                     $contact.val(json[0].Contact_person);
                 else
                     $contact.val("null");
+                if (selectedApptContact != null)
+                    $contact.val(selectedApptContact);
                 $contact.selectpicker("refresh");
             }
         });
@@ -256,6 +257,7 @@
 
 <script>
     var selectedId = null;
+    var selectedApptContact = null
 
     var selectRow = function (element) {
         var $td = $(element);
@@ -266,6 +268,7 @@
         $td.find("input").prop("checked", true);
 
         selectedId = $td.find("input").val();
+        selectedApptContact = $row.find("[data-property='Contact_person']").html();
         StateCookie.updateSite(null, selectedId);
         $table.find("tr.selected").removeClass("selected");
 
@@ -327,6 +330,11 @@
                                     $currInput.prop("checked", false);
                                 }
                             }
+                            else if ($currTD.attr("data-property") == "Customer")
+                            {
+                                $currInput.val($currTD.html());
+                                $("#customer").trigger("change");
+                            }
                             else
                             {
                                 $currInput.val($currTD.html());
@@ -334,10 +342,8 @@
                         }
                     }
                 }
-
                 $("#contact_person").selectpicker('refresh');
                 $("#customer").selectpicker('refresh');
-
                 $("#save-appointment-changes").attr("data-appointment", selectedId);
                 $("#appointmentModal").appendTo("body").modal("show").draggable();
                 $("#myModalLabel").html("Edit Appointment");
@@ -349,6 +355,7 @@
 
         $selRowContainer.append("<div id='create-appointment-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-appointment-button").bind("click", function () {
+            selectedApptContact = null;
             $("#area-text").hide();
             $("#id_pk-text").removeAttr("readonly");
             $("#appointmentModal").appendTo("body").modal("show").draggable();
@@ -452,7 +459,7 @@
             }
 
             if (name != "_ID") {
-                if (i < 7) {
+                if (i < 9) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
                     $td.html(aData[name]);
