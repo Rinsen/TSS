@@ -1705,8 +1705,8 @@ namespace TietoCRM.Controllers.Contracts
             try
             {
                 String customer = Request.Form["customer"];
-
-                List<String> mainContracts = view_Contract.GetContracts(customer).Where(c=>c.Is(ContractType.MainContract) && c.Status == "Giltigt").Select(c => c.Contract_id).ToList();
+                view_User user = System.Web.HttpContext.Current.GetUser();
+                List<String> mainContracts = view_Contract.GetContracts(customer).Where(c=>c.Is(ContractType.MainContract) && c.Status == "Giltigt" && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
                 
                 return (new JavaScriptSerializer()).Serialize(mainContracts);
             }

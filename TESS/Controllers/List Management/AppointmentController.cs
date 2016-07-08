@@ -134,7 +134,7 @@ namespace TietoCRM.Controllers.List_Management
                 appointment._ID = Int32.Parse(map["_ID"]);
                 appointment.Title = map["Title"];
                 appointment.Contact_person = map["Contact_person"] ?? null;
-                appointment.Area = System.Web.HttpContext.Current.GetUser().Area;
+                appointment.Area = map["Area"];
                 appointment.Update("ID=" + appointment._ID);
 
                 return "0";

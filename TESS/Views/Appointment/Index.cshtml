@@ -32,54 +32,62 @@
                             <td>
                                 @foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                                 {
+                                    String pName = pi.Name.Replace("_", " ");
                                     if (!pi.Name.StartsWith("_") && pi.Name != "Area")
                                     {
-
-                                        String pName = pi.Name.Replace("_", " ");
-
                                         <div class="form-group">
                                             <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
                                             <div class="col-sm-9">
-                                                    @if (pi.Name == "Date")
-                                                    {
-                                                        <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
-                                                    }
-                                                    else if (pi.Name == "Event_type")
-                                                    {
-                                                        <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                            <option>Meeting</option>
-                                                            <option>Online</option>
-                                                            <option>Telephone</option>
-                                                            <option>User gathering</option>
-                                                        </select>
-                                                    }
-                                                    else if (pi.Name == "Customer")
-                                                    {
-                                                        <select data-live-search="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                            @foreach(String customer in ViewBag.Customers)
-                                                            {
-                                                                <option value="@customer">@customer</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                    else if (pi.Name == "Contact_person")
-                                                    {
-                                                        <select data-live-search="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                            @foreach (view_CustomerContact contact in ViewBag.Contacts)
-                                                            {
-                                                                <option value="@contact.Contact_person">@contact.Contact_person</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                    else
-                                                    {
-                                                        <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
-                                                    }
+                                                @if (pi.Name == "Date")
+                                                {
+                                                    <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
+                                                }
+                                                else if (pi.Name == "Event_type")
+                                                {
+                                                    <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                        <option>Meeting</option>
+                                                        <option>Online</option>
+                                                        <option>Telephone</option>
+                                                        <option>User gathering</option>
+                                                    </select>
+                                                }
+                                                else if (pi.Name == "Customer")
+                                                {
+                                                    <select data-live-search="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                        @foreach (String customer in ViewBag.Customers)
+                                                        {
+                                                            <option value="@customer">@customer</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else if (pi.Name == "Contact_person")
+                                                {
+                                                    <select data-live-search="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                        @foreach (view_CustomerContact contact in ViewBag.Contacts)
+                                                        {
+                                                            <option value="@contact.Contact_person">@contact.Contact_person</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else if (pi.Name != "Area")
+                                                {
+                                                    <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (pi.Name == "Area")
+                                    {
+                                        <div id="area-text" class="form-group">
+                                            <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
+                                            <div class="col-sm-9">
+                                                <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
                                             </div>
                                         </div>
                                     }
                                 }
-                             </td>
+                            </td>
+
                         </tr>
                     </table>
                 </form>
@@ -297,6 +305,7 @@
         $selRowContainer.append("<div id='crm-edit-appointment' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-appointment").bind("click", function () {
             if (selectedId != null) {
+                $("#area-text").show();
                 $("#id_pk-text").prop("readonly", true);
                 $("#save-appointment-changes").attr("data-appointment", selectedId);
                 var $selectedTds = $("#appointment-table tr.selected td").not(".radios");
@@ -340,6 +349,7 @@
 
         $selRowContainer.append("<div id='create-appointment-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-appointment-button").bind("click", function () {
+            $("#area-text").hide();
             $("#id_pk-text").removeAttr("readonly");
             $("#appointmentModal").appendTo("body").modal("show").draggable();
             $("#save-appointment-changes").removeAttr("data-appointment");

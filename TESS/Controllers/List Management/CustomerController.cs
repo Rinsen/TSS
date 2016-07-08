@@ -165,8 +165,10 @@ namespace TietoCRM.Controllers
                         }
                        // customer.SetValue(customerVariable.Key, customerVariable.Value);
                     }
-
-                    customer.Update("Customer = '" + oldCustomer + "'");
+                    if (customer._Representatives.Count > 0)
+                        customer.Update("Customer = '" + oldCustomer + "'");
+                    else
+                        return "-1";
                 }
                 catch (Exception ex)
                 {
