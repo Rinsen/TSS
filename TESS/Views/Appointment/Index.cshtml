@@ -486,7 +486,7 @@
                 handleStates();
             },
             "defaultContent": "",
-            "order": [[1, "desc"]],
+            "order": [[3, "asc"]],
             "columns": [@Html.Raw(DataObject)],
             "columnDefs": [
                 {
@@ -494,6 +494,10 @@
                     "defaultContent": "",
                     "targets": 0
                 },
+                {
+                    "type": "swedish-string",
+                    "targets": 3
+                }
 
             ],
             "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],

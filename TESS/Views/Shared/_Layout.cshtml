@@ -257,11 +257,15 @@
         // Extend filter for Swedish charecters.
         jQuery.extend(jQuery.fn.dataTableExt.oSort, {
             "swedish-string-asc": function (s1, s2) {
-                return s1.localeCompare(s2);
+                var res = s1.localeCompare(s2, 'sv');
+                console.log(res);
+                return res;
             },
 
             "swedish-string-desc": function (s1, s2) {
-                return s2.localeCompare(s1);
+                var res = s2.localeCompare(s1, 'sv');
+                console.log(res);
+                return res;
             }
         });
 
