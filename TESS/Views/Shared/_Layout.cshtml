@@ -254,6 +254,17 @@
         });
 
 
+        // Extend filter for Swedish charecters.
+        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+            "swedish-string-asc": function (s1, s2) {
+                return s1.localeCompare(s2);
+            },
+
+            "swedish-string-desc": function (s1, s2) {
+                return s2.localeCompare(s1);
+            }
+        });
+
     </script>
 
     @RenderSection("scripts", required: false)
