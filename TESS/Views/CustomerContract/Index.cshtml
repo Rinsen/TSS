@@ -594,52 +594,52 @@
     $("#create-contract-btn").click(function(){
 
         if ($("#new-contract-modal form").valid()) {
-        var newContract = {}
+            var newContract = {}
 
-        var $formInputs = $("#newRowModal form").find(":input");
-        var frmInpLen = $formInputs.length;
-        for (var i = 0; i < frmInpLen; i++) {
-            var $currInput = $($formInputs[i]);
-            newContract[$currInput.attr("name")] = $currInput.val();
-            triggerAlert("Successfully created a new appointment.", "success");
-        }
-        newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
-        newContract["Area"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Area)";
+            var $formInputs = $("#newRowModal form").find(":input");
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                newContract[$currInput.attr("name")] = $currInput.val();
+            }
+            newContract["Customer"] = $customerSelect.val();
+            newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
+            newContract["Area"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Area)";
 
-            $.ajax({
-                "url": "@Url.Content("~/CustomerContract/Insert/")",
-                "type": "POST",
-                "data": {
-                    "json": JSON.stringify(newContract)
-                },
-                "success": function(data){
-                    if(data != "0" || data != "-1"){
-                        updateDataTable($("#crm-select-customer").val(), function(){
-                            drawButtons();
-                            $("#crm-add-row").click(function(){
-                                loadNewContactData();
-                                loadCustomer();
-                                loadMainContracts();
-                                console.log(1);
-                                setDefaultValues();
-                                $("#newRowModal").appendTo("body").modal("show").draggable();
+                $.ajax({
+                    "url": "@Url.Content("~/CustomerContract/Insert/")",
+                    "type": "POST",
+                    "data": {
+                        "json": JSON.stringify(newContract)
+                    },
+                    "success": function(data){
+                        if(data != "0" || data != "-1"){
+                            updateDataTable($("#crm-select-customer").val(), function(){
+                                drawButtons();
+                                $("#crm-add-row").click(function(){
+                                    loadNewContactData();
+                                    loadCustomer();
+                                    loadMainContracts();
+                                    console.log(1);
+                                    setDefaultValues();
+                                    $("#newRowModal").appendTo("body").modal("show").draggable();
+                                });
                             });
-                        });
-                        console.log("success");
-                        triggerAlert("Successfully added new contract.", "success");
-                        $("#newRowModal").modal("toggle");
+                            console.log("success");
+                            triggerAlert("Successfully added new contract.", "success");
+                            $("#newRowModal").modal("toggle");
 
-                        window.history.pushState(null,null,["Index?contract-id=" + data + "&customer=" + newContract.Customer ]);
+                            window.history.pushState(null,null,["Index?contract-id=" + data + "&customer=" + newContract.Customer ]);
 
-                        window.location = "ViewPdf?contract-id=" + data + "&customer=" + newContract.Customer;
+                            window.location = "ViewPdf?contract-id=" + data + "&customer=" + newContract.Customer;
 
+                        }
+                        else {
+                            triggerAlert("Failed to add new contract.", "warning");
+                            console.log("fail");
+                        }
                     }
-                    else {
-                        triggerAlert("Failed to add new contract.", "warning");
-                        console.log("fail");
-                    }
-                }
-            });
+                });
         }
     });
 </script>

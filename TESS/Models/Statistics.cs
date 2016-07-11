@@ -28,8 +28,12 @@ namespace TietoCRM.Models
         public Statistics(view_User user)
         {
             this.user = user;
-            this.customerNames = view_Customer.getCustomerNames(this.User.Sign);
-            foreach(String name in this.customerNames)
+            if(user.User_level > 1)
+                this.customerNames = view_Customer.getCustomerNames(this.User.Sign);
+            else
+                this.customerNames = view_Customer.getCustomerNames();
+
+            foreach (String name in this.customerNames)
             {
                 this.contracts.AddRange(view_Contract.GetContracts(name));
             }

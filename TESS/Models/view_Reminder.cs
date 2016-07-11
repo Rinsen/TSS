@@ -185,7 +185,7 @@ namespace TietoCRM.Models
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
-                command.Parameters.AddWithValue("@default_system", area);
+                command.Parameters.AddWithValue("@area", area);
                 command.Parameters.AddWithValue("@Sign", sign);
 
                 using (SqlDataReader reader = command.ExecuteReader())

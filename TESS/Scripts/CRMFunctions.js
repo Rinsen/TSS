@@ -450,7 +450,11 @@ var calculateValue = function (val, oldVal) {
     // (1-9)% (10-99)% (100-999)%
     if (index >= 1 && index <= 3) {
         val = parseInt(val.substring(0, index));
-        val = oldVal * (val / 100);
+        //(100)%
+        if (val <= 100)
+            val = oldVal - oldVal * (val / 100);
+        else
+            val = oldVal;
     }
     else
         val = oldVal;

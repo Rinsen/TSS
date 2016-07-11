@@ -44,7 +44,12 @@ namespace TietoCRM.Controllers.Reports
 
         public List<Dictionary<String, String>> GenerateSentContracts()
         {
-            List<view_Customer> customers = view_Customer.getAllCustomers(System.Web.HttpContext.Current.GetUser().Sign);
+            List<view_Customer> customers;
+            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                customers = view_Customer.getAllCustomers(System.Web.HttpContext.Current.GetUser().Sign);
+            else
+                customers = view_Customer.getAllCustomers();
+
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_Customer customer in customers)
             {
@@ -52,7 +57,7 @@ namespace TietoCRM.Controllers.Reports
                 List<view_Contract> contracts = view_Contract.GetContracts(customer.Customer);
                 foreach (view_Contract contract in contracts)
                 {
-                    if (contract.Status == "Sänt")
+                    if (contract.Status == "Sänt" && System.Web.HttpContext.Current.GetUser().IfSameArea(contract.Area))
                     {
                         Dictionary<String, String> dict = new Dictionary<String, String>();
                         dict.Add("customer", customer.Customer);
