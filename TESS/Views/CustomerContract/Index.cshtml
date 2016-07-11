@@ -930,7 +930,10 @@
 
             var $selRowContainer = $("#CustomerContract-table_wrapper").find(".row").first().find(".col-sm-6").first();
             $button = $selRowContainer.find("#crm-delete-contract");
+            console.log($button);
+            console.log(selectedContract);
             if(selectedContract.Status == "Makulerat" && $button.length == 0){
+                console.log("ad");
                 $selRowContainer.append("<div id='crm-delete-contract' class='crm-table-btn'><button type='button' class='btn btn-danger'>Remove</button></div>");
                 $selRowContainer.find("#crm-delete-contract").bind("click", function(){
                     bootbox.dialog({
@@ -994,24 +997,17 @@
 
         var generateSelectedContract = function($selectedRow){
             selectedContract.Contract_id = $selectedRow.find("td:nth-child(2)").html();
-            selectedContract.Customer = $selectedRow.find('[data-data="Customer"]').html();
+            selectedContract.Customer = $customerSelect.val();
             selectedContract.Contract_type = $selectedRow.find('[data-data="Contract_type"]').html();
-            selectedContract.Term_of_notice = $selectedRow.find('[data-data="Term_of_notice"]').html();
             selectedContract.Status = $selectedRow.find('[data-data="Status"]').html();
             selectedContract.Valid_from = $selectedRow.find('[data-data="Valid_from"]').html();
             selectedContract.Valid_through = $selectedRow.find('[data-data="Valid_through"]').html();
             selectedContract.Main_contract_id = $selectedRow.find('[data-data="Main_contract_id"]').html();
-            selectedContract.Extension = $selectedRow.find('[data-data="Extension"]').html();
             selectedContract.Expire = $selectedRow.find('[data-data="Expire"]').html();
             selectedContract.Observation = $selectedRow.find('[data-data="Observation"]').html();
             selectedContract.Note = $selectedRow.find('[data-data="Note"]').html();
             selectedContract.Contact_person = $selectedRow.find('[data-data="Contact_person"]').html();
-            selectedContract.Created = $selectedRow.find('[data-data="Created"]').html();
-            selectedContract.Updated = $selectedRow.find('[data-data="Updated"]').html();
-            selectedContract.Option_date = $selectedRow.find('[data-data="Option_date"]').html();
-            selectedContract.Sign = $selectedRow.find('[data-data="Sign"]').html();
-            selectedContract.Resigned_contract = $selectedRow.find('[data-data="Resigned_contract"]').html();
-            console.log(selectedContract);
+            selectedContract.Area = $selectedRow.find('[data-data="Area"]').html();
         }
         var uniqueRowNumber = 0;
         var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -1044,7 +1040,7 @@
                     i++;
 
                 }
-                else if (i >= 1) {
+                if (i >= 1) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-type", "select");
                     $td.attr("data-data", name);

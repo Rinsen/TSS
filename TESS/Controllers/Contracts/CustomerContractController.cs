@@ -38,6 +38,7 @@ namespace TietoCRM.Controllers.Contracts
 
         private List<String> skipProp = new List<string>
         {
+            "Customer",
             "Extension",
             "Created",
             "Updated",

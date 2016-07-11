@@ -64,11 +64,11 @@ namespace TietoCRM.Controllers.Reports
                 dict.Add("customer", customer.Customer);
                 dict.Add("customer_type", customer.Customer_type);
                 dict.Add("representative", customer.GetReprensentativesAsString());
-                dict.Add("it_manager", customer.IT_manager);
 
                 List<view_Contract> mainContracts = contracts.Where(c => c.Contract_type == "Huvudavtal" && c.Status == "Uppsagt" && System.Web.HttpContext.Current.GetUser().IfSameArea(c.Area)).ToList();
                 if (mainContracts.Count > 0)
                 {
+                    dict.Add("contact_person", mainContracts[0].Contact_person);
                     dict.Add("main_contract_id", mainContracts[0].Contract_id);
                     dict.Add("amount", amountValidContracts.ToString());
                     rows.Add(dict);
