@@ -40,7 +40,14 @@ namespace TietoCRM.Controllers.List_Management
         {
             String area = Request.Form["area"];
             this.Response.ContentType = "text/plain";
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Reminder.getAllReminders(area)) + "}";
+            view_User user = System.Web.HttpContext.Current.GetUser();
+            List<String> customers;
+            if (user.User_level > 1)
+                customers = view_Customer.getCustomerNames(user.Sign);
+            else
+                customers = view_Customer.getCustomerNames();
+
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Reminder.getAllReminders().Where(r => user.IfSameArea(r._Area) && r.Sign == user.Sign && customers.Contains(r.Customer_name))) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {

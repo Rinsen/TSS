@@ -149,7 +149,7 @@ var editArticle = function(editButton){
                     $articleBtn.find(".alias").html($aliasEl.val());
 
 
-                    setTimeout(function () { $(".small-modal").remove(); }, 5000);
+                    $(".small-modal").remove();
                 },
             },
         }

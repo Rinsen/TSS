@@ -42,6 +42,38 @@ namespace TietoCRM.Models
         }
 
 
+        public static List<view_Reminder> getAllReminders()
+        {
+            List<view_Reminder> list = new List<view_Reminder>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                String query = "SELECT [ID_PK], Start_date, Active, Prio, Customer_name, Reminder_text, Creation_date, Sign, Area FROM " + databasePrefix + "Reminder ";
+                query += " Order BY Start_date";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        view_Reminder k = new view_Reminder();
+                        int i = 0;
+                        while (reader.FieldCount > i)
+                        {
+                            k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                            i++;
+                        }
+                        list.Add(k);
+                    }
+                }
+            }
+            return list;
+        }
+
         /// <summary>
         /// Gets all users.
         /// </summary>
