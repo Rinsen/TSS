@@ -38,7 +38,6 @@ namespace TietoCRM.Controllers.Contracts
 
         private List<String> skipProp = new List<string>
         {
-            "Observation",
             "Extension",
             "Created",
             "Updated",
@@ -47,7 +46,6 @@ namespace TietoCRM.Controllers.Contracts
             "Sign",
             "Term_of_notice",
             "_ID",
-            //"Customer",
             "SSMA_timestamp"
         };
 
