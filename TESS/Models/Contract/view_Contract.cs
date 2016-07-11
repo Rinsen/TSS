@@ -179,7 +179,11 @@ namespace TietoCRM.Models
         /// <returns>true/false depending on the compare value.</returns>
         public bool Is(ContractType contractType)
         {
-            if(Regex.IsMatch(this.Contract_type, "Huvudavtal", RegexOptions.IgnoreCase) 
+            if (this.Contract_type == null)
+            {
+                return false;
+            }
+            else if(Regex.IsMatch(this.Contract_type, "Huvudavtal", RegexOptions.IgnoreCase) 
                 && contractType == ContractType.MainContract)
             {
                 return true;

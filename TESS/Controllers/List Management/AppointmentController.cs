@@ -69,7 +69,12 @@ namespace TietoCRM.Controllers.List_Management
         public String AppointmentJsonData()
         {
             this.Response.ContentType = "text/plain";
-            List<String> customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
+            List<String> customerNames;
+            if(System.Web.HttpContext.Current.GetUser().User_level > 1)
+                customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
+            else
+                customerNames = view_Customer.getCustomerNames();
+
             String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Appointment.getAllAppointments().Where(a=> customerNames.Contains(a.Customer) && System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area))) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>

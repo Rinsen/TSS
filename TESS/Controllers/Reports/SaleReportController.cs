@@ -17,7 +17,7 @@ namespace TietoCRM.Controllers.Reports
         public ActionResult Index()
         {
             ViewData.Add("Users", view_User.getAllUsers());
-            ViewData.Add("Title", "Sale Report");
+            ViewData.Add("Title", "Sent Offers Report");
 
             return View();
         }
@@ -40,11 +40,11 @@ namespace TietoCRM.Controllers.Reports
 
             ViewData.Add("totalM", String.Format(se, "{0:C2}", totalM).Replace(".", " "));
             ViewData.Add("totalL", String.Format(se, "{0:C2}", totalL).Replace(".", " "));
-            this.ViewData["Title"] = "Sale Report";
+            this.ViewData["Title"] = "Sent Offers Report";
 
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["user"] + "\"";
-            pdf.RotativaOptions.CustomSwitches += " --header-center \"Sale Report\"";
+            pdf.RotativaOptions.CustomSwitches += " --header-center \"Sent Offers Report\"";
 
             return pdf;
 

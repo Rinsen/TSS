@@ -16,6 +16,7 @@
                     <th data-field="name" data-sortable="true">Name</th>
                     <th data-field="system" data-sortable="true">System</th>
                     <th data-field="classification" data-sortable="true">Classification</th>
+                    <th data-field="description" data-sortable="true">Description</th>
                 </tr>
             </thead>
         </table>
@@ -27,6 +28,7 @@
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "name" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "system" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "classification" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "description" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function()

@@ -71,7 +71,9 @@ namespace TietoCRM.Controllers.Reports
                     {
                         Customers.Add("Customer", cr.Customer);
                         Customers.Add("Contract_id", cr.Contract_id);
+                        Customers.Add("Representative", contract.Sign);
                         Customers.Add("Classification", module.Classification);
+                        
                         rows.Add(Customers);
                     }
                 }

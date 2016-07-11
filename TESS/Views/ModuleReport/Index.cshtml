@@ -23,6 +23,7 @@
                 <tr>
                     <th data-field="Customer" data-sortable="true">Customer</th>
                     <th data-field="Contract_id" data-sortable="true">Contract id</th>
+                    <th data-field="Representative" data-sortable="true">Representative</th>
                     <th data-field="Classification" data-sortable="true">Classification</th>
                 </tr>
             </thead>
@@ -32,6 +33,7 @@
     @{String DataObject = "\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Customer" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Contract_id" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Representative" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(module)
@@ -39,7 +41,7 @@
         $('#report-table').DataTable({
             "destroy": true,
             "processing": true,
-            "bFilter": false,
+            "bFilter": true,
             "bPaginate": false,
             //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax": {

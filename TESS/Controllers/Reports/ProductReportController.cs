@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.Reports
@@ -46,7 +47,7 @@ namespace TietoCRM.Controllers.Reports
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_Module module in modules)
             {
-                if(module.Expired != null && module.Expired == false)
+                if(module.Expired != null && module.Expired == false && System.Web.HttpContext.Current.GetUser().IfSameArea(module.Area))
                 {
                     Dictionary<String, String> dict = new Dictionary<String, String>();
 
@@ -54,6 +55,7 @@ namespace TietoCRM.Controllers.Reports
                     dict.Add("name", module.Module);
                     dict.Add("system", module.System);
                     dict.Add("classification", module.Classification);
+                    dict.Add("description", module.Description);
 
                     rows.Add(dict);
                 }
