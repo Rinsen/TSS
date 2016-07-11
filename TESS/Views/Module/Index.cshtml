@@ -328,7 +328,7 @@
                             if($currTD.data("property") == $currInput.attr("name")){
                                 var name = $currInput.attr("name");
                                 if (name == "Discount_type" || name == "Multiple_type" || name == "Expired" || name == "Fixed_price") {
-                                    if ($currTD.html() == "true") {
+                                    if ($currTD.html() == "true" || $currTD.html() == "1") {
                                         $currInput.prop("checked", true);
                                     }
                                     else {

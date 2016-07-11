@@ -444,3 +444,16 @@ CRMCookie.prototype.updateSite = function (search, selectedId) {
     this.updateCookie();
 }
 
+//calculate what the value should be if it is precentage
+var calculateValue = function (val, oldVal) {
+    var index = val.indexOf("%");
+    // (1-9)% (10-99)% (100-999)%
+    if (index >= 1 && index <= 3) {
+        val = parseInt(val.substring(0, index));
+        val = oldVal * (val / 100);
+    }
+    else
+        val = oldVal;
+
+    return val;
+}

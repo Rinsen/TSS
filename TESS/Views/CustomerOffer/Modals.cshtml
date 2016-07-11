@@ -449,9 +449,11 @@ else if (Request["modal"] == "articles")
         if(typeof $articleBtn.data("license") != "undefined" && typeof $articleBtn.data("license") != false){
             licenseText = " <div class='form-group'>                                                                                                    \
                                 <label for='license-text' class='col-sm-2 control-label'>License</label>                                                \
-                                <div class='col-sm-10'>                                                                                                 \
+                                <div class='col-sm-10'>                                                                   \
                                     <input class='form-control' id='license-text' name='License' value='" + oldLicenseVal + "'>                         \
-                                </div>                                                                                                                  \
+                                    <input class='form-control' id='license-percent-text' name='License_percent' value='100%'>                          \
+                                    <button type='button' class='btn btn-search' id='license-percent-button'>=</button>                  \
+                                </div>                                                                                                                 \
                             </div>  ";
         }
         var aliasText = " <div class='form-group'>                                                                                                      \
@@ -468,10 +470,12 @@ else if (Request["modal"] == "articles")
             message: "<form class='form-horizontal'>                                                                                                \                                                                                                                    \
                         <div class='form-group'>                                                                                                    \
                             <label for='maintenance-text' class='col-sm-2 control-label'>Maintenance</label>                                        \
-                            <div class='col-sm-10'>                                                                                                 \
+                            <div class='col-sm-10'>                                                                   \
                                 <input class='form-control' id='maintenance-text' name='Maintenance' value='" + oldMaintenanceVal + "'>             \
+                                <input class='form-control' id='maintenance-percent-text' name='Maintenance_percent' value='100%'>                  \
+                                <button type='button' class='btn btn-search' id='maintenance-percent-button'>=</button>                  \
                             </div>                                                                                                                  \
-                        </div>                                                                                                                      \
+                        </div>                                                                                                                       \
                         " + licenseText  + "                                                                                                        \
                      " + aliasText + " </form>"
                 ,
@@ -488,7 +492,7 @@ else if (Request["modal"] == "articles")
                         className: "btn-success",
                         callback: function () {
                             var $licenseEl = $("#license-text");
-                            var $maintenanceEl = $("#maintenance-text");
+                            var $maintenanceEl = $("#maintenance-text");           
                             var $aliasEl = $("#alias-text");
                             // Update article data attrs
                             if(typeof $licenseEl != "undefined" && typeof $licenseEl != false){
@@ -510,6 +514,15 @@ else if (Request["modal"] == "articles")
                         },
                     },
                 }
+        });
+        $("#maintenance-percent-button").click(function () {
+            var $maintenanceEl = $("#maintenance-text");
+            $maintenanceEl.val(calculateValue($("#maintenance-percent-text").val(), $maintenanceEl.val()));
+        });
+
+        $("#license-percent-button").click(function () {
+            var $licenseEl = $("#license-text");
+            $licenseEl.val(calculateValue($("#license-percent-text").val(), $licenseEl.val()));
         });
     }
 

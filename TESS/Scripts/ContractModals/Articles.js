@@ -80,17 +80,19 @@ var fillArticleList = function(System, classification){
 var editArticle = function(editButton){
     var $editButton = $(editButton);
     var $articleBtn = $editButton.parent().parent().parent().find("td button");
-    var oldLicenseVal = Math.round($articleBtn.data("license"), 0);
-    var oldMaintenanceVal = Math.round($articleBtn.data("maintenance"), 0);
+    var oldLicenseVal = $articleBtn.data("license");
+    var oldMaintenanceVal = $articleBtn.data("maintenance");
     var oldAlias = $articleBtn.data("alias");
     var articleName = $articleBtn.find(".art-nr").next().html();
     var articleNr = $articleBtn.find(".art-nr").html();
     var licenseText = "";
     if (typeof $articleBtn.data("license") != "undefined" && typeof $articleBtn.data("license") != false) {
-        licenseText = " <div class='form-group'>                                                                                                    \
+        licenseText = " <div class='form-group'>                                                                                                        \
                                 <label for='license-text' class='col-sm-2 control-label'>License</label>                                                \
-                                <div class='col-sm-10'>                                                                                                 \
+                                <div class='col-sm-10'>                                                                   \
                                     <input class='form-control' id='license-text' name='License' value='" + oldLicenseVal + "'>                         \
+                                    <input class='form-control' id='license-percent-text' name='License_percent' value='100%'>                          \
+                                    <button type='button' class='btn btn-search' id='license-percent-button'>=</button>                  \
                                 </div>                                                                                                                  \
                             </div>  ";
     }
@@ -108,8 +110,10 @@ var editArticle = function(editButton){
         message: "<form class='form-horizontal'>                                                                                                \                                                                                                                    \
                         <div class='form-group'>                                                                                                    \
                             <label for='maintenance-text' class='col-sm-2 control-label'>Maintenance</label>                                        \
-                            <div class='col-sm-10'>                                                                                                 \
+                            <div class='col-sm-10'>                                                                   \
                                 <input class='form-control' id='maintenance-text' name='Maintenance' value='" + oldMaintenanceVal + "'>             \
+                                <input class='form-control' id='maintenance-percent-text' name='Maintenance_percent' value='100%'>                  \
+                                <button type='button' class='btn btn-search' id='maintenance-percent-button'>=</button>                  \
                             </div>                                                                                                                  \
                         </div>                                                                                                                      \
                         " + licenseText + "                                                                                                        \
@@ -144,11 +148,21 @@ var editArticle = function(editButton){
                     $articleBtn.data("alias", $aliasEl.val());
                     $articleBtn.find(".alias").html($aliasEl.val());
 
-                    $(".small-modal").remove();
 
+                    setTimeout(function () { $(".small-modal").remove(); }, 5000);
                 },
             },
         }
+    });
+
+    $("#maintenance-percent-button").click(function () {
+        var $maintenanceEl = $("#maintenance-text");
+        $maintenanceEl.val(calculateValue($("#maintenance-percent-text").val(), $maintenanceEl.val()));
+    });
+
+    $("#license-percent-button").click(function () {
+        var $licenseEl = $("#license-text");
+        $licenseEl.val(calculateValue($("#license-percent-text").val(), $licenseEl.val()));
     });
 }
 
