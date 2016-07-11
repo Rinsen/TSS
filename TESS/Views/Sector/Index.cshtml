@@ -5,7 +5,7 @@
             @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                if (@PropertyName != "SSMA timestamp" && @PropertyName != "ID PK")
+                if (@PropertyName != "SSMA timestamp" && @PropertyName != " ID PK")
                 {
                     <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
                 }
@@ -28,7 +28,7 @@
                     @{
                         foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                         {
-                            if (!pi.Name.Equals("ID_PK"))
+                            if (!pi.Name.Equals("_ID_PK"))
                             {
                                 String pName = pi.Name.Replace("_", " ");
 
@@ -209,7 +209,7 @@
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-        if (@PropertyName != "SSMA timestamp" && @PropertyName != "ID PK")
+        if (@PropertyName != "SSMA timestamp" && @PropertyName != " ID PK")
         {
             DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
         }
@@ -381,7 +381,7 @@
                         selectRow(this.firstChild);
 
                     });
-                    $td.html("<input type='radio' value=" + aData["ID_PK"] + " name='selected-contact' onClick=''/>");
+                    $td.html("<input type='radio' value=" + aData["_ID_PK"] + " name='selected-contact' onClick=''/>");
                     $td.addClass("radios");
                     if ($td.find("input").val() == StateSelId) {
                         selectRow($td);
@@ -392,7 +392,7 @@
                     i++;
                 }
 
-                if (name != "ID_PK") {
+                if (name != "_ID_PK") {
                     if (i < 10) {
                         $td = $('td:eq(' + i + ')', nRow);
                         $td.attr("data-property", name);

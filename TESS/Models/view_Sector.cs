@@ -25,7 +25,10 @@ namespace TietoCRM.Models
 
         private String shortname;
         public String ShortName { get { return shortname; } set { shortname = value; } }
-        
+
+        private String price_type;
+        public String Price_type { get { return price_type; } set { price_type = value; } }
+
         public view_Sector()
             : base("Sector")
         {
@@ -44,7 +47,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [ID_PK], [System], [Classification], [Area], [SortNo], [ShortName] FROM " + databasePrefix + "Sector";
+                String query = "SELECT [ID_PK], [System], [Classification], [Area], [SortNo], [ShortName], [Price_type] FROM " + databasePrefix + "Sector";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

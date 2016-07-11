@@ -203,35 +203,34 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Classification = module.Classification;
                 contractInfo.License = contractRow.License;
                 contractInfo.Maintenance = contractRow.Maintenance;
-                contractInfo.Fixed_price = contractRow.Fixed_price;
-                if (contractRow.Rewritten == true) ctrResign = true;
 
-                if (module.System != "Lärportal")
-                {
-                    if (contractRow.Rewritten == true && contractRow.Removed == false) oldArticles.Add(contractInfo);
-                    if (contractRow.Rewritten == true && contractRow.Removed == true) remArticles.Add(contractInfo);
-                    if (contractRow.Rewritten == false) articles.Add(contractInfo);
-                }
-                else
-                {
-                    if (contractRow.Rewritten == true && contractRow.Removed == false) oldEducationPortals.Add(contractInfo);
-                    if (contractRow.Rewritten == true && contractRow.Removed == true) remEducationPortals.Add(contractInfo);
-                    if (contractRow.Rewritten == false) educationPortals.Add(contractInfo);
-                }
+                view_Sector sector = new view_Sector();
+                sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
+
+                contractInfo.Price_type = sector.Price_type;
+                contractInfo.Fixed_price = contractRow.Fixed_price;
+                if (contractRow.Rewritten == true)
+                    ctrResign = true;
+
+                if (contractRow.Rewritten == true && contractRow.Removed == false)
+                    oldArticles.Add(contractInfo);
+                if (contractRow.Rewritten == true && contractRow.Removed == true)
+                    remArticles.Add(contractInfo);
+                if (contractRow.Rewritten == false)
+                    articles.Add(contractInfo);
             }
 
-            oldArticles = oldArticles.OrderBy(a => a.Article_number).ToList();
-            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Article_number).ToList();
-            remEducationPortals = remEducationPortals.OrderBy(a => a.Article_number).ToList();
+            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
+            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
+            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
 
             ViewData.Add("OldEducationPortals", oldEducationPortals);
             ViewData.Add("OldArticles", oldArticles);
             ViewData.Add("RemEducationPortals", remEducationPortals);
             ViewData.Add("CtrResign", ctrResign);
 
-            articles = articles.OrderBy(a => a.Fixed_price).ThenBy(a => a.Article_number).ToList();
-            remArticles = remArticles.OrderBy(a => a.Fixed_price).ThenBy(a => a.Article_number).ToList();
-            educationPortals = educationPortals.OrderBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
+            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -249,21 +248,20 @@ namespace TietoCRM.Controllers.Contracts
                 article.Contract_id = option.Contract_id;
                 article.Article = module.Module;
                 article.System = module.System;
+
+                view_Sector sector = new view_Sector();
+                sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
+
+                article.Price_type = sector.Price_type;
+
                 article.Classification = module.Classification;
                 article.License = option.License;
                 article.Maintenance = option.Maintenance;
 
-                if(module.System == "Lärportal")
-                {
-                    eduOptions.Add(article);
-                }
-                else
-                {
-                    options.Add(article);
-                }
+                options.Add(article);
             }
 
-            ViewData.Add("Options", options);
+            ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList());
             ViewData.Add("EducationalOptions", eduOptions);
 
             view_CustomerContact cc = new view_CustomerContact();

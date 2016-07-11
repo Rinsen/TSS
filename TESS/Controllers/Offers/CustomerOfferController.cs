@@ -147,22 +147,19 @@ namespace TietoCRM.Controllers
                     offerInfo.Module = offerRow.Alias;
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
+
+                view_Sector sector = new view_Sector();
+                sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
+
+                offerInfo.Price_type = sector.Price_type;
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
 
-                if (module.System != "Lärportal")
-                {
-                    articles.Add(offerInfo);
-                }
-                else
-                {
-                    educationPortals.Add(offerInfo);
-                }
+                articles.Add(offerInfo);
             }
 
-            articles = articles.OrderBy(a => a.Article_number).ToList();
-            educationPortals = educationPortals.OrderBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -225,22 +222,19 @@ namespace TietoCRM.Controllers
                     offerInfo.Module = offerRow.Alias;
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
+
+                view_Sector sector = new view_Sector();
+                sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
+
+                offerInfo.Price_type = sector.Price_type;
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
 
-                if (module.System != "Lärportal")
-                {
-                    articles.Add(offerInfo);
-                }
-                else
-                {
-                    educationPortals.Add(offerInfo);
-                }
+                articles.Add(offerInfo);
             }
 
-            articles = articles.OrderBy(a => a.Article_number).ToList();
-            educationPortals = educationPortals.OrderBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);

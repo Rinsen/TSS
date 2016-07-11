@@ -26,25 +26,30 @@
     Befintliga Produkter
 -------------------------------------*@
 <div id="crm-pdf-old-module-rows" class="">
-    <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
-        <table>
-            <tr>
-                <td>Produkter</td>
-                <td></td>
-                <td></td>
-                <td>Underhåll/mån</td>
-            </tr>
-        </table>
-    </div>
-    <div class="large-divider"></div>
     @{
         decimal ProductLicenseTotal = 0;
         decimal ProductMaintenanceTotal = 0;
-        
+
         String previousSystem = "";
+        String previousPriceType = "";
     }
     @foreach (dynamic article in ViewBag.OldArticles)
     {
+        if (previousPriceType != article.Price_type)
+        {
+            previousPriceType = article.Price_type;
+            <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+                <table>
+                    <tr>
+                        <td>Produkter</td>
+                        <td></td>
+                        <td>Engångsbelopp</td>
+                        <td>@article.Price_type</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="large-divider"></div>
+        }
         // Calculate total sums
         ProductLicenseTotal += Convert.ToDecimal(article.License);
         ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
@@ -175,25 +180,30 @@
 @if (ViewBag.RemArticles.Count > 0)
 {
 <div id="crm-pdf-module-rows" class="">
-    <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
-        <table>
-            <tr>
-                <td>Produkter</td>
-                <td></td>
-                <td></td>
-                <td>Underhåll/mån</td>
-            </tr>
-        </table>
-    </div>
-    <div class="large-divider"></div>
     @{
-    decimal ProductLicenseTotal = 0;
-    decimal ProductMaintenanceTotal = 0;
+        decimal ProductLicenseTotal = 0;
+        decimal ProductMaintenanceTotal = 0;
 
-    String previousSystem = "";
+        String previousSystem = "";
+        String previousPriceType = "";
     }
     @foreach (dynamic article in ViewBag.RemArticles)
     {
+        if (previousPriceType != article.Price_type)
+        {
+            previousPriceType = article.Price_type;
+            <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+                <table>
+                    <tr>
+                        <td>Produkter</td>
+                        <td></td>
+                        <td>Engångsbelopp</td>
+                        <td>@article.Price_type</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="large-divider"></div>
+        }
         // Calculate total sums
         ProductLicenseTotal += Convert.ToDecimal(article.License);
         ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
