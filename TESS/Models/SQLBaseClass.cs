@@ -110,7 +110,7 @@ namespace TietoCRM.Models
                         if(value == DBNull.Value || value == null)
                             pi.SetValue(this, Convert.ToDecimal(0));
                         else
-                            pi.SetValue(this, Convert.ToDecimal(value));
+                            pi.SetValue(this, Convert.ToDecimal(value, CultureInfo.InvariantCulture));
                         break;
                     }
                     else if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
