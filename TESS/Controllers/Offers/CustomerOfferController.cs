@@ -170,10 +170,23 @@ namespace TietoCRM.Controllers
 
             view_Customer customer = new view_Customer();
             customer.Select("Customer = '" + co.Customer.ToString() + "'");
+            customer.Select("ID=" + customer._ID);
             ViewData.Add("Customer", customer);
 
             view_User user = new view_User();
-            user.Select("Sign = '" + customer.Representative + "'");
+            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                user = System.Web.HttpContext.Current.GetUser();
+            else
+            {
+                List<view_User> users = new List<view_User>();
+                foreach (String name in customer._Representatives)
+                {
+                    view_User rep = new view_User();
+                    rep.Select("Sign=" + name);
+                    users.Add(rep);
+                }
+                user = users.Where(u => u.Area == co.Area).First();
+            }
             ViewData.Add("Representative", user);
 
             ViewData.Add("UseLogo", user.Use_logo);
@@ -244,11 +257,24 @@ namespace TietoCRM.Controllers
             ViewData.Add("CustomerContact", cc);
 
             view_Customer customer = new view_Customer();
-            customer.Select("Customer = '" + co.Customer + "'");
+            customer.Select("Customer = '" + co.Customer.ToString() + "'");
+            customer.Select("ID=" + customer._ID);
             ViewData.Add("Customer", customer);
 
             view_User user = new view_User();
-            user.Select("Sign = '" + customer.Representative + "'");
+            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                user = System.Web.HttpContext.Current.GetUser();
+            else
+            {
+                List<view_User> users = new List<view_User>();
+                foreach (String name in customer._Representatives)
+                {
+                    view_User rep = new view_User();
+                    rep.Select("Sign=" + name);
+                    users.Add(rep);
+                }
+                user = users.Where(u => u.Area == co.Area).First();
+            }
             ViewData.Add("Representative", user);
             String footerPath = Server.MapPath("~/Views/Shared/Footer_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
             String footerFilePath = "file:///" + footerPath;
@@ -636,7 +662,7 @@ namespace TietoCRM.Controllers
                                         order by Article_number asc";*/
 
                     String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Comment, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Comment, M.Multiple_type, C.Inhabitant_level 
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category

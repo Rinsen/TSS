@@ -555,6 +555,7 @@ else if (Request["modal"] == "articles")
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
                                             data-alias='" + article.Module + "'                                      \
+                                            data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -578,7 +579,8 @@ else if (Request["modal"] == "articles")
                                             data-selected='false'                                                   \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
-                                            data-alias='" + article.Module + "'                                      \
+                                            data-alias='" + article.Module + "'                                     \
+                                            data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -598,8 +600,7 @@ else if (Request["modal"] == "articles")
                                                     <span onclick='editArticle(this)' class='glyphicon glyphicon-pencil'></span>            \
                                                 </div>                                                                                      \
                                             </td>                                                                                           \
-                                            <td style='width: auto' class='module-item-container'>                                          \
-                                                                                                                                            \
+                                            <td style='width: auto' class='module-item-container'>                                          \                                                                                         \
                                             </td>                                                                                           \
                                         </tr>                                                                                               \
                                      </table>");
@@ -610,7 +611,7 @@ else if (Request["modal"] == "articles")
                     var $selectedButton = $(selVal).parent().parent().parent();
                     var selectedButtonArt = $(selVal).html();
                     
-                    if(article.Article_number == selectedButtonArt)
+                    if(article.Article_number == selectedButtonArt && article.Multiple_type != "1")
                     {
                         $mic.append($newButton.prop("disabled", true));
 
@@ -696,8 +697,9 @@ else if (Request["modal"] == "articles")
             $newButton = $button.clone();
             // Fix to exclude the "used" checkmark on selected items.
             $($newButton).find("td").get(0).remove();
-           
-            $button.prop("disabled", true);
+            if($button.attr("data-multiple-select") != "1"){
+                $button.prop("disabled", true);
+            }
             $newButton.attr("data-selected", "true");
             $newButton.attr("type", "button");
             $newButton.find('.license').html(formatCurrency(buttonLicense));

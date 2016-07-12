@@ -193,6 +193,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
                                             data-alias='" + article.Module + "'                                     \
+                                            data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -216,6 +217,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-alias='" + article.Module + "'                                      \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
+                                            data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -247,7 +249,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 var $selectedButton = $(selVal).parent().parent().parent();
                 var selectedButtonArt = $(selVal).html();
 
-                if (article.Article_number == selectedButtonArt) {
+                if (article.Article_number == selectedButtonArt && article.Multiple_type != "1") {
                     $mic.append($newButton.prop("disabled", true));
 
                     $availableList.append($buttonContainer);
@@ -319,6 +321,7 @@ var updateSelectedItems = function () {
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
                                 data-alias='" + module.Module + "'                                   \
+                                data-multiple-select='" + module.Multiple_type + "'                    \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
@@ -395,8 +398,9 @@ var moveItem = function(event, element){
         $newButton = $button.clone();
         // Fix to exclude the "used" checkmark on selected items.
         $($newButton).find("td").get(0).remove();
-           
-        $button.prop("disabled", true);
+        if ($button.attr("data-multiple-select") != "1") {
+            $button.prop("disabled", true);
+        }
         $newButton.attr("data-selected", "true");
         $newButton.attr("data-rowtype", "3");
         $newButton.attr("type", "button");

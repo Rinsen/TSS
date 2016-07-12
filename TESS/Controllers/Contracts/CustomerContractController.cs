@@ -39,13 +39,11 @@ namespace TietoCRM.Controllers.Contracts
         private List<String> skipProp = new List<string>
         {
             "Customer",
-            "Extension",
             "Created",
             "Updated",
             "Option_date",
             "Resigned_contract",
             "Sign",
-            "Term_of_notice",
             "_ID",
             "SSMA_timestamp"
         };
@@ -270,10 +268,24 @@ namespace TietoCRM.Controllers.Contracts
 
             view_Customer customer = new view_Customer();
             customer.Select("Customer = '" + contract.Customer + "'");
+            customer.Select("ID=" + customer._ID);
             ViewData.Add("Customer", customer);
 
             view_User user = new view_User();
-            user.Select("Sign = '" + contract.Sign + "'");
+            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                user = System.Web.HttpContext.Current.GetUser();
+            else
+            {
+                List<view_User> users = new List<view_User>();
+                foreach(String name in customer._Representatives)
+                {
+                    view_User rep = new view_User();
+                    rep.Select("Sign=" + name);
+                    users.Add(rep);
+                }
+                user = users.Where(u => u.Area == contract.Area).First();
+            }
+                
             ViewData.Add("Representative", user);
 
             if (user.City != null)
@@ -925,6 +937,7 @@ namespace TietoCRM.Controllers.Contracts
                     License = cRow.License,
                     Price_category = module.Price_category,
                     System = module.System,
+                    Multiple_type = module.Multiple_type,
                     Rewritten = cRow.Rewritten,
                     Removed = cRow.Removed,
                     NewMod = cRow.New,
@@ -1342,7 +1355,7 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Comment, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Comment, M.Multiple_type, C.Inhabitant_level 
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
