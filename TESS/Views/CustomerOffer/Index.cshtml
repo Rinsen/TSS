@@ -888,6 +888,11 @@
                     selectRow(this.firstChild);
 
                 });
+                $td.parent().dblclick(function(){
+                    window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
+                    window.location = "ViewPdf?selected-offer=" + selectedId;
+                });
+
                 $td.html("<input type='radio' value='" + aData["Offer_number"] + "' name='selected-offer' onClick=''/>");
                 if ($td.find("input").val() == StateSelId) {
                     selectRow($td);

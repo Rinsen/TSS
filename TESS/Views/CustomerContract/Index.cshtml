@@ -1029,6 +1029,14 @@
 
                     });
 
+                    $td.parent().dblclick(function(){
+                        $input = $("#CustomerContract-table_filter").find(":input");
+                        val = $input.val();
+                        window.history.pushState(null,null,["ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val]);
+
+                        window.location = "ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val;
+                    });
+
                     var object = {Contract_id: aData["Contract_id"], Customer: aData["Customer"]}
                     $td.html("<input type='radio' value='" + aData["Contract_id"] + "' name='selected-contract' onClick=''/>");
                     if ($td.find("input").val() == StateSelId) {
