@@ -81,6 +81,9 @@ namespace TietoCRM.Controllers
 
             foreach(view_CustomerProductRow cpr in ProductReportRows)
             {
+                if (!String.IsNullOrEmpty(cpr.Alias))
+                    cpr.Module = cpr.Alias;
+
                 uniqueCPR.Add(cpr.Contract_id);
             }
 

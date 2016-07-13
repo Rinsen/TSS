@@ -159,7 +159,7 @@ namespace TietoCRM.Controllers
                 articles.Add(offerInfo);
             }
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -247,7 +247,7 @@ namespace TietoCRM.Controllers
                 articles.Add(offerInfo);
             }
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);

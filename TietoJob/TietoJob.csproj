@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{80362170-DF72-4A58-BC8E-A14B0568EE2E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TietoJob</RootNamespace>
+    <AssemblyName>TietoJob</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\TESS\Models\Contract\view_Contract.cs">
+      <Link>Models\Contract\view_Contract.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Contract\view_ContractConsultantRow.cs">
+      <Link>Models\Contract\view_ContractConsultantRow.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Contract\view_ContractExpirationList.cs">
+      <Link>Models\Contract\view_ContractExpirationList.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Contract\view_ContractHead.cs">
+      <Link>Models\Contract\view_ContractHead.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Contract\View_ContractOption.cs">
+      <Link>Models\Contract\View_ContractOption.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Contract\view_ContractRow.cs">
+      <Link>Models\Contract\view_ContractRow.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Contract\view_ContractTemplate.cs">
+      <Link>Models\Contract\view_ContractTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Contract\view_ContractText.cs">
+      <Link>Models\Contract\view_ContractText.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\MainContractText.cs">
+      <Link>Models\MainContractText.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\SQLBaseClass.cs">
+      <Link>Models\SQLBaseClass.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\Statistics.cs">
+      <Link>Models\Statistics.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Appointment.cs">
+      <Link>Models\view_Appointment.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_ConsultantRow.cs">
+      <Link>Models\view_ConsultantRow.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Customer.cs">
+      <Link>Models\view_Customer.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_CustomerContact.cs">
+      <Link>Models\view_CustomerContact.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_CustomerMissingProductReport.cs">
+      <Link>Models\view_CustomerMissingProductReport.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_CustomerOffer.cs">
+      <Link>Models\view_CustomerOffer.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_CustomerProductRow.cs">
+      <Link>Models\view_CustomerProductRow.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Information.cs">
+      <Link>Models\view_Information.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Module.cs">
+      <Link>Models\view_Module.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_OfferRow.cs">
+      <Link>Models\view_OfferRow.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Population.cs">
+      <Link>Models\view_Population.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Price.cs">
+      <Link>Models\view_Price.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Reminder.cs">
+      <Link>Models\view_Reminder.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Sector.cs">
+      <Link>Models\view_Sector.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Service.cs">
+      <Link>Models\view_Service.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_Tariff.cs">
+      <Link>Models\view_Tariff.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_TextTemplate.cs">
+      <Link>Models\view_TextTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_User.cs">
+      <Link>Models\view_User.cs</Link>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
