@@ -283,7 +283,10 @@ namespace TietoCRM.Controllers.Contracts
                     rep.Select("Sign=" + name);
                     users.Add(rep);
                 }
-                user = users.Where(u => u.Area == contract.Area).First();
+                if (users.Count > 0)
+                    user = users.Where(u => u.Area == contract.Area).First();
+                else
+                    user = System.Web.HttpContext.Current.GetUser();
             }
                 
             ViewData.Add("Representative", user);
