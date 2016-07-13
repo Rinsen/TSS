@@ -559,7 +559,6 @@
         }
         else
         {
-            $("#create-contact-button").show();
             changePersonToShow("", $option);
         }
     });
@@ -596,46 +595,6 @@
             $("#notes3").val($("<div>").html(person.Notes).text());
         }
     }
-    $("#create-contact-button").click(function(e){
-        if ($("#contactModal form").valid())
-        {
-            e.preventDefault();
-            var person = {}
-            $option = $("#crm-contact-select").find("option:selected");
-
-            person.Customer = $contactSelect.val();
-            person.Contact_person = $("#fullName3").val();
-            person.Email = $("#inputEmail3").val();
-            person.Telephone = $("#phoneNumber3").val();
-            person.Address = $("#address3").val();
-            person.Mobile = $("#mobileNumber3").val();
-            person.Notes = $("#notes3").val();
-            person.Title = "";
-
-            $.ajax({
-                "url": "/CustomerOffer/InsertContact/",
-                "type": "POST",
-                "data": {
-                    "json": JSON.stringify(person)
-                },
-                "success": function(data){
-                    if(data > 0)
-                    {
-                        $select = $("#crm-contact-select");
-                        json = JSON.stringify(person);
-                        $select.prepend($("<option></option>").attr("value", json).html(person.Contact_person));
-                        $select.val(json);
-                        triggerAlert("Successfully added contact.", "success");
-                    }
-                    else
-                    {
-                        triggerAlert("Failed to add contact.", "warning");
-                    }
-                }
-            });
-        }
-    });
-
 
     var loadAppointments = function()
     {
@@ -702,6 +661,58 @@
         $option = $("#crm-contact-select").find("option:selected");
         if(typeof $option.attr("new-person") == "undefined")
         {
+            updateContact();
+        }
+        else{
+            insertContact();
+        }
+    });
+
+
+    var insertContact = function(){
+        if ($("#contactModal form").valid())
+        {
+            var person = {}
+            $option = $("#crm-contact-select").find("option:selected");
+
+            person.Customer = $contactSelect.val();
+            person.Contact_person = $("#fullName3").val();
+            person.Email = $("#inputEmail3").val();
+            person.Telephone = $("#phoneNumber3").val();
+            person.Address = $("#address3").val();
+            person.Mobile = $("#mobileNumber3").val();
+            person.Notes = $("#notes3").val();
+            person.Title = "";
+
+            $.ajax({
+                "url": "/CustomerOffer/InsertContact/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(person)
+                },
+                "success": function(data){
+                    if(data > 0)
+                    {
+                        $select = $("#crm-contact-select");
+                        json = JSON.stringify(person);
+                        $select.prepend($("<option></option>").attr("value", json).html(person.Contact_person));
+                        $select.val(json);
+                        triggerAlert("Successfully added contact.", "success");
+                        updateContact();
+                    }
+                    else
+                    {
+                        triggerAlert("Failed to add contact.", "warning");
+                    }
+                }
+            });
+        }
+    }
+
+    var updateContact = function(){
+        $option = $("#crm-contact-select").find("option:selected");
+        if(typeof $option.attr("new-person") == "undefined")
+        {
             if ($("#contactModal form").valid())
             {
                 var oldPerson = JSON.parse($option.val());
@@ -746,7 +757,7 @@
             }
             
         }
-    });
+    }
 
 </script>
 

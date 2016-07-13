@@ -668,7 +668,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -771,6 +770,7 @@
     <Content Include="Views\CustomerDivisionReport\Pdf.cshtml" />
     <Content Include="Views\WhitespotReport\Index.cshtml" />
     <Content Include="Views\WhitespotReport\Pdf.cshtml" />
+    <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

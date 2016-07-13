@@ -1513,7 +1513,16 @@ namespace TietoCRM.Controllers.Contracts
                             result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
-                            resultList.Add(result);
+                            if ((bool)result["Fixed_price"])
+                            {
+                                result["Maintenance"] = result["Price_category"];
+                                result["License"] = "0";
+
+                            }
+                            view_User user = System.Web.HttpContext.Current.GetUser();
+
+                            if (user.Area == result["Area"].ToString() || user.Area == "*")
+                                resultList.Add(result);
                         }
                     }
                 }

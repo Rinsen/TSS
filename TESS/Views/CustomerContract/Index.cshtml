@@ -698,7 +698,6 @@
         }
         else
         {
-            $("#create-contact-button").show();
             changePersonToShow("", $option);
         }
     });
@@ -793,10 +792,69 @@
             $("#notes3").val($("<div>").html(person.Notes).text());
         }
     }
-    $("#create-contact-button").click(function(e){
+
+
+    $("#save-contact-changes").click(function(){
+        $option = $("#crm-contact-select").find("option:selected");
+        if(typeof $option.attr("new-person") == "undefined")
+        {
+            updateContact();
+        }
+        else{
+            insertContact();
+        }
+    });
+
+    var updateContact = function(){
         if ($("#contactModal form").valid())
         {
-            e.preventDefault();
+            $option = $("#crm-contact-select").find("option:selected");
+            var oldPerson = JSON.parse($option.val());
+            var person = {}
+            console.log("asd");
+            person.oldName = oldPerson.Contact_person;
+            person.oldEmail = oldPerson.Email;
+            if(selectedId != null)
+                person. contractNumber = selectedId;
+            person.Customer = $customerSelect.val();
+            person.Contact_person = $("#fullName3").val();
+            person.Email = $("#inputEmail3").val();
+            person.Telephone = $("#phoneNumber3").val();
+            person.Address = $("#address3").val();
+            person.Mobile = $("#mobileNumber3").val();
+            person.Notes = $("#notes3").val();
+            person.Title = "";
+
+            $.ajax({
+                "url": "@Url.Content("~/CustomerContract/SaveContact/")",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(person),
+                    "id": selectedId
+                },
+                "success": function(data){
+                    if(data > 0)
+                    {
+                        updateDataTable($("#crm-select-customer").val());
+                        drawButtons();
+                        selectedId = null;
+                        console.log("success");
+                        triggerAlert("Successfully updated contact.", "success");
+                        $("#contactModal").modal("toggle");
+                    }
+                    else
+                    {
+                        triggerAlert("Failed to update contact.", "warning");
+                        console.log("failure");
+                    }
+                }
+            });
+        }
+    }
+
+    var insertContact = function(){
+        if ($("#contactModal form").valid())
+        {
             var person = {}
             $option = $("#crm-contact-select").find("option:selected");
 
@@ -823,6 +881,7 @@
                         $select.prepend($("<option></option>").attr("value", json).html(person.Contact_person));
                         $select.val(json);
                         triggerAlert("Successfully added contact.", "success");
+                        updateContact();
                         console.log("success");
                     }
                     else
@@ -831,62 +890,9 @@
                         console.log("failure");
                     }
                 }
-            });
-        }
-    });
-
-
-    $("#save-contact-changes").click(function(){
-        $option = $("#crm-contact-select").find("option:selected");
-        if(typeof $option.attr("new-person") == "undefined")
-        {
-            if ($("#contactModal form").valid())
-            {
-                var oldPerson = JSON.parse($option.val());
-                var person = {}
-
-                person.oldName = oldPerson.Contact_person;
-                person.oldEmail = oldPerson.Email;
-                if(selectedId != null)
-                    person. contractNumber = selectedId;
-                person.Customer = $customerSelect.val();
-                person.Contact_person = $("#fullName3").val();
-                person.Email = $("#inputEmail3").val();
-                person.Telephone = $("#phoneNumber3").val();
-                person.Address = $("#address3").val();
-                person.Mobile = $("#mobileNumber3").val();
-                person.Notes = $("#notes3").val();
-                person.Title = "";
-
-                $.ajax({
-                    "url": "@Url.Content("~/CustomerContract/SaveContact/")",
-                    "type": "POST",
-                    "data": {
-                        "json": JSON.stringify(person),
-                        "id": selectedId
-                    },
-                    "success": function(data){
-                        if(data > 0)
-                        {
-                            updateDataTable($("#crm-select-customer").val());
-                            drawButtons();
-                            selectedId = null;
-                            console.log("success");
-                            triggerAlert("Successfully updated contact.", "success");
-                            $("#contactModal").modal("toggle");
-                        }
-                        else
-                        {
-                            triggerAlert("Failed to update contact.", "warning");
-                            console.log("failure");
-                        }
-                    }
-                });
-            }
-
-        }
-    });
-
+        });
+    }
+    }
 </script>
 
 <!--
