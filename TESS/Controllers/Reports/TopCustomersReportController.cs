@@ -49,19 +49,20 @@ namespace TietoCRM.Controllers.Reports
             List<Dictionary<String, Object>> rows = new List<Dictionary<String, Object>>();
             foreach (view_Customer customer in customers)
             {
+
                 Dictionary<String, Object> dict = new Dictionary<string, object>();
                 CustomerStatistics stats = new CustomerStatistics(customer, true);
 
 
                 dict.Add("customer", customer.Customer);
                 dict.Add("customer_type", customer.Customer_type);
-                dict.Add("amount", Convert.ToDouble(stats.GetTotalSpent(DateTime.Now.Year)));
+                dict.Add("amount", Convert.ToInt32(stats.GetTotalSpent(DateTime.Now.Year)));
                 dict.Add("county", customer.County.ToString());
                 dict.Add("representative", customer.GetReprensentativesAsString());
 
                 rows.Add(dict);
             }
-            return rows.GetRange(0,10);
+            return rows.OrderByDescending(d => d["amount"]).ToList().GetRange(0,10);
         }
     }
 }
