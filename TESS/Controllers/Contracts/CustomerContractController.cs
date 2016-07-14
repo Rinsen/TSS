@@ -207,6 +207,7 @@ namespace TietoCRM.Controllers.Contracts
 
                 contractInfo.Price_type = sector.Price_type;
                 contractInfo.Fixed_price = contractRow.Fixed_price;
+                contractInfo.Sort_number = sector.SortNo;
                 if (contractRow.Rewritten == true)
                     ctrResign = true;
 
@@ -218,17 +219,17 @@ namespace TietoCRM.Controllers.Contracts
                     articles.Add(contractInfo);
             }
 
-            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
-            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
-            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
+            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
+            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
+            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
 
             ViewData.Add("OldEducationPortals", oldEducationPortals);
             ViewData.Add("OldArticles", oldArticles);
             ViewData.Add("RemEducationPortals", remEducationPortals);
             ViewData.Add("CtrResign", ctrResign);
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
-            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
+            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -343,14 +344,14 @@ namespace TietoCRM.Controllers.Contracts
             {
                 properties = typeof(view_Contract).GetProperties().Where(   p => 
                         p.Name == "Contract_id" || p.Name == "Title" || p.Name == "Status" || p.Name == "Main_contract_id" || p.Name == "Contract_type" ||
-                        p.Name == "Term_of_notice" || p.Name == "Status" || p.Name == "Valid_from" || p.Name == "Valid_through" ||
+                        p.Name == "Term_of_notice" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Valid_from" || p.Name == "Valid_through" ||
                         p.Name == "Extension" || p.Name == "Expire" || p.Name == "Observation" || p.Name == "Note" ||
                         p.Name == "Sign" || p.Name == "Area"
                     ).ToList();
             }
             else
             {
-                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "Observation" || p.Name == "Sign").ToList();
+                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Sign").ToList();
             }
             this.ViewData.Add("TableItems", properties);
             this.ViewData.Add("Statuses", GetStatuses());

@@ -15,18 +15,18 @@ namespace TietoJob
         {
             if (!System.Diagnostics.EventLog.SourceExists("Tieto"))
                 System.Diagnostics.EventLog.CreateEventSource("Tieto", "Job");
-            try
-            {
+            //try
+            //{
                 CustomerStatistics.UpdateAllToSQLServer();
                 UserStatistics.UpdateAllToSQLServer();
 
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
-                eventlog.WriteEntry(e.Message);
-                throw e;
-            }
+           // }
+            //catch (Exception e)
+            //{
+                //System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
+                //eventlog.WriteEntry(e.Message);
+                //throw e;
+            //}
         }
 
 

@@ -255,16 +255,16 @@ namespace TietoCRM.Models
                         List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
                         list.Add(new Dictionary<string, object>());
                         customers.Add(customer._ID, list);
-                        customers[customer._ID][customers[customer._ID].Count - 1].Add("value", totalValue);
+                        customers[customer._ID][customers[customer._ID].Count - 1].Add("Total_value", totalValue);
                         if (contract.Is(ContractType.MainContract))
                         {
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("year", contract.Valid_from.Value.Year);
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("date", contract.Valid_from.Value);
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Year", contract.Valid_from.Value.Year);
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Date", contract.Valid_from.Value);
                         }
                         else
                         {
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("year", contract.Created.Value.Year);
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("date", contract.Created.Value);
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Year", contract.Created.Value.Year);
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Date", contract.Created.Value);
                         }
                     }
                     else
@@ -278,22 +278,22 @@ namespace TietoCRM.Models
                         if (dic == null)
                         {
                             dic = new Dictionary<string, object>();
-                            dic.Add("value", totalValue);
+                            dic.Add("Total_value", totalValue);
                             if (contract.Is(ContractType.MainContract))
                             {
-                                dic.Add("year", contract.Valid_from.Value.Year);
-                                dic.Add("date", contract.Valid_from.Value);
+                                dic.Add("Year", contract.Valid_from.Value.Year);
+                                dic.Add("Date", contract.Valid_from.Value);
                             }
                             else
                             {
-                                dic.Add("year", contract.Created.Value.Year);
-                                dic.Add("date", contract.Created.Value);
+                                dic.Add("Year", contract.Created.Value.Year);
+                                dic.Add("Date", contract.Created.Value);
                             }
                             customers[customer._ID].Add(dic);
                         }
                         else
                         {
-                            dic["value"] = (decimal)dic["value"] + totalValue;
+                            dic["Total_value"] = (decimal)dic["Total_value"] + totalValue;
                         }
                     }
                 }
@@ -303,7 +303,7 @@ namespace TietoCRM.Models
             {
                 foreach (Dictionary<String, Object> dic in keyVal.Value)
                 {
-                    Insert(keyVal.Key.ToString(), (decimal)dic["value"], (DateTime)dic["date"]);
+                    Insert(keyVal.Key.ToString(), (decimal)dic["Total_value"], (DateTime)dic["Date"]);
                 }
             }
         }

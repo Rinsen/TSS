@@ -155,11 +155,12 @@ namespace TietoCRM.Controllers
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
+                offerInfo.Sort_number = sector.SortNo;
 
                 articles.Add(offerInfo);
             }
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Article_number).ThenBy(a => a.Classification).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList(); ;
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);

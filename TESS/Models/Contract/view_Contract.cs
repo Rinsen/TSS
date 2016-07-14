@@ -45,6 +45,9 @@ namespace TietoCRM.Models
         private String status;
         public String Status { get { return status; } set { status = value; } }
 
+        private int? crm_id;
+        public int? CRM_id { get { return crm_id; } set { crm_id = value; } }
+
         private DateTime? valid_from;
         public DateTime? Valid_from { get { return valid_from; } set { valid_from = value; } }
 
@@ -133,7 +136,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status] ,[Valid_from] ,[Valid_through] ,";
+                command.CommandText = "SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status], [CRM_id] ,[Valid_from] ,[Valid_through] ,";
                 command.CommandText += "[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,";
                 command.CommandText += "[Option_date] ,[Sign], Area, Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
                 //command.CommandText = "SELECT * FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
@@ -227,7 +230,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Area, Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
+                command.CommandText = "SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status], [CRM_id] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Area, Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
 
                 command.Prepare();
                
