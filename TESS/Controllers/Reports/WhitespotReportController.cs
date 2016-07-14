@@ -69,7 +69,7 @@ namespace TietoCRM.Controllers.Reports
                 {
                     dict.Add("customer", customer.Customer);
                     dict.Add("customer_type", customer.Customer_type);
-                    dict.Add("corporate_identity_number", customer.Corporate_identity_number);
+                    dict.Add("county", customer.County.ToString());
                     dict.Add("address", customer.Address);
                     dict.Add("zip_code", customer.Zip_code);
                     dict.Add("city", customer.City);

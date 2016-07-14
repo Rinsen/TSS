@@ -41,24 +41,24 @@ namespace TietoCRM.Controllers
         {
             view_User user = new view_User();
             user.Select("windows_user='" + User.Identity.Name + "'");
-            Statistics stats = new Statistics(user);
-            return stats.getAmountOpenOffers().ToString();
+            UserStatistics stats = new UserStatistics(user, true);
+            return stats.OpenOffers.ToString();
         }
 
         public String GetAmountSentContracts()
         {
             view_User user = new view_User();
             user.Select("windows_user='" + User.Identity.Name + "'");
-            Statistics stats = new Statistics(user);
-            return stats.getAmounSentContracts().ToString();
+            UserStatistics stats = new UserStatistics(user, true);
+            return stats.SentContracts.ToString();
         }
 
         public String GetAmountExpiringContracts()
         {
             view_User user = new view_User();
             user.Select("windows_user='" + User.Identity.Name + "'");
-            Statistics stats = new Statistics(user);
-            return stats.getAmountExpiringContracts().ToString();
+            TietoCRM.Models.UserStatistics stats = new TietoCRM.Models.UserStatistics(user, true);
+            return stats.ExpiringContracts.ToString();
 
         }
 

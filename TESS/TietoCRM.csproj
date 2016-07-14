@@ -174,15 +174,18 @@
     <Compile Include="Controllers\Reports\ProductReportController.cs" />
     <Compile Include="Controllers\Reports\SaleReportController.cs" />
     <Compile Include="Controllers\Reports\SentContractsReportController.cs" />
+    <Compile Include="Controllers\Reports\TopCustomersReportController.cs" />
     <Compile Include="Controllers\Reports\ValidContractsReportController.cs" />
     <Compile Include="Controllers\Reports\WhitespotReportController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustomerStatistics.cs" />
+    <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\view_Exception.cs" />
     <Compile Include="Models\FileLocationMapping.cs" />
-    <Compile Include="Models\Statistics.cs" />
+    <Compile Include="Models\UserStatistics.cs" />
     <Compile Include="Models\view_Appointment.cs" />
     <Compile Include="Models\view_CustomerMissingProductReport.cs" />
     <Compile Include="Models\Cloner.cs" />
@@ -658,16 +661,6 @@
     <Content Include="Views\CustomerOffer\Footer.txt" />
     <Content Include="Views\CustomerOffer\Header.txt" />
     <Content Include="Views\Shared\Footer.html" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -770,7 +763,18 @@
     <Content Include="Views\CustomerDivisionReport\Pdf.cshtml" />
     <Content Include="Views\WhitespotReport\Index.cshtml" />
     <Content Include="Views\WhitespotReport\Pdf.cshtml" />
+    <Content Include="Views\TopCustomersReport\Index.cshtml" />
+    <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.The REAL DEBUG.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

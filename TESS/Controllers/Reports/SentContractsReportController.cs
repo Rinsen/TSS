@@ -66,6 +66,7 @@ namespace TietoCRM.Controllers.Reports
                         dict.Add("contact_person", contract.Contact_person);
                         dict.Add("contract_id", contract.Contract_id);
                         dict.Add("title", contract.Title);
+                        dict.Add("contract_type", contract.Contract_type);
                         rows.Add(dict);
                     }
                 }

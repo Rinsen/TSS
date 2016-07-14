@@ -70,6 +70,9 @@
     <Compile Include="..\TESS\Models\Contract\view_ContractText.cs">
       <Link>Models\Contract\view_ContractText.cs</Link>
     </Compile>
+    <Compile Include="..\TESS\Models\CustomerStatistics.cs">
+      <Link>Models\CustomerStatistics.cs</Link>
+    </Compile>
     <Compile Include="..\TESS\Models\MainContractText.cs">
       <Link>Models\MainContractText.cs</Link>
     </Compile>
@@ -78,6 +81,9 @@
     </Compile>
     <Compile Include="..\TESS\Models\Statistics.cs">
       <Link>Models\Statistics.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\UserStatistics.cs">
+      <Link>Models\UserStatistics.cs</Link>
     </Compile>
     <Compile Include="..\TESS\Models\view_Appointment.cs">
       <Link>Models\view_Appointment.cs</Link>

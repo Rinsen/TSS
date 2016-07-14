@@ -15,15 +15,32 @@ namespace TietoJob
         {
             if (!System.Diagnostics.EventLog.SourceExists("Tieto"))
                 System.Diagnostics.EventLog.CreateEventSource("Tieto", "Job");
-            //try
-            //{
+            try
+            {
+                CustomerStatistics.UpdateAllToSQLServer();
+                UserStatistics.UpdateAllToSQLServer();
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
+                eventlog.WriteEntry(e.Message);
+                throw e;
+            }
+        }
+
+
+        private static void UpdateMoneyPerYearCustomer()
+        {
             Dictionary<int, List<Dictionary<String, Object>>> customers = new Dictionary<int, List<Dictionary<string, object>>>();
             List<view_Contract> contracts = view_Contract.GetContracts().OrderBy(c => c.Contract_type).ToList();
             foreach (view_Contract contract in contracts)
             {
-                if(contract.Is(ContractType.MainContract) || contract.Is(ContractType.SupplementaryContract))
+                bool a = (contract.Is(ContractType.SupplementaryContract) && contract.Created.HasValue);
+                bool b = (contract.Is(ContractType.MainContract) && contract.Valid_from.HasValue && contract.Valid_through.HasValue);
+                if (a || b)
                 {
-                    
+
                     view_Customer customer = new view_Customer("Customer='" + contract.Customer + "'");
                     decimal totalValue = 0;
 
@@ -39,72 +56,62 @@ namespace TietoJob
                     {
                         totalValue += row.Total_price ?? 0;
                     }
-                    if (contract.Valid_from.HasValue && contract.Valid_through.HasValue && contract.Is(ContractType.MainContract))
+                    if (!customers.Keys.Contains(customer._ID))
                     {
-                        if (!customers.Keys.Contains(customer._ID))
+                        List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+                        list.Add(new Dictionary<string, object>());
+                        customers.Add(customer._ID, list);
+                        customers[customer._ID][customers[customer._ID].Count - 1].Add("value", totalValue);
+                        if (contract.Is(ContractType.MainContract))
                         {
-                            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
-                            list.Add(new Dictionary<string, object>());
-                            customers.Add(customer._ID, list);
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("value", totalValue);
                             customers[customer._ID][customers[customer._ID].Count - 1].Add("year", contract.Valid_from.Value.Year);
                             customers[customer._ID][customers[customer._ID].Count - 1].Add("date", contract.Valid_from.Value);
-                            HashSet<String> mainContracts = new HashSet<string>();
-                            mainContracts.Add(contract.Main_contract_id);
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("mainContracts", mainContracts);
                         }
                         else
                         {
-                            Dictionary<string, object> dic = GetCorrectYear(contract.Valid_from.Value.Year, customers[customer._ID]);
-                            if (dic == null)
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("year", contract.Created.Value.Year);
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("date", contract.Created.Value);
+                        }
+                    }
+                    else
+                    {
+                        Dictionary<string, object> dic;
+                        if (contract.Is(ContractType.MainContract))
+                            dic = GetCorrectYear(contract.Valid_from.Value.Year, customers[customer._ID]);
+                        else
+                            dic = GetCorrectYear(contract.Created.Value.Year, customers[customer._ID]);
+
+                        if (dic == null)
+                        {
+                            dic = new Dictionary<string, object>();
+                            dic.Add("value", totalValue);
+                            if (contract.Is(ContractType.MainContract))
                             {
-                                dic = new Dictionary<string, object>();
-                                dic.Add("value", totalValue);
                                 dic.Add("year", contract.Valid_from.Value.Year);
                                 dic.Add("date", contract.Valid_from.Value);
-                                HashSet<String> mainContracts = new HashSet<string>();
-                                mainContracts.Add(contract.Main_contract_id);
-                                dic.Add("mainContracts", mainContracts);
-                                customers[customer._ID].Add(dic);
                             }
                             else
                             {
-                                dic["value"] = (decimal)dic["value"] + totalValue;
-                                ((HashSet<String>)dic["mainContracts"]).Add(contract.Main_contract_id);
-
+                                dic.Add("year", contract.Created.Value.Year);
+                                dic.Add("date", contract.Created.Value);
                             }
+                            customers[customer._ID].Add(dic);
                         }
-                    }
-                    else // Must be SupplementaryContract
-                    {
-                        if (customers.Keys.Contains(customer._ID))
+                        else
                         {
-                            foreach (Dictionary<String, Object> dic in customers[customer._ID])
-                            {
-                                if (((HashSet<String>)dic["mainContracts"]).Contains(contract.Main_contract_id))
-                                {
-                                    dic["value"] = (decimal)dic["value"] + totalValue;
-                                }
-                            }
+                            dic["value"] = (decimal)dic["value"] + totalValue;
                         }
                     }
-                }      
+                }
             }
 
-            foreach(KeyValuePair<int,List<Dictionary<String, Object>>> keyVal in customers)
+            foreach (KeyValuePair<int, List<Dictionary<String, Object>>> keyVal in customers)
             {
-                foreach(Dictionary<String, Object> dic in keyVal.Value)
+                foreach (Dictionary<String, Object> dic in keyVal.Value)
                 {
                     update(keyVal.Key.ToString(), (decimal)dic["value"], (DateTime)dic["date"]);
                 }
             }
-            /*}
-            catch (Exception e)
-            {
-                throw e;
-                System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
-                eventlog.WriteEntry(e.Message);
-            }*/
         }
 
         private static Dictionary<string, object> GetCorrectYear(int year, List<Dictionary<string, object>> list)

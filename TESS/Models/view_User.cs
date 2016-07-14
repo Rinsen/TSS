@@ -54,6 +54,13 @@ namespace TietoCRM.Models
 			//ctr
 		}
 
+        public override void Insert()
+        {
+            base.Insert();
+            UserStatistics stats = new UserStatistics(this);
+            stats.UpdateToSQLServer();
+        }
+
 
         /// <summary>
         /// Gets all users.

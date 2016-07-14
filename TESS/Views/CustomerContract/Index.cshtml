@@ -207,7 +207,7 @@
 </div>
 
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="newRowModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog contact-modal" role="document">
+    <div class="modal-dialog contract-modal" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -614,17 +614,7 @@
                     },
                     "success": function(data){
                         if(data != "0" || data != "-1"){
-                            updateDataTable($("#crm-select-customer").val(), function(){
-                                drawButtons();
-                                $("#crm-add-row").click(function(){
-                                    loadNewContactData();
-                                    loadCustomer();
-                                    loadMainContracts();
-                                    console.log(1);
-                                    setDefaultValues();
-                                    $("#newRowModal").appendTo("body").modal("show").draggable();
-                                });
-                            });
+                            updateDataTable($("#crm-select-customer").val());
                             console.log("success");
                             triggerAlert("Successfully added new contract.", "success");
                             $("#newRowModal").modal("toggle");
@@ -836,7 +826,6 @@
                     if(data > 0)
                     {
                         updateDataTable($("#crm-select-customer").val());
-                        drawButtons();
                         selectedId = null;
                         console.log("success");
                         triggerAlert("Successfully updated contact.", "success");
@@ -961,7 +950,6 @@
                                             {
                                                 updateDataTable($("#crm-select-customer").val());
                                                 //checkReminder($("#crm-select-customer").val());
-                                                drawButtons();
                                                 selectedId = null;
                                                 triggerAlert("Successfully deleted contract.", "success");
                                             }
@@ -1094,6 +1082,7 @@
                     }
                 },
                 "initComplete": function(settings, json) {
+                    drawButtons();
                     if(typeof onSuccess != "undefined")
                         onSuccess();
                     handleStates();
@@ -1202,25 +1191,17 @@
                     window.location = "ViewPdf?contract-id=" + contract + "&customer=" + $customerSelect.val() + "&search=" + val;
                 }
 
-                $("#crm-add-row").click(function(){
-                    loadNewContactData();
-                    loadCustomer();
-                    loadMainContracts();
-                    setDefaultValues();
-                    $("#newRowModal").appendTo("body").modal("show").draggable();
-                });
-
             });
-
+            $("#crm-add-row").bind("click", function(){
+                console.log("asd");
+                loadNewContactData();
+                loadCustomer();
+                loadMainContracts();
+                console.log(1);
+                setDefaultValues();
+                $("#newRowModal").appendTo("body").modal("show").draggable();
+            });
         }
-        $("#crm-add-row").click(function(){
-            loadNewContactData();
-            loadCustomer();
-            loadMainContracts();
-            console.log(1);
-            setDefaultValues();
-            $("#newRowModal").appendTo("body").modal("show").draggable();
-        });
     $(document).ready(function () {
 
         $('.selectpicker').val('@Request["customer"]');
@@ -1231,14 +1212,6 @@
             selectedId = null;
             loadAppointments();
             updateDataTable(this.value);
-            drawButtons();
-            $("#crm-add-row").click(function(){
-                loadNewContactData();
-                loadCustomer();
-                loadMainContracts();
-                setDefaultValues();
-                $("#newRowModal").appendTo("body").modal("show").draggable();
-            });
         });
 
 
@@ -1389,7 +1362,6 @@
         $(".selectpicker").selectpicker("refresh");
         updateDataTable("@Html.Raw(ViewBag.Customer)", function(){
             @Html.Raw("selectRow($(\"input[value='" + Request["contract-id"] + "'][type='radio'][name='selected-contract']\").parent());")
-            drawButtons();
             if($customerSelect.val() == "")
             {
                 $("#crm-add-row").unbind("click");
@@ -1397,7 +1369,8 @@
             }
             else
             {
-                $("#crm-add-row").click(function(){
+                $("#crm-add-row").bind("click", function(){
+                    console.log("123");
                     loadNewContactData();
                     loadCustomer();
                     loadMainContracts();

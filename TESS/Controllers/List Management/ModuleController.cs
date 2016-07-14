@@ -39,7 +39,14 @@ namespace TietoCRM.Controllers
         public String ModuleData()
         {
             this.Response.ContentType = "text/plain";
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Module.getAllModules()) + "}";
+            view_User user = System.Web.HttpContext.Current.GetUser();
+            List<view_Module> modules;
+            if (user.User_level == 2)
+                modules = view_Module.getAllModules().Where(d => user.IfSameArea(d.Area)).ToList();
+            else
+                modules = view_Module.getAllModules();
+
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(modules) + "}";
         }
 
         public String ClassificationData()

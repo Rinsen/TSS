@@ -644,6 +644,8 @@ namespace TietoCRM.Controllers.Contracts
                     }
 
                     a.Contract_id = contractId;
+                    a.Sign = System.Web.HttpContext.Current.GetUser().Sign;
+                    a.Area = System.Web.HttpContext.Current.GetUser().Area;
                     a.Created = System.DateTime.Now;
                     a.Updated = System.DateTime.Now;
                     if (a.Is(ContractType.MainContract))

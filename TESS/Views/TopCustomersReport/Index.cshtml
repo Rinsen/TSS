@@ -4,7 +4,7 @@
 @using TietoCRM.Extensions;
 <row>
     <div class="col-md-12">
-        <form method="get" action="~/SentContractsReport/Pdf" target="_blank" class="form-inline">
+        <form method="get" action="~/TopCustomersReport/Pdf" target="_blank" class="form-inline">
             <button style="margin-top: 1.7em;" class="btn btn-default" type="submit">PDF</button>
         </form>
     </div>
@@ -14,11 +14,9 @@
                 <tr>
                     <th data-field="customer" data-sortable="true">Customer</th>
                     <th data-field="customer_type" data-sortable="true">Customer Type</th>
-                    <th data-field="representative" data-sortable="true">Representative(s)</th>
-                    <th data-field="contact_person" data-sortable="true">Contact Person</th>
-                    <th data-field="contract_id" data-sortable="true">Contract id</th>
-                    <th data-field="title" data-sortable="true">Title</th>
-                    <th data-field="contract_type" data-sortable="true">Contract type</th>
+                    <th data-field="amount" data-sortable="true">Amount</th>
+                    <th data-field="county" data-sortable="true">County</th>
+                    <th data-field="representative" data-sortable="true">Representative</th>
                 </tr>
             </thead>
         </table>
@@ -28,11 +26,9 @@
     @{
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "amount" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "county" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "representative" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contact_person" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contract_id" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "title" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contract_type" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(user)
@@ -42,14 +38,14 @@
             "processing": true,
             "bPaginate": false,
             "ajax": {
-                "url": "/SentContractsReport/SentContacts/",
+                "url": "/TopCustomersReport/TopCustomers/",
                 "type": "POST",
 
             },
             "defaultContent": "",
             "columns": [@Html.Raw(DataObject)
             ],
-
+            "order": [[2, "desc"]],
             "scrollX": true,
 
         });
