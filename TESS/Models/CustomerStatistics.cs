@@ -232,68 +232,71 @@ namespace TietoCRM.Models
             {
                 bool a = (contract.Is(ContractType.SupplementaryContract) && contract.Created.HasValue);
                 bool b = (contract.Is(ContractType.MainContract) && contract.Valid_from.HasValue && contract.Valid_through.HasValue);
-                if (a || b)
+                bool c = (contract.Status == "Giltigt" || contract.Status == "Avslutat");
+                if ((a || b) && c)
                 {
+                    view_Customer customer = new view_Customer();
+                    if(customer.Select("Customer='" + contract.Customer + "'"))
+                    {
+                        decimal totalValue = 0;
 
-                    view_Customer customer = new view_Customer("Customer='" + contract.Customer + "'");
-                    decimal totalValue = 0;
-
-                    foreach (view_ContractRow row in contract._ContractRows)
-                    {
-                        totalValue += row.License ?? 0;
-                        if (contract.Valid_from.HasValue && contract.Valid_through.HasValue)
-                            totalValue += (row.Maintenance ?? 0) * (contract.Valid_through - contract.Valid_from).Value.Days / 30;
-                        else
-                            totalValue += (row.Maintenance ?? 0) * 12;
-                    }
-                    foreach (view_ContractConsultantRow row in contract._ContractConsultantRows)
-                    {
-                        totalValue += row.Total_price ?? 0;
-                    }
-                    if (!customers.Keys.Contains(customer._ID))
-                    {
-                        List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
-                        list.Add(new Dictionary<string, object>());
-                        customers.Add(customer._ID, list);
-                        customers[customer._ID][customers[customer._ID].Count - 1].Add("Total_value", totalValue);
-                        if (contract.Is(ContractType.MainContract))
+                        foreach (view_ContractRow row in contract._ContractRows)
                         {
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Year", contract.Valid_from.Value.Year);
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Date", contract.Valid_from.Value);
+                            totalValue += row.License ?? 0;
+                            if (contract.Valid_from.HasValue && contract.Valid_through.HasValue)
+                                totalValue += (row.Maintenance ?? 0) * (contract.Valid_through - contract.Valid_from).Value.Days / 30;
+                            else
+                                totalValue += (row.Maintenance ?? 0) * 12;
                         }
-                        else
+                        foreach (view_ContractConsultantRow row in contract._ContractConsultantRows)
                         {
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Year", contract.Created.Value.Year);
-                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Date", contract.Created.Value);
+                            totalValue += row.Total_price ?? 0;
                         }
-                    }
-                    else
-                    {
-                        Dictionary<string, object> dic;
-                        if (contract.Is(ContractType.MainContract))
-                            dic = GetCorrectYear(contract.Valid_from.Value.Year, customers[customer._ID]);
-                        else
-                            dic = GetCorrectYear(contract.Created.Value.Year, customers[customer._ID]);
-
-                        if (dic == null)
+                        if (!customers.Keys.Contains(customer._ID))
                         {
-                            dic = new Dictionary<string, object>();
-                            dic.Add("Total_value", totalValue);
+                            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+                            list.Add(new Dictionary<string, object>());
+                            customers.Add(customer._ID, list);
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Total_value", totalValue);
                             if (contract.Is(ContractType.MainContract))
                             {
-                                dic.Add("Year", contract.Valid_from.Value.Year);
-                                dic.Add("Date", contract.Valid_from.Value);
+                                customers[customer._ID][customers[customer._ID].Count - 1].Add("Year", contract.Valid_from.Value.Year);
+                                customers[customer._ID][customers[customer._ID].Count - 1].Add("Date", contract.Valid_from.Value);
                             }
                             else
                             {
-                                dic.Add("Year", contract.Created.Value.Year);
-                                dic.Add("Date", contract.Created.Value);
+                                customers[customer._ID][customers[customer._ID].Count - 1].Add("Year", contract.Created.Value.Year);
+                                customers[customer._ID][customers[customer._ID].Count - 1].Add("Date", contract.Created.Value);
                             }
-                            customers[customer._ID].Add(dic);
                         }
                         else
                         {
-                            dic["Total_value"] = (decimal)dic["Total_value"] + totalValue;
+                            Dictionary<string, object> dic;
+                            if (contract.Is(ContractType.MainContract))
+                                dic = GetCorrectYear(contract.Valid_from.Value.Year, customers[customer._ID]);
+                            else
+                                dic = GetCorrectYear(contract.Created.Value.Year, customers[customer._ID]);
+
+                            if (dic == null)
+                            {
+                                dic = new Dictionary<string, object>();
+                                dic.Add("Total_value", totalValue);
+                                if (contract.Is(ContractType.MainContract))
+                                {
+                                    dic.Add("Year", contract.Valid_from.Value.Year);
+                                    dic.Add("Date", contract.Valid_from.Value);
+                                }
+                                else
+                                {
+                                    dic.Add("Year", contract.Created.Value.Year);
+                                    dic.Add("Date", contract.Created.Value);
+                                }
+                                customers[customer._ID].Add(dic);
+                            }
+                            else
+                            {
+                                dic["Total_value"] = (decimal)dic["Total_value"] + totalValue;
+                            }
                         }
                     }
                 }

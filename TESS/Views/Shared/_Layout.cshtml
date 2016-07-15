@@ -101,7 +101,24 @@
                         @Html.Partial("_CurrentUserSection")
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a style="padding:10px 25px; line-height: 20px;">
+                            <span style="display:block" id="current-date-navbar" class="form-inline"></span>
+                            <span style="display:block" id="current-time-navbar" class="form-inline"></span>
+                        </a>
+                    </li>
+                </ul>
+                <script>
+                    window.setInterval(function () {
+                        var date = new Date();
+                        $("#current-date-navbar").html(date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" +
+                            ("0" + date.getDate()).slice(-2));
+                        $("#current-time-navbar").html(date.getHours() + ":" + date.getMinutes() + ":" + ("0" + (date.getSeconds() + 1)).slice(-2));
 
+                    }, 1000);
+                    
+                </script>
                 <!--<form class="navbar-form navbar-right" role="search">
                     <div class="form-group">
                         <input class="form-control" type="text" placeholder="Search">
