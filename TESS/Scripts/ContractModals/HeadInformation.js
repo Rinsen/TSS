@@ -136,6 +136,7 @@ $(document).ready(function () {
         rules: {
             "Contract_id": {
                 required: true,
+                maxlength: 50
             },
 
             "Term_of_notice": {

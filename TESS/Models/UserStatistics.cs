@@ -9,13 +9,6 @@ namespace TietoCRM.Models
 {
     public class UserStatistics : Statistics
     {
-        public class StatisticsException:Exception
-        {
-            public StatisticsException(String message):base(message)
-            {
-
-            }
-        }
         private view_User user;
         public view_User User
         {
@@ -69,7 +62,7 @@ namespace TietoCRM.Models
         {
             this.user = new view_User();
             if (!this.User.Select("Sign=" + userSign))
-                throw new StatisticsException("The user sign given was incorrect and found no result when trying to fetch the user from sql server");
+                throw new StatisticsException("The user sign given was incorrect and found no result when trying to fetch the user from sql server", this.User);
             this.initiateClass(this.user, useCachedData);
         }
 
