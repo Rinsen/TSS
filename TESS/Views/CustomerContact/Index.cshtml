@@ -118,6 +118,7 @@
     var changePersonToShow = function (person) {
         $("#save-contact-changes").attr("data-person", JSON.stringify(person));
         $("#fullName3").val($("<div>").html(person.Contact_person).text());
+        $("#title3").val(person.Title);
         $("#email3").val(person.Email);
         $("#phoneNumber3").val(person.Telephone);
         $("#mobileNumber3").val(person.Mobile);
