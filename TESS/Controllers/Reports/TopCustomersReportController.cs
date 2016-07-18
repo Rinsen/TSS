@@ -32,7 +32,9 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, Object>> contracts = this.GenerateTopCustomers("*");
+            String user = Request["user"];
+            String area = Request["area"];
+            List<Dictionary<String, Object>> contracts = this.GenerateTopCustomers(user, area);
             ViewData.Add("Contracts", contracts);
 
             this.ViewData["Title"] = "Top Customers Report";
@@ -47,16 +49,27 @@ namespace TietoCRM.Controllers.Reports
         public String TopCustomers()
         {
             String user = Request["user"];
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateTopCustomers(user)) + "}";
+            String area = Request["area"];
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateTopCustomers(user, area)) + "}";
         }
 
-        public List<Dictionary<String, Object>> GenerateTopCustomers(String user)
+        public List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area)
         {
             List<view_Customer> customers;
-            if (user == "*")
+            if (area == "*")
                 customers = view_Customer.getAllCustomers();
+            else if(user == "*")
+            {
+                customers = new List<view_Customer>();
+                List<view_User> users = view_User.getAllUsers().Where(u => u.IfSameArea(area)).ToList();
+                foreach(view_User vUser in users)
+                {
+                    customers.AddRange(view_Customer.getAllCustomers(vUser.Sign));
+                }
+            }
             else
                 customers = view_Customer.getAllCustomers(user);
+
 
             List<Dictionary<String, Object>> rows = new List<Dictionary<String, Object>>();
             foreach (view_Customer customer in customers)
@@ -65,7 +78,7 @@ namespace TietoCRM.Controllers.Reports
                 CustomerStatistics stats = new CustomerStatistics(customer, true);
 
                 dict.Add("customer", customer.Customer);
-                dict.Add("amount", Convert.ToInt32(stats.GetTotalSpent(DateTime.Now.Year)));
+                dict.Add("amount", Convert.ToInt32(stats.GetTotalSpent(DateTime.Now.Year, area)));
                 dict.Add("representative", customer.GetReprensentativesAsString());
                 dict.Add("customer_type", customer.Customer_type);
                 dict.Add("county", customer.County.ToString());

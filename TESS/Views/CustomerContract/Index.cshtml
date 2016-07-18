@@ -4,9 +4,19 @@
         <div class="form-group">
             <label for="crm-select-customer">Customer:</label>
             <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
+                <option value="*">All</option>
+                @{bool first = true;}
                 @foreach (String Customer in ViewBag.Customers)
                 {
-                    <option value="@Customer">@Customer</option>
+                    if (first)
+                    {
+                        <option selected value="@Customer">@Customer</option>
+                        first = false;
+                    }
+                    else
+                    {
+                        <option value="@Customer">@Customer</option>
+                    }
                 }
             </select>
             <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
@@ -19,7 +29,7 @@
                 <th data-field="#" data-sortable="false">#</th>
                 @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
                 {
-                    if (!property.Name.StartsWith("_") && @property.Name != "Customer" && !ViewBag.SkipProperties.Contains(property.Name))
+                    if (!property.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(property.Name))
                     {
                         String PropertyName = property.Name.Replace("_", " ");
                         <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
@@ -84,6 +94,12 @@
                         <label for="fullName3" class="col-sm-2 control-label">Full name</label>
                         <div class="col-sm-10">
                             <input class="form-control" name="Contact_person" id="fullName3" placeholder="Full name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title3" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Title" id="title3" placeholder="Title">
                         </div>
                     </div>
                     <div class="form-group">
@@ -756,6 +772,7 @@
             if(typeof $option.attr("new-person") == "undefined")
             {
                 $("#fullName3").val($("<div>").html(person.Contact_person).text());
+                $("#title3").val(person.Title);
                 $("#inputEmail3").val(person.Email);
                 $("#phoneNumber3").val(person.Telephone);
                 $("#mobileNumber3").val(person.Mobile);
@@ -765,6 +782,7 @@
             else
             {
                 $("#fullName3").val("");
+                $("#title3").val("");
                 $("#inputEmail3").val("");
                 $("#phoneNumber3").val("");
                 $("#mobileNumber3").val("");
@@ -775,6 +793,7 @@
         else
         {
             $("#fullName3").val($("<div>").html(person.Contact_person).text());
+            $("#title3").val(person.Title);
             $("#inputEmail3").val(person.Email);
             $("#phoneNumber3").val(person.Telephone);
             $("#mobileNumber3").val(person.Mobile);
@@ -813,7 +832,7 @@
             person.Address = $("#address3").val();
             person.Mobile = $("#mobileNumber3").val();
             person.Notes = $("#notes3").val();
-            person.Title = "";
+            person.Title = $("#title3").val();
 
             $.ajax({
                 "url": "@Url.Content("~/CustomerContract/SaveContact/")",
@@ -854,7 +873,7 @@
             person.Address = $("#address3").val();
             person.Mobile = $("#mobileNumber3").val();
             person.Notes = $("#notes3").val();
-            person.Title = "";
+            person.Title = $("#title3").val();
 
             $.ajax({
                 "url": "@Url.Content("~/CustomerOffer/InsertContact/")",
@@ -1059,7 +1078,7 @@
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
 
-            if (!PropertyInfo.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name) && PropertyInfo.Name != "Customer")
+            if (!PropertyInfo.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name))
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
