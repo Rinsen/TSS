@@ -13,7 +13,7 @@
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 if (@PropertyName != "SSMA timestamp" && PropertyInfo.Name != "System" && 
                     PropertyInfo.Name != "Customer" && PropertyInfo.Name != "Sign" && PropertyInfo.Name != "Status" &&
-                    PropertyInfo.Name != "SortNo" && PropertyInfo.Name != "Discount_type")
+                    PropertyInfo.Name != "SortNo" && PropertyInfo.Name != "Discount_type" && PropertyInfo.Name != "Alias")
                 {
                     <th>@PropertyName</th>
                 }
@@ -26,7 +26,7 @@
                         @foreach (System.Reflection.PropertyInfo PInfo in ViewBag.Properties)
                         {
                             if (PInfo.Name != "SSMA_timestamp" && PInfo.Name != "System" && PInfo.Name != "Customer" && PInfo.Name != "Sign" &&
-                                PInfo.Name != "Status" && PInfo.Name != "SortNo" && PInfo.Name != "Discount_type")
+                                PInfo.Name != "Status" && PInfo.Name != "SortNo" && PInfo.Name != "Discount_type" && PInfo.Name != "Alias")
                             {
                                 if (PInfo.PropertyType != typeof(DateTime?))
                                 {
@@ -38,6 +38,18 @@
                                     {
                                         <td></td>
                                     }
+                                }
+                                else if(PInfo.Name == "Module")
+                                {
+                                    if (String.IsNullOrEmpty(CPR.Alias))
+                                    {
+                                        <td>@CPR.Module</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@CPR.Alias</td>
+                                    }
+
                                 }
                                 else
                                 {

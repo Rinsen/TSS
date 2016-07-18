@@ -69,6 +69,8 @@ namespace TietoCRM.Controllers.Reports
                 Dictionary<String, String> dict = new Dictionary<String, String>();
                 decimal? totalMaintenance = 0;
                 decimal? totalLicense = 0;
+                dict.Add("customer", customer.Customer);
+ 
                 foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
                 {
                     if (offer.Offer_status == "Öppen" && vUser.IfSameArea(offer.Area))
@@ -78,14 +80,24 @@ namespace TietoCRM.Controllers.Reports
                             totalMaintenance += row.Maintenance;
                             totalLicense += row.License;
                         }
+                        if(offer.Offer_valid.HasValue && !dict.Keys.Contains("valid_through") || DateTime.Parse(dict["valid_through"]) > offer.Offer_valid.Value)
+                        {
+                            if (offer.Offer_created.HasValue)
+                                dict["created"] = offer.Offer_created.Value.ToString("yyyy-MM-dd");
+                            else
+                                dict["created"] = "no date found";
 
+                            if (offer.Offer_valid.HasValue)
+                                dict["valid_through"] = offer.Offer_valid.Value.ToString("yyyy-MM-dd");
+                            else
+                                dict["valid_through"] = "no date found";
+                        }
                     }
                 }
-                dict.Add("customer", customer.Customer);
-                dict.Add("customer_type", customer.Customer_type);
                 dict.Add("maintenance", String.Format(se, "{0:C2}", totalMaintenance).Replace(".", " "));
                 dict.Add("license", String.Format(se, "{0:C2}", totalLicense).Replace(".", " "));
-                if(totalMaintenance != 0 || totalLicense != 0)
+                dict.Add("customer_type", customer.Customer_type);
+                if (totalMaintenance != 0 || totalLicense != 0)
                     rows.Add(dict);
             }
             return rows;

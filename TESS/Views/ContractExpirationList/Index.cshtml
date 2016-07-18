@@ -37,7 +37,8 @@
                 {
                     //if (property.Name != "CanExtend")
                     //{
-                    if (@property.Name != "SSMA_timestamp" && @property.Name != "CanExtend" && @property.Name != "Representative" && !property.Name.StartsWith("_"))
+                    if (@property.Name != "SSMA_timestamp" && @property.Name != "CanExtend" && @property.Name != "Representative" && !property.Name.StartsWith("_")
+                        && property.Name != "Contract_type" && property.Name != "Status")
                         {
                             String PropertyName = property.Name.Replace("_", " ");
                             <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
@@ -59,7 +60,8 @@
     {
         //Console.log(PropertyInfo.Name);
         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-        if (@PropertyName != "SSMA timestamp" && @PropertyName != "CanExtend" && @PropertyName != "Representative")
+        if (@PropertyName != "SSMA timestamp" && @PropertyName != "CanExtend" && @PropertyName != "Representative"
+            && PropertyName != "Contract type" && PropertyName != "Status")
         {
             DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
         }

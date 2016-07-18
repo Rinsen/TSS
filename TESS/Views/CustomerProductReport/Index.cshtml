@@ -40,7 +40,7 @@
                     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
                     {
                         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                        if (PropertyName != "SSMA timestamp" && PropertyName != "Customer" && PropertyName != "Sign")
+                        if (PropertyName != "SSMA timestamp" && PropertyName != "Customer" && PropertyName != "Sign" && PropertyName != "Alias")
                         {
                             <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
                         }
@@ -54,7 +54,7 @@
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-        if (PropertyName != "SSMA timestamp" && PropertyName != "Customer" && PropertyName != "Sign")
+        if (PropertyName != "SSMA timestamp" && PropertyName != "Customer" && PropertyName != "Sign" && PropertyName != "Alias")
         {
             DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
         }

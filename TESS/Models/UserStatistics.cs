@@ -62,7 +62,11 @@ namespace TietoCRM.Models
         {
             this.user = new view_User();
             if (!this.User.Select("Sign=" + userSign))
+            {
+                this.User.Sign = userSign;
                 throw new StatisticsException("The user sign given was incorrect and found no result when trying to fetch the user from sql server", this.User);
+            }
+                
             this.initiateClass(this.user, useCachedData);
         }
 

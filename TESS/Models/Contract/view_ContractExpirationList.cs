@@ -20,6 +20,9 @@ namespace TietoCRM.Models.Contract
         private String contract_type;
         public String Contract_type { get { return contract_type; } set { contract_type = value; } }
 
+        private String title;
+        public String Title { get { return title; } set { title = value; } }
+
         private DateTime? observation;
         public DateTime? Observation { get { return observation; } set { observation = value; } }
 

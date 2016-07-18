@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.List_Management
@@ -23,7 +24,7 @@ namespace TietoCRM.Controllers.List_Management
         public String SectorJsonData()
         {
             this.Response.ContentType = "text/plain";
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Sector.getAllSectors()) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Sector.getAllSectors().Where(s => System.Web.HttpContext.Current.GetUser().IfSameArea(s.Area))) + "}";
         }
 
         public String SaveSector()

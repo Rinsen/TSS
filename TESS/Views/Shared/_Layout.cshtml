@@ -114,7 +114,7 @@
                         var date = new Date();
                         $("#current-date-navbar").html(date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" +
                             ("0" + date.getDate()).slice(-2));
-                        $("#current-time-navbar").html(date.getHours() + ":" + date.getMinutes() + ":" + ("0" + (date.getSeconds() + 1)).slice(-2));
+                        $("#current-time-navbar").html(("0" + (date.getHours())).slice(-2) + ":" + ("0" + (date.getMinutes())).slice(-2) + ":" + ("0" + (date.getSeconds())).slice(-2));
 
                     }, 1000);
                     

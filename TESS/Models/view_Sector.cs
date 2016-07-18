@@ -70,6 +70,19 @@ namespace TietoCRM.Models
             }
             return list;
         }
+
+        public static HashSet<String> getAllAreas()
+        {
+            List<view_Sector> sectors = view_Sector.getAllSectors();
+            HashSet<String> areas = new HashSet<string>();
+
+            foreach(view_Sector sector in sectors)
+            {
+                areas.Add(sector.Area);
+            }
+
+            return areas;
+        }
     }
 
 }

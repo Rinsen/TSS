@@ -285,7 +285,13 @@ namespace TietoCRM.Controllers.Contracts
                     users.Add(rep);
                 }
                 if (users.Count > 0)
-                    user = users.Where(u => u.Area == contract.Area).First();
+                {
+                    List<view_User> tempUsers = users.Where(u => u.Area == contract.Area).ToList();
+                    if(tempUsers.Count > 0)
+                        user = tempUsers.First();
+                    else
+                        user = System.Web.HttpContext.Current.GetUser();
+                }
                 else
                     user = System.Web.HttpContext.Current.GetUser();
             }
