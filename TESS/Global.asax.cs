@@ -71,17 +71,17 @@ namespace TietoCRM
             }    
        }
 
-        protected void Application_Error(object sender, EventArgs e)
-        {
-            Exception exception = Server.GetLastError();
+        //protected void Application_Error(object sender, EventArgs e)
+        //{
+        //    //Exception exception = Server.GetLastError();
 
-            view_Exception.UploadException(exception);
+        //    //view_Exception.UploadException(exception);
 
-            Server.ClearError();
-            Response.Redirect("/Error/Index");
+        //    //Server.ClearError();
+        //    //Response.Redirect("/Error/Index");
 
 
-        }
+        //}
 
 
     }
