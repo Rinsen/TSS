@@ -9,6 +9,8 @@ using Rotativa.MVC;
 using System.Security.Principal;
 using System.Web.Script.Serialization;
 using TietoCRM.Extensions;
+using System.Text;
+
 namespace TietoCRM.Controllers
 {
     public class CustomerProductReportController : Controller
@@ -59,8 +61,29 @@ namespace TietoCRM.Controllers
             pdf.RotativaOptions.CustomSwitches += " --header-center \"Customer Products\"";
 
             return pdf;
-             
-           
+        }
+
+        public String ExportAsCsv()
+        {
+            Response.Clear();
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + Request["customer"] + " modules.csv");
+            Response.ContentType = "text/csv";
+            Response.Charset = Encoding.UTF8.WebName;
+            Response.ContentEncoding = Encoding.UTF8;
+            Response.BinaryWrite(Encoding.UTF8.GetPreamble());
+            Response.Write(GetCsv(view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null)));
+            Response.End();
+            return "";
+        }
+
+        public String GetCsv(List<view_CustomerProductRow> rows)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach(view_CustomerProductRow cpr in rows)
+            {
+                sb.Append(cpr.GetCsv());
+            }
+            return sb.ToString();
         }
 
         public String CustomerData()

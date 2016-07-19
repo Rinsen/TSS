@@ -6,8 +6,18 @@
     <div class="col-md-12">
         <form method="get" action="~/TopCustomersReport/Pdf" target="_blank" class="form-inline">
             <div class="form-group">
+                <label for="crm-select-year">Year:</label>
+                <select name="year" id="crm-select-year" class="form-control selectpicker" data-live-search="true">
+                    @for(int i = 1990; i <= DateTime.Now.Year; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="crm-select-area">Area:</label>
                 <select name="area" id="crm-select-area" class="form-control selectpicker" data-live-search="true">
+                    <option value="*">All</option>
                     @foreach (String area in ViewBag.Areas)
                     {
                         <option value="@area">@area</option>
@@ -48,7 +58,7 @@
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "county" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function(user)
+    var updateDataTable = function()
     {
         $('#report-table').DataTable({
             "destroy": true,
@@ -58,7 +68,9 @@
                 "url": "/TopCustomersReport/TopCustomers/",
                 "type": "POST",
                 "data": {
-                    "user": $userContainer.val()
+                    "user": $userContainer.val(),
+                    "area": $areaContainer.val(),
+                    "year": $yearContainer.val()
                 }
             },
             "defaultContent": "",
@@ -78,15 +90,27 @@
 
         $areaContainer = $("#crm-select-area");
 
-        $areaContainer.on("change", function(){
-            updateUser();
+        $yearContainer = $("#crm-select-year");
+
+        $areaContainer.on("change", function () {
+            if ($areaContainer.val() != "*")
+                updateUser();
+            else
+            {
+                $userContainer.empty();
+                $('.selectpicker').selectpicker("refresh");
+                updateDataTable();
+            }
         });
 
-        updateUser();
+        updateDataTable()
 
         $userContainer.change(function () {
-            updateDataTable(this.value)
+            updateDataTable()
+        });
 
+        $yearContainer.change(function () {
+            updateDataTable()
         });
     });
     var updateUser = function(){

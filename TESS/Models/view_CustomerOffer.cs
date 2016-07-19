@@ -137,6 +137,38 @@ namespace TietoCRM.Models
             }
             return list;
         }
-    }
 
+        public static List<view_CustomerOffer> getAllCustomerOffers()
+        {
+            List<view_CustomerOffer> list = new List<view_CustomerOffer>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = "SELECT Offer_number FROM " + databasePrefix + "CustomerOffer";
+
+                command.Prepare();
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_CustomerOffer t = new view_CustomerOffer("Offer_number = " + reader["Offer_number"]);
+                            list.Add(t);
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+    }
 }

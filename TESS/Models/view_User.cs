@@ -99,7 +99,7 @@ namespace TietoCRM.Models
         
         public bool IfSameArea(String area)
         {
-            return area.ToLower() == this.Area.ToLower() || this.Area == "*";
+            return area != null && this.Area != null && area.ToLower() == this.Area.ToLower() || this.Area == "*";
         } 
 
     }

@@ -18,14 +18,16 @@ namespace TietoJob
             //try
             //{
                 CustomerStatistics.UpdateAllToSQLServer();
-                UserStatistics.UpdateAllToSQLServer();
+                Console.WriteLine("CustomerStatistics done");
+                //UserStatistics.UpdateAllToSQLServer();
+                Console.WriteLine("UserStatistics done");
 
             //}
             //catch (Exception e)
             //{
-                //System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
-                //eventlog.WriteEntry(e.Message);
-                //throw e;
+            //System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
+            //eventlog.WriteEntry(e.Message);
+            //throw e;
             //}
         }
     }

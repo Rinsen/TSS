@@ -48,19 +48,32 @@ namespace TietoCRM.Models
         /// </summary>
         /// <param name="year">What year to get total spent from</param>
         /// <returns></returns>
-        public decimal GetTotalSpent(int year)
+        public decimal GetTotalSpent(int year, String area)
         {
             List<Dictionary<String, Object>> list;
             if (!useCachedData && this.perYear != null)
                 this.perYear = list = this.GetMoneyPerYear();
             else
                 list = this.perYear;
-
-            List<Dictionary<String, Object>> yearList = list.Where(d => ((DateTime)d["Year"]).Year == year).ToList();
+            view_User user = new view_User();
+            user.Area = area;
+            List<Dictionary<String, Object>> yearList = list.Where(d => ((DateTime)d["Year"]).Year == year && user.IfSameArea((String)d["Area"])).ToList();
             if (yearList.Count > 0)
-                return (decimal)yearList[0]["Total_value"];
+            {
+                if (user.Area == "*")
+                {
+                    decimal sum = 0;
+                    foreach (Dictionary<String, Object> dic in yearList)
+                    {
+                        sum += (decimal)dic["Total_value"];
+                    }
+                    return sum;
+                }
+                else
+                    return (decimal)yearList[0]["Total_value"];
+            }
             else
-                return 0;
+                throw new StatisticsException("The year (" + year + ") didnt exist in this object", this.Customer);
         }
 
         /// <summary>
@@ -127,9 +140,9 @@ namespace TietoCRM.Models
                    
                     Dictionary<string, object> dic;
                     if (contract.Is(ContractType.MainContract))
-                        dic = GetCorrectYear(contract.Valid_from.Value.Year, customerYear);
+                        dic = GetCorrectYear(contract.Valid_from.Value.Year, contract.Area, customerYear);
                     else
-                        dic = GetCorrectYear(contract.Created.Value.Year, customerYear);
+                        dic = GetCorrectYear(contract.Created.Value.Year, contract.Area, customerYear);
 
                     if (dic == null)
                     {
@@ -170,7 +183,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT Customer_ID, Total_value, Year FROM " + "dbo.view_" + "TCVCalculator WHERE Customer_ID=@id";
+                String query = "SELECT Customer_ID, Total_value, Year, Area FROM " + "dbo.view_" + "TCVCalculator WHERE Customer_ID=@id";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -210,11 +223,11 @@ namespace TietoCRM.Models
         /// <param name="year">What year to search for</param>
         /// <param name="list">A list with a dictionary that represents a year with total spent that year for a customer</param>
         /// <returns></returns>
-        private static Dictionary<string, object> GetCorrectYear(int year, List<Dictionary<string, object>> list)
+        private static Dictionary<string, object> GetCorrectYear(int year, String area, List<Dictionary<string, object>> list)
         {
             foreach (Dictionary<string, object> dic in list)
             {
-                if ((int)dic["Year"] == year)
+                if ((int)dic["Year"] == year && (String)dic["Area"] == area)
                     return dic;
             }
 
@@ -228,7 +241,7 @@ namespace TietoCRM.Models
         public static void UpdateAllToSQLServer()
         {
             Dictionary<int, List<Dictionary<String, Object>>> customers = new Dictionary<int, List<Dictionary<string, object>>>();
-            List<view_Contract> contracts = view_Contract.GetContracts().OrderBy(c => c.Contract_type).ToList();
+            List<view_Contract> contracts = view_Contract.GetContracts().OrderBy(c => c.Area).ThenBy(c => c.Contract_type).ToList();
             foreach (view_Contract contract in contracts)
             {
                 bool a = (contract.Is(ContractType.SupplementaryContract) && contract.Created.HasValue);
@@ -240,7 +253,6 @@ namespace TietoCRM.Models
                     if(customer.Select("Customer='" + contract.Customer + "'"))
                     {
                         decimal totalValue = 0;
-
                         foreach (view_ContractRow row in contract._ContractRows)
                         {
                             totalValue += row.License ?? 0;
@@ -269,14 +281,15 @@ namespace TietoCRM.Models
                                 customers[customer._ID][customers[customer._ID].Count - 1].Add("Year", contract.Created.Value.Year);
                                 customers[customer._ID][customers[customer._ID].Count - 1].Add("Date", contract.Created.Value);
                             }
+                            customers[customer._ID][customers[customer._ID].Count - 1].Add("Area", contract.Area);
                         }
                         else
                         {
                             Dictionary<string, object> dic;
                             if (contract.Is(ContractType.MainContract))
-                                dic = GetCorrectYear(contract.Valid_from.Value.Year, customers[customer._ID]);
+                                dic = GetCorrectYear(contract.Valid_from.Value.Year, contract.Area, customers[customer._ID]);
                             else
-                                dic = GetCorrectYear(contract.Created.Value.Year, customers[customer._ID]);
+                                dic = GetCorrectYear(contract.Created.Value.Year, contract.Area, customers[customer._ID]);
 
                             if (dic == null)
                             {
@@ -292,6 +305,7 @@ namespace TietoCRM.Models
                                     dic.Add("Year", contract.Created.Value.Year);
                                     dic.Add("Date", contract.Created.Value);
                                 }
+                                dic.Add("Area", contract.Area);
                                 customers[customer._ID].Add(dic);
                             }
                             else
@@ -302,12 +316,12 @@ namespace TietoCRM.Models
                     }
                 }
             }
-
+            Truncate();
             foreach (KeyValuePair<int, List<Dictionary<String, Object>>> keyVal in customers)
             {
                 foreach (Dictionary<String, Object> dic in keyVal.Value)
                 {
-                    Insert(keyVal.Key.ToString(), (decimal)dic["Total_value"], (DateTime)dic["Date"]);
+                    Insert(keyVal.Key.ToString(), (decimal)dic["Total_value"], (DateTime)dic["Date"], (String)dic["Area"]);
                 }
             }
         }
@@ -317,21 +331,14 @@ namespace TietoCRM.Models
         /// <param name="customerId">The id of the customer</param>
         /// <param name="totalValue">The total spent of the customer</param>
         /// <param name="year">what year it is for</param>
-        private static void Insert(String customerId, decimal totalValue, DateTime year)
+        /// <param name="area">what area it is for</param>
+        private static void Insert(String customerId, decimal totalValue, DateTime year, String area)
         {
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
             {
                 connection.Open();
-                String deleteQuery = "DELETE FROM " + "dbo.view_" + "TCVCalculator WHERE Customer_ID=@customerid AND Year=@year";
 
-                SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection);
-
-                deleteCommand.Prepare();
-                deleteCommand.Parameters.AddWithValue("@customerid", customerId);
-                deleteCommand.Parameters.AddWithValue("@year", year.ToString("yyyy-MM-dd"));
-                deleteCommand.ExecuteNonQuery();
-
-                String insertQuery = "INSERT INTO " + "dbo.view_" + "TCVCalculator (Customer_ID,Total_value,Year) VALUES(@customerid,@val,@year)";
+                String insertQuery = "INSERT INTO " + "dbo.view_" + "TCVCalculator (Customer_ID,Total_value,Year,Area) VALUES(@customerid,@val,@year,@area)";
 
                 SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
 
@@ -339,7 +346,24 @@ namespace TietoCRM.Models
                 insertCommand.Parameters.AddWithValue("@customerid", customerId);
                 insertCommand.Parameters.AddWithValue("@val", totalValue);
                 insertCommand.Parameters.AddWithValue("@year", year.ToString("yyyy-MM-dd"));
+                insertCommand.Parameters.AddWithValue("@area", area);
                 insertCommand.ExecuteNonQuery();
+            }
+        }
+        /// <summary>
+        /// Removes all rows from the sql table
+        /// </summary>
+        private static void Truncate()
+        {
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
+            {
+                connection.Open();
+                String truncateQuery = "TRUNCATE TABLE " + "dbo." + "TCV_kalkyl";
+
+                SqlCommand TruncateCommande = new SqlCommand(truncateQuery, connection);
+
+                TruncateCommande.Prepare();
+                TruncateCommande.ExecuteNonQuery();
             }
         }
 
@@ -352,7 +376,7 @@ namespace TietoCRM.Models
 
             foreach(Dictionary<String,Object> dic in this.perYear)
             {
-                Insert(Customer._ID.ToString(), (decimal)dic["Total_spent"], (DateTime)dic["Year"]);
+                Insert(Customer._ID.ToString(), (decimal)dic["Total_spent"], (DateTime)dic["Year"], (String)dic["Area"]);
             }
                 
         }

@@ -38,7 +38,6 @@ namespace TietoCRM.Controllers.Contracts
 
         private List<String> skipProp = new List<string>
         {
-            "Customer",
             "Created",
             "Updated",
             "Option_date",
@@ -507,24 +506,39 @@ namespace TietoCRM.Controllers.Contracts
         public String CustomerContractJsonData()
         {
             String customer = Request.Form["customer"];
-            List<String> customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
             if (customer == "" || customer == null)
             {
-                if(customerNames.Count <= 0)
+                List<String> customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
+                if (customerNames.Count <= 0)
                     customer = "";
                 else
                     customer = customerNames[0];
             }
 
-            List<view_Contract> customerContracts = view_Contract.GetContracts(customer);
-            
-            List<Dictionary<String, dynamic>> contracts = new List<Dictionary<String, dynamic>>();
-            
 
+            List<view_Contract> customerContracts;
+            if(customer != "*")
+                customerContracts = view_Contract.GetContracts(customer);
+            else
+                customerContracts = view_Contract.GetContracts();
+
+            List<Dictionary<String, dynamic>> contracts = new List<Dictionary<String, dynamic>>();
+
+            view_User user = System.Web.HttpContext.Current.GetUser();
+            List<view_Customer> vCustomers = new List<view_Customer>();
             foreach (view_Contract contract in customerContracts)
             {
-                
-                if(System.Web.HttpContext.Current.GetUser().IfSameArea(contract.Area))
+                view_Customer vCustomer;
+                if (vCustomers.Any(c => c.Customer == contract.Customer))
+                    vCustomer = vCustomers.Find(c => c.Customer == contract.Customer);
+                else
+                {
+                    vCustomer = new view_Customer("Customer='" + contract.Customer + "'");
+                    vCustomers.Add(vCustomer);
+                }
+                    
+
+                if(user.IfSameArea(contract.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
                 {
                     Dictionary<String, dynamic> variables = new Dictionary<String, dynamic>();
                     foreach (System.Reflection.PropertyInfo pi in contract.GetType().GetProperties())

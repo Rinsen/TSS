@@ -430,7 +430,9 @@ namespace TietoCRM.Controllers
         {
             String customer = Request.Form["customer"];
 
-            List<String> customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
+            view_User user = System.Web.HttpContext.Current.GetUser();
+
+                List<String> customerNames = view_Customer.getCustomerNames(user.Sign);
             if (customer == "" || customer == null)
             {
                 if (customerNames.Count <= 0)
@@ -438,13 +440,27 @@ namespace TietoCRM.Controllers
                 else
                     customer = customerNames[0];
             }
+            List<view_CustomerOffer> customerOffers;
+            if (customer != "*")
+                customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
+            else
+                customerOffers = view_CustomerOffer.getAllCustomerOffers();
 
-            List<view_CustomerOffer> customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
             List<dynamic> customers = new List<dynamic>();
+            List<view_Customer> vCustomers = new List<view_Customer>();
 
             foreach (view_CustomerOffer co in customerOffers)
             {
-                if(System.Web.HttpContext.Current.GetUser().IfSameArea(co.Area))
+                view_Customer vCustomer;
+                if (vCustomers.Any(c => c.Customer == co.Customer))
+                    vCustomer = vCustomers.Find(c => c.Customer == co.Customer);
+                else
+                {
+                    vCustomer = new view_Customer("Customer='" + co.Customer + "'");
+                    vCustomers.Add(vCustomer);
+                }
+
+                if (user.IfSameArea(co.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
                 {
                     var v = new
                     {

@@ -3,13 +3,26 @@
         <div class="form-group">
             <label for="crm-select-customer">Customer:</label>
             <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
+                <option value="*">All</option>
+                @{bool first = true;}
                 @foreach (String Customer in ViewBag.Customers)
                 {
-                    <option value="@Customer">@Customer</option>
+                    if (first)
+                    {
+                        <option selected value="@Customer">@Customer</option>
+                        first = false;
+                    }
+                    else
+                    {
+                        <option value="@Customer">@Customer</option>
+                    }
                 }
             </select>
             <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-                <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            <div id='crm-edit-contact' class='crm-table-btn'>
+                <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+            </div>
+            <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
             </div>
             </div>
         </div>
@@ -32,12 +45,6 @@
                 </tr>
             </thead>
         </table>
-        <div class="bottom-wrapper" style="margin-top:30px; margin-bottom:30px">
-            <div id='crm-edit-contact' class='crm-table-btn'>
-                <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
-            </div>
-
-        </div>
     </form>
 
     <!-- #region reminders -->
@@ -145,6 +152,12 @@
                         <label for="fullName3" class="col-sm-2 control-label">Full name</label>
                         <div class="col-sm-10">
                             <input class="form-control" name="Contact_person" id="fullName3" placeholder="Full name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="title3" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Title" id="title3" placeholder="Title">
                         </div>
                     </div>
                     <div class="form-group">
@@ -569,6 +582,7 @@
             if(typeof $option.attr("new-person") == "undefined")
             {
                 $("#fullName3").val($("<div>").html(person.Contact_person).text());
+                $("#title3").val(person.Title);
                 $("#inputEmail3").val(person.Email);
                 $("#phoneNumber3").val(person.Telephone);
                 $("#mobileNumber3").val(person.Mobile);
@@ -578,6 +592,7 @@
             else
             {
                 $("#fullName3").val("");
+                $("#title3").val("");
                 $("#inputEmail3").val("");
                 $("#phoneNumber3").val("");
                 $("#mobileNumber3").val("");
@@ -588,6 +603,7 @@
         else
         {
             $("#fullName3").val($("<div>").html(person.Contact_person).text());
+            $("#title3").val(person.Title);
             $("#inputEmail3").val(person.Email);
             $("#phoneNumber3").val(person.Telephone);
             $("#mobileNumber3").val(person.Mobile);
@@ -677,12 +693,12 @@
 
             person.Customer = $contactSelect.val();
             person.Contact_person = $("#fullName3").val();
+            person.Title = $("#title3").val();
             person.Email = $("#inputEmail3").val();
             person.Telephone = $("#phoneNumber3").val();
             person.Address = $("#address3").val();
             person.Mobile = $("#mobileNumber3").val();
             person.Notes = $("#notes3").val();
-            person.Title = "";
 
             $.ajax({
                 "url": "/CustomerOffer/InsertContact/",
@@ -724,12 +740,12 @@
                     person.offerNumber = selectedId;
                 person.Customer = $contactSelect.val();
                 person.Contact_person = $("#fullName3").val();
+                person.Title = $("#title3").val();
                 person.Email = $("#inputEmail3").val();
                 person.Telephone = $("#phoneNumber3").val();
                 person.Address = $("#address3").val();
                 person.Mobile = $("#mobileNumber3").val();
                 person.Notes = $("#notes3").val();
-                person.Title = "";
 
                 $.ajax({
                     "url": "/CustomerOffer/SaveContact/",

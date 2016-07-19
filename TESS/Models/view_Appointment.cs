@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace TietoCRM.Models
@@ -36,6 +37,40 @@ namespace TietoCRM.Models
         {
         }
 
+        public String ParseToiCalEvent()
+        {
+            DateTime today = DateTime.Now;
+            String ical =   "\r\nBEGIN:VEVENT" +
+                            "\r\nUID:" + this._ID +
+                            "\r\nSUMMARY:" + this.Title +
+                            "\r\nDTSTAMP:" + today.ToString("yyyyMMdd") + "T" + today.ToString("hhmmss") +
+                            "\r\nDTSTART:" + this.Date.ToString("yyyyMMdd") + "T" + this.Date.ToString("hhmmss") +
+                            "\r\nDESCRIPTION:" + this.Text +
+                            "\r\nCATEGORIES:" + this.Event_type +
+                            "\r\nLOCATION:" + this.Customer +
+                            "\r\nEND:VEVENT";
+            return ical;
+        }
+
+        public static String ParseToiCal(List<view_Appointment> appointments)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("BEGIN:VCALENDAR\r\nVERSION: 2.0\r\nNAME:TSS Appointments\r\nX-WR-CALNAME:TSS Appointments\r\n");
+            sb.Append("X-PUBLISHED-TTL:PT1H\r\nPRODID:-//Tieto//NONSGML Event Calendar//EN");
+            foreach(view_Appointment app in appointments)
+            {
+                sb.Append(app.ParseToiCalEvent());
+            }
+            sb.Append("\r\nEND:VCALENDAR");
+            return sb.ToString();
+        }
+
+        public static String ParseToiCal(view_Appointment appointment)
+        {
+            List<view_Appointment> apps = new List<view_Appointment>();
+            apps.Add(appointment);
+            return ParseToiCal(apps);
+        }
 
         /// <summary>
         /// Gets all users.
