@@ -433,12 +433,15 @@ namespace TietoCRM.Models
                     while (reader.Read())
                     {
                         int j = 0;
-                        for (int i = 0; i < reader.FieldCount; i++)
+                        for (int i = 0; i < this.propertyInfos.Length; i++)
                         {
-                            if (reader.GetName(i).ToLower() != "ssma_timestamp")
+                            if (reader.GetName(j).ToLower() != "ssma_timestamp")
                             {
-                                this.SetValue(this.propertyInfos[j].Name, reader[i]);
-                                j++;
+                                if(this.propertyInfos[i].PropertyType != typeof(ICollection<>))
+                                {
+                                    this.SetValue(this.propertyInfos[i].Name, reader[j]);
+                                    j++;
+                                }
                             }                         
                         }
                     }

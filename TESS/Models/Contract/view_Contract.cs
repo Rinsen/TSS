@@ -14,10 +14,9 @@ namespace TietoCRM.Models
         ServiceContract,
         ModuleTermination
     }
-    public class view_Contract : SQLBaseClass
+    public class view_Contract : HashtagDocument
     {
-        private int id;
-        public int _ID { get { return id; } set { id = value; } }
+        public int _ID { get { return _id; } set { _id = value; } }
 
         private String contract_id;
         public String Contract_id { get { return contract_id; } set { contract_id = value; } }

@@ -185,6 +185,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CustomerStatistics.cs" />
+    <Compile Include="Models\HashtagDocument.cs" />
     <Compile Include="Models\Interfaces\ICsvProvider.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\view_Exception.cs" />

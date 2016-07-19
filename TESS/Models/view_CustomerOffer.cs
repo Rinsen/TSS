@@ -6,7 +6,7 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-    public class view_CustomerOffer : SQLBaseClass
+    public class view_CustomerOffer : HashtagDocument
     {
         private int offer_number;
         public int _Offer_number { get { return offer_number; } set { offer_number = value; } }
@@ -60,7 +60,10 @@ namespace TietoCRM.Models
         public String Document_foot { get { return document_foot; } set { document_foot = value; } }
 
         private long ssma_timestamp;
-        public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }   
+        public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
+
+        public new int _ID
+        { get { return offer_number; } set { offer_number = value; } }
 
         /// <summary>
         /// This variable does not exist in the database, and therefor there is no "_"
