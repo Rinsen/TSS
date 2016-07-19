@@ -60,10 +60,10 @@ namespace TietoCRM.Models
             List<Dictionary<String, Object>> yearList = list.Where(d => ((DateTime)d["Year"]).Year == year && user.IfSameArea((String)d["Area"])).ToList();
             if (yearList.Count > 0)
             {
-                if(user.Area == "*")
+                if (user.Area == "*")
                 {
                     decimal sum = 0;
-                    foreach(Dictionary<String, Object> dic in yearList)
+                    foreach (Dictionary<String, Object> dic in yearList)
                     {
                         sum += (decimal)dic["Total_value"];
                     }
@@ -73,7 +73,7 @@ namespace TietoCRM.Models
                     return (decimal)yearList[0]["Total_value"];
             }
             else
-                return 0;
+                throw new StatisticsException("The year (" + year + ") didnt exist in this object", this.Customer);
         }
 
         /// <summary>

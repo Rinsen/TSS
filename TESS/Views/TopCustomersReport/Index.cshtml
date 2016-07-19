@@ -6,6 +6,15 @@
     <div class="col-md-12">
         <form method="get" action="~/TopCustomersReport/Pdf" target="_blank" class="form-inline">
             <div class="form-group">
+                <label for="crm-select-year">Year:</label>
+                <select name="year" id="crm-select-year" class="form-control selectpicker" data-live-search="true">
+                    @for(int i = 1990; i <= DateTime.Now.Year; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="crm-select-area">Area:</label>
                 <select name="area" id="crm-select-area" class="form-control selectpicker" data-live-search="true">
                     <option value="*">All</option>
@@ -60,7 +69,8 @@
                 "type": "POST",
                 "data": {
                     "user": $userContainer.val(),
-                    "area": $areaContainer.val()
+                    "area": $areaContainer.val(),
+                    "year": $yearContainer.val()
                 }
             },
             "defaultContent": "",
@@ -80,6 +90,8 @@
 
         $areaContainer = $("#crm-select-area");
 
+        $yearContainer = $("#crm-select-year");
+
         $areaContainer.on("change", function () {
             if ($areaContainer.val() != "*")
                 updateUser();
@@ -95,7 +107,10 @@
 
         $userContainer.change(function () {
             updateDataTable()
+        });
 
+        $yearContainer.change(function () {
+            updateDataTable()
         });
     });
     var updateUser = function(){

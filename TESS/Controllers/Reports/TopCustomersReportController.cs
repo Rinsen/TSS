@@ -34,7 +34,8 @@ namespace TietoCRM.Controllers.Reports
         {
             String user = Request["user"];
             String area = Request["area"];
-            List<Dictionary<String, Object>> contracts = this.GenerateTopCustomers(user, area);
+            String year = Request["year"];
+            List<Dictionary<String, Object>> contracts = this.GenerateTopCustomers(user, area, year);
             ViewData.Add("Contracts", contracts);
 
             this.ViewData["Title"] = "Top Customers Report";
@@ -50,10 +51,11 @@ namespace TietoCRM.Controllers.Reports
         {
             String user = Request["user"];
             String area = Request["area"];
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateTopCustomers(user, area)) + "}";
+            String year = Request["year"];
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateTopCustomers(user, area, year)) + "}";
         }
 
-        public List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area)
+        public List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area, String year)
         {
             List<view_Customer> customers;
             if (area == "*")
@@ -77,13 +79,20 @@ namespace TietoCRM.Controllers.Reports
                 Dictionary<String, Object> dict = new Dictionary<string, object>();
                 CustomerStatistics stats = new CustomerStatistics(customer, true);
 
-                dict.Add("customer", customer.Customer);
-                dict.Add("amount", Convert.ToInt32(stats.GetTotalSpent(DateTime.Now.Year, area)));
-                dict.Add("representative", customer.GetReprensentativesAsString());
-                dict.Add("customer_type", customer.Customer_type);
-                dict.Add("county", customer.County.ToString());
+                try
+                {
+                    dict.Add("customer", customer.Customer);
+                    dict.Add("amount", Convert.ToInt32(stats.GetTotalSpent(int.Parse(year), area)));
+                    dict.Add("representative", customer.GetReprensentativesAsString());
+                    dict.Add("customer_type", customer.Customer_type);
+                    dict.Add("county", customer.County.ToString());
 
-                rows.Add(dict);
+                    rows.Add(dict);
+                }
+                catch
+                {
+
+                }
             }
             return rows.OrderByDescending(d => d["amount"]).ToList().GetRange(0,Math.Min(10,rows.Count));
         }
