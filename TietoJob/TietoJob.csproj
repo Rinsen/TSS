@@ -108,6 +108,9 @@
     <Compile Include="..\TESS\Models\CustomerStatistics.cs">
       <Link>Models\CustomerStatistics.cs</Link>
     </Compile>
+    <Compile Include="..\TESS\Models\Interfaces\ICsvProvider.cs">
+      <Link>Models\Interfaces\ICsvProvider.cs</Link>
+    </Compile>
     <Compile Include="..\TESS\Models\MainContractText.cs">
       <Link>Models\MainContractText.cs</Link>
     </Compile>

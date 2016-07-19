@@ -19,7 +19,10 @@
                 }
             </select>
             <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-                <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            <div id='crm-edit-contact' class='crm-table-btn'>
+                <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+            </div>
+            <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
             </div>
             </div>
         </div>
@@ -42,12 +45,6 @@
                 </tr>
             </thead>
         </table>
-        <div class="bottom-wrapper" style="margin-top:30px; margin-bottom:30px">
-            <div id='crm-edit-contact' class='crm-table-btn'>
-                <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
-            </div>
-
-        </div>
     </form>
 
     <!-- #region reminders -->

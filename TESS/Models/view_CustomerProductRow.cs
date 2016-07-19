@@ -5,10 +5,11 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using System.Web.Script.Serialization;
+using System.Reflection;
 
 namespace TietoCRM.Models
 {
-    public class view_CustomerProductRow : SQLBaseClass
+    public class view_CustomerProductRow : SQLBaseClass, ICsvProvider
     {
         private String customer;
         public String Customer { get { return customer; } set { customer = value; } }
@@ -212,6 +213,19 @@ namespace TietoCRM.Models
                 }
             }
             return list;
+        }
+
+        public String GetCsv()
+        {
+            String csv = "";
+            foreach(PropertyInfo prop in this.GetType().GetProperties())
+            {
+                csv += (prop.GetValue(this) ?? " ").ToString() + ",";
+            }
+            csv.Remove(csv.Length - 1, 1);
+            csv += "\r\n";
+
+            return csv;
         }
     }
 }

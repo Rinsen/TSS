@@ -56,7 +56,7 @@ namespace TietoCRM.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("BEGIN:VCALENDAR\r\nVERSION: 2.0\r\nNAME:TSS Appointments\r\nX-WR-CALNAME:TSS Appointments\r\n");
-            sb.Append("PRODID:-//Tieto//NONSGML Event Calendar//EN");
+            sb.Append("X-PUBLISHED-TTL:PT1H\r\nPRODID:-//Tieto//NONSGML Event Calendar//EN");
             foreach(view_Appointment app in appointments)
             {
                 sb.Append(app.ParseToiCalEvent());
