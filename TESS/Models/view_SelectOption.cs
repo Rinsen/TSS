@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -24,10 +25,13 @@ namespace TietoCRM.Models
         private String text;
         public String Text { get; set; }
 
-        public view_SelectOption() : base("SelectOption")
+        public view_SelectOption(Boolean init = true) : base("SelectOption", init)
         {
-
-            this.initTable();
+            if(init)
+                this.initTable();
+        }
+        public view_SelectOption() : base("SelectOption", false)
+        {
         }
         
         protected override void initTable()
@@ -76,6 +80,8 @@ namespace TietoCRM.Models
         public static List<view_SelectOption> getAllSelectOptionsWhere(String condition)
         {
             List<view_SelectOption> list = new List<view_SelectOption>();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -90,7 +96,7 @@ namespace TietoCRM.Models
                 {
                     while (reader.Read())
                     {
-                        view_SelectOption k = new view_SelectOption();
+                        view_SelectOption k = new view_SelectOption(false);
                         int i = 0;
                         while (reader.FieldCount > i)
                         {
@@ -101,6 +107,8 @@ namespace TietoCRM.Models
                     }
                 }
             }
+            sw.Stop();
+            Debug.Print(sw.Elapsed.TotalSeconds.ToString());
             return list;
         }
         public static List<view_SelectOption> getAllSelectOptions()
@@ -120,7 +128,7 @@ namespace TietoCRM.Models
                 {
                     while (reader.Read())
                     {
-                        view_SelectOption k = new view_SelectOption();
+                        view_SelectOption k = new view_SelectOption(false);
                         int i = 0;
                         while (reader.FieldCount > i)
                         {

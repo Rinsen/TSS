@@ -16,12 +16,14 @@ namespace TietoCRM.Controllers.List_Management
             ViewData.Add("SkipProp", new List<String>
             {
                 "_ID",
+                "Model",
+                "Property"
             });
 
             ViewData.Add("Title", "Information Messages");
             ViewData.Add("Properties", typeof(view_SelectOption).GetProperties());
             ViewData.Add("SelectModels", view_SelectOption.getAllSelectOptionsWhere("Model='view_SelectOption' AND Property='Model'"));
-            ViewData.Add("SelectProperties", (new view_SelectOption()).GetSelectOptions("Property"));
+            ViewData.Add("SelectProperties", (new view_SelectOption(false)).GetSelectOptions("Property"));
             return View();
         }
         public String SelectOptionJsonData()
@@ -34,9 +36,16 @@ namespace TietoCRM.Controllers.List_Management
         {
             this.Response.ContentType = "text/plain";
             String model = Request.Form["model"];
-            String condition = "Model='" + model + "' AND Property='Model'";
-
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_SelectOption.getAllSelectOptionsWhere(condition)) + "}";
+            String property = Request.Form["property"];
+            if(!String.IsNullOrEmpty(model) || !String.IsNullOrEmpty(property))
+            {
+                String condition = "Model='" + model + "' AND Property='" + property + "'";
+                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_SelectOption.getAllSelectOptionsWhere(condition)) + "}";
+            }
+            else
+            {
+                return "{\"data\":[]}";
+            }
         }
 
         public String GetSelectProperties()

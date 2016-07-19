@@ -14,9 +14,10 @@ namespace TietoCRM.Models
             public String Value;
             public String Text;
         }
-        public SelectOptionsBaseClass(String table) : base(table)
+        public SelectOptionsBaseClass(String table, Boolean init = true) : base(table)
         {
-            initTable();
+            if(init)
+                initTable();
         }
         protected virtual void initTable()
         {
