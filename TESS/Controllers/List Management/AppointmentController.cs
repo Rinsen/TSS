@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -64,6 +66,25 @@ namespace TietoCRM.Controllers.List_Management
             }
 
             return (new JavaScriptSerializer()).Serialize(l);
+        }
+
+        public ActionResult GetiCalendar()
+        {
+            List<String> customerNames;
+            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
+            else
+                customerNames = view_Customer.getCustomerNames();
+
+            String ical = view_Appointment.ParseToiCal(view_Appointment.getAllAppointments().Where(
+                a => customerNames.Contains(a.Customer) &&
+                System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area)).ToList());
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(ical);
+            MemoryStream stream = new MemoryStream(byteArray);
+
+            return File(stream, "text/calendar", "my_appointments_TSS.ics");
+
         }
 
         public String AppointmentJsonData()
