@@ -1,4 +1,5 @@
 ﻿@using TietoCRM.Extensions;
+@using TietoCRM.Models;
 
 <table draggable="true" id="information-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
@@ -44,8 +45,12 @@
                                         else if (pi.Name == "Type")
                                         {
                                             <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                <option>Info</option>
-                                                <option>Warning</option>
+                                                @foreach(view_Information.SelectOption so in (new view_Information()).GetSelectOptions("Type"))
+                                                {
+                                                    <option value="@so.Value">@so.Text</option>
+                                                }
+                                                @*<option>Info</option>
+                                                <option>Warning</option>*@
                                             </select>
                                         }
                                         else if (pi.Name == "Message")
