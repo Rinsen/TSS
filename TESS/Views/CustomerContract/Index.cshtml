@@ -37,6 +37,11 @@
                         String PropertyName = property.Name.Replace("_", " ");
                         <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
                     }
+                    else if (property.Name == "_HashtagList")
+                    {
+                        String PropertyName = property.Name.Replace("_", " ");
+                        <th class="hidden" data-field="@property.Name" data-sortable="true">@PropertyName</th>
+                    }
                 }
             </tr>
         </thead>
@@ -1077,9 +1082,14 @@
                 }
                 if (i >= 1) {
                     $td = $('td:eq(' + i + ')', nRow);
-                    $td.attr("data-type", "select");
-                    $td.attr("data-data", name);
-
+                    if(name == "Hashtags"){
+                        $td.attr("data-rep", JSON.stringify(aData[name]));
+                        $td.hide();
+                    }
+                    else{
+                        $td.attr("data-type", "select");
+                        $td.attr("data-data", name);
+                    }
                     // deleteRowFunction($td, dataObj);
                 }
 
@@ -1092,11 +1102,12 @@
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
 
-            if (!PropertyInfo.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name))
+            if ((!PropertyInfo.Name.StartsWith("_") || PropertyInfo.Name == "_HashtagList") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name))
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
             }
+            
         }
 
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}

@@ -555,7 +555,7 @@ namespace TietoCRM.Controllers.Contracts
                         }
 
                     }
-
+                    variables.Add("_HashtagList", contract.HashtagsAsString());
                     contracts.Add(variables);
                 }
                 

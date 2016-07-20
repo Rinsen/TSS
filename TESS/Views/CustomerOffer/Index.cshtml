@@ -34,7 +34,14 @@
                         String PropertyName = ColumnName.Replace("_", " ");
                         if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
                         {
-                            <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                            if (ColumnName == "Hashtags")
+                            {
+                                <th class="hidden" data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                            }
+                            else
+                            {
+                                <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                            }
                         }
                         else if (@PropertyName != "SSMA timestamp") // this is for #
                         {
@@ -936,18 +943,17 @@
                 }
                 i++;
             }
-            else if (i == 7) {
-                $td = $('td:eq(' + i + ')', nRow);
-                $td.attr("data-type", "select");
-                $td.attr("data-data", selectOptions);
-
-                // deleteRowFunction($td, dataObj);
-            }
-            if(i != 7)
+            if(i >= 7)
             {
                 $td = $('td:eq(' + i + ')', nRow);
-                $td.html(insertValue);
-                $td.attr("data-property", name);
+                if(name == "Hashtags"){
+                    $td.attr("data-rep", JSON.stringify(aData[name]));
+                    $td.hide();
+                }
+                else{
+                    $td.html(dataObj.value);
+                    $td.attr("data-property", name);
+                }
             }
 
             i++;

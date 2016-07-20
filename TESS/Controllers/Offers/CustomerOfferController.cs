@@ -99,6 +99,7 @@ namespace TietoCRM.Controllers
             columnNames.Add("Offer_status");
             columnNames.Add("Contact_person");
             columnNames.Add("Area");
+            columnNames.Add("Hashtags");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
             offerStatus = GetOfferStatus();
@@ -480,7 +481,7 @@ namespace TietoCRM.Controllers
                         Offer_status = co.Offer_status,
                         Contact_person = co.Contact_person,
                         Area = co.Area,
-                        SSMA_timestamp = co.SSMA_timestamp
+                        Hashtags = co.HashtagsAsString()
                     };
                     customers.Add(v);
                 }

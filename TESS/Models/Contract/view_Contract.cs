@@ -174,6 +174,7 @@ namespace TietoCRM.Models
                             t._ContractRows = view_ContractRow.GetAllContractRows(t.Contract_id, t.Customer);
                             t._ContractConsultantRows = view_ContractConsultantRow.GetAllContractConsultantRow(t.Contract_id, t.Customer);
                             t._ContractOptions = view_ContractOption.getAllOptions(t.Contract_id, t.Customer);
+                            t.GetHashtags();
                             list.Add(t);
                         }
                     }
@@ -264,6 +265,7 @@ namespace TietoCRM.Models
                             t._ContractRows = view_ContractRow.GetAllContractRows(t.Contract_id, t.Customer);
                             t._ContractConsultantRows = view_ContractConsultantRow.GetAllContractConsultantRow(t.Contract_id, t.Customer);
                             t._ContractOptions = view_ContractOption.getAllOptions(t.Contract_id, t.Customer);
+                            t.GetHashtags();
                             list.Add(t);
                         }
                     }

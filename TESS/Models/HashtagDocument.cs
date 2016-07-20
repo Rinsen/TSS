@@ -147,6 +147,7 @@ namespace TietoCRM.Models
                     }
                 }
             }
+            this._hashtagList = list;
             return list;
         }
 
