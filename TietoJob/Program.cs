@@ -15,20 +15,34 @@ namespace TietoJob
         {
             if (!System.Diagnostics.EventLog.SourceExists("Tieto"))
                 System.Diagnostics.EventLog.CreateEventSource("Tieto", "Job");
-            //try
-            //{
-                CustomerStatistics.UpdateAllToSQLServer();
-                Console.WriteLine("CustomerStatistics done");
-                //UserStatistics.UpdateAllToSQLServer();
-                Console.WriteLine("UserStatistics done");
 
-            //}
-            //catch (Exception e)
-            //{
-            //System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
-            //eventlog.WriteEntry(e.Message);
-            //throw e;
-            //}
+            #if DEBUG
+                RunCode();
+            #else
+            {
+                try
+                {
+                    RunCode();
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.EventLog eventlog = new System.Diagnostics.EventLog("Job", ".", "Tieto");
+                    eventlog.WriteEntry(e.Message);
+                }
+            }
+            #endif
+
+
+        }
+
+        public static void RunCode()
+        {
+            CustomerStatistics.UpdateAllToSQLServer();
+            Console.WriteLine("CustomerStatistics done");
+            UserStatistics.UpdateAllToSQLServer();
+            Console.WriteLine("UserStatistics done");
+            view_ModuleDiscount.DeleteOutdated();
+            Console.WriteLine("ModuleDiscount done");
         }
     }
 }

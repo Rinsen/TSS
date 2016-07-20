@@ -156,6 +156,9 @@
     <Compile Include="..\TESS\Models\view_Module.cs">
       <Link>Models\view_Module.cs</Link>
     </Compile>
+    <Compile Include="..\TESS\Models\view_ModuleDiscount.cs">
+      <Link>Models\view_ModuleDiscount.cs</Link>
+    </Compile>
     <Compile Include="..\TESS\Models\view_OfferRow.cs">
       <Link>Models\view_OfferRow.cs</Link>
     </Compile>
