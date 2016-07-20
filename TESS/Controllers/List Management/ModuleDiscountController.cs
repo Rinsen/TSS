@@ -71,6 +71,8 @@ namespace TietoCRM.Controllers.List_Management
                     }
                     if(System.Web.HttpContext.Current.GetUser().Area != "*")
                         module.Area = System.Web.HttpContext.Current.GetUser().Area;
+
+                    module.Delete("Article_number=" + module.Article_number + " AND Area=" + module.Area);
                     module.Insert();
 
                     return "1";

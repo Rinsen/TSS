@@ -219,17 +219,17 @@ namespace TietoCRM.Controllers.Contracts
                     articles.Add(contractInfo);
             }
 
-            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
-            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
-            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
+            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
 
             ViewData.Add("OldEducationPortals", oldEducationPortals);
             ViewData.Add("OldArticles", oldArticles);
             ViewData.Add("RemEducationPortals", remEducationPortals);
             ViewData.Add("CtrResign", ctrResign);
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
-            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -1432,8 +1432,6 @@ namespace TietoCRM.Controllers.Contracts
 
                                 i++;
                             }
-                            result["License"] = result["License"].ToString().Replace(",", ".");
-                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
@@ -1442,6 +1440,15 @@ namespace TietoCRM.Controllers.Contracts
                                 result["License"] = "0";
 
                             }
+                            view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
+                            if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
+                                + " AND Area=" + result["Area"].ToString()))
+                            {
+                                result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
+                                result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
+                            }
+                            result["License"] = result["License"].ToString().Replace(",", ".");
+                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                             view_User user = System.Web.HttpContext.Current.GetUser();
 
                             if (user.Area == result["Area"].ToString() || user.Area == "*")
@@ -1536,8 +1543,6 @@ namespace TietoCRM.Controllers.Contracts
 
                                 i++;
                             }
-                            result["License"] = result["License"].ToString().Replace(",", ".");
-                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
@@ -1546,6 +1551,15 @@ namespace TietoCRM.Controllers.Contracts
                                 result["License"] = "0";
 
                             }
+                            view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
+                            if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
+                                + " AND Area=" + result["Area"].ToString()))
+                            {
+                                result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
+                                result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
+                            }
+                            result["License"] = result["License"].ToString().Replace(",", ".");
+                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
                             view_User user = System.Web.HttpContext.Current.GetUser();
 
                             if (user.Area == result["Area"].ToString() || user.Area == "*")

@@ -23,8 +23,11 @@ namespace TietoCRM.Models
         private DateTime end_date;
         public DateTime End_date { get; set; }
 
-        private int discount;
-        public int Discount { get; set; }
+        private int maintenance_discount;
+        public int Maintenance_discount { get; set; }
+
+        private int license_discount;
+        public int License_discount { get; set; }
 
         public view_ModuleDiscount() : base("ModuleDiscount")
         {

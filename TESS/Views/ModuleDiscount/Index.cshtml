@@ -70,9 +70,15 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="discount" class="col-sm-2 control-label">Discount</label>
+                        <label for="maintenace-discount" class="col-sm-2 control-label">Maintenance discount</label>
                         <div class="col-sm-10">
-                            <input maxlength="3" style="width:10%; display: inline-block;" class="form-control" name="Discount" id="discount"><h4 style="margin-left:5px; display:inline-block;"> %</h4>
+                            <input maxlength="3" style="width:10%; display: inline-block;" class="form-control" name="Maintenance_discount" id="maintenace-discount"><h4 style="margin-left:5px; display:inline-block;"> %</h4>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="license-discount" class="col-sm-2 control-label">License discount</label>
+                        <div class="col-sm-10">
+                            <input maxlength="3" style="width:10%; display: inline-block;" class="form-control" name="License_discount" id="License_discount"><h4 style="margin-left:5px; display:inline-block;"> %</h4>
                         </div>
                     </div>
                 </form>
@@ -164,25 +170,23 @@
                     required: true,
                     digits: true
                 },
-                "Module": {
-                    required: true,
-                    maxlength: 255
-                },
-                "Price_category": {
-                    required: true,
-                    number: true
-                },
                 "Area": {
                     required: true,
-                    maxlength: 255
+                    maxlength: 50
                 },
-                "System": {
+                "Start_date": {
                     required: true,
-
                 },
-                "Classification": {
+                "End_date": {
                     required: true,
-
+                },
+                "Maintenance_discount": {
+                    required: true,
+                    digits: true
+                },
+                "License_discount": {
+                    required: true,
+                    digits: true
                 },
             },
             errorElement: "span",
