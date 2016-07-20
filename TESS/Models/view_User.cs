@@ -54,11 +54,12 @@ namespace TietoCRM.Models
 			//ctr
 		}
 
-        public override void Insert()
+        public override int Insert()
         {
-            base.Insert();
+            int ret = base.Insert();
             UserStatistics stats = new UserStatistics(this);
             stats.UpdateToSQLServer();
+            return ret;
         }
 
 

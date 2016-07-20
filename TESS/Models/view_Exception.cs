@@ -37,10 +37,10 @@ namespace TietoCRM.Models
         {
         }
 
-        public override void Insert()
+        public override int Insert()
         {
             this.Created = DateTime.Now;
-            base.Insert();
+            return base.Insert();
         }
 
         public static void UploadException(Exception e)

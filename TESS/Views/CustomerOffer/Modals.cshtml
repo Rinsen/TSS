@@ -1193,6 +1193,12 @@ else if (Request["modal"] == "head-information")
                 <input id="area-text" name="Area" type="text" class="form-control" value="@ViewBag.CustomerOffer.Area">
             </div>
         </div>
+        <div class="form-group">
+            <label for="tags-text" class="col-sm-2 control-label">Tags</label>
+            <div class="col-sm-10">
+                <input id="tags-text" name="Hashtags" type="text" class="form-control" value="@ViewBag.CustomerOffer.HashtagsAsString()">
+            </div>
+        </div>
     </form>
 
 

@@ -34,7 +34,14 @@
                         String PropertyName = ColumnName.Replace("_", " ");
                         if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
                         {
-                            <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                            if (ColumnName == "Hashtags")
+                            {
+                                <th class="hidden" data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                            }
+                            else
+                            {
+                                <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                            }
                         }
                         else if (@PropertyName != "SSMA timestamp") // this is for #
                         {
@@ -328,6 +335,12 @@
                             <input class="form-control" name="Title" id="offerTitle4" />
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="offerTags4" class="col-sm-2 control-label">Tags</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" name="Hashtags" id="offerTags4" />
+                        </div>
+                    </div>
                    
                 </form>
             </div>
@@ -436,7 +449,8 @@
             "url": "/CustomerOffer/Insert/",
             "type": "POST",
             "data": {
-                "json": JSON.stringify(newOffer)
+                "json": JSON.stringify(newOffer),
+                "hashtags": $("#offerTags4").val()
             },
             "success": function(data){
                 if(data > 0){
@@ -929,18 +943,17 @@
                 }
                 i++;
             }
-            else if (i == 7) {
-                $td = $('td:eq(' + i + ')', nRow);
-                $td.attr("data-type", "select");
-                $td.attr("data-data", selectOptions);
-
-                // deleteRowFunction($td, dataObj);
-            }
-            if(i != 7)
+            if(i >= 7)
             {
                 $td = $('td:eq(' + i + ')', nRow);
-                $td.html(insertValue);
-                $td.attr("data-property", name);
+                if(name == "Hashtags"){
+                    $td.attr("data-rep", JSON.stringify(aData[name]));
+                    $td.hide();
+                }
+                else{
+                    $td.html(dataObj.value);
+                    $td.attr("data-property", name);
+                }
             }
 
             i++;

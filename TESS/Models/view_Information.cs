@@ -52,11 +52,11 @@ namespace TietoCRM.Models
         /// <summary>
         /// Inserts this object into the SQL server. And automatically inserts the Created and Updated field.
         /// </summary>
-        public override void Insert()
+        public override int Insert()
         {
             this.Created = DateTime.Now;
             this.Updated = DateTime.Now;
-            base.Insert();
+            return base.Insert();
         }
 
         /// <summary>

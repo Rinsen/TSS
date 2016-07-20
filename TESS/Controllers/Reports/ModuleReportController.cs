@@ -18,7 +18,7 @@ namespace TietoCRM.Controllers.Reports
             TietoCRM.Models.GlobalVariables.Initializer();
             List<view_Module> modules = view_Module.getAllModules();
             modules = modules.Where(m => m.Discount_type == 0 && m.Expired == false && 
-                System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area)).ToList<view_Module>();
+                System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area)).ToList();
 
             ViewData.Add("Modules", modules);
             //ViewData.Add("Properties", typeof(view_Module).GetProperties());

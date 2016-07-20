@@ -37,6 +37,11 @@
                         String PropertyName = property.Name.Replace("_", " ");
                         <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
                     }
+                    else if (property.Name == "_HashtagList")
+                    {
+                        String PropertyName = property.Name.Replace("_", " ");
+                        <th class="hidden" data-field="@property.Name" data-sortable="true">@PropertyName</th>
+                    }
                 }
             </tr>
         </thead>
@@ -238,14 +243,14 @@
                                 int count = 0;
                                 foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                                 {
-                                    if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_") 
+                                    if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_")
                                         && !ViewBag.SkipProperties.Contains(pi.Name) && pi.Name != "Area"
                                         && pi.Name != "Contract_id")
                                     {
 
                                         String pName = pi.Name.Replace("_", " ");
 
-                                        if(count == 0 || count == 5)
+                                        if (count == 0 || count == 5)
                                         {
                                             @Html.Raw("<td valign=\"top\">")
                                         }
@@ -317,8 +322,17 @@
 
                                             </div>
                                         </div>
-                                        if(count == 4 || count == ViewBag.Properties.Length -1)
+                                        if (count == 4 || count == ViewBag.Properties.Length - 1)
                                         {
+                                            if (count == 4)
+                                            {
+                                                <div class="form-group">
+                                                    <label for="hashtags-text" style="font-size: 12px" class="col-sm-3 control-label">Tags</label>
+                                                    <div class="col-sm-9">
+                                                        <input class="form-control" type="text" id="hashtags-text" name="Hashtags" placeholder="Hashtags" value="" />
+                                                    </div>
+                                                </div>
+                                            }
                                             @Html.Raw("</td>")
                                         }
                                         count++;
@@ -613,10 +627,14 @@
             var newContract = {}
 
             var $formInputs = $("#newRowModal form").find(":input");
+            var hashtags = "";
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                newContract[$currInput.attr("name")] = $currInput.val();
+                if($currInput.attr("name") != "Hashtags")
+                    newContract[$currInput.attr("name")] = $currInput.val();
+                else
+                    hashtags = $currInput.val();
             }
             newContract["Customer"] = $customerSelect.val();
             newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
@@ -626,7 +644,8 @@
                     "url": "@Url.Content("~/CustomerContract/Insert/")",
                     "type": "POST",
                     "data": {
-                        "json": JSON.stringify(newContract)
+                        "json": JSON.stringify(newContract),
+                        "hashtags": hashtags
                     },
                     "success": function(data){
                         if(data != "0" || data != "-1"){
@@ -1063,9 +1082,14 @@
                 }
                 if (i >= 1) {
                     $td = $('td:eq(' + i + ')', nRow);
-                    $td.attr("data-type", "select");
-                    $td.attr("data-data", name);
-
+                    if(name == "Hashtags"){
+                        $td.attr("data-rep", JSON.stringify(aData[name]));
+                        $td.hide();
+                    }
+                    else{
+                        $td.attr("data-type", "select");
+                        $td.attr("data-data", name);
+                    }
                     // deleteRowFunction($td, dataObj);
                 }
 
@@ -1078,11 +1102,12 @@
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
 
-            if (!PropertyInfo.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name))
+            if ((!PropertyInfo.Name.StartsWith("_") || PropertyInfo.Name == "_HashtagList") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name))
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
             }
+            
         }
 
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}

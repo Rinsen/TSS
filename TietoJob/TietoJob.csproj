@@ -108,11 +108,17 @@
     <Compile Include="..\TESS\Models\CustomerStatistics.cs">
       <Link>Models\CustomerStatistics.cs</Link>
     </Compile>
+    <Compile Include="..\TESS\Models\HashtagDocument.cs">
+      <Link>Models\HashtagDocument.cs</Link>
+    </Compile>
     <Compile Include="..\TESS\Models\Interfaces\ICsvProvider.cs">
       <Link>Models\Interfaces\ICsvProvider.cs</Link>
     </Compile>
     <Compile Include="..\TESS\Models\MainContractText.cs">
       <Link>Models\MainContractText.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\SelectOptionsBaseClass.cs">
+      <Link>Models\SelectOptionsBaseClass.cs</Link>
     </Compile>
     <Compile Include="..\TESS\Models\SQLBaseClass.cs">
       <Link>Models\SQLBaseClass.cs</Link>
@@ -164,6 +170,9 @@
     </Compile>
     <Compile Include="..\TESS\Models\view_Sector.cs">
       <Link>Models\view_Sector.cs</Link>
+    </Compile>
+    <Compile Include="..\TESS\Models\view_SelectOption.cs">
+      <Link>Models\view_SelectOption.cs</Link>
     </Compile>
     <Compile Include="..\TESS\Models\view_Service.cs">
       <Link>Models\view_Service.cs</Link>
