@@ -99,6 +99,7 @@ namespace TietoCRM.Models
 
             return returnList;
         }
+
         public static Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
         {
             Type[] returnList = assembly.GetTypes().Where(t => String.Equals(t.Namespace, nameSpace, StringComparison.Ordinal)).ToArray();

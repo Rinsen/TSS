@@ -1135,18 +1135,26 @@
                                         else if (pi.Name == "Status")
                                         {
                                             <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @foreach (String status in ViewBag.Statuses)
+                                                @*@foreach (String status in ViewBag.Statuses)
                                                 {
                                                     <option value="@status">@status</option>
+                                                }*@
+                                                @foreach (view_Contract.SelectOption so in ViewBag.Statuses)
+                                                {
+                                                    <option value="@so.Value">@so.Text</option>
                                                 }
                                             </select>
                                         }
                                         else if (pi.Name == "Contract_type")
                                         {
                                             <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @foreach (String types in ViewBag.ContractTypes)
+                                                @*@foreach (String types in ViewBag.ContractTypes)
                                                 {
                                                     <option value="@types">@types</option>
+                                                }*@
+                                                @foreach (view_Contract.SelectOption so in ViewBag.ContractTypes)
+                                                {
+                                                    <option value="@so.Value">@so.Text</option>
                                                 }
                                             </select>
                                         }

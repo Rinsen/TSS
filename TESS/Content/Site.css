@@ -209,6 +209,15 @@ ul.crm-info-list li.info-warning .panel-body {
 ul.crm-info-list li.info-warning .panel-footer {
   background-color: #6197aa !important;
 }
+ul.crm-info-list li.info-danger .panel-heading {
+  background-color: #f34e12 !important;
+}
+ul.crm-info-list li.info-danger .panel-body {
+  background-color: #6197aa !important;
+}
+ul.crm-info-list li.info-danger .panel-footer {
+  background-color: #6197aa !important;
+}
 .crm-loading {
   background: white;
   text-align: center;

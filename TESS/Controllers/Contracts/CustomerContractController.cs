@@ -76,6 +76,7 @@ namespace TietoCRM.Controllers.Contracts
             this.ViewData.Add("SkipProperties", this.skipProp);
             this.ViewData.Add("Statuses", GetStatuses());
             this.ViewData.Add("ContractTypes", GetContractTypes());
+            //this.ViewData.Add("ContractTypes", (new view_Contract()).GetSelectOptions("ContractType"));
             this.ViewData["Title"] = "Customer Contract";
 
             if (Request.QueryString["customer"] == null || Request.QueryString["customer"] == "")
@@ -359,8 +360,10 @@ namespace TietoCRM.Controllers.Contracts
                 properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Sign").ToList();
             }
             this.ViewData.Add("TableItems", properties);
-            this.ViewData.Add("Statuses", GetStatuses());
-            this.ViewData.Add("ContractTypes", GetContractTypes());
+            //this.ViewData.Add("Statuses", GetStatuses());
+            this.ViewData.Add("Statuses", contract.GetSelectOptions("Status"));
+            //this.ViewData.Add("ContractTypes", GetContractTypes());
+            this.ViewData.Add("ContractTypes", contract.GetSelectOptions("Contract_type"));
             List<String> mainContracts = view_Contract.GetContracts(customer.Customer).Where(c => c.Contract_type == "Huvudavtal").Select(c => c.Contract_id).ToList();
             this.ViewData.Add("MainContracts", mainContracts);
             this.ViewData.Add("Users", view_User.getAllUsers().Select(u => u.Sign));
