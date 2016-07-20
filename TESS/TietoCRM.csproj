@@ -160,6 +160,7 @@
     <Compile Include="Controllers\List Management\ReminderController.cs" />
     <Compile Include="Controllers\List Management\SectorController.cs" />
     <Compile Include="Controllers\List Management\ServiceController.cs" />
+    <Compile Include="Controllers\List Management\SelectOptionController.cs" />
     <Compile Include="Controllers\List Management\TemplateController.cs" />
     <Compile Include="Controllers\List Management\UserController.cs" />
     <Compile Include="Controllers\Offers\CustomerOfferController.cs" />
@@ -186,6 +187,7 @@
     </Compile>
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\HashtagDocument.cs" />
+    <Compile Include="Models\SelectOptionsBaseClass.cs" />
     <Compile Include="Models\Interfaces\ICsvProvider.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\view_Exception.cs" />
@@ -215,6 +217,7 @@
     <Compile Include="Models\view_Sector.cs" />
     <Compile Include="Models\view_Population.cs" />
     <Compile Include="Models\view_Price.cs" />
+    <Compile Include="Models\view_SelectOption.cs" />
     <Compile Include="Models\view_Service.cs" />
     <Compile Include="Models\view_TextTemplate.cs" />
     <Compile Include="Models\view_User.cs" />
@@ -771,6 +774,7 @@
     <Content Include="Views\TopCustomersReport\Index.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
+    <Content Include="Views\SelectOption\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

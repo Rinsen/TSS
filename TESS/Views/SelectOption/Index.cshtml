@@ -1,0 +1,472 @@
+﻿@using TietoCRM.Extensions;
+@using TietoCRM.Models;
+
+<div class="col-md-12">
+    <form style="margin-bottom: 0.8em;" class="form-inline">
+        <div class="form-group">
+            <label for="select-selectOptions">Model:</label>
+            <select name="user" id="select-selectModels" class="form-control selectpicker" data-live-search="true">
+                @foreach (view_SelectOption so in ViewBag.SelectModels)
+                {
+                    <option value="@so.Value" selected>@so.Text</option>
+                }
+                <option selected> - </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="select-selectOptions">Property:</label>
+            <select name="user" id="select-selectProperties" class="form-control selectpicker" data-live-search="true">
+                @*@foreach (view_SelectOption.SelectOption so in ViewBag.SelectProperties)
+                {
+                    <option value="@so.Value" selected>@so.Text</option>
+                }*@
+                <option selected> - </option>
+            </select>
+        </div>
+    </form>
+</div>
+<table draggable="true" id="selectOption-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false">#</th>
+            @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            {
+                String PropertyName = PropertyInfo.Name.Replace("_", " ");
+                if (!ViewBag.SkipProp.Contains(PropertyInfo.Name))
+                {
+                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                }
+            }
+        </tr>
+    </thead>
+</table>
+
+@* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="selectOptionModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edit Select Option</h4>
+            </div>
+            <div id="user-modal" class="modal-body">
+                <form class="form-horizontal">
+                    @{
+                        foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
+                        {
+                            String pName = pi.Name.Replace("_", " ");
+                            <div class="form-group">
+                                <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                <div class="col-sm-10">
+                                    @if (pi.Name == "Property")
+                                    {
+                                        <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                            @foreach (view_SelectOption.SelectOption so in ViewBag.SelectProperties)
+                                            {
+                                                <option value="@so.Value" selected>@so.Text</option>
+                                            }
+                                        </select>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
+                                    }
+                                </div>
+                            </div>
+
+                        }
+                    }
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-information-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*Slut på Modal*@
+
+<script>
+    var uploadToServer = function () {
+        if (typeof $("#save-selectOption-changes").attr("data-information") != "undefined") {
+
+            var ID = $("#save-selectOption-changes").attr("data-information");
+
+            var info = {
+                "_ID": ID
+            }
+
+            var $formInputs = $("#selectOptionModal form").find(":input");
+           
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                info[$currInput.attr("name")] = $currInput.val();
+            }
+            $.ajax({
+                "url": "/SelectOption/SaveSelectOption/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(info),
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#selectOptionModal").modal("hide");
+                        triggerAlert("Successfully updated this information", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to update the information to the server", "warning");
+                    }
+                }
+            });
+        }
+        else {
+          
+            var info = {}
+
+            var $formInputs = $("#selectOptionModal form").find(":input");
+            $('#author').selectpicker('refresh');
+            $('#type').selectpicker('refresh');
+
+            var frmInpLen = $formInputs.length;
+          
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                if (!$currInput.is("button"))
+                {
+                    info[$currInput.attr("name")] = $currInput.val();                 
+                }
+                   
+            }
+            $.ajax({
+                "url": "/SelectOption/InsertSelectOption/",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(info),
+                },
+                "success": function (data) {
+                    if (data > 0) {
+                        updateDataTable();
+                        console.log("success");
+                        $("#selectOptionModal").modal("hide");
+                        triggerAlert("Successfully inserted the new information", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to insert the information to the server", "warning");
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $("#save-selectOption-changes").click(function () {
+            if ($("#selectOptionModal form").valid()) {
+                uploadToServer();
+            }
+        });
+
+        $formValidation = $("#selectOptionModal form").validate({
+            ignore: ".ignore",
+            rules: {
+                
+                "Title": {
+                    required: true,
+                   
+                },
+                "Message": {
+                    required: true,
+                    
+                },
+                "Type": {
+                    required: true,
+                    maxlength: 50,
+                },
+                "Expires": {
+                    required: true,
+                    maxlength: 100,
+                    date: true
+                }
+            },
+            errorElement: "span",
+            wrapper: "a",  // a wrapper around the error message
+            errorPlacement: function (error, element) {
+                error.next().addClass("tooltips");
+                error.addClass("tooltips");
+                error.insertAfter(element);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    var selectedId = null;
+
+    var selectRow = function (element) {
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#selectOption-table");
+
+        $td.find("input").prop("checked", true);
+
+        selectedId = $td.find("input").val();
+
+        $table.find("tr.selected").removeClass("selected");
+
+        $row.addClass("selected");
+    }
+
+    @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (!ViewBag.SkipProp.Contains(PropertyInfo.Name))
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function (onSuccess, data) {
+        $('#selectOption-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "ajax": {
+                "url": "/SelectOption/GetTableSelectOptions/",
+                type: 'POST',
+                data: {
+                    model: data
+                }
+            },
+            "initComplete": function (settings, json) {
+                if (typeof onSuccess != "undefined")
+                    onSuccess();
+                drawButtons();
+            },
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
+           
+            "defaultContent": "",
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                }
+            ],
+
+            "fnRowCallback": drawCallBack
+        });
+    }
+
+    function drawButtons() {
+        var $selRowContainer = $("#selectOption-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='crm-edit-selectOption' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        $("#crm-edit-selectOption").bind("click", function () {
+            if (selectedId != null) {
+               
+                $("#sign-text").prop("readonly", true);
+                $("#save-selectOption-changes").attr("data-selectOption", selectedId);
+                var $selectedTds = $("#selectOption-table tr.selected td").not(".radios");
+                var tdLen = $selectedTds.length;
+
+                var $formInputs = $("#selectOptionTable form").find(":input");
+               
+
+                var frmInpLen = $formInputs.length;
+                for (var i = 0; i < frmInpLen; i++) {
+                    var $currInput = $($formInputs[i]);
+                    for (var j = 0; j < tdLen; j++) {
+                        var $currTD = $($selectedTds[j]);
+                        if ($currTD.data("property") == $currInput.attr("name")) {
+                            $currInput.val($currTD.html());
+                        }
+                    }
+                }
+                $("#save-selectOption-changes").attr("data-information", selectedId);
+                $("#selectOptionModal").appendTo("body").modal("show").draggable();
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
+        });
+
+        $selRowContainer.append("<div id='create-selectOption-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-information-button").bind("click", function () {
+            $("#sign-text").removeAttr("readonly");
+            $("#selectOptionModal").appendTo("body").modal("show").draggable();
+            $("#save-selectOption-changes").removeAttr("data-information");
+            var $selectedTds = $("#selectOption-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#selectOptionModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                if (!$currInput.is('button') || !$currInput.is('input.date'))
+                    $currInput.val("");
+                
+            }
+            $('#author').selectpicker('refresh');
+            $('#type').selectpicker('refresh');
+        });
+
+        $selRowContainer.append("<div id='delete-selectOption-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
+        $("#delete-selectOption-button").bind("click", function () {
+            bootbox.dialog({
+                title: 'Do you want to delete?',
+                className: "crm-delete-confirm",
+                message: "You are about to delete the selected select option, are you sure you want to delete it?",
+                buttons: {
+                    'cancel': {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    },
+                    'yes': {
+                        label: 'Yes',
+                        className: 'btn-danger pull-right',
+                        callback: function () {
+                            $.ajax({
+                                "url": "/SelectOption/DeleteSelectOption/",
+                                "type": "POST",
+                                "data": {
+                                    "_ID": selectedId,
+                                },
+                                "success": function (data) {
+                                    if (data > 0) {
+                                        updateDataTable();
+                                        console.log("success");
+                                        triggerAlert("Successfully deleted row", "success");
+                                        selectedId = null;
+                                    }
+                                    else {
+                                        console.log("failure");
+                                        triggerAlert("Something went wrong when trying to delete this row", "warning");
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    'no': {
+                        label: 'No',
+                        className: 'pull-right',
+                    }
+                },
+            });
+        });
+
+    }
+
+    var triggerAlert = function (msg, priorty) {
+        $(document).trigger("clear-alerts");
+        $(document).trigger("add-alerts", [
+          {
+              'message': msg,
+              'priority': priorty
+          }
+        ]);
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        var i = 0, j = 0;
+        var insertValue;
+        for (var name in aData) {
+            var $td;
+            if (i == 0) {
+                $td = $('td:eq(' + i + ')', nRow);
+
+                $td.parent().click(function () {
+
+                    selectRow(this.firstChild);
+                    
+                });
+
+                $td.html("<input type='radio' value=" + aData["_ID"] + " name='selected-contact' onClick=''/>");
+                $td.addClass("radios");
+                if ($td.find("input").val() == selectedId) {
+                    selectRow($td);
+                }
+                else if ($td.find("input").val() != selectedId) {
+                    $td.parent().removeClass("selected");
+                }
+                i++;
+            }
+
+            if (name != "_ID") {
+                
+                if (i < 7) {
+                    
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                }
+                else if (name == "Expires") {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    var dateWithoutTime = (aData[name].split(" "))[0];
+                    $td.html(dateWithoutTime);
+                }
+                i++;
+            }
+            
+        }
+    }
+    
+
+    $('document').ready(function () {
+
+
+        $('[data-toggle="tooltip"]').tooltip()
+
+        var $selectModels = $('#select-selectModels')
+            $selectModels.selectpicker();
+            $selectModels.bind('change', onSelectModelsChange);
+
+        var $selectProperties = $('#select-selectProperties')
+            $selectProperties.selectpicker();
+            $selectProperties.bind('change', onSelectPropertyChange);
+
+        
+
+        function onSelectModelsChange() {
+            $.ajax({
+                url: '/SelectOption/GetSelectProperties',
+                type: 'POST',
+                data: {
+                    model: $el.model.val()
+                },
+                success: onSuccess
+            })
+            
+            var onSuccess = function (data) {
+                if (data > 0) {
+                    $selectProperties.html(""); // Clear old options
+                    var selectOptions = JSON.parse(data);
+                    $.each(selectOptions, function (selectOption) {
+                        $selectProperties.append('<option value="' + selectOption.Value + '">' + selectOption.Text + '</option>');
+                    });
+                }
+            }
+
+        }
+
+        function onSelectPropertyChange() {
+            var model = $('#')
+            updateDataTable(function () { }, $el.val());
+        }
+
+
+       
+    });
+
+
+</script>

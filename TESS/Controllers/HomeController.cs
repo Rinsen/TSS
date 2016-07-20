@@ -17,6 +17,9 @@ namespace TietoCRM.Controllers
     {
         public ActionResult Index()
         {
+            view_SelectOption a = new view_SelectOption();
+            var test = a.GetSelectOptions("Model");
+
             var cName = User.Identity.Name;
             this.ViewData["Title"] = cName;
 
