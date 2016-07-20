@@ -215,7 +215,7 @@ var loadInfo = function () {
                         }
                         if (tags.length > 0)
                         {
-                            $formInput.val(tags.substr(0, tags.length - 2));
+                            $formInput.val(tags.substr(0, tags.length - 1));
                         } 
                         else
                             $formInput.val("");

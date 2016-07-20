@@ -406,11 +406,14 @@ namespace TietoCRM.Models
 
 
                 command.Prepare();
-
                 if (returnId)
                     return (int)command.ExecuteScalar();
                 else
+                {
+                    command.ExecuteNonQuery();
                     return -1;
+                }
+                    
             }
         }
 
