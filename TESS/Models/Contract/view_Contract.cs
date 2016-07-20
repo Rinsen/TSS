@@ -14,7 +14,7 @@ namespace TietoCRM.Models
         ServiceContract,
         ModuleTermination
     }
-    public class view_Contract : SQLBaseClass
+    public class view_Contract : SelectOptionsBaseClass
     {
         private int id;
         public int _ID { get { return id; } set { id = value; } }

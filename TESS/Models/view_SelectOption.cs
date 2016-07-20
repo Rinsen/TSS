@@ -25,16 +25,15 @@ namespace TietoCRM.Models
         private String text;
         public String Text { get; set; }
 
-        public view_SelectOption(Boolean init = true) : base("SelectOption", init)
+        public view_SelectOption() : base("SelectOption")
         {
-            if(init)
-                this.initTable();
-        }
-        public view_SelectOption() : base("SelectOption", false)
-        {
+
         }
         
-        protected override void initTable()
+        /// <summary>
+        /// Init table to make sure all properties and models are stored. 
+        /// </summary>
+        public override void initTable()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -51,24 +50,22 @@ namespace TietoCRM.Models
                                         INSERT INTO " + databasePrefix + @"SelectOption (Model, Property, Value, Text)
                                         VALUES(@Model, @Property, @Value, @Text)
                                     END";
-                foreach (String view in this.GetAllViews())
-                {
-                    SqlCommand commandView = new SqlCommand(query, connection);
-                    commandView.Prepare();
-                    commandView.Parameters.AddWithValue("@Model", this.GetType().Name.ToString());
-                    commandView.Parameters.AddWithValue("@Property", "Model");
-                    commandView.Parameters.AddWithValue("@Value", view);
-                    String text = view.Replace("view_", "");
-                    commandView.Parameters.AddWithValue("@Text", text);
-                    commandView.ExecuteNonQuery();
-                }
-
+                
+                // Make it posible to add properties for SelectOption
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Prepare();
                 command.Parameters.AddWithValue("@Model", this.GetType().Name.ToString());
                 command.Parameters.AddWithValue("@Property", "Property");
                 command.Parameters.AddWithValue("@Value", "Property");
                 command.Parameters.AddWithValue("@Text", "Property");
+                command.ExecuteNonQuery();
+
+                // Make class avaible as a select option
+                command.Parameters[0].Value = "view_SelectOption";
+                command.Parameters[1].Value = "Model";
+                command.Parameters[2].Value = this.GetType().Name;
+                String text = this.GetType().Name.Replace("view_", ""); 
+                command.Parameters[3].Value = AddSpacesToSentence(text);
                 command.ExecuteNonQuery();
             }
         }
@@ -96,7 +93,7 @@ namespace TietoCRM.Models
                 {
                     while (reader.Read())
                     {
-                        view_SelectOption k = new view_SelectOption(false);
+                        view_SelectOption k = new view_SelectOption();
                         int i = 0;
                         while (reader.FieldCount > i)
                         {
@@ -128,7 +125,7 @@ namespace TietoCRM.Models
                 {
                     while (reader.Read())
                     {
-                        view_SelectOption k = new view_SelectOption(false);
+                        view_SelectOption k = new view_SelectOption();
                         int i = 0;
                         while (reader.FieldCount > i)
                         {
@@ -143,10 +140,6 @@ namespace TietoCRM.Models
             return list;
         }
 
-        private Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
-        {
-            return assembly.GetTypes().Where(t => String.Equals(t.Namespace, nameSpace, StringComparison.Ordinal)).ToArray();
-        }
 
         /// <summary>
         /// Return all models beginning with view_ 
@@ -154,7 +147,7 @@ namespace TietoCRM.Models
         /// <returns>List of strings with view names</returns>
         public List<String> GetAllViews()
         {
-            Type[] allClasses = this.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "TietoCRM.Models");
+            Type[] allClasses = SelectOptionsBaseClass.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "TietoCRM.Models");
             List<String> allViews = new List<String>();
             foreach(Type cT in allClasses)
             {

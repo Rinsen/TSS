@@ -8,6 +8,7 @@ using System.Web.Routing;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
 using System.IO;
+using System.Reflection;
 
 namespace TietoCRM.Extensions
 {
@@ -43,6 +44,7 @@ namespace TietoCRM
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            SelectOptionsBaseClass.RunInitAllModels();
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e) {

@@ -11,17 +11,11 @@
                 {
                     <option value="@so.Value" selected>@so.Text</option>
                 }
-                <option selected> - </option>
             </select>
         </div>
         <div class="form-group">
             <label for="select-selectOptions">Property:</label>
             <select name="user" id="select-selectProperties" class="form-control selectpicker" data-live-search="true">
-                @*@foreach (view_SelectOption.SelectOption so in ViewBag.SelectProperties)
-                {
-                    <option value="@so.Value" selected>@so.Text</option>
-                }*@
-                <option selected> - </option>
             </select>
         </div>
     </form>
@@ -102,6 +96,7 @@
 @*Slut på Modal*@
 
 <script>
+    var propertyOption = null;
     var uploadToServer = function () {
         if (typeof $("#save-selectOption-changes").attr("data-information") != "undefined") {
 
@@ -132,6 +127,8 @@
                         updateDataTable();
                         console.log("success");
                         $("#selectOptionModal").modal("hide");
+                        propertyOption = $('#select-selectProperties').val(); 
+                        onSelectModelsChange();
                         triggerAlert("Successfully updated this information", "success");
                     }
                     else {
@@ -173,7 +170,8 @@
                         updateDataTable();
                         console.log("success");
                         $("#selectOptionModal").modal("hide");
-                        onSelectModalChange();
+                        propertyOption = $('#select-selectProperties').val(); 
+                        onSelectModelsChange();
                         triggerAlert("Successfully inserted the new information", "success");
                     }
                     else {
@@ -187,7 +185,6 @@
 
     $(document).ready(function () {
         $("#save-selectOption-changes").click(function () {
-            console.log("upload klicked!");
             if ($("#selectOptionModal form").valid()) {;
                 uploadToServer();
             }
@@ -211,7 +208,64 @@
                 error.insertAfter(element);
             }
         });
+
+
+        $('[data-toggle="tooltip"]').tooltip()
+
+        var $selectProperties = $('#select-selectProperties')
+        $selectProperties.selectpicker();
+        $selectProperties.bind('change', function(){
+            onSelectPropertyChange()
+        });
+
+        var $selectModels = $('#select-selectModels')
+        $selectModels.selectpicker();
+        $selectModels.bind('change', function(){
+            onSelectModelsChange();
+        });
+        $selectModels.trigger('change');
+       
+
+
+        function onSelectPropertyChange() {
+            updateDataTable();
+        }
+        
+
     });
+
+    var onSelectModelsChange = function () {
+            var $el = $('#select-selectModels');
+            console.log($el);
+            var $selectElement = $('#select-selectProperties');
+
+            $.ajax({
+                url: '/SelectOption/GetSelectProperties',
+                type: 'POST',
+                data: {
+                    model: $el.val()
+                },
+                success: onSuccess
+            })
+            
+            function onSuccess(data) {
+                $selectElement.html(""); // Clear old options
+                var selectOptions = JSON.parse(data);
+                $.each(selectOptions, function (index, selectOption) {
+                    var $optionHtml = $('<option value="' + selectOption.Value + '">' + selectOption.Text + '</option>');
+                    $selectElement.append($optionHtml);
+                });
+                $selectElement.selectpicker('refresh');
+                console.log(propertyOption);
+                if(propertyOption != null){
+                    console.log(propertyOption);
+                    $selectElement.find('option[value="' + propertyOption +'"]').prop('selected',true);
+                }
+                $selectElement.trigger('change');
+            }
+
+        }
+       
 </script>
 
 
@@ -289,7 +343,6 @@
 
     function drawButtons() {
         var $selRowContainer = $("#selectOption-table_wrapper").find(".row").first().find(".col-sm-6").first();
-
         $selRowContainer.append("<div id='crm-edit-selectOption' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-selectOption").bind("click", function () {
             console.log(selectedId);
@@ -366,6 +419,8 @@
                                         updateDataTable();
                                         console.log("success");
                                         triggerAlert("Successfully deleted row", "success");
+                                        propertyOption = $('#select-selectProperties').val(); 
+                                        onSelectModelsChange();
                                         selectedId = null;
                                     }
                                     else {
@@ -433,60 +488,7 @@
         }
     }
     
-
     $('document').ready(function () {
-
-
-        $('[data-toggle="tooltip"]').tooltip()
-
-        var $selectProperties = $('#select-selectProperties')
-            $selectProperties.selectpicker();
-            $selectProperties.bind('change', onSelectPropertyChange);
-
-        var $selectModels = $('#select-selectModels')
-            $selectModels.selectpicker();
-            $selectModels.bind('change', onSelectModelsChange)
-            
-
-
-        
-
-        function onSelectModelsChange() {
-            var $el = $(this);
-            var $selectElement = $selectProperties;
-
-            $.ajax({
-                url: '/SelectOption/GetSelectProperties',
-                type: 'POST',
-                data: {
-                    model: $el.val()
-                },
-                success: onSuccess
-            })
-            
-            function onSuccess(data) {
-                $selectElement.html(""); // Clear old options
-                var selectOptions = JSON.parse(data);
-                $.each(selectOptions, function (index, selectOption) {
-                    var $optionHtml = $('<option value="' + selectOption.Value + '">' + selectOption.Text + '</option>');
-                    $selectElement.append($optionHtml);
-                    if (selectOptions.length == 1) {
-                        $selectElement.trigger('change');
-                    }
-                });
-                $selectElement.selectpicker('refresh');
-            }
-
-        }
-
-        function onSelectPropertyChange() {
-            updateDataTable();
-        }
-        
-        // Just init a empty datatable
-        updateDataTable(null, null);
-
-       
     });
 
 
