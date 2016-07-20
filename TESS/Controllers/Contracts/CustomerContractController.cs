@@ -219,17 +219,17 @@ namespace TietoCRM.Controllers.Contracts
                     articles.Add(contractInfo);
             }
 
-            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
-            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
-            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
+            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
 
             ViewData.Add("OldEducationPortals", oldEducationPortals);
             ViewData.Add("OldArticles", oldArticles);
             ViewData.Add("RemEducationPortals", remEducationPortals);
             ViewData.Add("CtrResign", ctrResign);
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
-            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
