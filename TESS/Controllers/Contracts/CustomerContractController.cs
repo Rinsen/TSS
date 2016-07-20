@@ -643,6 +643,7 @@ namespace TietoCRM.Controllers.Contracts
                 try
                 {
                     a = (view_Contract)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Contract));
+                    a.ParseHashtags(Request["hashtags"]);
                     int i = 1;
                     bool foundIndex = false;
                     String contractId = "";
@@ -1787,6 +1788,7 @@ namespace TietoCRM.Controllers.Contracts
             try
             {
                 String customer = Request.Form["customer"];
+                String hashtags = Request.Form["hashtags"];
                 String contractId = Request.Form["contract-id"];
                 String newContractId = Request.Form["newContract-id"];
                 String json = Request.Form["json"];
@@ -1827,7 +1829,7 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     a.Main_contract_id = a.Contract_id;
                 }
-
+                a.ParseHashtags(hashtags);
                 a.Updated = System.DateTime.Now;
                 a.Update("Customer = '" + customer + "' AND Contract_id = '" + contractId + "'");
 

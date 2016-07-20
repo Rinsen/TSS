@@ -16,7 +16,7 @@ namespace TietoCRM.Models
     }
     public class view_Contract : HashtagDocument
     {
-        public int _ID { get { return _id; } set { _id = value; } }
+        public int _ID { get { return base._ID; } set { base._ID = value; } }
 
         private String contract_id;
         public String Contract_id { get { return contract_id; } set { contract_id = value; } }
@@ -114,9 +114,19 @@ namespace TietoCRM.Models
             : base("Contract")
         {
             this.Select(condition);
-            this._ContractRows = view_ContractRow.GetAllContractRows(this.Contract_id, this.Customer);
-            this._ContractConsultantRows = view_ContractConsultantRow.GetAllContractConsultantRow(this.Contract_id, this.Customer);
-            this._ContractOptions = view_ContractOption.getAllOptions(this.Contract_id, this.Customer);
+        }
+
+        public override bool Select(string condition)
+        {
+            bool r = base.Select(condition);
+            if (r)
+            { 
+                this._ContractRows = view_ContractRow.GetAllContractRows(this.Contract_id, this.Customer);
+                this._ContractConsultantRows = view_ContractConsultantRow.GetAllContractConsultantRow(this.Contract_id, this.Customer);
+                this._ContractOptions = view_ContractOption.getAllOptions(this.Contract_id, this.Customer);
+            }
+
+            return r;
         }
 
         /// <summary>

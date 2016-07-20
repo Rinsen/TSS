@@ -9,7 +9,7 @@ namespace TietoCRM.Models
     public class view_CustomerOffer : HashtagDocument
     {
         private int offer_number;
-        public int _Offer_number { get { return offer_number; } set { offer_number = value; } }
+        public int _Offer_number { get { return offer_number; } set { offer_number = value; base._ID = value;} }
 
         private String customer;
         public String Customer { get { return customer; } set { customer = value; } }
@@ -62,8 +62,8 @@ namespace TietoCRM.Models
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
-        public new int _ID
-        { get { return offer_number; } set { offer_number = value; } }
+        public override int _ID
+        { get { return base._ID; } set { offer_number = value; base._ID = value; } }
 
         /// <summary>
         /// This variable does not exist in the database, and therefor there is no "_"
@@ -89,8 +89,17 @@ namespace TietoCRM.Models
             : base("CustomerOffer")
         {
             this.Select(condition);
-            this._OfferRows = view_OfferRow.getAllOfferRows(Convert.ToString(this._Offer_number));
-            this._ConsultantRows = view_ConsultantRow.getAllConsultantRow(Convert.ToString(this._Offer_number));
+        }
+
+        public override bool Select(string condition)
+        {
+            bool r = base.Select(condition);
+            if(r)
+            {
+                this._OfferRows = view_OfferRow.getAllOfferRows(Convert.ToString(this._Offer_number));
+                this._ConsultantRows = view_ConsultantRow.getAllConsultantRow(Convert.ToString(this._Offer_number));
+            }
+            return r;
         }
 
         public view_CustomerOffer()

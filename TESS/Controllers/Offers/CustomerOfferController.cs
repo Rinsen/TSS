@@ -186,7 +186,16 @@ namespace TietoCRM.Controllers
                     rep.Select("Sign=" + name);
                     users.Add(rep);
                 }
-                user = users.Where(u => u.Area == co.Area).First();
+                if (users.Count > 0)
+                {
+                    List<view_User> tempUsers = users.Where(u => u.Area == co.Area).ToList();
+                    if (tempUsers.Count > 0)
+                        user = tempUsers.First();
+                    else
+                        user = System.Web.HttpContext.Current.GetUser();
+                }
+                else
+                    user = System.Web.HttpContext.Current.GetUser();
             }
             ViewData.Add("Representative", user);
 
@@ -559,7 +568,10 @@ namespace TietoCRM.Controllers
 
                         foreach (KeyValuePair<String, object> offerVariable in offerVariables)
                         {
-                            co.SetValue(offerVariable.Key, offerVariable.Value);
+                            if (offerVariable.Key == "Hashtags")
+                                co.ParseHashtags(offerVariable.Value.ToString());
+                            else
+                                co.SetValue(offerVariable.Key, offerVariable.Value);
                         }
 
                         co.Update("Offer_number = '" + offerNumber + "'");
@@ -1035,12 +1047,13 @@ namespace TietoCRM.Controllers
                     return "0";
                 }
                 a.Area = System.Web.HttpContext.Current.GetUser().Area;
-                a.Insert();
+                a.ParseHashtags(Request["hashtags"]);
 
                 List<view_CustomerOffer> allOffers = view_CustomerOffer.getAllCustomerOffers(a.Customer.ToString());
-                allOffers.OrderByDescending(c => c._Offer_number);
+                allOffers = allOffers.OrderByDescending(c => c._Offer_number).ToList();
+                int id = a.Insert();
 
-                return allOffers.Last()._Offer_number.ToString();
+                return id.ToString();
             }
             catch (Exception e)
             {

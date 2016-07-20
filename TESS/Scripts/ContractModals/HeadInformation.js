@@ -66,6 +66,7 @@ $(document).ready(function () {
         if ($("#table-form").valid()) {
             var $ttForm = $("#table-form");
             var $inputs = $ttForm.find(":input");
+            var hashtags = "";
 
             var contract = {};
             $inputs.each(function () {
@@ -74,12 +75,16 @@ $(document).ready(function () {
                 if ($formInput.attr("name") == "Contract_id") {
                     contractId = $formInput.val();
                 }
+                else if($formInput.attr("name") == "Hashtags"){
+                    hashtags = $formInput.val();
+                }
             });
             $.ajax({
                 "url": serverPrefix + "CustomerContract/UpdateTableInfo/",
                 "type": "POST",
                 "data": {
                     "customer": customerName,
+                    "hashtags": hashtags,
                     "contract-id": oldContractId,
                     "newContract-id": contractId,
                     "json": JSON.stringify(contract),
@@ -187,28 +192,38 @@ var loadInfo = function () {
         "success": function (data) {
             if (data != "0") {
                 var items = JSON.parse(data);
+                console.log(items);
                 var $ttForm = $("#table-form");
                 var $inputs = $ttForm.find(":input");
                 var dataLen = Object.keys(items).length;
-                for (var i = 0; i < dataLen; i++) {
-                    $inputs.each(function () {
-                        var $formInput = $(this);
-                        // Match input name with json property name, if a match set form value to prop value;
-                        if ($formInput.attr("name") == Object.keys(items)[i]) {
+                $inputs.each(function () {
+                    var $formInput = $(this);
+                    if (items.hasOwnProperty($formInput.attr("name"))) {
+                        $formInput.val(items[$formInput.attr("name")]);
 
-                            $formInput.val(items[$formInput.attr("name")]);
-
-                            if ($formInput.attr("name") == "Status") {
-                                oldStatus = items[$formInput.attr("name")];
-                            }
-
+                        if ($formInput.attr("name") == "Status") {
+                            oldStatus = items[$formInput.attr("name")];
                         }
-                    });
+                    }
+                    else if ($formInput.attr("name") == "Hashtags") {
+                        var hashtags = items["_HashtagList"];
+                        var tags = "";
+                        var length = hashtags.length;
+                        for (var i = 0; i < length; i++) {
+                            tag = hashtags[i];
+                            tags += "#" + tag + " ";
+                        }
+                        if (tags.length > 0)
+                        {
+                            $formInput.val(tags.substr(0, tags.length - 2));
+                        } 
+                        else
+                            $formInput.val("");
+                    }
+                });
                 }
             }
-
-        }
-    });
+        });
 
 
     

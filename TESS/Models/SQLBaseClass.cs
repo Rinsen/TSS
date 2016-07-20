@@ -20,7 +20,7 @@ namespace TietoCRM.Models
         private String table;
         protected static String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
        
-        private PropertyInfo[] propertyInfos;
+        private List<PropertyInfo> propertyInfos;
         private String joinSQL;
 
         protected String JoinSQL
@@ -39,7 +39,7 @@ namespace TietoCRM.Models
             joinSQL += value;
         }
 
-        protected PropertyInfo[] PropertyInfos
+        protected List<PropertyInfo> PropertyInfos
         {
             get { return propertyInfos; }
             private set { propertyInfos = value; }
@@ -50,7 +50,7 @@ namespace TietoCRM.Models
         public SQLBaseClass(String table)
         {
             this.table = table;
-            this.propertyInfos = this.GetType().GetProperties();
+            this.propertyInfos = new List<PropertyInfo>(this.GetType().GetProperties());
         }
 
         /// <summary>
@@ -343,21 +343,28 @@ namespace TietoCRM.Models
         /// <summary>
         /// Inserts this object into the SQL server.
         /// </summary>
-        public virtual void Insert()
+        public virtual int Insert()
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
                 String query = "INSERT INTO " + databasePrefix + this.table + " (";
-
+                bool returnId = false;
                 foreach (PropertyInfo pi in this.propertyInfos)
                 {
                     if (!pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK"))
-                        query += pi.Name + ",";             
+                        query += pi.Name + ",";
+                    if (pi.Name.Equals("ID_PK") || pi.Name.Equals("_ID"))
+                        returnId = true;
                 }
                 query = query.Remove(query.Length - 1);
-                query += ") VALUES (";
+
+                if(returnId)
+                    query += ") OUTPUT INSERTED.ID VALUES (";
+                else
+                    query += ") VALUES (";
+
                 foreach (PropertyInfo pi in this.propertyInfos)
                 {
                     if (pi.Name.ToLower() == "ssma_timestamp")
@@ -399,7 +406,11 @@ namespace TietoCRM.Models
 
 
                 command.Prepare();
-                command.ExecuteNonQuery();
+
+                if (returnId)
+                    return (int)command.ExecuteScalar();
+                else
+                    return -1;
             }
         }
 
@@ -433,7 +444,7 @@ namespace TietoCRM.Models
                     while (reader.Read())
                     {
                         int j = 0;
-                        for (int i = 0; i < this.propertyInfos.Length; i++)
+                        for (int i = 0; i < this.propertyInfos.Count; i++)
                         {
                             if (reader.GetName(j).ToLower() != "ssma_timestamp")
                             {

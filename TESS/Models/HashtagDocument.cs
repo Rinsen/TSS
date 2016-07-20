@@ -8,10 +8,10 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-    public abstract class HashtagDocument : SQLBaseClass
+    public abstract class HashtagDocument : SelectOptionsBaseClass
     {
-        protected int _id;
-        public int _ID { get; set; }
+        private int _id;
+        public virtual int _ID { get; set; }
 
         private List<String> _hashtagList = new List<String>();
         public List<String> _HashtagList
@@ -29,8 +29,19 @@ namespace TietoCRM.Models
 
         public void ParseHashtags(String hashtags)
         {
+            this._hashtagList.Clear();
+
+            while(hashtags.Contains(" "))
+                hashtags = hashtags.Replace(" ", "");
+
+            if (hashtags[0] == '#')
+                hashtags = hashtags.Remove(0, 1);
+            else
+                throw new System.Data.SyntaxErrorException("first tag was formated wrong, something with no starting hashtag, typical hashtag looks like this #yolo");
+
             String[] tags = hashtags.Split('#');
-            Regex regex = new Regex(@"^[a-zA-Z0-9\_]+$");
+             
+            Regex regex = new Regex(@"^\w+$");
             foreach (String tag in tags)
             {
                 if (regex.IsMatch(tag))
@@ -58,10 +69,13 @@ namespace TietoCRM.Models
             base.Update(condition);
         }
 
-        public override void Insert()
+        public override int Insert()
         {
+            int id = base.Insert();
+            this._ID = id;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                connection.Open();
                 foreach (String hashtag in this._HashtagList)
                 {
                     if (hashtag != null)
@@ -70,7 +84,7 @@ namespace TietoCRM.Models
                     }
                 }
             }
-            base.Insert();
+            return id;
         }
 
         public override void Delete(string condition)
@@ -93,6 +107,19 @@ namespace TietoCRM.Models
             }
             else
                 return false;
+        }
+
+        public String HashtagsAsString()
+        {
+            String tags = "";
+            foreach(String tag in this._HashtagList)
+            {
+                tags += "#" + tag + " ";
+            }
+            if (tags.Length > 0)
+                return tags.Remove(tags.Length - 1, 1);
+            else
+                return "";
         }
 
         public List<String> GetHashtags()
