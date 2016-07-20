@@ -1,5 +1,6 @@
 ﻿@using TietoCRM.Extensions;
 @using TietoCRM.Models;
+@using System.Web.Script.Serialization
 
 <div class="col-md-12">
     <form style="margin-bottom: 0.8em;" class="form-inline">
@@ -49,38 +50,51 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Edit Select Option</h4>
             </div>
-            <div id="user-modal" class="modal-body">
+            <div class="modal-body">
                 <form class="form-horizontal">
                     @{
                         foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                         {
-                            String pName = pi.Name.Replace("_", " ");
-                            <div class="form-group">
-                                <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
-                                <div class="col-sm-10">
-                                    @if (pi.Name == "Property")
-                                    {
-                                        <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                            @foreach (view_SelectOption.SelectOption so in ViewBag.SelectProperties)
-                                            {
-                                                <option value="@so.Value" selected>@so.Text</option>
-                                            }
-                                        </select>
-                                    }
-                                    else
-                                    {
-                                        <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
-                                    }
-                                </div>
-                            </div>
+                            if(!ViewBag.SkipProp.Contains(pi.Name))
+                            {
 
+                                String pName = pi.Name.Replace("_", " ");
+                                <div class="form-group">
+                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                    <div class="col-sm-10">
+                                        @if (pi.Name == "Model")
+                                        {
+                                            <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                @foreach (view_SelectOption so in ViewBag.SelectModels)
+                                                {
+                                                    <option value="@so.Value" selected>@so.Text</option>
+                                                }
+                                            </select>
+                                        }
+                                        else if (pi.Name == "Property")
+                                        {
+                                            <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                @foreach (view_SelectOption.SelectOption so in ViewBag.SelectProperties)
+                                                {
+                                                    <option value="@so.Value" selected>@so.Text</option>
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
+                                        }
+                                    </div>
+                                </div>
+
+                            }
                         }
                     }
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="save-information-changes" class="btn btn-primary">Save changes</button>
+                <button type="button" id="save-selectOption-changes" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -93,8 +107,11 @@
 
             var ID = $("#save-selectOption-changes").attr("data-information");
 
+
             var info = {
-                "_ID": ID
+                "_ID": ID,
+                Model: $('#select-selectModels').val(),
+                Property:$('#select-selectProperties').val()
             }
 
             var $formInputs = $("#selectOptionModal form").find(":input");
@@ -127,10 +144,13 @@
         else {
           
             var info = {}
+            var $selectModels = $('#select-selectModels');
+            var $selectProperties = $('#select-selectProperties');
+
+            info.Model = $selectModels.val();
+            info.Property = $selectProperties.val();
 
             var $formInputs = $("#selectOptionModal form").find(":input");
-            $('#author').selectpicker('refresh');
-            $('#type').selectpicker('refresh');
 
             var frmInpLen = $formInputs.length;
           
@@ -153,6 +173,7 @@
                         updateDataTable();
                         console.log("success");
                         $("#selectOptionModal").modal("hide");
+                        onSelectModalChange();
                         triggerAlert("Successfully inserted the new information", "success");
                     }
                     else {
@@ -166,7 +187,8 @@
 
     $(document).ready(function () {
         $("#save-selectOption-changes").click(function () {
-            if ($("#selectOptionModal form").valid()) {
+            console.log("upload klicked!");
+            if ($("#selectOptionModal form").valid()) {;
                 uploadToServer();
             }
         });
@@ -174,23 +196,11 @@
         $formValidation = $("#selectOptionModal form").validate({
             ignore: ".ignore",
             rules: {
-                
-                "Title": {
+                "Value": {
                     required: true,
-                   
                 },
-                "Message": {
+                "Text": {
                     required: true,
-                    
-                },
-                "Type": {
-                    required: true,
-                    maxlength: 50,
-                },
-                "Expires": {
-                    required: true,
-                    maxlength: 100,
-                    date: true
                 }
             },
             errorElement: "span",
@@ -234,18 +244,28 @@
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function (onSuccess, data) {
+        var $selectModels = $('#select-selectModels');
+        var $selectProperties = $('#select-selectProperties');
+        var dataA = {
+            model: $selectModels.val(),
+            property: $selectProperties.val()
+        }
+        var dataB = {
+            model: null,
+            property: null
+        }
+        data = typeof data == 'undefined' ? dataA : dataB;
+
         $('#selectOption-table').DataTable({
             "destroy": true,
             "processing": true,
             "ajax": {
                 "url": "/SelectOption/GetTableSelectOptions/",
                 type: 'POST',
-                data: {
-                    model: data
-                }
+                data: data
             },
             "initComplete": function (settings, json) {
-                if (typeof onSuccess != "undefined")
+                if (typeof onSuccess != "undefined" && onSuccess != null)
                     onSuccess();
                 drawButtons();
             },
@@ -272,15 +292,15 @@
 
         $selRowContainer.append("<div id='crm-edit-selectOption' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-selectOption").bind("click", function () {
+            console.log(selectedId);
             if (selectedId != null) {
                
-                $("#sign-text").prop("readonly", true);
                 $("#save-selectOption-changes").attr("data-selectOption", selectedId);
                 var $selectedTds = $("#selectOption-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;
 
-                var $formInputs = $("#selectOptionTable form").find(":input");
-               
+                var $formInputs = $("#selectOptionModal form").find(":input");
+                console.log($formInputs); 
 
                 var frmInpLen = $formInputs.length;
                 for (var i = 0; i < frmInpLen; i++) {
@@ -300,7 +320,7 @@
         });
 
         $selRowContainer.append("<div id='create-selectOption-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-        $("#create-information-button").bind("click", function () {
+        $("#create-selectOption-button").bind("click", function () {
             $("#sign-text").removeAttr("readonly");
             $("#selectOptionModal").appendTo("body").modal("show").draggable();
             $("#save-selectOption-changes").removeAttr("data-information");
@@ -312,12 +332,12 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                if (!$currInput.is('button') || !$currInput.is('input.date'))
+                if (!$currInput.is('button'))
                     $currInput.val("");
                 
             }
-            $('#author').selectpicker('refresh');
-            $('#type').selectpicker('refresh');
+            $('#model').selectpicker('refresh');
+            $('#property').selectpicker('refresh');
         });
 
         $selRowContainer.append("<div id='delete-selectOption-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
@@ -375,6 +395,7 @@
           }
         ]);
     }
+    var skipProp = @Html.Raw((new JavaScriptSerializer()).Serialize(ViewBag.SkipProp));
 
     var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
         var i = 0, j = 0;
@@ -390,7 +411,7 @@
                     
                 });
 
-                $td.html("<input type='radio' value=" + aData["_ID"] + " name='selected-contact' onClick=''/>");
+                $td.html("<input type='radio' value=" + aData["_ID"] + " name='selected-selectOption' onClick=''/>");
                 $td.addClass("radios");
                 if ($td.find("input").val() == selectedId) {
                     selectRow($td);
@@ -401,20 +422,11 @@
                 i++;
             }
 
-            if (name != "_ID") {
+            if ($.inArray(name, skipProp) == -1) {
                 
-                if (i < 7) {
-                    
-                    $td = $('td:eq(' + i + ')', nRow);
-                    $td.attr("data-property", name);
-                    $td.html(aData[name]);
-                }
-                else if (name == "Expires") {
-                    $td = $('td:eq(' + i + ')', nRow);
-                    $td.attr("data-property", name);
-                    var dateWithoutTime = (aData[name].split(" "))[0];
-                    $td.html(dateWithoutTime);
-                }
+                $td = $('td:eq(' + i + ')', nRow);
+                $td.attr("data-property", name);
+                $td.html(aData[name]);
                 i++;
             }
             
@@ -427,43 +439,52 @@
 
         $('[data-toggle="tooltip"]').tooltip()
 
-        var $selectModels = $('#select-selectModels')
-            $selectModels.selectpicker();
-            $selectModels.bind('change', onSelectModelsChange);
-
         var $selectProperties = $('#select-selectProperties')
             $selectProperties.selectpicker();
             $selectProperties.bind('change', onSelectPropertyChange);
 
+        var $selectModels = $('#select-selectModels')
+            $selectModels.selectpicker();
+            $selectModels.bind('change', onSelectModelsChange)
+            
+
+
         
 
         function onSelectModelsChange() {
+            var $el = $(this);
+            var $selectElement = $selectProperties;
+
             $.ajax({
                 url: '/SelectOption/GetSelectProperties',
                 type: 'POST',
                 data: {
-                    model: $el.model.val()
+                    model: $el.val()
                 },
                 success: onSuccess
             })
             
-            var onSuccess = function (data) {
-                if (data > 0) {
-                    $selectProperties.html(""); // Clear old options
-                    var selectOptions = JSON.parse(data);
-                    $.each(selectOptions, function (selectOption) {
-                        $selectProperties.append('<option value="' + selectOption.Value + '">' + selectOption.Text + '</option>');
-                    });
-                }
+            function onSuccess(data) {
+                $selectElement.html(""); // Clear old options
+                var selectOptions = JSON.parse(data);
+                $.each(selectOptions, function (index, selectOption) {
+                    var $optionHtml = $('<option value="' + selectOption.Value + '">' + selectOption.Text + '</option>');
+                    $selectElement.append($optionHtml);
+                    if (selectOptions.length == 1) {
+                        $selectElement.trigger('change');
+                    }
+                });
+                $selectElement.selectpicker('refresh');
             }
 
         }
 
         function onSelectPropertyChange() {
-            var model = $('#')
-            updateDataTable(function () { }, $el.val());
+            updateDataTable();
         }
-
+        
+        // Just init a empty datatable
+        updateDataTable(null, null);
 
        
     });
