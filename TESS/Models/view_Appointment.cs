@@ -7,7 +7,7 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-    public class view_Appointment : SQLBaseClass
+    public class view_Appointment : SelectOptionsBaseClass
     {
         private int _id;
         public int _ID { get; set; }

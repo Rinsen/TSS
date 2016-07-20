@@ -25,6 +25,7 @@ namespace TietoCRM.Controllers.List_Management
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames());
             this.ViewData.Add("Properties", typeof(view_Appointment).GetProperties());
             ViewData.Add("Contacts", view_CustomerContact.getAllCustomerContacts().Where(c => ((List<String>)ViewData["Customers"]).Contains(c.Customer)));
+            ViewData.Add("EventTypes", (new view_Appointment()).GetSelectOptions("Event_type"));
             return View();
         }
 

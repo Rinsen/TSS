@@ -45,11 +45,17 @@
                                                 }
                                                 else if (pi.Name == "Event_type")
                                                 {
-                                                    <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                    @*<select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
                                                         <option>Meeting</option>
                                                         <option>Online</option>
                                                         <option>Telephone</option>
                                                         <option>User gathering</option>
+                                                    </select>*@
+                                                    <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                        @foreach(view_Appointment.SelectOption so in ViewBag.EventTypes)
+                                                        {
+                                                            <option value="@so.Value">@so.Text</option>
+                                                        }
                                                     </select>
                                                 }
                                                 else if (pi.Name == "Customer")
