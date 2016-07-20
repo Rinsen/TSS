@@ -31,7 +31,7 @@ namespace TietoCRM.Models
 
         }
 
-        public static List<view_ModuleDiscount> getAllModuleDiscounts(String area)
+        public static List<view_ModuleDiscount> GetAllModuleDiscounts(String area)
         {
             List<view_ModuleDiscount> list = new List<view_ModuleDiscount>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -66,9 +66,19 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public static List<view_ModuleDiscount> getAllModuleDiscounts()
+        public static List<view_ModuleDiscount> GetAllModuleDiscounts()
         {
-            return getAllModuleDiscounts(null);
+            return GetAllModuleDiscounts(null);
+        }
+
+        public static void DeleteOutdated()
+        {
+            List<view_ModuleDiscount> modules = GetAllModuleDiscounts();
+            foreach(view_ModuleDiscount module in modules)
+            {
+                if((module.End_date - DateTime.Today).TotalDays <= 0)
+                    module.Delete("ID=" + module._ID);
+            }
         }
     }
 }

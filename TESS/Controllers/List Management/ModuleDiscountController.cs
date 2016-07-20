@@ -32,9 +32,9 @@ namespace TietoCRM.Controllers.List_Management
             view_User user = System.Web.HttpContext.Current.GetUser();
             List<view_ModuleDiscount> modules;
             if (user.User_level == 2)
-                modules = view_ModuleDiscount.getAllModuleDiscounts(user.Area);
+                modules = view_ModuleDiscount.GetAllModuleDiscounts(user.Area);
             else
-                modules = view_ModuleDiscount.getAllModuleDiscounts();
+                modules = view_ModuleDiscount.GetAllModuleDiscounts();
             String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(modules) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
