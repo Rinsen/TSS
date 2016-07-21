@@ -16,7 +16,6 @@
             </tr>
         </thead>
     </table>
-    <a href="webcal://localhost:61646/Appointment/GetiCalendar">Import as Ical</a>
 </form>
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -426,6 +425,9 @@
                 },
             });
         });
+        $selRowContainer.append('<div id="crm-export-ical" class="crm-table-btn" \
+            onclick="location.href=\'@Url.Action("GetiCalendar", "Appointment", null, Request.Url.Scheme).Replace("http://","webcal://")\';">\
+            <button type="button" class="btn btn-default">Import as Ical</button></div>');
 
     }
 
@@ -473,7 +475,7 @@
                 }
                 i++;
             }
-            
+
         }
     }
 
