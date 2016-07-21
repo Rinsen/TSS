@@ -30,24 +30,26 @@ namespace TietoCRM.Models
         public void ParseHashtags(String hashtags)
         {
             this._hashtagList.Clear();
-
-            while(hashtags.Contains(" "))
-                hashtags = hashtags.Replace(" ", "");
-
-            if (hashtags[0] == '#')
-                hashtags = hashtags.Remove(0, 1);
-            else
-                throw new System.Data.SyntaxErrorException("first tag was formated wrong, something with no starting hashtag, typical hashtag looks like this #yolo");
-
-            String[] tags = hashtags.Split('#');
-             
-            Regex regex = new Regex(@"^\w+$");
-            foreach (String tag in tags)
+            if(!String.IsNullOrEmpty(hashtags))
             {
-                if (regex.IsMatch(tag))
-                    this._HashtagList.Add(tag);
+                while (hashtags.Contains(" "))
+                    hashtags = hashtags.Replace(" ", "");
+
+                if (hashtags[0] == '#')
+                    hashtags = hashtags.Remove(0, 1);
                 else
-                    throw new System.Data.SyntaxErrorException("One of the tags (" + tag + ") was formated wrong, typical hashtag looks like this #yolo");
+                    throw new System.Data.SyntaxErrorException("first tag was formated wrong, something with no starting hashtag, typical hashtag looks like this #yolo");
+
+                String[] tags = hashtags.Split('#');
+
+                Regex regex = new Regex(@"^\w+$");
+                foreach (String tag in tags)
+                {
+                    if (regex.IsMatch(tag))
+                        this._HashtagList.Add(tag);
+                    else
+                        throw new System.Data.SyntaxErrorException("One of the tags (" + tag + ") was formated wrong, typical hashtag looks like this #yolo");
+                }
             }
         }
 

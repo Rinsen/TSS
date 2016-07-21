@@ -57,6 +57,8 @@ namespace TietoCRM.Controllers.Reports
 
         public List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area, String year)
         {
+            view_User vUser = new view_User();
+            vUser.Select("Sign=" + user);
             List<view_Customer> customers;
             if (area == "*")
                 customers = view_Customer.getAllCustomers();
@@ -70,7 +72,13 @@ namespace TietoCRM.Controllers.Reports
                 }
             }
             else
-                customers = view_Customer.getAllCustomers(user);
+            {
+                if (vUser.User_level > 1)
+                    customers = view_Customer.getAllCustomers(user);
+                else
+                    customers = view_Customer.getAllCustomers();
+            }
+                
 
 
             List<Dictionary<String, Object>> rows = new List<Dictionary<String, Object>>();
