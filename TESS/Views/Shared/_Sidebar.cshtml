@@ -75,12 +75,13 @@
                     <a href="#">System</a>
                 </li>
                 <ul class="sub-menu collapse" id="system">
+                    <li><a href="~/Information/">- Information Messages</a></li>
+                    <li><a href="~/SelectOption/">- Select Options</a></li>
                     <li><a href="~/Template/">- Templates</a></li>
                     @if (TietoCRM.Models.GlobalVariables.isAuthorized("Users"))
                     {
                         <li><a href="~/User/">- Users</a></li>
                     }
-                    <li><a href="~/Information/">- Information Messages</a></li>
                 </ul>
                 <li data-toggle="collapse" data-target="#installations" class="collapsed">
                     <a href="#"> Installations </a>

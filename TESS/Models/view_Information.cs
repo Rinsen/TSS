@@ -97,7 +97,9 @@ namespace TietoCRM.Models
         public static List<view_Information> getAllValidInformation()
         {
             List<view_Information> allInfo = view_Information.getAllInformation();
-            return allInfo.FindAll(a => DateTime.Compare(a.Expires,DateTime.Now) >= 0 );
+            allInfo = allInfo.FindAll(a => DateTime.Compare(a.Expires, DateTime.Now) >= 0);
+            allInfo.Sort((a, b) => a.Updated.CompareTo(b.Updated));
+            return allInfo;
         }
 
         public string getAuthorName()
