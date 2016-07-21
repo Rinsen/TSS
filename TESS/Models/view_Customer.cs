@@ -122,7 +122,7 @@ namespace TietoCRM.Models
         public override bool Select(String condition)
         {
             bool returnVal = base.Select(condition);
-            if (returnVal && !condition.Contains(this.Customer) && condition.Contains(this._ID.ToString()))
+            if (returnVal)
             {
                 this._Representatives = this.GetCustomerRepresentatives();
             }

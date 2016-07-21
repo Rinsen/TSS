@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace TietoCRM.Models
 {
-    public class view_CustomerProductRow : SQLBaseClass, ICsvProvider
+    public class view_CustomerProductRow : SQLBaseClass
     {
         private String customer;
         public String Customer { get { return customer; } set { customer = value; } }
@@ -215,15 +215,13 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public String GetCsv()
+        public List<String> GetCsv()
         {
-            String csv = "";
+            List<String> csv = new List<String>();
             foreach(PropertyInfo prop in this.GetType().GetProperties())
             {
-                csv += (prop.GetValue(this) ?? " ").ToString() + ",";
+                csv.Add((prop.GetValue(this) ?? " ").ToString());
             }
-            csv.Remove(csv.Length - 1, 1);
-            csv += "\r\n";
 
             return csv;
         }
