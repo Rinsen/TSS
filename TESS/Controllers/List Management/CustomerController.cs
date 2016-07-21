@@ -108,9 +108,11 @@ namespace TietoCRM.Controllers
                 {
                     if(info.Name != "_ID" && info.Name != "Representative" && info.Name != "SSMA_timestamp")
                     {
-                        
-                        dic.Add(info.Name, info.GetValue(customer));
-                       
+                        if(info.Name != "County")
+                            dic.Add(info.Name, info.GetValue(customer));
+                        else
+                            dic.Add(info.Name, customer.GetCounty());
+
                     }
                         
                 }

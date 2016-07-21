@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
@@ -11,6 +12,25 @@ namespace TietoCRM.Models
 {
     public class SelectOptions<T> where T : SQLBaseClass
     {
+
+        private DateTime lastUpdate = DateTime.Parse("0001-01-01");
+        public DateTime LastUpdate { get { return lastUpdate; } }
+
+        private Dictionary<String, List<SelectOption>> options;
+        public ReadOnlyDictionary<String, List<SelectOption>> Options
+        {
+            get
+            {
+                UpdateData();
+                return new ReadOnlyDictionary<String, List<SelectOption>>(this.options);
+            }
+        }
+        public List<SelectOption> GetOptions(String prop)
+        {
+            UpdateData();
+            return this.options[prop];
+        }
+
         public struct SelectOption
         {
             public String Value;
@@ -19,6 +39,19 @@ namespace TietoCRM.Models
 
         public SelectOptions()
         {
+            UpdateData();
+        }
+
+        public bool UpdateData()
+        {
+            if ((DateTime.Now - LastUpdate).TotalMinutes >= 5)
+            {
+                this.options = this.GetSelectOptions();
+                lastUpdate = DateTime.Now;
+                return true;
+            }
+            else
+                return false;
         }
 
         public virtual void initTable()
@@ -65,7 +98,26 @@ namespace TietoCRM.Models
                 command.ExecuteNonQuery();
             }
         }
+        public Dictionary<String, List<SelectOption>> GetSelectOptions()
+        {
+            Dictionary<String, List<SelectOption>> returnDic = new Dictionary<String, List<SelectOption>>();
+            String model = typeof(T).Name.ToString();
+            List<view_SelectOption> allSelectOptions = view_SelectOption.getAllSelectOptionsWhere("Model = '" + model + "'").OrderBy(s => s.Property).ToList();
+            foreach (view_SelectOption so in allSelectOptions)
+            {
+                if(!returnDic.ContainsKey(so.Property))
+                {
+                    returnDic.Add(so.Property, new List<SelectOption>());
+                }
 
+                SelectOption sel;
+                sel.Value = so.Value;
+                sel.Text = so.Text;
+                returnDic[so.Property].Add(sel);
+            }
+
+            return returnDic;
+        }
         public List<SelectOption> GetSelectOptions(String propertyName)
         {
             List<SelectOption> returnList = new List<SelectOption>();

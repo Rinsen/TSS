@@ -6,8 +6,11 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-   public class view_Customer : SelectOptionsBaseClass
+   public class view_Customer : SQLBaseClass
 	{
+        private static SelectOptions<view_Customer> selectOptions = new SelectOptions<view_Customer>();
+        public static SelectOptions<view_Customer> _SelectOptions { get { return selectOptions; } }
+
         private int id;
         public int _ID { get { return id; } set { id = value; } }
 
@@ -48,7 +51,11 @@ namespace TietoCRM.Models
 		public String Email_format { get{ return email_format; } set{ email_format = value; } }
 
 		private short? county;
-		public short? County { get{ return county; } set{ county = value; } }
+		public short? County { get{ return county ?? 0; } set{ county = value; } }
+        public String GetCounty()
+        {
+            return (selectOptions.GetOptions("County").Find(s => s.Value == this.County.ToString()).Text ?? this.County.ToString()).ToString();
+        }
 
 		private short? municipality;
 		public short? Municipality { get{ return municipality; } set{ municipality = value; } }

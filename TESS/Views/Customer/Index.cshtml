@@ -122,11 +122,7 @@
                                 <label for="county-text" class="col-sm-3 control-label">County</label>
                                 <div class="col-sm-9">
                                     <select class="form-control" name="County" id="county-text" data-live-search="true">
-                                        @{ 
-                                            SelectOptions<view_Customer> select = new SelectOptions<view_Customer>();
-                                            List<SelectOptions<view_Customer>.SelectOption> sos = select.GetSelectOptions("County");
-                                        }
-                                        @foreach (SelectOptions<view_Customer>.SelectOption so in sos)
+                                        @foreach (SelectOptions<view_Customer>.SelectOption so in view_Customer._SelectOptions.Options["County"])
                                         {
                                             <option value="@so.Value">@so.Text</option>
                                         }

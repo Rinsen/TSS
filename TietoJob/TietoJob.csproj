@@ -117,6 +117,9 @@
     <Compile Include="..\TESS\Models\MainContractText.cs">
       <Link>Models\MainContractText.cs</Link>
     </Compile>
+    <Compile Include="..\TESS\Models\SelectOptions.cs">
+      <Link>Models\SelectOptions.cs</Link>
+    </Compile>
     <Compile Include="..\TESS\Models\SelectOptionsBaseClass.cs">
       <Link>Models\SelectOptionsBaseClass.cs</Link>
     </Compile>
