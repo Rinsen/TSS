@@ -188,6 +188,7 @@
     </Compile>
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\HashtagDocument.cs" />
+    <Compile Include="Models\SelectOptions.cs" />
     <Compile Include="Models\SelectOptionsBaseClass.cs" />
     <Compile Include="Models\Interfaces\ICsvProvider.cs" />
     <Compile Include="Models\Statistics.cs" />
