@@ -74,9 +74,9 @@ namespace TietoCRM.Controllers.Reports
             {
                 customers = new List<view_Customer>();
                 List<view_User> users = view_User.getAllUsers().Where(u => u.IfSameArea(area)).ToList();
-                foreach(view_User vUser in users)
+                foreach(view_User vUser1 in users)
                 {
-                    customers.AddRange(view_Customer.getAllCustomers(vUser.Sign));
+                    customers.AddRange(view_Customer.getAllCustomers(vUser1.Sign));
                 }
             }
             else
