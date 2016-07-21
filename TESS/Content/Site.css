@@ -135,6 +135,9 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
 .crm-widget-dashboard {
   border: none;
 }
+.crm-widget-dashboard .refresh-button{
+  cursor: pointer;
+}
 .crm-widget-dashboard .panel-default > .panel-heading {
   color: white;
   background-color: #4e7987;

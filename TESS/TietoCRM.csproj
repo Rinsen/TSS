@@ -485,6 +485,7 @@
     <None Include="Properties\PublishProfiles\TESSWeb.pubxml" />
     <Content Include="Scripts\bootstrap-select.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\ContractModals\Articles.js" />
     <Content Include="Scripts\ContractModals\ArticlesFromContracts.js" />
     <Content Include="Scripts\ContractModals\ContractHead.js" />

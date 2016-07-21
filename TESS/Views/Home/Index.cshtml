@@ -4,7 +4,7 @@
             <div class="panel panel-default crm-widget-dashboard">
                 <div class="panel-heading">
                     Counters
-                    <span id="crm-widget-refresh-all" class="pull-right">
+                    <span id="crm-widget-refresh-all" class="refresh-button pull-right">
                         <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                     </span>
                 </div>
@@ -53,7 +53,7 @@
             <div class="panel panel-default crm-widget-dashboard">
                 <div class="panel-heading">
                     Information Messages
-                    <span id="info-refresh-all" class="pull-right">
+                    <span id="info-refresh-all" class="refresh-button pull-right">
                         <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                     </span>
                 </div>
@@ -70,13 +70,115 @@
             </div>
         </div>
         <div class="col-md-6 crm-widget-dashboard">
+            <div class="panel panel-default crm-widget-dashboard">
+                <div class="panel-heading">
+                    Top 5 Customers
+                    <span id="top-five-refresh" class="refresh-button pull-right">
+                        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                    </span>
+                </div>
+                <div id="top-five-body" class="panel-body">
+                    <div style="display: none" class="crm-loading">
+                        <img src="~/Content/img/crm-loading.gif" />
+                    </div>
+                    <canvas style="display: none" id="topCustomers" width="400" height="200"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<script>
+    var getTopFiveCustomers = function()
+    {
+        var $topFiveContainer = $('#top-five-body');
+        var $topCustomersCTX = $('#topCustomers');
+        var $laodingContainer = $topFiveContainer.find('.crm-loading');
+
+        $.ajax({
+            "url": '/Home/GetTopFiveCustomers',
+            "type": "POST",
+            "beforeSend": function(){
+                $laodingContainer.show();
+                $topCustomersCTX.hide();
+            },
+            "success": function (data) {
+                setTimeout(function () {
+                $laodingContainer.hide();
+                $topCustomersCTX.show();
+                    updateChart(data, $topCustomersCTX);
+                }, 1000);
+            },
+            "error": function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                $laodingContainer.hide();
+                $topCustomersCTX.hide();
+                triggerAlert("Update failed. Please check your internet connection.", "warning");
+            }
+        });
+        var updateChart = function(chartData, chartCTX){
+            var jsonData = null;
+            try{
+                jsonData = JSON.parse(chartData);
+            } catch (e) {
+                console.log("Failed to parse JSON: " + e.message);
+            }
+
+            var chartValues = [];
+            var chartLabels = [];
+            var len = jsonData.length;
+
+            for (var i = 0; i < len; i++) {
+                var stat = jsonData[i];
+                chartValues.push(stat.amount);
+                chartLabels.push(stat.customer);
+            }
+            var aChart = new Chart(chartCTX, {
+                type: 'pie',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: '# of Votes',
+                        data: chartValues,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var value = data.datasets[0].data[tooltipItem.index];
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                }
+            });
+            return aChart;
+        }
+    }
+
+</script>
 
 
 <script>
+
     var handleLoadingIcon = function($widget, action)
     {
         var $panelBody = $widget.find('.panel-body');
@@ -94,7 +196,6 @@
     var getStatisticsValue = function(url, $widget)
     {
         var $widgetData = $widget.find('.widget-data');
-        //console.log($widgetData);
         $.ajax({
             "url": url,
             "type": "POST",
@@ -102,7 +203,6 @@
                 handleLoadingIcon($widget, "show");
             },
             "success": function (data) {
-                console.log($widgetData);
                 $widgetData.html(data);
                 handleLoadingIcon($widget, "hide");
             },
@@ -118,7 +218,7 @@
         var $container = $('.crm-empty-list');
         if (show == true || show == 'show')
         {
-            $container.show(); console.log('showing');
+            $container.show(); 
         }         
         else
             $container.hide();
@@ -128,7 +228,6 @@
     var getAllInformation =  function(StatisticsRefresh)
     {
         var StatisticsRefresh = StatisticsRefresh === true ? StatisticsRefresh : false;
-        console.log(StatisticsRefresh);
 
         var $infoList = $('.crm-info-list');
         var $laodingContainer = $infoList.find('.crm-loading');
@@ -231,9 +330,11 @@
 
         $('#crm-widget-refresh-all').click(getAllStatistics);
         $('#info-refresh-all').click(getAllInformation);
+        $('#top-five-refresh').click(getTopFiveCustomers);
   
         
         getAllInformation(true);
+        getTopFiveCustomers();
         
         
     });

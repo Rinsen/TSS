@@ -35,7 +35,7 @@ namespace TietoCRM.Controllers.Reports
             String user = Request["user"];
             String area = Request["area"];
             String year = Request["year"];
-            List<Dictionary<String, Object>> contracts = this.GenerateTopCustomers(user, area, year);
+            List<Dictionary<String, Object>> contracts = GenerateTopCustomers(user, area, year, 10);
             ViewData.Add("Contracts", contracts);
 
             this.ViewData["Title"] = "Top Customers Report";
@@ -52,10 +52,18 @@ namespace TietoCRM.Controllers.Reports
             String user = Request["user"];
             String area = Request["area"];
             String year = Request["year"];
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateTopCustomers(user, area, year)) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(GenerateTopCustomers(user, area, year, 10)) + "}";
         }
 
-        public List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area, String year)
+        /// <summary>
+        /// Creats a list with customers which has most total spent. 
+        /// </summary>
+        /// <param name="user">Select customers by this user</param>
+        /// <param name="area">Select customers which are in this Area</param>
+        /// <param name="year">Which year to select from</param>
+        /// <param name="ammount">How many results to return</param>
+        /// <returns></returns>
+        public static List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area, String year, int ammount)
         {
             List<view_Customer> customers;
             if (area == "*")
@@ -94,7 +102,7 @@ namespace TietoCRM.Controllers.Reports
 
                 }
             }
-            return rows.OrderByDescending(d => d["amount"]).ToList().GetRange(0,Math.Min(10,rows.Count));
+            return rows.OrderByDescending(d => d["amount"]).ToList().GetRange(0,Math.Min(ammount,rows.Count));
         }
     }
 }
