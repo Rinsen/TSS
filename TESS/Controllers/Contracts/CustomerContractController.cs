@@ -361,9 +361,9 @@ namespace TietoCRM.Controllers.Contracts
             }
             this.ViewData.Add("TableItems", properties);
             //this.ViewData.Add("Statuses", GetStatuses());
-            this.ViewData.Add("Statuses", contract.GetSelectOptions("Status"));
+            this.ViewData.Add("Statuses", (new SelectOptions<view_Contract>()).GetSelectOptions("Status"));
             //this.ViewData.Add("ContractTypes", GetContractTypes());
-            this.ViewData.Add("ContractTypes", contract.GetSelectOptions("Contract_type"));
+            this.ViewData.Add("ContractTypes", (new SelectOptions<view_Contract>()).GetSelectOptions("Contract_type"));
             List<String> mainContracts = view_Contract.GetContracts(customer.Customer).Where(c => c.Contract_type == "Huvudavtal").Select(c => c.Contract_id).ToList();
             this.ViewData.Add("MainContracts", mainContracts);
             this.ViewData.Add("Users", view_User.getAllUsers().Select(u => u.Sign));

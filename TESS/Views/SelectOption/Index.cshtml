@@ -68,7 +68,7 @@
                                         else if (pi.Name == "Property")
                                         {
                                             <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                @foreach (view_SelectOption.SelectOption so in ViewBag.SelectProperties)
+                                                @foreach (SelectOptions<view_SelectOption>.SelectOption so in ViewBag.SelectProperties)
                                                 {
                                                     <option value="@so.Value" selected>@so.Text</option>
                                                 }

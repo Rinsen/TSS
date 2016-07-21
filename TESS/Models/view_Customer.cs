@@ -6,7 +6,7 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-   public class view_Customer : SelectOptionsBaseClass
+   public class view_Customer : SQLBaseClass
 	{
         private int id;
         public int _ID { get { return id; } set { id = value; } }

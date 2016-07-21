@@ -53,11 +53,11 @@ namespace TietoCRM.Controllers.List_Management
             List<view_SelectOption> soList = new List<view_SelectOption>();
             String condition = "Model='" + model + "' AND Property='Property'";
             soList = view_SelectOption.getAllSelectOptionsWhere(condition);
-            List<SelectOptionsBaseClass.SelectOption> sooList = new List<SelectOptionsBaseClass.SelectOption>();
+            List<SelectOptions<view_SelectOption>.SelectOption> sooList = new List<SelectOptions<view_SelectOption>.SelectOption>();
 
             foreach(view_SelectOption so in soList)
             {
-                SelectOptionsBaseClass.SelectOption sel;
+                SelectOptions<view_SelectOption>.SelectOption sel;
                 sel.Value = so.Value;
                 sel.Text = so.Text;
                 sooList.Add(sel);
