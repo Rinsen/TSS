@@ -10,6 +10,7 @@ using TietoCRM.Extensions;
 using System.Dynamic;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using TietoCRM.Controllers.Reports;
 
 namespace TietoCRM.Controllers
 {
@@ -60,6 +61,13 @@ namespace TietoCRM.Controllers
             TietoCRM.Models.UserStatistics stats = new TietoCRM.Models.UserStatistics(user, true);
             return stats.ExpiringContracts.ToString();
 
+        }
+
+        public String GetTopFiveCustomers()
+        {
+            view_User user = System.Web.HttpContext.Current.GetUser();
+            List<Dictionary<String, Object>> topCustomers = TopCustomersReportController.GenerateTopCustomers(user.Sign, user.Area, DateTime.Now.Year.ToString(), 5);
+            return (new JavaScriptSerializer()).Serialize(topCustomers);
         }
 
         public string checkReminder()
