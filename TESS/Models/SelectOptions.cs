@@ -12,23 +12,22 @@ namespace TietoCRM.Models
 {
     public class SelectOptions<T> where T : SQLBaseClass
     {
-
-        private DateTime lastUpdate = DateTime.Parse("0001-01-01");
-        public DateTime LastUpdate { get { return lastUpdate; } }
-
         private Dictionary<String, List<SelectOption>> options;
         public ReadOnlyDictionary<String, List<SelectOption>> Options
         {
             get
             {
-                UpdateData();
                 return new ReadOnlyDictionary<String, List<SelectOption>>(this.options);
             }
         }
-        public List<SelectOption> GetOptions(String prop)
+        public String GetValue(String prop, String value)
         {
-            UpdateData();
-            return this.options[prop];
+            return this.options[prop].Find(d => d.Value == value).Text;
+        }
+
+        public ReadOnlyCollection<SelectOption> GetOptions(String prop)
+        {
+            return this.options[prop].AsReadOnly();
         }
 
         public struct SelectOption
@@ -42,16 +41,9 @@ namespace TietoCRM.Models
             UpdateData();
         }
 
-        public bool UpdateData()
+        public void UpdateData()
         {
-            if ((DateTime.Now - LastUpdate).TotalMinutes >= 5)
-            {
-                this.options = this.GetSelectOptions();
-                lastUpdate = DateTime.Now;
-                return true;
-            }
-            else
-                return false;
+            this.options = this.GetSelectOptions();
         }
 
         public virtual void initTable()

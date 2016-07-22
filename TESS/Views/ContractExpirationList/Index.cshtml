@@ -3,7 +3,7 @@
         <form class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">User:</label>
-                <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
+                <select name="user" id="crm-select-user" class="selectpicker" data-live-search="true">
                     @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
                     {
                         if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
@@ -16,6 +16,9 @@
                         }
                     }
                 </select>
+            </div>
+            <div class="form-group">
+                <div id='crm-extend-contract' class='crm-table-btn'><button type='button' class='btn btn-default' data-toggle='modal' id='extend-contract-modal-button'>Extend checked contracts</button></div>
             </div>
             @*<div class="form-group" style="float:right">
                     <label for="crm-select-viewmode">View mode:</label>
@@ -152,11 +155,47 @@
             selectedNo -= 1;
         }
     }
-    function drawButtons() {
-        var $selRowContainer = $("#ContractExpirationList-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
-        $selRowContainer.append("<div id='crm-extend-contract' class='crm-table-btn'><button type='button' class='btn btn-default' data-toggle='modal' id='extend-contract-modal-button' >Extend checked contracts</button></div>");
+    function extendContracts() {
+        var $inputs = $("#ContractExpirationList-table").find("input:checked");
+        var length = $inputs.length;
+        var contractList = [];
+        for (var i = 0; i < length; i++) {
+            var obj = {}
+            $input = $($inputs[i]);
+            obj.Contract_id = $input.attr("data-avtalsid");
+            obj.Customer = $input.attr("data-kund");
 
+            contractList.push(obj);
+        }
+        $.ajax({
+            "url": "/ContractExpirationList/ExtendContracts/",
+            "type": "POST",
+            "data": {
+                "contracts": JSON.stringify(contractList),
+            },
+            "success": function (data) {
+                if (data > 0) {
+                    updateDataTable();
+                }
+                else {
+                    triggerAlert("Failed to extend contracts.", "warning");
+                    console.log("failure");
+                }
+            }
+        });
+
+    }
+
+    $('document').ready(function () {
+
+        $('.selectpicker').selectpicker();
+
+        $("#crm-select-user").change(function () {
+            updateDataTable();
+        });
+
+        updateDataTable();
         $("#extend-contract-modal-button").click(function () {
             if (selectedNo > 0) {
                 console.log("asdasd");
@@ -184,50 +223,5 @@
             else
                 triggerAlert("You have to select at least one contract to extend.", "info");
         });
-    }
-
-    function extendContracts() {
-        var $inputs = $("#ContractExpirationList-table").find("input:checked");
-        var length = $inputs.length;
-        var contractList = [];
-        for (var i = 0; i < length; i++) {
-            var obj = {}
-            $input = $($inputs[i]);
-            obj.Contract_id = $input.attr("data-avtalsid");
-            obj.Customer = $input.attr("data-kund");
-
-            contractList.push(obj);
-        }
-        $.ajax({
-            "url": "/ContractExpirationList/ExtendContracts/",
-            "type": "POST",
-            "data": {
-                "contracts": JSON.stringify(contractList),
-            },
-            "success": function (data) {
-                if (data > 0) {
-                    updateDataTable();
-                    drawButtons();
-                }
-                else {
-                    triggerAlert("Failed to extend contracts.", "warning");
-                    console.log("failure");
-                }
-            }
-        });
-
-    }
-
-    $('document').ready(function () {
-
-        $('.selectpicker').selectpicker();
-
-        $("#crm-select-user").change(function () {
-            updateDataTable();
-            drawButtons();
-        });
-
-        updateDataTable();
-        drawButtons();
     })
 </script>

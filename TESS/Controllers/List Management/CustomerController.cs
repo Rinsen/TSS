@@ -99,6 +99,7 @@ namespace TietoCRM.Controllers
             this.Response.ContentType = "text/plain";
             List<view_Customer> l = view_Customer.getAllCustomers();
             List<Dictionary<String, Object>> list = new List<Dictionary<String, Object>>();
+            SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
 
             foreach(view_Customer customer in l)
             {
@@ -111,7 +112,7 @@ namespace TietoCRM.Controllers
                         if(info.Name != "County")
                             dic.Add(info.Name, info.GetValue(customer));
                         else
-                            dic.Add(info.Name, customer.GetCounty());
+                            dic.Add(info.Name, customer.GetCounty(selectOption));
 
                     }
                         

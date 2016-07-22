@@ -8,9 +8,6 @@ namespace TietoCRM.Models
 {
    public class view_Customer : SQLBaseClass
 	{
-        private static SelectOptions<view_Customer> selectOptions = new SelectOptions<view_Customer>();
-        public static SelectOptions<view_Customer> _SelectOptions { get { return selectOptions; } }
-
         private int id;
         public int _ID { get { return id; } set { id = value; } }
 
@@ -52,9 +49,9 @@ namespace TietoCRM.Models
 
 		private short? county;
 		public short? County { get{ return county ?? 0; } set{ county = value; } }
-        public String GetCounty()
+        public String GetCounty(SelectOptions<view_Customer> selectOptions)
         {
-            return (selectOptions.GetOptions("County").Find(s => s.Value == this.County.ToString()).Text ?? this.County.ToString()).ToString();
+            return (selectOptions.GetValue("County", this.County.ToString()) ?? "Unknown county");
         }
 
 		private short? municipality;

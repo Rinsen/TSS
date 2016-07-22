@@ -13,10 +13,11 @@ using System.Text;
 using System.IO;
 using System.Web.UI;
 using System.ComponentModel;
+using TietoCRM.Models.Interfaces;
 
 namespace TietoCRM.Controllers
 {
-    public class CustomerProductReportController : Controller
+    public class CustomerProductReportController : Controller, IViewCollection
     {
         // GET: CustomerProductReport
         public ActionResult Index()
@@ -76,11 +77,9 @@ namespace TietoCRM.Controllers
             Response.ContentEncoding = Encoding.Unicode;
             //Response.BinaryWrite(Encoding.UTF8.GetPreamble());
             String customer = Request["customer"];
-            List<view_CustomerProductRow> data = view_CustomerProductRow.getAllCustomerProductRows(customer,null);
-            WriteTsv<view_CustomerProductRow>(data, Response.Output);
+            ViewCsvParser<view_CustomerProductRow> vcp = new ViewCsvParser<view_CustomerProductRow>();
+            vcp.WriteTsv(this.GetViews(customer), Response.Output);
             Response.End();
-
-
 
             return "";
         }
@@ -172,26 +171,13 @@ namespace TietoCRM.Controllers
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";
         }
 
-
-        public void WriteTsv<T>(IEnumerable<T> data, TextWriter output)
+        public List<SQLBaseClass> GetViews(String customer)
         {
-            PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
-            foreach (PropertyDescriptor prop in props)
-            {
-                output.Write(prop.DisplayName); // header
-                output.Write("\t");
-            }
-            output.WriteLine();
-            foreach (T item in data)
-            {
-                foreach (PropertyDescriptor prop in props)
-                {
-                    output.Write(prop.Converter.ConvertToString(
-                         prop.GetValue(item)));
-                    output.Write("\t");
-                }
-                output.WriteLine();
-            }
+            List<SQLBaseClass> l = new List<SQLBaseClass>();
+            foreach (view_CustomerProductRow cpr in view_CustomerProductRow.getAllCustomerProductRows(customer,null))
+                l.Add(cpr);
+
+            return l;
         }
     }
 }
