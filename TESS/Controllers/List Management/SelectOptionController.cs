@@ -20,7 +20,7 @@ namespace TietoCRM.Controllers.List_Management
                 "Property"
             });
 
-            ViewData.Add("Title", "Information Messages");
+            ViewData.Add("Title", "Select Options");
             ViewData.Add("Properties", typeof(view_SelectOption).GetProperties());
             ViewData.Add("SelectModels", view_SelectOption.getAllSelectOptionsWhere("Model='view_SelectOption' AND Property='Model'"));
             return View();
