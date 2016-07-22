@@ -17,7 +17,7 @@ using TietoCRM.Models.Interfaces;
 
 namespace TietoCRM.Controllers
 {
-    public class CustomerProductReportController : Controller, IViewCollection
+    public class CustomerProductReportController : Controller
     {
         // GET: CustomerProductReport
         public ActionResult Index()
@@ -71,14 +71,14 @@ namespace TietoCRM.Controllers
         {
             Encoding encoding = Encoding.UTF8;
             Response.ClearContent();
-            Response.AddHeader("content-disposition", "attachment;filename=Contact.xls");
+            Response.AddHeader("content-disposition", "attachment;filename=CustomerProductReport.xls");
             Response.AddHeader("Content-Type", "application/vnd.ms-excel");
             Response.Charset = encoding.EncodingName;
             Response.ContentEncoding = Encoding.Unicode;
             //Response.BinaryWrite(Encoding.UTF8.GetPreamble());
             String customer = Request["customer"];
             ViewCsvParser<view_CustomerProductRow> vcp = new ViewCsvParser<view_CustomerProductRow>();
-            vcp.WriteTsv(this.GetViews(customer), Response.Output);
+            vcp.WriteTsv(view_CustomerProductRow.getAllCustomerProductRows(customer, null), Response.Output);
             Response.End();
 
             return "";
@@ -169,15 +169,6 @@ namespace TietoCRM.Controllers
             }
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";
-        }
-
-        public List<SQLBaseClass> GetViews(String customer)
-        {
-            List<SQLBaseClass> l = new List<SQLBaseClass>();
-            foreach (view_CustomerProductRow cpr in view_CustomerProductRow.getAllCustomerProductRows(customer,null))
-                l.Add(cpr);
-
-            return l;
         }
     }
 }

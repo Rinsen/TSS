@@ -190,7 +190,6 @@
     <Compile Include="Models\HashtagDocument.cs" />
     <Compile Include="Models\Interfaces\IViewCollection.cs" />
     <Compile Include="Models\SelectOptions.cs" />
-    <Compile Include="Models\SelectOptionsBaseClass.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\ViewCsvParser.cs" />
     <Compile Include="Models\view_Exception.cs" />

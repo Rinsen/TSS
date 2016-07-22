@@ -120,9 +120,6 @@
     <Compile Include="..\TESS\Models\SelectOptions.cs">
       <Link>Models\SelectOptions.cs</Link>
     </Compile>
-    <Compile Include="..\TESS\Models\SelectOptionsBaseClass.cs">
-      <Link>Models\SelectOptionsBaseClass.cs</Link>
-    </Compile>
     <Compile Include="..\TESS\Models\SQLBaseClass.cs">
       <Link>Models\SQLBaseClass.cs</Link>
     </Compile>

@@ -15,7 +15,7 @@ namespace TietoCRM.Models
         }
 
 
-        public void WriteTsv(IEnumerable<SQLBaseClass> data, TextWriter output)
+        public void WriteTsv(IEnumerable<T> data, TextWriter output)
         {
             PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
             foreach (PropertyDescriptor prop in props)
@@ -24,7 +24,7 @@ namespace TietoCRM.Models
                 output.Write("\t");
             }
             output.WriteLine();
-            foreach (SQLBaseClass item in data)
+            foreach (T item in data)
             {
                 foreach (PropertyDescriptor prop in props)
                 {

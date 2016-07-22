@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -335,6 +336,20 @@ namespace TietoCRM.Controllers
             return "1";
         }
 
+        public void ExportAsCsv()
+        {
+            Encoding encoding = Encoding.UTF8;
+            Response.ClearContent();
+            Response.AddHeader("content-disposition", "attachment;filename=Customers.xls");
+            Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+            Response.Charset = encoding.EncodingName;
+            Response.ContentEncoding = Encoding.Unicode;
+            //Response.BinaryWrite(Encoding.UTF8.GetPreamble());
+            String customer = Request["customer"];
+            ViewCsvParser<view_Customer> vcp = new ViewCsvParser<view_Customer>();
 
+            vcp.WriteTsv(view_Customer.getAllCustomers(), Response.Output);
+            Response.End();
+        }
     }
 }
