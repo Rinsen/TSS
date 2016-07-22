@@ -15,6 +15,7 @@ namespace TietoCRM.Controllers.List_Management
         // GET: ModuleDiscount
         public ActionResult Index()
         {
+            ViewData.Add("Title", "Module Discount");
             view_User user = System.Web.HttpContext.Current.GetUser();
             ViewData.Add("User", user);
 

@@ -193,9 +193,10 @@
     </Compile>
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\HashtagDocument.cs" />
+    <Compile Include="Models\Interfaces\IViewCollection.cs" />
     <Compile Include="Models\SelectOptions.cs" />
-    <Compile Include="Models\Interfaces\ICsvProvider.cs" />
     <Compile Include="Models\Statistics.cs" />
+    <Compile Include="Models\ViewCsvParser.cs" />
     <Compile Include="Models\view_Exception.cs" />
     <Compile Include="Models\FileLocationMapping.cs" />
     <Compile Include="Models\UserStatistics.cs" />

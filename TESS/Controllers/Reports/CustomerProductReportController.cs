@@ -13,6 +13,7 @@ using System.Text;
 using System.IO;
 using System.Web.UI;
 using System.ComponentModel;
+using TietoCRM.Models.Interfaces;
 
 namespace TietoCRM.Controllers
 {
@@ -70,17 +71,15 @@ namespace TietoCRM.Controllers
         {
             Encoding encoding = Encoding.UTF8;
             Response.ClearContent();
-            Response.AddHeader("content-disposition", "attachment;filename=Contact.xls");
+            Response.AddHeader("content-disposition", "attachment;filename=CustomerProductReport.xls");
             Response.AddHeader("Content-Type", "application/vnd.ms-excel");
             Response.Charset = encoding.EncodingName;
             Response.ContentEncoding = Encoding.Unicode;
             //Response.BinaryWrite(Encoding.UTF8.GetPreamble());
             String customer = Request["customer"];
-            List<view_CustomerProductRow> data = view_CustomerProductRow.getAllCustomerProductRows(customer,null);
-            WriteTsv<view_CustomerProductRow>(data, Response.Output);
+            ViewCsvParser<view_CustomerProductRow> vcp = new ViewCsvParser<view_CustomerProductRow>();
+            vcp.WriteTsv(view_CustomerProductRow.getAllCustomerProductRows(customer, null), Response.Output);
             Response.End();
-
-
 
             return "";
         }
@@ -170,28 +169,6 @@ namespace TietoCRM.Controllers
             }
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";
-        }
-
-
-        public void WriteTsv<T>(IEnumerable<T> data, TextWriter output)
-        {
-            PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
-            foreach (PropertyDescriptor prop in props)
-            {
-                output.Write(prop.DisplayName); // header
-                output.Write("\t");
-            }
-            output.WriteLine();
-            foreach (T item in data)
-            {
-                foreach (PropertyDescriptor prop in props)
-                {
-                    output.Write(prop.Converter.ConvertToString(
-                         prop.GetValue(item)));
-                    output.Write("\t");
-                }
-                output.WriteLine();
-            }
         }
     }
 }

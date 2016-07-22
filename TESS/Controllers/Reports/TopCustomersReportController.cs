@@ -66,7 +66,7 @@ namespace TietoCRM.Controllers.Reports
         public static List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area, String year, int ammount)
         {
             view_User vUser = new view_User();
-            vUser.Select("Sign=" + user);
+            SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
             List<view_Customer> customers;
             if (area == "*")
                 customers = view_Customer.getAllCustomers();
@@ -81,6 +81,7 @@ namespace TietoCRM.Controllers.Reports
             }
             else
             {
+                vUser.Select("Sign=" + user);
                 if (vUser.User_level > 1)
                     customers = view_Customer.getAllCustomers(user);
                 else
@@ -101,7 +102,7 @@ namespace TietoCRM.Controllers.Reports
                     dict.Add("amount", Convert.ToInt32(stats.GetTotalSpent(int.Parse(year), area)));
                     dict.Add("representative", customer.GetReprensentativesAsString());
                     dict.Add("customer_type", customer.Customer_type);
-                    dict.Add("county", customer.County.ToString());
+                    dict.Add("county", selectOption.GetValue("County",customer.County.ToString()));
 
                     rows.Add(dict);
                 }

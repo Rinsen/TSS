@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -99,6 +100,7 @@ namespace TietoCRM.Controllers
             this.Response.ContentType = "text/plain";
             List<view_Customer> l = view_Customer.getAllCustomers();
             List<Dictionary<String, Object>> list = new List<Dictionary<String, Object>>();
+            SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
 
             foreach(view_Customer customer in l)
             {
@@ -108,9 +110,11 @@ namespace TietoCRM.Controllers
                 {
                     if(info.Name != "_ID" && info.Name != "Representative" && info.Name != "SSMA_timestamp")
                     {
-                        
-                        dic.Add(info.Name, info.GetValue(customer));
-                       
+                        if(info.Name != "County")
+                            dic.Add(info.Name, info.GetValue(customer));
+                        else
+                            dic.Add(info.Name, customer.GetCounty(selectOption));
+
                     }
                         
                 }
@@ -332,6 +336,20 @@ namespace TietoCRM.Controllers
             return "1";
         }
 
+        public void ExportAsCsv()
+        {
+            Encoding encoding = Encoding.UTF8;
+            Response.ClearContent();
+            Response.AddHeader("content-disposition", "attachment;filename=Customers.xls");
+            Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+            Response.Charset = encoding.EncodingName;
+            Response.ContentEncoding = Encoding.Unicode;
+            //Response.BinaryWrite(Encoding.UTF8.GetPreamble());
+            String customer = Request["customer"];
+            ViewCsvParser<view_Customer> vcp = new ViewCsvParser<view_Customer>();
 
+            vcp.WriteTsv(view_Customer.getAllCustomers(), Response.Output);
+            Response.End();
+        }
     }
 }

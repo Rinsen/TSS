@@ -111,14 +111,14 @@
     <Compile Include="..\TESS\Models\HashtagDocument.cs">
       <Link>Models\HashtagDocument.cs</Link>
     </Compile>
-    <Compile Include="..\TESS\Models\Interfaces\ICsvProvider.cs">
-      <Link>Models\Interfaces\ICsvProvider.cs</Link>
+    <Compile Include="..\TESS\Models\Interfaces\IViewCollection.cs">
+      <Link>Models\Interfaces\IViewCollection.cs</Link>
     </Compile>
     <Compile Include="..\TESS\Models\MainContractText.cs">
       <Link>Models\MainContractText.cs</Link>
     </Compile>
-    <Compile Include="..\TESS\Models\SelectOptionsBaseClass.cs">
-      <Link>Models\SelectOptionsBaseClass.cs</Link>
+    <Compile Include="..\TESS\Models\SelectOptions.cs">
+      <Link>Models\SelectOptions.cs</Link>
     </Compile>
     <Compile Include="..\TESS\Models\SQLBaseClass.cs">
       <Link>Models\SQLBaseClass.cs</Link>

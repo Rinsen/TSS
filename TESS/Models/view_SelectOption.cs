@@ -68,6 +68,7 @@ namespace TietoCRM.Models
             Debug.Print(sw.Elapsed.TotalSeconds.ToString());
             return list;
         }
+
         public static List<view_SelectOption> getAllSelectOptions()
         {
             List<view_SelectOption> list = new List<view_SelectOption>();

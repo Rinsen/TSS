@@ -50,6 +50,7 @@ namespace TietoCRM.Controllers.Reports
             else
                 customers = view_Customer.getAllCustomers();
 
+            SelectOptions<view_Customer> selectOptions = new SelectOptions<view_Customer>();
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_Customer customer in customers)
             {
@@ -69,7 +70,7 @@ namespace TietoCRM.Controllers.Reports
                 {
                     dict.Add("customer", customer.Customer);
                     dict.Add("customer_type", customer.Customer_type);
-                    dict.Add("county", customer.County.ToString());
+                    dict.Add("county", customer.GetCounty(selectOptions).ToString());
                     dict.Add("address", customer.Address);
                     dict.Add("zip_code", customer.Zip_code);
                     dict.Add("city", customer.City);

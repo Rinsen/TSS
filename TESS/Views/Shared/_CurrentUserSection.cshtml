@@ -1,8 +1,10 @@
 ﻿@using TietoCRM.Extensions;
 <a id="currentUser" href="#">
     <table>
-        <tr>
-            <td></td>
+        <tr title="Area">
+            <td>
+                <span style="margin: 0 0.5em" class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>
+            </td>
             <td>
                 @if (@HttpContext.Current.GetUser().Area == "*")
                 {
@@ -14,7 +16,7 @@
                 }
             </td>
         </tr>
-        <tr>
+        <tr title="User">
             <td>
                 <span style="margin: 0 0.5em" class="glyphicon glyphicon-user" aria-hidden="true"></span>
             </td>

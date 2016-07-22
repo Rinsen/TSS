@@ -122,11 +122,8 @@
                                 <label for="county-text" class="col-sm-3 control-label">County</label>
                                 <div class="col-sm-9">
                                     <select class="form-control" name="County" id="county-text" data-live-search="true">
-                                        @{ 
-                                            SelectOptions<view_Customer> select = new SelectOptions<view_Customer>();
-                                            List<SelectOptions<view_Customer>.SelectOption> sos = select.GetSelectOptions("County");
-                                        }
-                                        @foreach (SelectOptions<view_Customer>.SelectOption so in sos)
+                                        @{ SelectOptions<view_Customer> selectOptions = new SelectOptions<view_Customer>();}
+                                        @foreach (SelectOptions<view_Customer>.SelectOption so in selectOptions.Options["County"])
                                         {
                                             <option value="@so.Value">@so.Text</option>
                                         }
@@ -262,15 +259,15 @@
 
     var handleStates = function(){
         var stateSearch = StateCookie.getCurrentSite().search;
-       
+
         var $searchBox = $("#customer-table_filter").find(":input");
 
         if(stateSearch !== undefined)
         {
             $searchBox.val(String(stateSearch));
             $searchBox.trigger($.Event("keyup", { keyCode: 13} ));
-        }  
-            
+        }
+
         $searchBox.bind('keyup', function(){
             StateCookie.updateSite($searchBox.val());
         });
@@ -359,7 +356,7 @@
                             j++;
                         }
 
-                        
+
 
                         if (i >= 1) {
                             var tdInc = j;
@@ -371,13 +368,13 @@
                                 $td.attr("data-rep", JSON.stringify(aData[name]));
                                 $td.hide();
                             }
-                            
-                            
+
+
                             $td.attr("data-property", name);
                             $td.html(aData[name]);
-                            
-                           
-                           
+
+
+
                             j++;
                         }
                         i++;
@@ -389,6 +386,9 @@
             var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
             $selRowContainer.append("<div id='crm-edit-customer' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
             $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+            $selRowContainer.append('<div id="crm-export-ical" class="crm-table-btn" \
+            onclick="location.href=\'@Url.Action("ExportAsCsv", "Customer", null, Request.Url.Scheme)\';">\
+            <button type="button" class="btn btn-default">Export</button></div>');
         }
 
     var saveCustomerInformation = function($formInputs){
@@ -401,7 +401,7 @@
             var currentProp = $currentInput.attr("name");
             if(!$currentInput.is(':button') && typeof currentProp != 'undefined')
             {
-               
+
                 if(currentProp == "County" || currentProp == "Municipality")
                 {
                     if($currentInput.val().length <= 0)
@@ -412,7 +412,7 @@
                     customerData[currentProp] = $currentInput.val();
                 }
             }
-            
+
 
         }
         // Control if to update or insert
@@ -436,7 +436,7 @@
             "success": function(data){
                 $(document).trigger("clear-alerts");
                 if(data > 0){
-                   
+
                     StateCookie.updateSite(null, customerData.Customer);
                     updateTable(handleStates);
                     drawButtons();
@@ -445,10 +445,10 @@
                     var msg = "Successfully updated Customer row.";
                     if(oldCustomer == null) // If null, for inserting a new customer.
                     {
-                        
+
                         msg = "Successfully inserted new Customer row";
                     }
-                        
+
                     $(document).trigger("add-alerts", [
                       {
                           'message': msg,
@@ -456,7 +456,7 @@
                       }
                     ]);
                 } else {
-                   
+
                     $(document).trigger("add-alerts", [
                      {
                          'message': "Failed to update Customer row.",
@@ -507,11 +507,11 @@
                             $currentInput.val(0);
                         else
                             $currentInput.val($td.html());
-                    } 
+                    }
                     else if($tdProp == "_Representatives")
                     {
                         var reps = JSON.parse($td.attr("data-rep"));
-                        
+
                         $('#representative-select').val(reps);
                         $('#representative-select').selectpicker('refresh');
                     }
@@ -526,7 +526,7 @@
         // Remove old saveCustomerInformation() binding and add a new one.
         //$("#customer-modal form").validate();
         //$("#save-customer-changes").unbind("click");
-        
+
         $('#representative-select').selectpicker('refresh');
 
         $("#save-customer-changes").unbind("click");
@@ -564,11 +564,11 @@
         //$("#customer-modal form").validate();
         //$("#save-customer-changes").unbind("click");
 
-        
+
 
         $("#save-customer-changes").unbind("click");
         $("#save-customer-changes").bind("click", function(){
-          
+
             if($("#customer-modal form").valid()){
                 saveCustomerInformation($formInputs);
             }
@@ -679,13 +679,13 @@
             }
         }
     };
-    
+
     $('#customer-modal select').on('change', function(e) {
         $('#customer-modal').validate(validationSettings).element($(this));
     });
 
     $formValidation = $("#customer-modal form").validate(validationSettings);
-        
+
 
     // Filter columns DISABLED for now.
 

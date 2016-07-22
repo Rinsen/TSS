@@ -48,7 +48,11 @@ namespace TietoCRM.Models
 		public String Email_format { get{ return email_format; } set{ email_format = value; } }
 
 		private short? county;
-		public short? County { get{ return county; } set{ county = value; } }
+		public short? County { get{ return county ?? 0; } set{ county = value; } }
+        public String GetCounty(SelectOptions<view_Customer> selectOptions)
+        {
+            return (selectOptions.GetValue("County", this.County.ToString()) ?? "Unknown county");
+        }
 
 		private short? municipality;
 		public short? Municipality { get{ return municipality; } set{ municipality = value; } }
