@@ -8,7 +8,7 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-    public abstract class HashtagDocument : SelectOptionsBaseClass
+    public abstract class HashtagDocument : SQLBaseClass
     {
         private int _id;
         public virtual int _ID { get; set; }

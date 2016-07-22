@@ -1139,7 +1139,7 @@
                                                 {
                                                     <option value="@status">@status</option>
                                                 }*@
-                                                @foreach (view_Contract.SelectOption so in ViewBag.Statuses)
+                                                @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
                                                 {
                                                     <option value="@so.Value">@so.Text</option>
                                                 }
@@ -1152,7 +1152,7 @@
                                                 {
                                                     <option value="@types">@types</option>
                                                 }*@
-                                                @foreach (view_Contract.SelectOption so in ViewBag.ContractTypes)
+                                                @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
                                                 {
                                                     <option value="@so.Value">@so.Text</option>
                                                 }

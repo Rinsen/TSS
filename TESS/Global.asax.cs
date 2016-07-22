@@ -44,7 +44,6 @@ namespace TietoCRM
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            SelectOptionsBaseClass.RunInitAllModels();
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e) {

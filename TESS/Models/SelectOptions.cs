@@ -143,25 +143,5 @@ namespace TietoCRM.Models
             }
             return newText.ToString();
         }
-
-        public static Type[] GetTypesInNamespace(Assembly assembly, string nameSpace)
-        {
-            Type[] returnList = assembly.GetTypes().Where(t => String.Equals(t.Namespace, nameSpace, StringComparison.Ordinal)).ToArray();
-            returnList = returnList.Where(a => a.Name.StartsWith("view_")).ToArray();
-            return returnList;
-        }
-
-        public static void RunInitAllModels()
-        {
-            Type[] allClasses = SelectOptionsBaseClass.GetTypesInNamespace(Assembly.GetExecutingAssembly(), "TietoCRM.Models");
-            foreach (Type aClass in allClasses)
-            {
-                if (aClass.BaseType == typeof(SelectOptionsBaseClass))
-                {
-                    SelectOptionsBaseClass tempClass = (SelectOptionsBaseClass)Activator.CreateInstance(aClass, true);
-                    tempClass.initTable();
-                }
-            }
-        }
     }
 }
