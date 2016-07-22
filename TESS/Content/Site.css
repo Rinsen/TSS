@@ -1,3 +1,37 @@
+.navbar-default {
+  background-color: #0065a0;
+}
+.btn-default,
+.btn-default:focus,
+.btn-default:active,
+.dropdown-toggle.btn-default,
+.btn-default.active,
+.btn-default:hover,
+.open > .dropdown-toggle.btn-default,
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:focus,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-menu > li > a:hover {
+  background-color: #62b3e5;
+  border-color: #62b3e5;
+}
+.btn-default.active.focus,
+.btn-default.active:focus,
+.btn-default.active:hover,
+.btn-default:active.focus,
+.btn-default:active:focus,
+.btn-default:active:hover,
+.open > .dropdown-toggle.btn-default.focus,
+.open > .dropdown-toggle.btn-default:focus,
+.open > .dropdown-toggle.btn-default:hover {
+  background-color: #62b3e5;
+  border-color: #62b3e5;
+}
+.btn-default:hover {
+  background-color: #8ec8ec;
+  border-color: #8ec8ec;
+}
 body {
   padding-top: 60px;
   font-family: Arial;
@@ -137,7 +171,7 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
 }
 .crm-widget-dashboard .panel-default > .panel-heading {
   color: white;
-  background-color: #4e7987;
+  background-color: #0065a0;
   border-color: #ecf0f1;
   border-radius: 0;
 }
@@ -145,7 +179,7 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
   cursor: pointer;
 }
 .crm-widget {
-  background-color: #6197aa;
+  background-color: #62b3e5;
   border-radius: 0;
   color: white;
   font-weight: bold;
@@ -194,14 +228,11 @@ ul.crm-info-list .panel-footer .info-updated {
   display: inline-block;
   float: right;
 }
-ul.crm-info-list li.info-normal {
-  background-color: #6197aa !important;
+ul.crm-info-list li .panel-footer {
+  background-color: #62b3e5 !important;
 }
 ul.crm-info-list li.info-normal .panel-heading {
-  background-color: #4e7987 !important;
-}
-ul.crm-info-list li.info-normal .panel-footer {
-  background-color: #6197aa !important;
+  background-color: #0065a0 !important;
 }
 ul.crm-info-list li.info-warning .panel-heading {
   background-color: #f39c12 !important;
@@ -209,16 +240,10 @@ ul.crm-info-list li.info-warning .panel-heading {
 ul.crm-info-list li.info-warning .panel-body {
   background-color: #6197aa !important;
 }
-ul.crm-info-list li.info-warning .panel-footer {
-  background-color: #6197aa !important;
-}
 ul.crm-info-list li.info-danger .panel-heading {
   background-color: #f34e12 !important;
 }
 ul.crm-info-list li.info-danger .panel-body {
-  background-color: #6197aa !important;
-}
-ul.crm-info-list li.info-danger .panel-footer {
   background-color: #6197aa !important;
 }
 .crm-loading {

@@ -35,6 +35,7 @@ namespace TietoCRM
                       "~/Content/jquery-ui-timepicker-addon.css"));
             // Less integration
             bundles.Add(new LessBundle("~/Content/less").Include(
+                "~/Content/TSS-BaseColors.less",
                 "~/Content/Site.less",
                 "~/Content/Sidebar.less"));
             

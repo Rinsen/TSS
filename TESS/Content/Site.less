@@ -1,4 +1,5 @@
-﻿@top-menu-padding: 60px;
+﻿@import "TSS-BaseColors.less";
+@top-menu-padding: 60px;
 // Global settings
 body {
     padding-top: @top-menu-padding;
@@ -146,7 +147,7 @@ ul.nav.navbar-nav ol.breadcrumb{
 .crm-widget-dashboard{
     .panel-default>.panel-heading {
         color: white;
-        background-color: #4e7987;
+        background-color: @base-color;
         border-color: #ecf0f1;
         border-radius: 0; 
     }
@@ -168,7 +169,7 @@ ul.nav.navbar-nav ol.breadcrumb{
         font-size: 80%;
     }
     
-    background-color: #6197AA;
+    background-color: @dark-blue;
     border-radius: 0;
     color: white;
     font-weight: bold;
@@ -211,14 +212,16 @@ ul.crm-info-list{
             float: right;
         }
     }
-    li.info-normal{
-         background-color: #6197AA !important;
-        .panel-heading {
-            background-color: #4e7987 !important;
-        }
+    li{
         .panel-footer{
-            background-color: #6197AA !important;
+            background-color: @dark-blue !important;
         }
+    }
+    li.info-normal{
+        .panel-heading {
+             background-color: @base-color !important;
+        }
+        
     }
     li.info-warning{
         .panel-heading {
@@ -227,9 +230,7 @@ ul.crm-info-list{
         .panel-body{
             background-color: #6197AA !important;
         }
-        .panel-footer{
-            background-color: #6197AA !important;
-        }
+        
     }
     li.info-danger{
         .panel-heading {
@@ -238,9 +239,7 @@ ul.crm-info-list{
         .panel-body{
             background-color: #6197AA !important;
         }
-        .panel-footer{
-            background-color: #6197AA !important;
-        }
+       
     }
 }
 

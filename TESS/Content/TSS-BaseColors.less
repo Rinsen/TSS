@@ -1,0 +1,45 @@
+﻿@base-color: #0065A0;
+@dark-blue: #62B3E5;
+@light-blue: #BEE2F8;
+@base-gray: #5E5F5F;
+.navbar-default{
+    background-color: @base-color;
+}
+
+.btn-default, .btn-default:focus, .btn-default:active, .dropdown-toggle.btn-default, .btn-default.active, .btn-default:active, .btn-default:hover, .open>.dropdown-toggle.btn-default, .dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover, .dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover  {
+    background-color: @dark-blue;
+    border-color: @dark-blue;
+}
+.btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover, .open>.dropdown-toggle.btn-default.focus, .open>.dropdown-toggle.btn-default:focus, .open>.dropdown-toggle.btn-default:hover {
+    background-color: @dark-blue;
+    border-color: @dark-blue;
+}
+.btn-default:hover{
+    background-color: lighten(@dark-blue, 10%);
+    border-color: lighten(@dark-blue, 10%);
+}
+
+.btn-primary{
+    background-color: @base-color;
+    border-color: @base-color;
+}
+.btn-primary:hover{
+    background-color: lighten(@base-color, 10%);
+    border-color: lighten(@base-color, 10%);
+}
+
+.pagination > .disabled >a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover{
+    background-color: @light-blue;
+    color: @base-color;
+}
+.pagination > .active > a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    background-color: lighten(@base-color, 5%);
+}
+.pagination > li{
+    a{
+        background-color: @dark-blue;
+    }
+    a:hover{
+        background-color: @light-blue;
+    }
+}
