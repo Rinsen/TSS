@@ -40,7 +40,7 @@
                                             <div class="col-sm-9">
                                                 @if (pi.Name == "Date")
                                                 {
-                                                    <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
+                                                    <input data-enabletime data-time_24hr class="form-control flatpickr" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
                                                 }
                                                 else if (pi.Name == "Event_type")
                                                 {
@@ -426,9 +426,40 @@
             });
         });
         $selRowContainer.append('<div id="crm-export-ical" class="crm-table-btn" \
-            onclick="location.href=\'@Url.Action("GetiCalendar", "Appointment", null, Request.Url.Scheme).Replace("http://","webcal://")\';">\
-            <button type="button" class="btn btn-default">Import as Ical</button></div>');
+            onclick="importToCalendar();">\
+            <button type="button" class="btn btn-default">Import to calendar</button></div>');
 
+    }
+
+    var importToCalendar = function () {
+        bootbox.dialog({
+            title: 'What to import?',
+            className: "crm-delete-confirm",
+            message: "Do you want to import the selected appointment or all appointments?",
+            buttons: {
+                'cancel': {
+                    label: 'Cancel',
+                    className: 'btn-default'
+                },
+                'All appointments': {
+                    label: 'All appointments',
+                    className: 'pull-right',
+                    callback: function () {
+                        location.href="@Url.Action("GetiCalendar", "Appointment", null, Request.Url.Scheme).Replace("http://","webcal://")";
+                    }
+                },
+                'Selected appointment': {
+                    label: 'Selected appointment',
+                    className: 'pull-right',
+                    callback: function () {
+                        if(selectedId != null)
+                            location.href = "@Url.Action("GetiCalendar", "Appointment", null, Request.Url.Scheme).Replace("http://","webcal://")?id=" + selectedId;
+                        else
+                            triggerAlert("You have to select a row.", "info");
+                    }
+                }
+            },
+        });
     }
 
     var triggerAlert = function (msg, priorty) {
@@ -480,6 +511,7 @@
     }
 
     $('document').ready(function () {
+        flatpickr("#date", { static: true });
         getIndexData();
     });
 

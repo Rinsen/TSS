@@ -79,7 +79,7 @@ namespace TietoCRM.Models
         /// <summary>
         /// By default this class dont use cached data
         /// </summary>
-        /// <param name="user">The users to get correct statistics</param>
+        /// <param name="user">The user to get correct statistics</param>
         /// <param name="useCachedData">Whether the object should generate new data or get cached data from the SQL server</param>
         public UserStatistics(view_User user, bool useCachedData)
         {
@@ -118,7 +118,23 @@ namespace TietoCRM.Models
             {
                 foreach (String customer in this.customerNames)
                 {
-                    amountOpenOffers += view_CustomerOffer.getAllCustomerOffers(customer).Where(m => m.Offer_status == "Öppen" && this.User.IfSameArea(m.Area)).ToList().Count;
+                    foreach(view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer))
+                    {
+                        if(offer.Offer_status == "Öppen" && this.User.IfSameArea(offer.Area))
+                        {
+                            bool gotValues = false;
+                            foreach(view_OfferRow rows in offer._OfferRows)
+                            {
+                                if (rows.License > 0 || rows.Maintenance > 0)
+                                {
+                                    gotValues = true;
+                                    break;
+                                }
+                            }
+                            if (gotValues)
+                                amountOpenOffers++;
+                        }
+                    }
                 }
             }
             else

@@ -71,16 +71,15 @@ namespace TietoCRM.Controllers.Reports
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_Customer customer in customers)
             {
-                Dictionary<String, String> dict = new Dictionary<String, String>();
-                decimal? totalMaintenance = 0;
-                decimal? totalLicense = 0;
-                dict.Add("customer", customer.Customer);
-                bool anyOpenOffers = false;
                 foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
                 {
                     if (offer.Offer_status == "Öppen" && user.IfSameArea(offer.Area))
                     {
-                        anyOpenOffers = true;
+                        Dictionary<String, String> dict = new Dictionary<String, String>();
+                        decimal? totalMaintenance = 0;
+                        decimal? totalLicense = 0;
+                        dict.Add("customer", customer.Customer);
+                        dict.Add("title", offer.Title);
                         foreach (view_OfferRow row in offer._OfferRows)
                         {
                             totalMaintenance += row.Maintenance;
@@ -98,13 +97,13 @@ namespace TietoCRM.Controllers.Reports
                             else
                                 dict["valid_through"] = "no date found";
                         }
+                        dict.Add("maintenance", String.Format(se, "{0:C2}", totalMaintenance).Replace(".", " "));
+                        dict.Add("license", String.Format(se, "{0:C2}", totalLicense).Replace(".", " "));
+                        dict.Add("customer_type", customer.Customer_type);
+                        if(totalMaintenance > 0 || totalLicense > 0)
+                            rows.Add(dict);
                     }
                 }
-                dict.Add("maintenance", String.Format(se, "{0:C2}", totalMaintenance).Replace(".", " "));
-                dict.Add("license", String.Format(se, "{0:C2}", totalLicense).Replace(".", " "));
-                dict.Add("customer_type", customer.Customer_type);
-                if (anyOpenOffers)
-                    rows.Add(dict);
             }
             return rows;
         }

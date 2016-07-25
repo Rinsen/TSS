@@ -29,6 +29,7 @@
             <thead>
                 <tr>
                     <th data-field="customer" data-sortable="true">Customer</th>
+                    <th data-field="title" data-sortable="true">Title</th>
                     <th data-field="created" data-sortable="true">Created</th>
                     <th data-field="valid_through" data-sortable="true">Valid through</th>
                     <th data-field="maintenance" data-sortable="true">Maintenance / month</th>
@@ -46,6 +47,7 @@
     @{String DataObject = "\r\n";}
     @{
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "title" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "created" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "valid_through" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "maintenance" + "\"  },\r\n";
