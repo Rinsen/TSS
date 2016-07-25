@@ -118,7 +118,23 @@ namespace TietoCRM.Models
             {
                 foreach (String customer in this.customerNames)
                 {
-                    amountOpenOffers += view_CustomerOffer.getAllCustomerOffers(customer).Where(m => m.Offer_status == "Öppen" && this.User.IfSameArea(m.Area)).ToList().Count;
+                    foreach(view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer))
+                    {
+                        if(offer.Offer_status == "Öppen" && this.User.IfSameArea(offer.Area))
+                        {
+                            bool gotValues = false;
+                            foreach(view_OfferRow rows in offer._OfferRows)
+                            {
+                                if (rows.License > 0 || rows.Maintenance > 0)
+                                {
+                                    gotValues = true;
+                                    break;
+                                }
+                            }
+                            if (gotValues)
+                                amountOpenOffers++;
+                        }
+                    }
                 }
             }
             else

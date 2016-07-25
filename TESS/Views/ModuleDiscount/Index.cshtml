@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <label for="article-number2" class="col-sm-2 control-label">Article number</label>
                         <div class="col-sm-10">
-                            <select class="form-control" name="Article_number" id="article-number2">
+                            <select data-live-search="true" class="form-control selectpicker" name="Article_number" id="article-number2">
                                 @foreach (TietoCRM.Models.view_Module module in ViewBag.Modules)
                                 {
                                     if (ViewBag.User.Area == "*")
@@ -149,7 +149,7 @@
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}
 
 
-
+        $("#article-number2").selectpicker();
         updateDataTable(handleStates);
 
         drawButtons();

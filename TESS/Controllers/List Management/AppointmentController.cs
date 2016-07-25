@@ -72,14 +72,27 @@ namespace TietoCRM.Controllers.List_Management
         public ActionResult GetiCalendar()
         {
             List<String> customerNames;
-            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
-                customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
-            else
-                customerNames = view_Customer.getCustomerNames();
+            String ical;
+            if (Request.Form.AllKeys.Contains("id"))
+            {
+                if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                    customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
+                else
+                    customerNames = view_Customer.getCustomerNames();
 
-            String ical = view_Appointment.ParseToiCal(view_Appointment.getAllAppointments().Where(
-                a => customerNames.Contains(a.Customer) &&
-                System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area)).ToList());
+                ical = view_Appointment.ParseToiCal(view_Appointment.getAllAppointments().Where(
+                    a => customerNames.Contains(a.Customer) &&
+                    System.Web.HttpContext.Current.GetUser().IfSameArea(a.Area)).ToList());
+            }
+            else
+            {
+                List<view_Appointment> list = new List<view_Appointment>();
+                view_Appointment app = new view_Appointment();
+                app.Select("ID=" + Request["id"]);
+                list.Add(app);
+                ical = view_Appointment.ParseToiCal(list);
+            }
+
 
             byte[] byteArray = Encoding.UTF8.GetBytes(ical);
             MemoryStream stream = new MemoryStream(byteArray);
