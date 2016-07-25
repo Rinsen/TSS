@@ -19,6 +19,17 @@ namespace TietoCRM.Controllers
 {
     public class CustomerProductReportController : Controller
     {
+        private static readonly List<String> ignoredProperties = new List<String>()
+        {
+            "SSMA_timestamp",
+            "Customer",
+            "Sign",
+            "SortNo",
+            "Discount_type",
+            "Status",
+            "Alias"
+        };
+
         // GET: CustomerProductReport
         public ActionResult Index()
         {
@@ -27,7 +38,8 @@ namespace TietoCRM.Controllers
 
             List<String> OrderedCustomerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
             OrderedCustomerNames.Sort();
-            
+
+            ViewData.Add("IgnoredProperties", ignoredProperties);
             ViewData.Add("CustomerNames", OrderedCustomerNames);
             ViewData.Add("Users", view_User.getAllUsers());
             ViewData.Add("Properties", typeof(view_CustomerProductRow).GetProperties());
@@ -136,7 +148,7 @@ namespace TietoCRM.Controllers
                     Dictionary<String, String> dic = new Dictionary<String, String>();
                     foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
                     {
-                        if (pi.Name != "SSMA_timestamp" && pi.Name != "Customer" && pi.Name != "Sign")
+                        if (!ignoredProperties.Contains(pi.Name))
                         {
                             if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
                             {
