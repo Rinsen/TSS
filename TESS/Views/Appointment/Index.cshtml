@@ -40,7 +40,7 @@
                                             <div class="col-sm-9">
                                                 @if (pi.Name == "Date")
                                                 {
-                                                    <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
+                                                    <input data-enabletime data-time_24hr class="form-control flatpickr" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
                                                 }
                                                 else if (pi.Name == "Event_type")
                                                 {
@@ -511,6 +511,7 @@
     }
 
     $('document').ready(function () {
+        flatpickr("#date", { static: true });
         getIndexData();
     });
 

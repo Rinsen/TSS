@@ -79,7 +79,7 @@ namespace TietoCRM.Models
         /// <summary>
         /// By default this class dont use cached data
         /// </summary>
-        /// <param name="user">The users to get correct statistics</param>
+        /// <param name="user">The user to get correct statistics</param>
         /// <param name="useCachedData">Whether the object should generate new data or get cached data from the SQL server</param>
         public UserStatistics(view_User user, bool useCachedData)
         {
