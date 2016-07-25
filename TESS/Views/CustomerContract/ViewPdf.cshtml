@@ -1251,6 +1251,11 @@
             toolbar: tinyDefaultToolbars
         });
         tinymce.init({
+            selector: "#deluhtitle",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars 
+        });
+        tinymce.init({
             selector: "#deluhtext",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars 
@@ -1261,6 +1266,7 @@
             toolbar: tinyDefaultToolbars
         });
         tinyMCE.execCommand('mceAddControl', false, 'page-head-text');
+        tinyMCE.execCommand('mceAddControl', false, 'deluhtitle');
         tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
         tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
     });

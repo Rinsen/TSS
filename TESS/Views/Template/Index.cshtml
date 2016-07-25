@@ -128,9 +128,6 @@
 <script>
 
     $(document).on('show.bs.modal', '#templateModal', function () {
-        
-        
-
         tinymce.init({
             selector: "#opening5",
             plugins: tinyDefaultPlugins,
@@ -146,11 +143,18 @@
         if ($('#deluhtext5:hidden').length > 0)
         {
             tinymce.init({
+                selector: "#deluhtitle5",
+                plugins: tinyDefaultPlugins,
+                toolbar: tinyDefaultToolbars
+            });
+
+            tinymce.init({
                 selector: "#deluhtext5",
                 plugins: tinyDefaultPlugins,
                 toolbar: tinyDefaultToolbars
             });
             tinyMCE.execCommand('mceAddControl', false, 'deluhtext5');
+            tinyMCE.execCommand('mceAddControl', false, 'deluhtitle5');
         }
        
         tinyMCE.execCommand('mceAddControl', false, 'opening5');
