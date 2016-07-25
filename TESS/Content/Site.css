@@ -209,6 +209,9 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
 .crm-widget-dashboard .refresh-button {
   cursor: pointer;
 }
+a.panel-heading {
+  display: block;
+}
 .crm-widget {
   background-color: #62b3e5;
   border-radius: 0;
