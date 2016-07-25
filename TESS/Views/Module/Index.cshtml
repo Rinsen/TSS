@@ -131,7 +131,7 @@
 
         selectedId = $td.find("input").val();
 
-        
+
         StateCookie.updateSite(null, selectedId);
 
         $table.find("tr.selected").removeClass("selected");
@@ -150,8 +150,8 @@
         {
             $searchBox.val(String(stateSearch));
             $searchBox.trigger($.Event("keyup", { keyCode: 13} ));
-        }  
-            
+        }
+
         $searchBox.bind('keyup', function(){
             StateCookie.updateSite($searchBox.val());
         });
@@ -178,7 +178,7 @@
         }
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}
 
-        
+
 
         updateDataTable(handleStates);
 
@@ -240,7 +240,9 @@
 
         $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $selRowContainer.append("<div id='crm-edit' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
-        //$selRowContainer.append("<div id='module-delete' class='crm-table-btn'><button type='button' id='module-delete-btn' class='btn btn-danger' autocomplete='off'>Delete</button></div>");
+        $selRowContainer.append("<div id='crm-export-ical' class='crm-table-btn' \
+            onclick=\"location.href=\'@Url.Action("ExportAsCsv", "Module", null, Request.Url.Scheme)\';\">\
+            <button type='button' class='btn btn-default'>Export</button></div>");
 
 
 
@@ -309,7 +311,7 @@
         $("#crm-edit").bind("click", function(){
             if(selectedId != null){
                 var $selectedTds = $("#module-table tr.selected td").not(".radios");
-               
+
                 var system = $("#module-table tr.selected td[data-property='System']").not(".radios").html();
 
 
@@ -375,7 +377,7 @@
             "processing": true,
             "ajax":"@Url.Content("~/Module/ModuleData/")",
             "defaultContent": "",
-           
+
             "order": [[ 1, "asc" ]],
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
             "columns": [@Html.Raw(DataObject)
@@ -392,7 +394,7 @@
                 }
             ],
             "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
-            
+
             "bAutoWidth": false,
             //"scrollY": ($("#page-content-wrapper").height() - 90),
             "scrollX": true,
