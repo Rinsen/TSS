@@ -47,6 +47,7 @@
                         <label for="price-category2" class="col-sm-2 control-label">Price category</label>
                         <div class="col-sm-10">
                             <input class="form-control" name="Price_category" id="price-category2">
+                            <span id="discount-percentage" style="display:none">%</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -161,6 +162,19 @@
         var uniqueRowNumber = 0;
         var $delBtns;
 
+        $('#discount2').change(function() {
+            $p = $("#price-category2");
+            if($(this).is(":checked")) {
+                $("#discount-percentage").show();
+                $p.css("width","auto");
+                $p.css("display","inline-block");
+            }
+            else{
+                $("#discount-percentage").hide();
+                $p.css("width","100%");
+                $p.css("display","block");
+            }
+        });
 
         $("#system2").change(function(){
             fillClassificationSelect(this.value);

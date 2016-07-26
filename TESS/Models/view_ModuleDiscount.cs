@@ -29,7 +29,7 @@ namespace TietoCRM.Models
         private int license_discount;
         public int License_discount { get; set; }
 
-        public String alias;
+        private String alias;
         public String Alias { get; set; }
 
         public view_ModuleDiscount() : base("ModuleDiscount")

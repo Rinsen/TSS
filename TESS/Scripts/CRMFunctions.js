@@ -285,7 +285,9 @@ var insertRowToDatabase = function (element, newRowObj, insertUrl, $dataTable) {
     Returns a currency string with swedish format from a given number.
 **/
 var formatCurrency = function (n) {
-    if (String(n).indexOf('.') > -1)
+    if (typeof n === typeof "" && n.indexOf('%') >= 0)
+        return n;
+    else if (String(n).indexOf('.') > -1)
         return parseFloat(n).toFixed(2) + " kr";
     else {
         n = parseFloat(n);

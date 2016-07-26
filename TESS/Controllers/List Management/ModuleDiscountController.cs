@@ -115,8 +115,9 @@ namespace TietoCRM.Controllers.List_Management
                     {
                         module.SetValue(variable.Key, variable.Value);
                     }
-                    if (System.Web.HttpContext.Current.GetUser().Area != "*")
-                        module.Area = System.Web.HttpContext.Current.GetUser().Area;
+                    view_User user = System.Web.HttpContext.Current.GetUser();
+                    if (user.Area != "*")
+                        module.Area = user.Area;
                     module.Update("ID = " + id);
 
                     return "1";
@@ -126,7 +127,7 @@ namespace TietoCRM.Controllers.List_Management
                     return "0";
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 return "-1";
             }
