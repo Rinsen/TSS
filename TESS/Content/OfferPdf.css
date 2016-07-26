@@ -7,6 +7,14 @@
 .crm-pdf img {
   max-width: 100%;
 }
+.crm-pdf .h4,
+.crm-pdf .h5,
+.crm-pdf .h6,
+.crm-pdf h4,
+.crm-pdf h5,
+.crm-pdf h6 {
+  margin-bottom: 4px;
+}
 .crm-pdf div {
   width: 100%;
   display: block;

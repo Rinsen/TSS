@@ -10,10 +10,10 @@
         <th>Contact person</th>
         <th>Main contract id</th>
         <th>Amount</th>
-        @foreach (Dictionary<String, String> contracts in ViewBag.Contracts)
+        @foreach (Dictionary<String, object> contracts in ViewBag.Contracts)
         {
             <tr class="">
-                @foreach (KeyValuePair<String, String> kp in contracts)
+                @foreach (KeyValuePair<String, object> kp in contracts)
                 {
                     <td>@kp.Value</td>
                 }

@@ -45,7 +45,7 @@
                                         else if (pi.Name == "Type")
                                         {
                                             <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                @foreach(view_Information.SelectOption so in (new view_Information()).GetSelectOptions("Type"))
+                                                @foreach(SelectOptions<view_Information>.SelectOption so in (new SelectOptions<view_Information>()).GetSelectOptions("Type"))
                                                 {
                                                     <option value="@so.Value">@so.Text</option>
                                                 }

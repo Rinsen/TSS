@@ -1,5 +1,14 @@
 ﻿@{
     Layout = "~/Views/Shared/_ReportLayout.cshtml";
+    List<String> skipProp = new List<string>
+    {
+        "SSMA_timestamp",
+        "System",
+        "Customer",
+        "Sign",
+        "SortNo",
+        "Discount_type",
+    };
 }
 
 @foreach (String pName in ViewBag.SystemNames)
@@ -19,61 +28,20 @@
                 }
 
             }
-            @foreach (TietoCRM.Models.view_CustomerMissingProductReport CPR in ViewBag.CustomerMissingProducts)
+            @foreach (Dictionary<String, object> cmp in ViewBag.CustomerMissingProducts)
             {
-                if (CPR.System == rubrik) {
-            <tr class="">
-                @foreach (System.Reflection.PropertyInfo PInfo in ViewBag.Properties)
+                if ((String)cmp["System"] == rubrik)
                 {
-                    if (PInfo.Name != "SSMA_timestamp" && PInfo.Name != "System" && PInfo.Name != "Customer" && PInfo.Name != "Sign" &&
-                        PInfo.Name != "SortNo" && PInfo.Name != "Discount_type")
-                    {
-                        if (PInfo.PropertyType == typeof(DateTime?))
+                    <tr class="">
+                        @foreach (KeyValuePair<String, object> dic in cmp)
                         {
-                            if (PInfo.GetValue(CPR) != null)
+                            if (!skipProp.Contains(dic.Key))
                             {
-                                <td>@(((DateTime)PInfo.GetValue(CPR)).ToString("yyyy-MM-dd"))</td>
-                            }
-                            else
-                            {
-                                <td></td>
+                                <td>@dic.Value</td>
                             }
                         }
-                        else if (PInfo.PropertyType == typeof(int))
-                        {
-                            if (PInfo.GetValue(CPR) != null)
-                            {
-                                if (PInfo.Name == "Article_number")
-                                {
-                                    <td>@PInfo.GetValue(CPR).ToString()</td>
-                                }
-                                else
-                                {
-                                    <td style="text-align:right">@(((int)PInfo.GetValue(CPR)).ToString("N0"))</td>
-                                }
-                            }
-                            else
-                            {
-                                <td></td>
-                            }
-
-                        }
-                        else
-                        {
-                            if (PInfo.GetValue(CPR) != null)
-                            {
-                                <td>@PInfo.GetValue(CPR).ToString()</td>
-                            }
-                            else
-                            {
-                                <td></td>
-                            }
-
-                        }
-                    }
+                    </tr>
                 }
-            </tr>
-            }
             }
 
         </table>
