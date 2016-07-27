@@ -9,10 +9,10 @@
         <th>System</th>
         <th>Classification</th>
         <th>Description</th>
-        @foreach (Dictionary<String, String> contracts in ViewBag.Modules)
+        @foreach (Dictionary<String, object> contracts in ViewBag.Modules)
         {
             <tr class="">
-                @foreach (KeyValuePair<String, String> kp in contracts)
+                @foreach (KeyValuePair<String, object> kp in contracts)
                 {
                     <td>@kp.Value</td>
                 }

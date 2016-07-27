@@ -31,7 +31,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <button style="margin-top: 1.7em;" class="btn btn-default" type="submit">PDF</button>
+                <button id="fetch-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
             </div>
         </form>
     </div>
@@ -135,6 +135,17 @@
             }
         });
     }
+    $('#fetch-pdf').click(function () {
+        var user = $userContainer.val();
+        var area = $areaContainer.val();
+        var year = $yearContainer.val();
+        var $dt = $('.dataTable').DataTable();
+        var sortArr = $dt.order();
+        var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+        var params = "?user=" + user + "&area=" + area + "&year=" + year;
+
+        window.open('/TopCustomersReport/Pdf' + params + sort, "_blank");
+    })
 
     </script>
 </row>

@@ -11,51 +11,48 @@
             @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                if (@PropertyName != "SSMA timestamp" && PropertyInfo.Name != "System" && 
-                    PropertyInfo.Name != "Customer" && PropertyInfo.Name != "Sign" && PropertyInfo.Name != "Status" &&
-                    PropertyInfo.Name != "SortNo" && PropertyInfo.Name != "Discount_type" && PropertyInfo.Name != "Alias")
+                if (!ViewBag.IgnoredPropertiesExtended.Contains(PropertyInfo.Name))
                 {
                     <th>@PropertyName</th>
                 }
             }
-            @foreach (TietoCRM.Models.view_CustomerProductRow CPR in ViewBag.CustomerProductRows)
+            @foreach (Dictionary<String, object> CPR in ViewBag.CustomerProductRows)
             {
-                if (CPR.System == rubrik && CPR.Status == "Giltigt")
+                if ((String)CPR["System"] == rubrik && (String)CPR["Status"] == "Giltigt")
                 {
                     <tr class="">
-                        @foreach (System.Reflection.PropertyInfo PInfo in ViewBag.Properties)
+                        @foreach (KeyValuePair<String, object> dic in CPR)
                         {
-                            if (PInfo.Name != "SSMA_timestamp" && PInfo.Name != "System" && PInfo.Name != "Customer" && PInfo.Name != "Sign" &&
-                                PInfo.Name != "Status" && PInfo.Name != "SortNo" && PInfo.Name != "Discount_type" && PInfo.Name != "Alias")
+                            if (!ViewBag.IgnoredPropertiesExtended.Contains(dic.Key))
                             {
-                                if (PInfo.PropertyType != typeof(DateTime?))
+                                if (dic.Key == "Valid_through")
                                 {
-                                    if (PInfo.GetValue(CPR) != null)
+                                    if (dic.Value != null)
                                     {
-                                        <td>@PInfo.GetValue(CPR).ToString()</td>
+                                        <td>@((Convert.ToDateTime(dic.Value)).ToString("yyyy-MM-dd"))</td>
                                     }
                                     else
                                     {
                                         <td></td>
                                     }
                                 }
-                                else if(PInfo.Name == "Module")
+                                else if ((String)dic.Key == "Module")
                                 {
-                                    if (String.IsNullOrEmpty(CPR.Alias))
+                                    if (String.IsNullOrEmpty((String)CPR["Alias"]))
                                     {
-                                        <td>@CPR.Module</td>
+                                        <td>@CPR["Module"]</td>
                                     }
                                     else
                                     {
-                                        <td>@CPR.Alias</td>
+                                        <td>@CPR["Alias"]</td>
                                     }
 
                                 }
                                 else
                                 {
-                                    if (PInfo.GetValue(CPR) != null)
+                                    if (dic.Value != null)
                                     {
-                                        <td>@(((DateTime)PInfo.GetValue(CPR)).ToString("yyyy-MM-dd"))</td>
+                                        <td>@dic.Value</td>
                                     }
                                     else
                                     {

@@ -22,8 +22,12 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, String>> modules = this.GenerateProducts();
-            ViewData.Add("Modules", modules);
+            List<Dictionary<String, object>> modules = this.GenerateProducts();
+
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
+
+            ViewData.Add("Modules", (new SortedByColumnCollection<Dictionary<String, object>>(modules, sortDir, sortKey)).Collection);
 
             this.ViewData["Title"] = "Product Report";
 
@@ -41,15 +45,15 @@ namespace TietoCRM.Controllers.Reports
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateProducts()) + "}";
         }
 
-        public List<Dictionary<String, String>> GenerateProducts()
+        public List<Dictionary<String, object>> GenerateProducts()
         {
             List<view_Module> modules = view_Module.getAllModules();
-            List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Module module in modules)
             {
                 if(module.Expired != null && module.Expired == false && System.Web.HttpContext.Current.GetUser().IfSameArea(module.Area))
                 {
-                    Dictionary<String, String> dict = new Dictionary<String, String>();
+                    Dictionary<String, object> dict = new Dictionary<String, object>();
 
                     dict.Add("article_number", module.Article_number.ToString());
                     dict.Add("name", module.Module);

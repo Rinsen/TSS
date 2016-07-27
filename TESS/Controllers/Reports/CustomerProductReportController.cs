@@ -64,12 +64,15 @@ namespace TietoCRM.Controllers
 
             OrderedSystemNames.Sort();
 
-            ProductReportRows.OrderBy(m => m.SortNo).ThenBy(m => m.Classification).ThenBy(m => m.Article_number);
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
 
-            ViewData.Add("CustomerProductRows", ProductReportRows);
+            ViewData.Add("CustomerProductRows", (new SortedByColumnCollection<view_CustomerProductRow>(ProductReportRows, sortDir, sortKey)).Collection);
             ViewData.Add("SystemNames", OrderedSystemNames);
             ViewData.Add("Properties", typeof(view_CustomerProductRow).GetProperties());
-
+            List<String> ignoredPropertiesExtended = ignoredProperties.ToList();
+            ignoredPropertiesExtended.Add("System");
+            ViewData.Add("IgnoredPropertiesExtended", ignoredPropertiesExtended);
             this.ViewData["Title"] = "Customer Product Report";
 
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
