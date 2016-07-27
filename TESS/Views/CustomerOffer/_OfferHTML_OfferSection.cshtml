@@ -16,14 +16,20 @@
 <div id="crm-pdf-offer-rows" class="">
     
     @{
+        decimal discounts = 0;
         decimal ProductLicenseTotal = 0;
         decimal ProductMaintenanceTotal = 0;
-        
+
         String previousSystem = "";
         String previousPriceType = "";
     }
     @foreach (dynamic article in ViewBag.Articles)
     {
+        if(article.Discount_type == 1)
+        {
+            discounts += article.Price_category;
+        }
+
         if (previousPriceType != article.Price_type)
         {
             previousPriceType = article.Price_type;
@@ -39,15 +45,22 @@
             </div>
             <div class="large-divider"></div>
         }
-
-
         // Calculate total sums
-        ProductLicenseTotal += Convert.ToDecimal(article.License);
-        ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
-
+        String License;
+        String Maintenance;
         // Format currency
-        String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-        String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+        if (article.Discount_type != 1)
+        {
+            License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            ProductLicenseTotal += Convert.ToDecimal(article.License);
+            ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+        }
+        else
+        {
+            License = article.License + "%";
+            Maintenance = "0 kr";
+        }
         if (previousSystem != article.System)
         {
             <div class="crm-pdf-subrows_1">
@@ -72,9 +85,13 @@
         previousSystem = article.System;
     }
     @{
+        if (discounts < -100)
+        {
+            discounts = -100;
+        }
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal*(decimal)discounts/100).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discounts / 100).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">

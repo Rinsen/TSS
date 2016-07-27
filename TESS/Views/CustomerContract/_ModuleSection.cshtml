@@ -19,6 +19,7 @@ Produkter
 -------------------------------------*@
 <div id="crm-pdf-module-rows" class="">
     @{
+        decimal discounts = 0;
         decimal ProductLicenseTotal = 0;
         decimal ProductMaintenanceTotal = 0;
 
@@ -42,13 +43,22 @@ Produkter
             </div>
             <div class="large-divider"></div>
         }
-        // Calculate total sums
-        ProductLicenseTotal += Convert.ToDecimal(article.License);
-        ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
-
+        String License;
+        String Maintenance;
         // Format currency
-        String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-        String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+        if (article.Discount_type != 1)
+        {
+            License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            ProductLicenseTotal += Convert.ToDecimal(article.License);
+            ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+        }
+        else
+        {
+            discounts += article.License;
+            License = article.License + "%";
+            Maintenance = "0 kr";
+        }
         if (previousSystem != article.System)
         {
             <div class="crm-pdf-subrows_1">
@@ -73,9 +83,13 @@ Produkter
         previousSystem = article.System;
     }
     @{
+        if (discounts < -100)
+        {
+            discounts = -100;
+        }
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discounts / 100).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discounts / 100).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">
@@ -85,66 +99,6 @@ Produkter
                 <td>Summa Produkter:</td>
                 <td>@ProductLicenseTotalFormated</td>
                 <td>@ProductMaintenanceTotalFormated</td>
-            </tr>
-        </table>
-    </div>
-</div>
-}
-@if(ViewBag.EducationPortals.Count > 0)
-{
-@*-------------------------------------
-Educational Portal
--------------------------------------*@
-<div id="crm-pdf-educational-portal-rows">
-    <div class="crm-pdf-subheader_1" id="crm-pdf-educational-portal-rows-title">
-        <table>
-            <tr>
-                <td>Lärportal</td>
-                <td></td>
-                <td></td>
-                <td>Person/år</td>
-            </tr>
-        </table>
-    </div>
-    <div class="large-divider"></div>
-    @{
-        decimal EducationalPortalTotal = 0;
-    }
-    @foreach (dynamic article in ViewBag.EducationPortals)
-    {
-        String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-        // Calculate total sums
-        EducationalPortalTotal += Convert.ToDecimal(article.Maintenance);
-        view_Module module = new view_Module();
-        module.Select("Article_number = " + article.Article_number);
-
-        // Format currency
-
-        String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-        <div class="crm-pdf-subrows_2">
-            <table>
-                <tr>
-                    <td style="padding-left:0em">@article.Classification</td>
-                    <td>@article.Article_number</td>
-                    <td>@article.Module</td>
-                    <td></td>
-                    <td>@Maintenance</td>
-                </tr>
-            </table>
-        </div>
-    }
-    @{
-        // Format currency for total sums
-        string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
-    }
-    <span class="large-divider"></span>
-    <div class="crm-pdf-subsum_1">
-        <table>
-            <tr>
-                <td></td>
-                <td>Summa Lärportal:</td>
-                <td></td>
-                <td>@EducationalPortalTotalFormated</td>
             </tr>
         </table>
     </div>

@@ -201,6 +201,8 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Classification = module.Classification;
                 contractInfo.License = contractRow.License;
                 contractInfo.Maintenance = contractRow.Maintenance;
+                contractInfo.Price_category = module.Price_category;
+                contractInfo.Discount_type = module.Discount_type;
 
                 view_Sector sector = new view_Sector();
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
@@ -907,6 +909,19 @@ namespace TietoCRM.Controllers.Contracts
                     cRow.Customer = contract.Customer;
                     cRow.Contract_id = contract.Contract_id;
                     cRow.Created = DateTime.Now;
+                    decimal License = 0;
+                    decimal Maintenance = 0;
+                    if ((int)article["Discount_type"] != 1)
+                    {
+                        if (article.Keys.Contains("License"))
+                            License = Decimal.Parse(article["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                        Maintenance = Decimal.Parse(article["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    }
+                    else
+                    {
+                        String temp = article["License"].ToString().Replace(".", ",").Replace("%", "");
+                        License = Decimal.Parse(temp);
+                    }
                     cRow.License = Convert.ToDecimal(article["License"]);
                     cRow.Maintenance = Convert.ToDecimal(article["Maintenance"]);
                     cRow.New = false;
@@ -1209,10 +1224,19 @@ namespace TietoCRM.Controllers.Contracts
                 foreach (Dictionary<String, Object> dict in list)
                 {
                     int Article_number = Convert.ToInt32(dict["Article_number"]);
-                    double License = 0;
-                    if (dict.Keys.Contains("License"))
-                        License = double.Parse(dict["License"].ToString().Replace(",", "."), CultureInfo.InvariantCulture);
-                    double Maintenance = double.Parse(dict["Maintenance"].ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+                    decimal License = 0;
+                    decimal Maintenance = 0;
+                    if ((int)dict["Discount_type"] != 1)
+                    {
+                        if (dict.Keys.Contains("License"))
+                            License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    }
+                    else
+                    {
+                        String temp = dict["License"].ToString().Replace(".", ",").Replace("%", "");
+                        License = Decimal.Parse(temp);
+                    }
                     int RowType = Convert.ToInt32(dict["Rowtype"]);
 
 
@@ -1385,7 +1409,7 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Comment, M.Multiple_type, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Comment, M.Multiple_type, C.Inhabitant_level 
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -1440,12 +1464,20 @@ namespace TietoCRM.Controllers.Contracts
                                 result["License"] = "0";
 
                             }
+                            if ((Byte)result["Discount_type"] == 1)
+                            {
+                                result["Maintenance"] = "0";
+                                result["License"] = result["Price_category"].ToString() + "%";
+
+                            }
                             view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
                             if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
                                 + " AND Area=" + result["Area"].ToString()))
                             {
                                 result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
                                 result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
+                                if (!String.IsNullOrEmpty(moduleDiscount.Alias))
+                                    result["Module"] = moduleDiscount.Alias;
                             }
                             result["License"] = result["License"].ToString().Replace(",", ".");
                             result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
@@ -1551,12 +1583,20 @@ namespace TietoCRM.Controllers.Contracts
                                 result["License"] = "0";
 
                             }
+                            if ((Byte)result["Discount_type"] == 1)
+                            {
+                                result["Maintenance"] = "0";
+                                result["License"] = result["Price_category"].ToString() + "%";
+
+                            }
                             view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
                             if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
                                 + " AND Area=" + result["Area"].ToString()))
                             {
                                 result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
                                 result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
+                                if (!String.IsNullOrEmpty(moduleDiscount.Alias))
+                                    result["Module"] = moduleDiscount.Alias;
                             }
                             result["License"] = result["License"].ToString().Replace(",", ".");
                             result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");

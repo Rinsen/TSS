@@ -152,6 +152,8 @@ namespace TietoCRM.Controllers
                 view_Sector sector = new view_Sector();
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
 
+                offerInfo.Price_category = module.Price_category;
+                offerInfo.Discount_type = module.Discount_type;
                 offerInfo.Price_type = sector.Price_type;
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
@@ -246,6 +248,8 @@ namespace TietoCRM.Controllers
                     offerInfo.Module = offerRow.Alias;
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
+                offerInfo.Price_category = module.Price_category;
+                offerInfo.Discount_type = module.Discount_type;
 
                 view_Sector sector = new view_Sector();
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
@@ -692,7 +696,7 @@ namespace TietoCRM.Controllers
                                         order by Article_number asc";*/
 
                     String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Comment, M.Multiple_type, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Comment, M.Multiple_type, C.Inhabitant_level 
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -736,12 +740,20 @@ namespace TietoCRM.Controllers
                                     result["License"] = "0";
 
                                 }
+                                if ((Byte)result["Discount_type"] == 1)
+                                {
+                                    result["Maintenance"] = "0";
+                                    result["License"] = result["Price_category"].ToString() + "%";
+                                    result["Price_category"] = result["Price_category"].ToString() + "%";
+                                }
                                 view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
                                 if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
                                     + " AND Area=" + result["Area"].ToString()))
                                 {
                                     result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1-((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
                                     result["License"] = (decimal.Parse(result["License"].ToString()) * (1-((decimal)moduleDiscount.License_discount / 100))).ToString();
+                                    if (!String.IsNullOrEmpty(moduleDiscount.Alias))
+                                        result["Module"] = moduleDiscount.Alias;
                                 }
                                 result["License"] = result["License"].ToString().Replace(",", ".");
                                 result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
@@ -784,7 +796,7 @@ namespace TietoCRM.Controllers
                     connection.Open();
 
                     String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
-                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Comment, view_Module.Area, view_Module.Multiple_type
+                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Discount_type view_Module.Comment, view_Module.Area, view_Module.Multiple_type
                                         FROM view_Module                                                                                       
                                         JOIN view_Tariff                                                                                       
                                         on view_Module.Price_category = view_Tariff.Price_category
@@ -831,12 +843,20 @@ namespace TietoCRM.Controllers
                                     result["License"] = "0";
 
                                 }
+                                if ((Byte)result["Discount_type"] == 1)
+                                {
+                                    result["Maintenance"] = "0";
+                                    result["License"] = result["Price_category"].ToString() + "%";
+
+                                }
                                 view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
                                 if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
                                     + " AND Area=" + result["Area"].ToString()))
                                 {
                                     result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
                                     result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
+                                    if (!String.IsNullOrEmpty(moduleDiscount.Alias))
+                                        result["Module"] = moduleDiscount.Alias;
                                 }
                                 result["License"] = result["License"].ToString().Replace(",", ".");
                                 result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
@@ -890,10 +910,20 @@ namespace TietoCRM.Controllers
                 foreach (Dictionary<String, Object> dict in list)
                 {
                     int Article_number = Convert.ToInt32(dict["Article_number"]);
-                    Decimal License = 0;
-                    if(dict.Keys.Contains("License"))
-                        License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
-                    Decimal Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",","."), NumberFormatInfo.InvariantInfo);
+                    decimal License = 0;
+                    decimal Maintenance = 0;
+                    if((int)dict["Discount_type"] != 1)
+                    {
+                        if (dict.Keys.Contains("License"))
+                            License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    }
+                    else
+                    {
+                        String temp = dict["License"].ToString().Replace(".", ",").Replace("%", "");
+                        License = Decimal.Parse(temp);
+                    }
+
                     String Alias = dict["Alias"].ToString();
 
                     view_OfferRow offerRow = new view_OfferRow();

@@ -338,18 +338,9 @@ namespace TietoCRM.Controllers
 
         public void ExportAsCsv()
         {
-            Encoding encoding = Encoding.UTF8;
-            Response.ClearContent();
-            Response.AddHeader("content-disposition", "attachment;filename=Customers.xls");
-            Response.AddHeader("Content-Type", "application/vnd.ms-excel");
-            Response.Charset = encoding.EncodingName;
-            Response.ContentEncoding = Encoding.Unicode;
-            //Response.BinaryWrite(Encoding.UTF8.GetPreamble());
-            String customer = Request["customer"];
-            ViewCsvParser<view_Customer> vcp = new ViewCsvParser<view_Customer>();
+            ViewCsvParser<view_Customer> vcp = new ViewCsvParser<view_Customer>("Customers");
 
-            vcp.WriteTsv(view_Customer.getAllCustomers(), Response.Output);
-            Response.End();
+            vcp.WriteExcelWithNPOI(view_Customer.getAllCustomers());
         }
     }
 }

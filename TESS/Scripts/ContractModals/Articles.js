@@ -193,6 +193,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
                                             data-alias='" + article.Module + "'                                     \
+                                            data-discount='" + article.Discount_type + "'                           \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
@@ -217,6 +218,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-alias='" + article.Module + "'                                      \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
+                                            data-discount='" + article.Discount_type + "'                           \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
@@ -275,13 +277,25 @@ var calculateSums = function(){
     var SACLen =  $selectedArticleButtons.length;
     var LicenseTotal = 0,
         MaintenanceTotal = 0;
+    var discountArr = new Array();
     for(var i = 0; i < SACLen; i++){
         var $btn = $($selectedArticleButtons[i]);
         var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
         var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
+        if ($btn.data("discount") == '1')
+            discountArr.push(parseFloat(license));
         LicenseTotal += parseFloat(license);
         MaintenanceTotal += parseFloat(maintenance); 
     }
+    var daLenght = discountArr.length;
+    var discount = 0;
+    for (var i = 0; i < daLenght; i++) {
+        discount += discountArr[i];
+    }
+    if (discount > 100)
+        discount = 100;
+    LicenseTotal += LicenseTotal * discount / 100;
+    MaintenanceTotal += MaintenanceTotal * discount / 100;
     $("#articlesModal #article-license-total").html(formatCurrency(LicenseTotal));
     $("#articlesModal #article-maintenance-total").html(formatCurrency(MaintenanceTotal));
 }
@@ -321,6 +335,7 @@ var updateSelectedItems = function () {
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
                                 data-alias='" + module.Module + "'                                   \
+                                data-discount='" + article.Discount_type + "'                           \
                                 data-multiple-select='" + module.Multiple_type + "'                    \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
@@ -343,6 +358,7 @@ var updateSelectedItems = function () {
                                 data-alias='" + module.Module + "'                                   \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
+                                data-discount='" + article.Discount_type + "'                           \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
@@ -501,6 +517,7 @@ var saveArticlesFunction = function () {
         var buttonMaintenance = $button.data("maintenance");
         var buttonAlias = $button.data("alias");
         var buttonRowtype = $button.data("rowtype");
+        var buttonDiscount = $button.data("discount");
 
         // "Create a new article" to store in an array to use for server side db update.
         var newArticle = {
@@ -508,7 +525,8 @@ var saveArticlesFunction = function () {
             "Alias": buttonAlias,
             "License": buttonLicense,
             "Maintenance": buttonMaintenance,
-            "Rowtype" : buttonRowtype
+            "Rowtype": buttonRowtype,
+            "Discount_type": buttonDiscount
         }
         selectedArticlesArray.push(newArticle);
     }

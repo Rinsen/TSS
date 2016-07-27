@@ -53,6 +53,7 @@ namespace TietoCRM.Controllers.Reports
                 "Article_number",
                 "Module",
                 "Price_category",
+                "System",
                 "Classification"
             };
 
@@ -69,6 +70,7 @@ namespace TietoCRM.Controllers.Reports
                 "Article_number",
                 "Module",
                 "Price_category",
+                "System",
                 "Classification"
             };
 
@@ -110,6 +112,7 @@ namespace TietoCRM.Controllers.Reports
                 "Article_number",
                 "Module",
                 "Price_category",
+                "System",
                 "Classification"
             };
 

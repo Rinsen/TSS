@@ -600,6 +600,7 @@
                                             @{
                                                 decimal LicenseTotal = 0;
                                                 decimal MaintenanceTotal = 0;
+                                                decimal discount = 0;
                                                 CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
                                             }
@@ -608,11 +609,25 @@
                                                 // Fetch modules
                                                 view_Module module = new view_Module();
                                                 module.Select("Article_number = " + or.Article_number);
-
+                                                if (module.Discount_type == 1)
+                                                {
+                                                    discount += or.License ?? 0;
+                                                }
+                                                String License;
+                                                String Maintenance;
                                                 // Format currency
-
-                                                String License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
-                                                String Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
+                                                if (module.Discount_type != 1)
+                                                {
+                                                    License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
+                                                    Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
+                                                    LicenseTotal += Convert.ToDecimal(or.License);
+                                                    MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
+                                                }
+                                                else
+                                                {
+                                                    License = or.License + "%";
+                                                    Maintenance = "0 kr";
+                                                }
 
                                                 if (or.Removed == false)
                                                 {
@@ -685,9 +700,13 @@
                                             }
                                             @{
                                                 // Format currency
+                                                if (discount < -100)
+                                                {
+                                                    discount = -100;
+                                                }
 
-                                                String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal).Replace(".", " ");
-                                                String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal).Replace(".", " ");
+                                                String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal * (decimal)discount / 100).Replace(".", " ");
+                                                String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal * (decimal)discount / 100).Replace(".", " ");
                                             }
 
                                         </div>

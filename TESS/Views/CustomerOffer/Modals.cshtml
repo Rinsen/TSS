@@ -260,29 +260,41 @@ else if (Request["modal"] == "articles")
                             <div id="selected-articles" class="list-group">
                                 @{
                                     
-                                    int LicenseTotal = 0;
-                                    int MaintenanceTotal = 0;
+                                    decimal LicenseTotal = 0;
+                                    decimal MaintenanceTotal = 0;
                                     CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
-                                    
+                                    decimal discount = 0;
                                  }
                                 @foreach (view_OfferRow or in ViewBag.CustomerOffer._OfferRows)
                                 {
                                     // Fetch modules
                                     view_Module module = new view_Module();
                                     module.Select("Article_number = " + or.Article_number);
-
+                                    if (module.Discount_type == 1)
+                                    {
+                                        discount += or.License ?? 0;
+                                    }
+                                    String License;
+                                    String Maintenance;
                                     // Format currency
-
-                                    String License = string.Format(se, "{0:C2}", or.License).Replace("."," ");
-                                    String Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
-
-                                    LicenseTotal += Convert.ToInt32(or.License);
-                                    MaintenanceTotal += Convert.ToInt32(or.Maintenance);
+                                    if (module.Discount_type != 1)
+                                    {
+                                        License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
+                                        Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
+                                        LicenseTotal += Convert.ToDecimal(or.License);
+                                        MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
+                                    }
+                                    else
+                                    {
+                                        License = or.License + "%";
+                                        Maintenance = "0 kr";
+                                    }
 
                                     <button onclick="moveItem(event, this)"
                                             type="button"
                                             class="list-group-item"
                                             data-selected="true"
+                                            data-discount="@module.Discount_type"
                                             @if(module.System != "Lärportal")
                                             {
                                                 @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."));
@@ -317,9 +329,12 @@ else if (Request["modal"] == "articles")
                                 }
                                 @{
                                     // Format currency
-
-                                    String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal).Replace(".", " ");
-                                    String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal).Replace(".", " ");
+                                    if (discount < -100)
+                                    {
+                                        discount = -100;
+                                    }
+                                    String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal* (decimal)discount /100).Replace(".", " ");
+                                    String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal* (decimal)discount /100).Replace(".", " ");
                                 }
 
                             </div>
@@ -553,6 +568,7 @@ else if (Request["modal"] == "articles")
                 $newButton = $("<button onclick='moveItem(event, this)'                                             \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
+                                            data-discount='" + article.Discount_type + "'                           \
                                             data-maintenance='" + article.Price_category + "'                       \
                                             data-alias='" + article.Module + "'                                      \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
@@ -577,6 +593,7 @@ else if (Request["modal"] == "articles")
                 $newButton = $("<button onclick='moveItem(event, this)'                                             \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
+                                            data-discount='" + article.Discount_type + "'                           \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             data-alias='" + article.Module + "'                                     \
@@ -658,14 +675,26 @@ else if (Request["modal"] == "articles")
         var SACLen =  $selectedArticleButtons.length;
         var LicenseTotal = 0,
             MaintenanceTotal = 0;
+        var discountArr = new Array();
         for(var i = 0; i < SACLen; i++){
             var $btn = $($selectedArticleButtons[i]);
             var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
             var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
+            if($btn.data("discount") == '1')
+                discountArr.push(parseFloat(license));
             LicenseTotal += parseFloat(license);
             MaintenanceTotal += parseFloat(maintenance); 
-            console.log(maintenance);
         }
+        var daLenght = discountArr.length;
+        var discount = 0;
+        for(var i = 0; i < daLenght; i++)
+        {
+            discount += discountArr[i];
+        }
+        if(discount > 100)
+            discount = 100;
+        LicenseTotal += LicenseTotal*discount/100;
+        MaintenanceTotal += MaintenanceTotal*discount/100;
         $("#article-license-total").html(formatCurrency(LicenseTotal));
         $("#article-maintenance-total").html(formatCurrency(MaintenanceTotal));
     }
@@ -737,13 +766,15 @@ else if (Request["modal"] == "articles")
             var buttonLicense = $button.data("license");
             var buttonMaintenance = $button.data("maintenance");
             var buttonAlias = $button.data("alias");
+            var buttonDiscount = $button.data("discount");
 
             // "Create a new article" to store in an array to use for server side db update.
             var newArticle = {
                 "Article_number":  buttonArt,
                 "Alias": buttonAlias,
                 "License": buttonLicense,
-                "Maintenance": buttonMaintenance
+                "Maintenance": buttonMaintenance,
+                "Discount_type": buttonDiscount
             }
             selectedArticlesArray.push(newArticle);
         }
