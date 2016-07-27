@@ -6,13 +6,14 @@
     <table class="table table-striped table-bordered contract-supervision-table">
         <th>Customer</th>
         <th>Contract id</th>
-        <th>Inhabitant level</th>
-        @foreach (Dictionary<String,String> contract in ViewBag.Customermodules)
+        <th>Representative</th>
+        <th>Classification</th>
+        @foreach (Dictionary<String, object> contract in ViewBag.Customermodules)
         {
             <tr class="">
-                @foreach(KeyValuePair<String,String> keyValue in contract)
+                @foreach(KeyValuePair<String, object> dic in contract)
                 {
-                    <td>@keyValue.Value</td>
+                    <td>@dic.Value</td>
                 }
             </tr>
         }

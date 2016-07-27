@@ -14,15 +14,18 @@
         td:nth-child(2) {
             width: 7em !important;
         }
+        td:nth-child(4) {
+            width: 3em !important;
+        }
 
         td:nth-child(3) {
             width: 12em !important;
         }
-        td:nth-child(4) {
+        td:nth-child(5) {
             width: 10em !important;
         }
-        td:nth-child(5) {
-            width: 30em !important;
+        td:nth-child(6) {
+            width: 25em !important;
         }
     </style>
     <div class="crm-print-block">
@@ -36,20 +39,20 @@
                 }
 
             }
-            @foreach (view_Appointment app in ViewBag.Appointments)
+            @foreach (Dictionary<String, object> app in ViewBag.Appointments)
             {
                 <tr class="">
-                    @foreach (System.Reflection.PropertyInfo pi in app.GetType().GetProperties())
+                    @foreach (KeyValuePair<String, object> data in app)
                     {
-                        if (!ViewBag.Unprintable.Contains(pi.Name))
+                        if (!ViewBag.Unprintable.Contains(data.Key))
                         {
-                            if (@pi.Name == "Date")
+                            if (data.Key == "Date")
                             {
-                                <td>@app.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@Html.Raw(((DateTime)data.Value).ToString("yyyy-MM-dd HH:mm"))</td>
                             }
                             else
                             {
-                                <td>@pi.GetValue(app)</td>
+                                <td>@data.Value</td>
                             }
                         }
                     }

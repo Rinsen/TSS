@@ -83,11 +83,12 @@ namespace TietoCRM.Controllers.Reports
                 ViewData.Add("ValidDate", true);
                 Start = Convert.ToDateTime(start);
                 Stop = Convert.ToDateTime(stop);
+                String sortDir = Request["sort"];
+                String sortKey = Request["prop"];
 
                 var sortedList = GetFilteredModules(Start, Stop).ToList();
-                sortedList.Sort((pair1, pair2) => Convert.ToInt32(pair2.Value["Count"]).CompareTo(Convert.ToInt32(pair1.Value["Count"])));
-
-                ViewData.Add("ReturnModules", sortedList);
+ 
+                ViewData.Add("ReturnModules", (new SortedByColumnCollection<Dictionary<String, object>>(sortedList, sortDir, sortKey).Collection));
                 ViewData.Add("Printable", Printable);
                 ViewData.Add("Properties", typeof(view_Module).GetProperties());
                 pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \" \"";
@@ -103,9 +104,9 @@ namespace TietoCRM.Controllers.Reports
  
         }
 
-        private Dictionary<int, Dictionary<String, dynamic>> GetFilteredModules(DateTime Start, DateTime Stop)
+        private List<Dictionary<String, object>> GetFilteredModules(DateTime Start, DateTime Stop)
         {
-            CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+            
 
             var Printable = new List<String> {
                 "Article_number",
@@ -118,22 +119,19 @@ namespace TietoCRM.Controllers.Reports
             List<view_ContractRow> ContractRows = view_ContractRow.GetContractRowsByDateInterval(Start, Stop);
             List<view_Module> Modules = view_Module.getAllModules();
 
-            Dictionary<int, Dictionary<String, dynamic>> ReturnModules = new Dictionary<int, Dictionary<String, dynamic>>();
+            Dictionary<int, Dictionary<String, object>> ReturnModules = new Dictionary<int, Dictionary<String, object>>();
             foreach (view_ContractRow cr in ContractRows)
             {
                 foreach(view_Module m in Modules)
                 {
                     if(m.Article_number == cr.Article_number && System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area))
                     {
-                        Dictionary<String, dynamic> SortedModule = new Dictionary<String, dynamic>();
+                        Dictionary<String, object> SortedModule = new Dictionary<String, object>();
                         SortedModule.Add("Count", 1);
                       
                         foreach(System.Reflection.PropertyInfo pi in m.GetType().GetProperties())
                         {
-                            if(pi.Name == "Price_category")
-                                SortedModule.Add(pi.Name, String.Format(se, "{0:C0}", pi.GetValue(m)).Replace(".", " ").Replace(" kr", ""));
-                            else
-                                SortedModule.Add(pi.Name, pi.GetValue(m));
+                            SortedModule.Add(pi.Name, pi.GetValue(m));
                         }
                         int CurrentKey = Convert.ToInt32(m.Article_number);
                         if (ReturnModules.ContainsKey(CurrentKey))
@@ -149,14 +147,9 @@ namespace TietoCRM.Controllers.Reports
                     }
                 }
             }
-            return ReturnModules;
+            return ReturnModules.Values.ToList();
 
-            //ViewData.Add("ReturnModules", ReturnModules);
-            //ViewData.Add("Printable", Printable);
-            //ViewData.Add("Properties", typeof(view_Module).GetProperties());
-
-
-            //this.ViewData["Title"] = "Contract Sold Products Report";
+           
         }
 
 
@@ -194,26 +187,9 @@ namespace TietoCRM.Controllers.Reports
             
 
             
-            List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
-            foreach (KeyValuePair<int, Dictionary<String, dynamic>> FM in this.GetFilteredModules(Start,Stop))
-            {
-                Dictionary<String, String> dic = new Dictionary<String, String>();
-                foreach (KeyValuePair<String,dynamic> FMS in FM.Value)
-                {
-                    if(FMS.Value != null)
-                    {
-                        dic.Add(FMS.Key, FMS.Value.ToString());
-                    }
-                    else
-                    {
-                        dic.Add(FMS.Key, "");
-                    }
-                    
-                }
-                rows.Add(dic);   
-            }
+           
 
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GetFilteredModules(Start, Stop)) + "}";
         }
 
 

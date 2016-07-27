@@ -92,13 +92,17 @@
         });
 
         $("#contracts-generate-pdf").click(function () {
-            window.open("Pdf?sign=" + $userSelect.val());
+            var $dt = $('.dataTable').DataTable();
+            var sortArr = $dt.order();
+            var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+
+            window.open("Pdf?sign=" + $userSelect.val() + sort, "_blank");
         })
 
         $userSelect.val("@System.Web.HttpContext.Current.GetUser().Sign");
         updateDataTable("@System.Web.HttpContext.Current.GetUser().Sign");
 
-
+        
     });
 
 </script>

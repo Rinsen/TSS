@@ -1,7 +1,10 @@
 ﻿using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
@@ -26,10 +29,12 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf(String start, String stop, String user)
         {
+            List<PropertyInfo> allProps = new List<PropertyInfo>(typeof(view_Appointment).GetProperties());
             ViewData.Add("Title", "AppointmentReport");
             ViewData.Add("Unprintable", new List<String> { "_ID" });
-            ViewData.Add("Properties", typeof(view_Appointment).GetProperties());
-
+            ViewData.Add("Properties", allProps);
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
             DateTime Start;
             DateTime Stop;
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
@@ -41,7 +46,9 @@ namespace TietoCRM.Controllers.Reports
                 Stop = Convert.ToDateTime(stop);
 
                 List<String> customerNames = view_Customer.getCustomerNames(Request["user"]);
-                ViewData.Add("Appointments", view_Appointment.getAllAppointments().Where(a => a.Date <= Stop && a.Date >= Start && customerNames.Contains(a.Customer)));
+                List<view_Appointment> allApp = view_Appointment.getAllAppointments().Where(a => a.Date <= Stop && a.Date >= Start && customerNames.Contains(a.Customer)).ToList();
+
+                ViewData.Add("Appointments", (new SortedByColumnCollection<view_Appointment>(allApp, sortDir, sortKey)).Collection);
 
                 pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \" \"";
                 pdf.RotativaOptions.CustomSwitches += " --header-center \" Appointments between " + Start.ToString("yyyy-MM-dd") + " and " + Stop.ToString("yyyy-MM-dd") + " \"";

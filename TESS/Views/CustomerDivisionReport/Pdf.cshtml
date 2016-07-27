@@ -11,10 +11,10 @@
         <th>Zip code</th>
         <th>IT manager</th>
         <th>Inhabitant level</th>
-        @foreach (Dictionary<String, String> customers in ViewBag.Customers)
+        @foreach (Dictionary<String, object> customers in ViewBag.Customers)
         {
             <tr class="">
-                @foreach (KeyValuePair<String, String> kp in customers)
+                @foreach (KeyValuePair<String, object> kp in customers)
                 {
                     <td>@kp.Value</td>
                 }

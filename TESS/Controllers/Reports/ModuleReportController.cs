@@ -31,9 +31,12 @@ namespace TietoCRM.Controllers.Reports
         public ActionResult Pdf()
         {
             String aNumb = Request["module"];
-            List<Dictionary<String, String>> list = generateModuleInfo(aNumb);
+            List<Dictionary<String, object>> list = generateModuleInfo(aNumb);
 
-            ViewData.Add("Customermodules", list);
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
+
+            ViewData.Add("Customermodules", (new SortedByColumnCollection<Dictionary<String, object>>(list, sortDir, sortKey)).Collection);
 
             view_Module module = new view_Module();
             module.Select("Article_number=" + aNumb);
@@ -49,18 +52,18 @@ namespace TietoCRM.Controllers.Reports
 
         }
 
-        public List<Dictionary<String,String>> generateModuleInfo(String articleNumber)
+        public List<Dictionary<String, object>> generateModuleInfo(String articleNumber)
         {
             List<view_ContractRow> ContractRows = view_ContractRow.GetValidContractRows(int.Parse(articleNumber));
             List<view_Contract> contracts = new List<view_Contract>();
-            List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             view_Module module = new view_Module();
             module.Select("Article_number=" + articleNumber);
 
             if (System.Web.HttpContext.Current.GetUser().IfSameArea(module.Area))
                 foreach (view_ContractRow cr in ContractRows)
                 {
-                    Dictionary<String, String> Customers = new Dictionary<String, String>();
+                    Dictionary<String, object> Customers = new Dictionary<String, object>();
                     if (contracts.FindIndex(m => m.Contract_id == cr.Contract_id) <= 0)
                     {
                         view_Contract c = new view_Contract("Contract_id = '" + cr.Contract_id + "'");

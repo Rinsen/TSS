@@ -46,9 +46,13 @@ namespace TietoCRM.Controllers
 
             OrderedSystemNames.Sort();
 
-            CustomerMissingProducts.OrderBy(m => m.Classification).ThenBy(m => m.Status).ThenBy(m => m.Article_number);
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
 
-            ViewData.Add("CustomerMissingProducts", CustomerMissingProducts);
+            SortedByColumnCollection<view_CustomerMissingProductReport> scc = new SortedByColumnCollection<view_CustomerMissingProductReport>(CustomerMissingProducts, sortDir, sortKey);
+
+            
+            ViewData.Add("CustomerMissingProducts", scc.Collection);
             ViewData.Add("SystemNames", OrderedSystemNames);
             ViewData.Add("Properties", typeof(view_CustomerMissingProductReport).GetProperties());
 

@@ -3,7 +3,7 @@
    
 }
 @using TietoCRM.Models;
-
+@using System.Globalization;
 @if(ViewBag.ValidDate)
 {
     <style>
@@ -30,15 +30,28 @@
             }
 
         }
-        @foreach (KeyValuePair<int, Dictionary<String, dynamic>> FM in ViewBag.ReturnModules)
+        @foreach (Dictionary<String, object> dic in ViewBag.ReturnModules)
         {
             <tr class="">
 
-            @foreach (KeyValuePair<String,dynamic> FMS in FM.Value)
+            @foreach (KeyValuePair<String, object> FMS in dic)
             {
-                if(ViewBag.Printable.Contains(FMS.Key) || FMS.Key == "Count")
+                if (ViewBag.Printable.Contains(FMS.Key) || FMS.Key == "Count")
                 {
-                    <td>@FMS.Value</td>
+                    if (FMS.Key == "Price_category")
+                    {
+                        CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+                        String pc = String.Format(se, "{0:C0}", FMS.Value).Replace(".", " ").Replace(" kr", "");
+
+                        <td>@pc</td>
+
+                    }
+                    else
+                    {
+                        <td>@FMS.Value</td>
+                    }
+
+
                 }
             }
 

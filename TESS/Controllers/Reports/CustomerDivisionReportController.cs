@@ -24,8 +24,11 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, String>> customers = this.generateCustomers(Request["user"]);
-            ViewData.Add("Customers", customers);
+            List<Dictionary<String, object>> customers = this.generateCustomers(Request["user"]);
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
+
+            ViewData.Add("Customers", (new SortedByColumnCollection<Dictionary<String, object>>(customers, sortDir, sortKey)).Collection);
             this.ViewData["Title"] = "Customer Division Report";
 
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
@@ -43,13 +46,13 @@ namespace TietoCRM.Controllers.Reports
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.generateCustomers(user)) + "}";
         }
 
-        public List<Dictionary<String, String>> generateCustomers(String user)
+        public List<Dictionary<String, object>> generateCustomers(String user)
         {
-            List<Dictionary<String, String>> customers = new List<Dictionary<string, string>>();
+            List<Dictionary<String, object>> customers = new List<Dictionary<String, object>>();
             List<view_Customer> vCustomers = view_Customer.getAllCustomers(user);
             foreach(view_Customer customer in vCustomers)
             {
-                Dictionary<String, String> dict = new Dictionary<String, String>();
+                Dictionary<String, object> dict = new Dictionary<String, object>();
                 dict.Add("customer", customer.Customer);
                 dict.Add("short_name", customer.Short_name);
                 dict.Add("customer_type", customer.Customer_type);

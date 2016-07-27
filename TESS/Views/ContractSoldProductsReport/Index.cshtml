@@ -149,7 +149,11 @@
             $('#fetch-pdf').click(function () {
                 var start = $startDate.val();
                 var stop = $stopDate.val();
-                window.open('/ContractSoldProductsReport/Pdf?start=' + start + '&stop=' + stop, "_blank");
+                var $dt = $('.dataTable').DataTable();
+                var sortArr = $dt.order();
+                var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+
+                window.open('/ContractSoldProductsReport/Pdf?start=' + start + '&stop=' + stop + sort, "_blank");
             })
 
             updateDataTable();

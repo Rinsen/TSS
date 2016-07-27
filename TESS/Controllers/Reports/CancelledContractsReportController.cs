@@ -24,8 +24,12 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, String>> contracts = this.GenerateCancelledContracts();
-            ViewData.Add("Contracts", contracts);
+            List<Dictionary<String, object>> contracts = this.GenerateCancelledContracts();
+
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
+
+            ViewData.Add("Contracts", (new SortedByColumnCollection<Dictionary<String, object>>(contracts, sortDir, sortKey).Collection));
 
             this.ViewData["Title"] = "Cancelled Contracts Report";
 
@@ -43,15 +47,15 @@ namespace TietoCRM.Controllers.Reports
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateCancelledContracts()) + "}";
         }
 
-        public List<Dictionary<String, String>> GenerateCancelledContracts()
+        public List<Dictionary<String, object>> GenerateCancelledContracts()
         {
 
             List<view_Customer> customers = view_Customer.getAllCustomers();
-            List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
 
-                Dictionary<String, String> dict = new Dictionary<String, String>();
+                Dictionary<String, object> dict = new Dictionary<String, object>();
                 int amountValidContracts = 0;
                 List<view_Contract> contracts = view_Contract.GetContracts(customer.Customer);
                 foreach (view_Contract contract in contracts)
