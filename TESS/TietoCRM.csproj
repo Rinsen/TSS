@@ -410,6 +410,7 @@
     <Content Include="Content\Lifecare.css" />
     <Content Include="Content\sidebar.css" />
     <None Include="Content\ExpPdfStyle.less" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\tinymce\license.txt" />
     <Content Include="Content\tinymce\plugins\advlist\plugin.min.js" />
     <Content Include="Content\tinymce\plugins\anchor\plugin.min.js" />
@@ -489,7 +490,6 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap-select.js" />

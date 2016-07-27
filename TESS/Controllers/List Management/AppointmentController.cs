@@ -73,7 +73,7 @@ namespace TietoCRM.Controllers.List_Management
         {
             List<String> customerNames;
             String ical;
-            if (Request.Form.AllKeys.Contains("id"))
+            if (!Request.Form.AllKeys.Contains("id"))
             {
                 if (System.Web.HttpContext.Current.GetUser().User_level > 1)
                     customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);

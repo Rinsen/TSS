@@ -5,7 +5,7 @@
             @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                if (PropertyName != "SSMA timestamp")
+                if (PropertyName != "SSMA timestamp" && !PropertyInfo.Name.StartsWith("_"))
                 {
                     <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
                 }
@@ -23,7 +23,8 @@
             </div>
             <div id="contact-modal" class="modal-body">
                 <div class="form-group">
-                    <select name="customer" id="crm-select-customer" class="form-control">
+                    <label for="crm-select-customer" class="col-sm-2 control-label">Customer</label>
+                    <select name="customer" id="crm-select-customer" data-live-search="true" class="form-control selectpicker">
                         @foreach (String Customer in ViewBag.Customers)
                         {
                             <option value="@Customer">@Customer</option>
@@ -98,18 +99,13 @@
         ]);
     }
     var loadContactData = function () {
-        data = JSON.parse(selectedId);
         $.ajax({
             "url": "@Url.Content("~/CustomerContact/GetContact/")",
             "type": "POST",
             "data": {
-                "customer": data.Customer,
-                "name": data.Contact_person,
-                "email": data.Email
-
+                "id": selectedId
             },
             "success": function (data) {
-                console.log("success");
                 person = JSON.parse(data);
                 changePersonToShow(person);
             }
@@ -134,7 +130,7 @@
             "url": "@Url.Content("~/CustomerContact/DeleteContact/")",
             "type": "POST",
             "data": {
-                "json": person
+                "id": selectedId
             },
             "success": function (data) {
                 if (data > 0) {
@@ -175,9 +171,8 @@
                 "url": "@Url.Content("~/CustomerContact/SaveContact/")",
                 "type": "POST",
                 "data": {
-                    "json": JSON.stringify(person),
-                    "oldEmail": oldPerson.Email,
-                    "oldName": oldPerson.Contact_person
+                    "id": selectedId,
+                    "json": JSON.stringify(person)
                 },
                 "success": function (data) {
                     if (data > 0) {
@@ -286,9 +281,10 @@
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
         String PropertyName = PropertyInfo.Name.Replace("_", " ");
-
-        DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
-
+        if(!PropertyInfo.Name.StartsWith("_"))
+        {
+            DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+        }
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function (onSuccess) {
@@ -394,6 +390,17 @@
 
         });
 
+        $selRowContainer.append('<div id="crm-export-vcard" class="crm-table-btn" \
+            onclick="exportToContacts();">\
+            <button type="button" class="btn btn-default">Export to contacts</button></div>');
+
+    }
+
+    var exportToContacts = function () {
+        if(selectedId != null)
+            location.href = "@Url.Action("ExportContact", "CustomerContact", null, Request.Url.Scheme)?id=" + selectedId;
+        else
+            triggerAlert("You have to select a row.", "info");
     }
 
     var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -418,8 +425,7 @@
                         selectRow(this.firstChild);
 
                     });
-                    var object = {Contact_person: aData["Contact_person"], Customer: aData["Customer"], Email: aData["Email"]}
-                    $td.html("<input type='radio' value='" + JSON.stringify(object) + "' name='selected-contact' onClick=''/>");
+                    $td.html("<input type='radio' value='" + aData["_ID"] + "' name='selected-contact' onClick=''/>");
                     if ($td.find("input").val() == StateSelId) {
                         selectRow($td);
                     }
@@ -427,6 +433,7 @@
                         $td.parent().removeClass("selected");
                     }
                     i++;
+                    continue;
                 }
 
                 if (i < 9) {
@@ -447,7 +454,7 @@
             console.log("true");
         else
             console.log("false");
-
+        $(".selectpicker").selectpicker();
         $('#contact-table').DataTable({
             "destroy": true,
             "processing": true,
