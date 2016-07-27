@@ -276,6 +276,7 @@
     $(document).ready(function () {
 
         $('#representative-select').selectpicker();
+        $('#county-text').selectpicker();
 
         var uniqueRowNumber = 0;
         var $delBtns;
@@ -298,7 +299,7 @@
                 "processing": true,
                 "ajax": "@Url.Content("~" + ViewBag.AjaxUrl)",
                 "defaultContent": "",
-                "order": [[ 6, "asc" ]],
+                "order": [[ 1, "asc" ]],
                 //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 50)),
                 "columns": [@Html.Raw(DataObject)
                 ],
@@ -311,7 +312,8 @@
                     {
                         "type": "swedish-string",
                         "targets": 1
-                    }
+                    },
+                    
                 ],
                 "initComplete": function(settings, json) {
                     if(typeof onSuccess != "undefined")
@@ -499,9 +501,9 @@
             var $currentInput = $($formInputs[i]);
             for(var j = 0; j < tdsLen; j++){
                 var $td = $($tds[j]);
-                var $tdProp = $td.data("property");
+                var $tdProp = $td.data("property");         
                 if($currentInput.attr("name") == $tdProp){
-                    if($tdProp == "County" || $tdProp == "Municipality" || $tdProp == "PUL")
+                    if($tdProp == "Municipality" || $tdProp == "PUL")
                     {
                         if($td.html().length == 0)
                             $currentInput.val(0);
@@ -514,6 +516,14 @@
 
                         $('#representative-select').val(reps);
                         $('#representative-select').selectpicker('refresh');
+                    }
+                    else if($tdProp == "County")
+                    {
+                        $('#county-text option').each(function(index, element){
+                            if($(element).html() == $td.html())
+                                $(element).prop("selected", true);
+                        });
+                        $('#county-text').selectpicker('refresh');
                     }
                     else {
                         $currentInput.val($td.html());
@@ -528,6 +538,7 @@
         //$("#save-customer-changes").unbind("click");
 
         $('#representative-select').selectpicker('refresh');
+        $('#county-text').selectpicker('refresh');
 
         $("#save-customer-changes").unbind("click");
         $("#save-customer-changes").bind("click", function(){
