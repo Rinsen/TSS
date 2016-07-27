@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
+using System.IO;
+using System.Text;
 
 namespace TietoCRM.Controllers
 {
@@ -38,16 +40,10 @@ namespace TietoCRM.Controllers
 
         public String GetContact()
         {
-            String name = Request.Form["name"];
-            String customer = Request.Form["customer"];
-            String email = Request.Form["email"];
+            String id = Request.Form["id"];
 
             view_CustomerContact contact = new view_CustomerContact();
-            contact.Select("Contact_person = '" + name + "' AND Customer = '" + customer + "' AND Email = '" + email + "'");
-
-            contact.Customer = System.Web.HttpUtility.HtmlEncode(contact.Customer);
-            contact.Contact_person = System.Web.HttpUtility.HtmlEncode(contact.Contact_person);
-            contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
+            contact.Select("ID=" + id);
 
             return (new JavaScriptSerializer()).Serialize(contact);
         }
@@ -56,8 +52,7 @@ namespace TietoCRM.Controllers
         {
             try
             {
-                String oldEmail = Request.Form["oldEmail"];
-                String oldName = Request.Unvalidated.Form["oldName"];
+                String id = Request.Form["id"];
                 String json = Request.Unvalidated.Form["json"];
 
                 Dictionary<String, Object> variables = null;
@@ -72,7 +67,7 @@ namespace TietoCRM.Controllers
                 }
 
                 view_CustomerContact contact = new view_CustomerContact();
-                contact.Select("Contact_person = '" + oldName + "' AND Email = '" + oldEmail + "' AND Customer = '" + variables["Customer"] + "'");
+                contact.Select("ID="+id);
                 try
                 {
                     foreach (KeyValuePair<String, object> variable in variables)
@@ -80,14 +75,14 @@ namespace TietoCRM.Controllers
                         contact.SetValue(variable.Key, System.Web.HttpUtility.HtmlDecode(variable.Value.ToString()));
                     }
 
-                    contact.Update("Contact_person = '" + System.Web.HttpUtility.HtmlDecode(oldName) + "' AND Email = '" + System.Web.HttpUtility.HtmlDecode(oldEmail) + "' AND Customer = '" + System.Web.HttpUtility.HtmlDecode(variables["Customer"].ToString()) + "'");
+                    contact.Update("ID=" + id);
 
                     foreach (view_CustomerOffer co in view_CustomerOffer.getAllCustomerOffers(contact.Customer))
                     {
                         if (co.Contact_person == variables["Contact_person"])
                         {
                             co.SetContactPerson(contact.Contact_person);
-                            co.Update("Customer = '" + co.Customer + "' AND Contact_person = '" + variables["Contact_person"] + "'");
+                            co.Update("Offer_number="+co._Offer_number);
                         }
                     }
 
@@ -144,7 +139,7 @@ namespace TietoCRM.Controllers
 
                     contact.Insert();
                 }
-                catch
+                catch (Exception e)
                 {
                     return "0";
                 }
@@ -156,6 +151,19 @@ namespace TietoCRM.Controllers
                 return "-1";
             }
             
+        }
+
+        public ActionResult ExportContact()
+        {
+            String id = Request["id"];
+
+            view_CustomerContact contact = new view_CustomerContact();
+            contact.Select("ID=" + id);
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(contact.ParseTovCard());
+
+            return File(byteArray, "text/x-vcard", contact.Contact_person.Replace(" ","_") + "_as_vcard.vcf");
+
         }
 
         public String DeleteContact()

@@ -8,6 +8,9 @@ namespace TietoCRM.Models
 {
     public class view_CustomerContact : SQLBaseClass
     {
+        private int id;
+        public int _ID { get { return id; } set { id = value; } }
+
         private String customer;
         public String Customer { get { return customer; } set { customer = value; } }
 
@@ -36,6 +39,24 @@ namespace TietoCRM.Models
             : base("CustomerContact")
         {
             //ctr
+        }
+
+        public String ParseTovCard()
+        {
+            DateTime today = DateTime.Now;
+            String ical = "\r\nBEGIN:VCARD" +
+                            "\r\nVERSION:" + "3.0" +
+                            "\r\nUID:" + this._ID +
+                            "\r\nFN:" + this.Contact_person +
+                            "\r\nORG:" + this.Customer +
+                            "\r\nTITLE:" + this.Title +
+                            "\r\nTEL:" + this.Telephone +
+                            "\r\nADR:" + this.Address +
+                            "\r\nEMAIL:" + this.Email +
+                            "\r\nNOTE:" + this.Notes +
+                            "\r\nREV:" + today.ToString("yyyyMMdd") + "T" + today.ToString("hhmmss") + "Z" +
+                            "\r\nEND:VCARD";
+            return ical;
         }
 
         /// <summary>

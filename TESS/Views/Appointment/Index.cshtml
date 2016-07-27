@@ -426,12 +426,12 @@
             });
         });
         $selRowContainer.append('<div id="crm-export-ical" class="crm-table-btn" \
-            onclick="importToCalendar();">\
-            <button type="button" class="btn btn-default">Import to calendar</button></div>');
+            onclick="exportToCalendar();">\
+            <button type="button" class="btn btn-default">Export to calendar</button></div>');
 
     }
 
-    var importToCalendar = function () {
+    var exportToCalendar = function () {
         bootbox.dialog({
             title: 'What to import?',
             className: "crm-delete-confirm",

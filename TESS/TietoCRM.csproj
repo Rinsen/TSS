@@ -412,6 +412,7 @@
     <Content Include="Content\Lifecare.css" />
     <Content Include="Content\sidebar.css" />
     <None Include="Content\ExpPdfStyle.less" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\tinymce\license.txt" />
     <Content Include="Content\tinymce\plugins\advlist\plugin.min.js" />
     <Content Include="Content\tinymce\plugins\anchor\plugin.min.js" />
@@ -491,7 +492,6 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap-select.js" />
@@ -909,7 +909,7 @@ del "$(ProjectDir)Content\sidebar.css"
 del "$(ProjectDir)Content\OfferPdf.css"
 del "$(ProjectDir)Content\ContractPdf.css"
 del "$(ProjectDir)Content\ExpPdfStyle.css"
-"$(SolutionDir)packages\dotless.1.5.1\tool\dotless.compiler.exe" "$(ProjectDir)Content\Site.less" "$(ProjectDir)Content\Site.css"
+"$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\Site.less" "$(ProjectDir)Content\Site.css"
 "$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\sidebar.less" "$(ProjectDir)Content\sidebar.css"
 "$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\OfferPdf.less" "$(ProjectDir)Content\OfferPdf.css"
 "$(SolutionDir)packages\dotless.1.5.2\tool\dotless.compiler.exe" "$(ProjectDir)Content\ContractPdf.less" "$(ProjectDir)Content\ContractPdf.css"

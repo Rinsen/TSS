@@ -46,12 +46,20 @@ namespace TietoCRM.Models
         public static void UploadException(Exception e)
         {
             view_Exception exp = new view_Exception();
-            exp.Type = e.GetType().ToString();
-            exp.Windows_user = System.Security.Principal.WindowsPrincipal.Current.Identity.Name;
-            exp.Method = e.TargetSite.Name;
-            exp.Message = e.Message;
-            exp.HResult = e.HResult.ToString();
-            exp.StackTrace = e.StackTrace;
+            if(e != null)
+            {
+                exp.Type = e.GetType().ToString();
+                exp.Windows_user = System.Security.Principal.WindowsPrincipal.Current.Identity.Name;
+                exp.Method = e.TargetSite.Name;
+                exp.Message = e.Message;
+                exp.HResult = e.HResult.ToString();
+                exp.StackTrace = e.StackTrace;
+            }
+            else
+            {
+                exp.Message = "Something strange happend because the exception thrown was null";
+            }
+
 
             exp.Insert();
 
