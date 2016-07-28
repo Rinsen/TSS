@@ -27,12 +27,6 @@ namespace TietoCRM.Controllers
         {
             this.Response.ContentType = "text/plain";
             List<view_CustomerContact> l = view_CustomerContact.getAllCustomerContacts();
-            foreach(view_CustomerContact contact in l)
-            {
-                contact.Customer = System.Web.HttpUtility.HtmlEncode(contact.Customer);
-                contact.Contact_person = System.Web.HttpUtility.HtmlEncode(contact.Contact_person);
-                contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
-            }
             JavaScriptSerializer js = new JavaScriptSerializer();
             js.MaxJsonLength = 209715200;
             return "{\"data\":" + js.Serialize(l) + "}";

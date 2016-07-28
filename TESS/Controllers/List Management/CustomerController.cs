@@ -104,7 +104,6 @@ namespace TietoCRM.Controllers
 
             foreach(view_Customer customer in l)
             {
-                customer.Customer = System.Web.HttpUtility.HtmlEncode(customer.Customer);
                 Dictionary<String, Object> dic = new Dictionary<String, Object>();
                 foreach (PropertyInfo info in typeof(view_Customer).GetProperties())
                 {
