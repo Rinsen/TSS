@@ -541,8 +541,6 @@ namespace TietoCRM.Controllers.Contracts
                     vCustomer = new view_Customer("Customer='" + contract.Customer + "'");
                     vCustomers.Add(vCustomer);
                 }
-                    
-
                 if(user.IfSameArea(contract.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
                 {
                     Dictionary<String, dynamic> variables = new Dictionary<String, dynamic>();
