@@ -5,7 +5,7 @@
 <row>
     <div class="col-md-12">
         <form method="get" action="~/ProductReport/Pdf" target="_blank" class="form-inline">
-            <button style="margin-top: 1.7em;" class="btn btn-default" type="submit">PDF</button>
+            <button id="fetch-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
         </form>
     </div>
     <div class="col-md-12">
@@ -54,7 +54,14 @@
     $('document').ready(function () {
 
         updateDataTable();
+        $('#fetch-pdf').click(function () {
+           
+            var $dt = $('.dataTable').DataTable();
+            var sortArr = $dt.order();
+            var sort = "?sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
+            window.open('/ProductReport/Pdf' + sort, "_blank");
+        })
     });
 
     </script>

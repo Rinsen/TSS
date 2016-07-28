@@ -25,16 +25,20 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, String>> offers = this.generateSaleReport(Request["user"]);
-            ViewData.Add("Offers", offers);
+            List<Dictionary<String, object>> offers = this.generateSaleReport(Request["user"]);
+
+            String sortDir = Request["sort"];
+            String sortKey = Request["prop"];
+
+            ViewData.Add("Offers", (new SortedByColumnCollection<Dictionary<String, object>>(offers, sortDir, sortKey)).Collection);
 
             decimal? totalM = 0;
             decimal? totalL = 0;
 
-            foreach(Dictionary<String,String> offer in offers)
+            foreach(Dictionary<String, object> offer in offers)
             {
-                totalM += decimal.Parse(offer["maintenance"].Replace(" ","").Replace("kr",""));
-                totalL += decimal.Parse(offer["license"].Replace(" ", "").Replace("kr", ""));
+                totalM += (Decimal)offer["maintenance"];
+                totalL += (Decimal)offer["license"];
             }
             CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
@@ -57,7 +61,7 @@ namespace TietoCRM.Controllers.Reports
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.generateSaleReport(user)) + "}";
         }
 
-        public List<Dictionary<String,String>> generateSaleReport(String sign)
+        public List<Dictionary<String, object>> generateSaleReport(String sign)
         {
             CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
             view_User user = new view_User();
@@ -68,14 +72,14 @@ namespace TietoCRM.Controllers.Reports
             else
                 customers = view_Customer.getAllCustomers();
 
-            List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
                 foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
                 {
                     if (offer.Offer_status == "Öppen" && user.IfSameArea(offer.Area))
                     {
-                        Dictionary<String, String> dict = new Dictionary<String, String>();
+                        Dictionary<String, object> dict = new Dictionary<String, object>();
                         decimal? totalMaintenance = 0;
                         decimal? totalLicense = 0;
                         dict.Add("customer", customer.Customer);
@@ -85,7 +89,7 @@ namespace TietoCRM.Controllers.Reports
                             totalMaintenance += row.Maintenance;
                             totalLicense += row.License;
                         }
-                        if(!dict.Keys.Contains("valid_through") || dict["valid_through"] == "no date found" || DateTime.Parse(dict["valid_through"]) > offer.Offer_valid.Value)
+                        if(!dict.Keys.Contains("valid_through") || (String)dict["valid_through"] == "no date found" || DateTime.Parse((String)dict["valid_through"]) > offer.Offer_valid.Value)
                         {
                             if (offer.Offer_created.HasValue)
                                 dict["created"] = offer.Offer_created.Value.ToString("yyyy-MM-dd");
@@ -97,8 +101,8 @@ namespace TietoCRM.Controllers.Reports
                             else
                                 dict["valid_through"] = "no date found";
                         }
-                        dict.Add("maintenance", String.Format(se, "{0:C2}", totalMaintenance).Replace(".", " "));
-                        dict.Add("license", String.Format(se, "{0:C2}", totalLicense).Replace(".", " "));
+                        dict.Add("maintenance", totalMaintenance);
+                        dict.Add("license", totalLicense);
                         dict.Add("customer_type", customer.Customer_type);
                         if(totalMaintenance > 0 || totalLicense > 0)
                             rows.Add(dict);

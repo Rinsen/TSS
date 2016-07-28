@@ -1,22 +1,31 @@
 ﻿@{
     Layout = "~/Views/Shared/_ReportLayout.cshtml";
 }
-
+@using System.Globalization;
 <div class="crm-print-block">
     <table class="table table-striped table-bordered contract-supervision-table">
         <th>Customer</th>
         <th>Title</th>
         <th>Created</th>
         <th>Valid through</th>
-        <th>Maintenance / month</th>
-        <th>License</th>
+        <th style="width: 10em">Maintenance / month</th>
+        <th style="width: 10em">License</th>
         <th>Customer Type</th>
-        @foreach (Dictionary<String,String> offers in ViewBag.Offers)
+        @foreach (Dictionary<String,object> offers in ViewBag.Offers)
         {
             <tr class="">
-               @foreach(KeyValuePair<String,String> kp in offers)
+               @foreach(KeyValuePair<String, object> kp in offers)
                {
-                   <td>@kp.Value</td>
+                   CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+                   if (kp.Key == "maintenance" || kp.Key == "license")
+                   {
+                       <td>@String.Format(se, "{0:C2}", kp.Value).Replace(".", " ")</td>
+                   }
+                   else
+                   {
+                        <td>@kp.Value</td>
+                   }
+
                }
             </tr>
         }

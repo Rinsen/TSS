@@ -1,0 +1,23 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+}
+
+<div class="crm-print-block">
+    <table class="table table-striped table-bordered">
+        <th>Customer</th>
+        <th>Amount</th>
+        <th>Representative</th>
+        <th>Customer_type</th>
+        <th>County</th>
+        @foreach (Dictionary<String, object> TC in ViewBag.TC)
+        {
+            <tr class="">
+                @foreach (KeyValuePair<String, object> T in TC)
+                {
+                    <td>@T.Value</td>
+                }
+            </tr>
+        }
+
+    </table>
+</div>

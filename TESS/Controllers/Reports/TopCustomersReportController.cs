@@ -35,8 +35,11 @@ namespace TietoCRM.Controllers.Reports
             String user = Request["user"];
             String area = Request["area"];
             String year = Request["year"];
-            List<Dictionary<String, Object>> contracts = GenerateTopCustomers(user, area, year, 10);
-            ViewData.Add("Contracts", contracts);
+            String sortDirection = Request["sort"];
+            String sortKey = Request["prop"];
+            List<Dictionary<String, object>> TC = GenerateTopCustomers(user, area, year, 10);
+
+            ViewData.Add("TC", (new SortedByColumnCollection<Dictionary<String, object>>(TC, sortDirection, sortKey)).Collection);
 
             this.ViewData["Title"] = "Top Customers Report";
 
@@ -63,7 +66,7 @@ namespace TietoCRM.Controllers.Reports
         /// <param name="year">Which year to select from</param>
         /// <param name="ammount">How many results to return</param>
         /// <returns></returns>
-        public static List<Dictionary<String, Object>> GenerateTopCustomers(String user, String area, String year, int ammount)
+        public static List<Dictionary<String, object>> GenerateTopCustomers(String user, String area, String year, int ammount)
         {
             view_User vUser = new view_User();
             SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
@@ -90,10 +93,10 @@ namespace TietoCRM.Controllers.Reports
                 
 
 
-            List<Dictionary<String, Object>> rows = new List<Dictionary<String, Object>>();
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
-                Dictionary<String, Object> dict = new Dictionary<string, object>();
+                Dictionary<String, object> dict = new Dictionary<string, object>();
                 CustomerStatistics stats = new CustomerStatistics(customer, true);
 
                 try

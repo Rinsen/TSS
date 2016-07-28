@@ -23,8 +23,12 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, String>> contracts = this.GenerateSentContracts();
-            ViewData.Add("Contracts", contracts);
+            List<Dictionary<String, object>> contracts = this.GenerateSentContracts();
+
+            String sortDirection = Request["sort"];
+            String sortKey = Request["prop"];
+
+            ViewData.Add("Contracts", (new SortedByColumnCollection<Dictionary<String, object>>(contracts, sortDirection, sortKey)).Collection);
 
             this.ViewData["Title"] = "Sent Contracts Report";
 
@@ -42,7 +46,7 @@ namespace TietoCRM.Controllers.Reports
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateSentContracts()) + "}";
         }
 
-        public List<Dictionary<String, String>> GenerateSentContracts()
+        public List<Dictionary<String, object>> GenerateSentContracts()
         {
             List<view_Customer> customers;
             if (System.Web.HttpContext.Current.GetUser().User_level > 1)
@@ -50,7 +54,7 @@ namespace TietoCRM.Controllers.Reports
             else
                 customers = view_Customer.getAllCustomers();
 
-            List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
                 int amountValidContracts = 0;
@@ -59,7 +63,7 @@ namespace TietoCRM.Controllers.Reports
                 {
                     if (contract.Status == "Sänt" && System.Web.HttpContext.Current.GetUser().IfSameArea(contract.Area))
                     {
-                        Dictionary<String, String> dict = new Dictionary<String, String>();
+                        Dictionary<String, object> dict = new Dictionary<String, object>();
                         dict.Add("customer", customer.Customer);
                         dict.Add("customer_type", customer.Customer_type);
                         dict.Add("representative", customer.GetReprensentativesAsString());

@@ -1,6 +1,11 @@
 .navbar-default {
   background-color: #0065a0;
 }
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:hover {
+  color: white;
+  background-color: #0065a0;
+}
 .btn-default,
 .btn-default:focus,
 .btn-default:active,
@@ -200,7 +205,6 @@ ul.nav.navbar-nav ol.breadcrumb li.active span {
 }
 #currentUser {
   padding: 10px 25px;
-  line-height: 20px;
 }
 #currentUser span {
   display: block;

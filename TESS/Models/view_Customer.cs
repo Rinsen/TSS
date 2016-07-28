@@ -118,23 +118,11 @@ namespace TietoCRM.Models
             this._Representatives = new List<String>();
         }
 
-        public view_Customer(String condition) : base("Customer")
+        public view_Customer(String condition, bool getAll = false) : base("Customer")
         {
             this.Select(condition);
         }
 
-        public override bool Select(String condition)
-        {
-            bool returnVal = base.Select(condition);
-            if (returnVal)
-            {
-                this._Representatives = this.GetCustomerRepresentatives();
-            }
-            else
-                this._Representatives = new List<String>();
-
-            return returnVal;
-        }
 
         public override void Update(string condition)
         {
@@ -211,6 +199,34 @@ namespace TietoCRM.Models
             base.Delete(condition);
         }
 
+        private static List<Dictionary<String, String>> GetAllRepresentatives()
+        {
+            List<Dictionary<String, String>> list = new List<Dictionary<String, String>>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                String query = "SELECT CustomerID, Representative FROM " + databasePrefix + "CustomerDivision";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    
+                    while (reader.Read())
+                    {
+                        Dictionary<String, String> result = new Dictionary<string, string>();
+                        result.Add("CustomerID", reader.GetInt32(0).ToString());
+                        result.Add("Representative", reader.GetString(1));
+                        list.Add(result);
+                    }
+                }
+            }
+            return list;
+        }
+
         private List<String> GetCustomerRepresentatives()
         {
             List<String> list = new List<String>();
@@ -228,7 +244,7 @@ namespace TietoCRM.Models
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-
+                   
                     while (reader.Read())
                     {
                         list.Add(reader.GetString(0));
@@ -308,11 +324,23 @@ namespace TietoCRM.Models
         public static List<view_Customer> getAllCustomers(String representive)
         {
             List<view_Customer> list = new List<view_Customer>();
-            foreach(String id in GetCustomerIds(representive))
+            List<Dictionary<String, String>> result = GetAllRepresentatives();
+            foreach (String id in GetCustomerIds(representive))
             {
                 view_Customer c = new view_Customer("ID=" + id);
+                // Place all represenatives from CustomerDivision to Customer
+                List<String> reps = new List<string>();
+                foreach (Dictionary<String, String> res in result)
+                {
+                    if(Convert.ToString(c._ID) == res["CustomerID"])
+                    {
+                        reps.Add(res["Representative"]);
+                    }
+                }
+                c._Representatives = reps;
                 list.Add(c);
             }
+            
             return list;
         }
 

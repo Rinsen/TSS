@@ -24,8 +24,10 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            List<Dictionary<String, String>> contracts = this.GenerateValidContracts();
-            ViewData.Add("Contracts", contracts);
+            List<Dictionary<String, object>> contracts = this.GenerateValidContracts();
+            String sortDirection = Request["sort"];
+            String sortKey = Request["prop"];
+            ViewData.Add("Contracts", (new SortedByColumnCollection<Dictionary<String, object>>(contracts, sortDirection, sortKey)).Collection);
 
             this.ViewData["Title"] = "Valid Contracts Report";
 
@@ -43,13 +45,13 @@ namespace TietoCRM.Controllers.Reports
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GenerateValidContracts()) + "}";
         }
 
-        public List<Dictionary<String, String>> GenerateValidContracts()
+        public List<Dictionary<String, object>> GenerateValidContracts()
         {
             List<view_Customer> customers = view_Customer.getAllCustomers();
-            List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
-                Dictionary<String, String> dict = new Dictionary<String, String>();
+                Dictionary<String, object> dict = new Dictionary<String, object>();
                 int amountValidContracts = 0;
                 List<view_Contract> contracts = view_Contract.GetContracts(customer.Customer);
                 foreach (view_Contract contract in contracts)
@@ -68,7 +70,7 @@ namespace TietoCRM.Controllers.Reports
                 if(mainContracts.Count > 0)
                 {
                     dict.Add("main_contract_id", mainContracts[0].Contract_id);
-                    dict.Add("amount", amountValidContracts.ToString());
+                    dict.Add("amount", amountValidContracts);
                     rows.Add(dict);
                 }
             }
