@@ -216,10 +216,53 @@
                 }
             });
         }
+        var find = ".container-fluid:eq( 1 ) .dataTables_wrapper > .row:first > .col-sm-6:first"; // > .dataTables_wrapper > .row:first > .col-sm-6:first
 
+        @{
+            String title = "";
+            if (ViewBag.Title != null)
+            {
+                title = ViewBag.Title;
+            }
+            List<TietoCRM.Models.view_Help> list = TietoCRM.Models.view_Help.getAllHelp(title);
+            String a = "";
+            String text = "";
+        }
+        @if (list.Count > 0)
+        {
+            a = "drawButtonsExtension = function ($container) {" +
+                "dbExtensionCall($container);" +
+            "}";
+            foreach(TietoCRM.Models.view_Help help in list)
+            {
+                text += "<h4>" + help.Title + "</h4>";
+                text += "<p>" + help.Text + "</p>";
+                text += "</br></br>";
+            }
+        }
+        else
+        {
+            a = "drawButtonsExtension = function () {" +
+            "}";
+        }
+        @Html.Raw(a);
+
+        var dbExtensionCall = function($container)
+        {
+            $container.append("<div id='crm-help-info' class='crm-table-btn'><a id='help-popover' class='btn'><span id='help-popover-span' class='glyphicon glyphicon-question-sign'></span></a></div>");
+            $pop = $container.find("#help-popover");
+            $pop.attr("data-content", "@Html.Raw(text)");
+            $pop.attr("data-toggle", "popover");
+            $pop.attr("data-original-title", "Help");
+            $pop.attr("data-placement", "right")
+            //$pop.attr("data-trigger", "focus");
+            $pop.popover({
+                html: true
+            });
+        }
         checkMainReminder();
 
-        $("#currentUser").click(function(){
+        $("#currentUser").click(function () {
             checkMainReminder();
         });
 

@@ -47,31 +47,37 @@ namespace TietoCRM
         }
 
         protected void Application_AuthenticateRequest(object sender, EventArgs e) {
-                     
+
         }
 
         protected void Session_Start(object sender, EventArgs e)
         {
-            if (!HttpContext.Current.Items.Contains("__User") && Request.Url.AbsolutePath != "/Access/Denied/" && Request.Url.AbsolutePath != "/Access/Login/")
+            view_User CurrentUser = new view_User();
+            String name = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            if (!HttpContext.Current.Items.Contains("__User") && Request.Url.AbsolutePath.StartsWith("/Access/Denied") && Request.Url.AbsolutePath.StartsWith("/Access/Login"))
             {
-                view_User CurrentUser = new view_User();
-                String name = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
                 if (CurrentUser.Select(@"windows_user = '" + name + "'"))
                 {
                     HttpContext.Current.Session.Add("__User", CurrentUser);
                 }
                 else
                 {
-                    
                     HttpContext.Current.Session.Abandon();
+                    HttpContext.Current.Session.Clear();
                     //HttpContext.Current.Session.Add("__UserRedirectUrl", Request.Url.AbsoluteUri);
                     base.Response.StatusCode = 0x191;
                     Response.Redirect("/Access/Denied/");
                     
                 }
-            }    
-       }
-
+            }
+            else if (!CurrentUser.Select(@"windows_user = '" + name + "'") && !Request.Url.AbsolutePath.StartsWith("/Access/Denied") && !Request.Url.AbsolutePath.StartsWith("/Access/Login"))
+            {
+                HttpContext.Current.Session.Abandon();
+                HttpContext.Current.Session.Clear();
+                base.Response.StatusCode = 0x191;
+                Response.Redirect("/Access/Login/");
+            }
+        }
         protected void Application_Error(object sender, EventArgs e)
         {
             Exception exception = Server.GetLastError();
@@ -79,7 +85,9 @@ namespace TietoCRM
             view_Exception.UploadException(exception);
 
             Server.ClearError();
-            Response.Redirect("/Error/Index");
+            if (!HttpContext.Current.Items.Contains("__User") && !Request.Url.AbsolutePath.StartsWith("/Access/Denied")
+                && !Request.Url.AbsolutePath.StartsWith("/Access/Login") && HttpContext.Current.Session != null)
+                Response.Redirect("/Error/Index");
         }
 
 

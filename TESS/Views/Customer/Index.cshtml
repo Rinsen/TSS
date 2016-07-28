@@ -389,6 +389,7 @@
             $selRowContainer.append('<div id="crm-export-ical" class="crm-table-btn" \
             onclick="location.href=\'@Url.Action("ExportAsCsv", "Customer", null, Request.Url.Scheme)\';">\
             <button type="button" class="btn btn-default">Export</button></div>');
+            drawButtonsExtension($selRowContainer);
         }
 
     var saveCustomerInformation = function($formInputs){
@@ -404,7 +405,7 @@
 
                 if(currentProp == "County" || currentProp == "Municipality")
                 {
-                    if($currentInput.val().length <= 0)
+                    if($currentInput.val() != null && $currentInput.val().length <= 0)
                         customerData[currentProp] = 0;
                     else
                         customerData[currentProp] = $currentInput.val();

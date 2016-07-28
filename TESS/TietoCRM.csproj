@@ -90,7 +90,7 @@
       <HintPath>packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="NPOI, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>packages\NPOI.2.2.1\lib\net40\NPOI.dll</HintPath>
       <Private>True</Private>
@@ -235,6 +235,7 @@
     <Compile Include="Models\view_CustomerContact.cs" />
     <Compile Include="Models\view_CustomerOffer.cs" />
     <Compile Include="Models\view_CustomerProductRow.cs" />
+    <Compile Include="Models\view_Help.cs" />
     <Compile Include="Models\view_Information.cs" />
     <Compile Include="Models\view_Module.cs" />
     <Compile Include="Models\view_ModuleDiscount.cs" />
@@ -891,7 +892,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:61646/</IISUrl>
+          <IISUrl>http://localhost:61647/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

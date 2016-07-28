@@ -15,14 +15,15 @@ namespace TietoCRM.Controllers
             return RedirectToAction("Login");
         }
         public ActionResult Login()
-        {     
+        {
             TietoCRM.Models.view_User user = new TietoCRM.Models.view_User();
             if (this.User.Identity.IsAuthenticated && user.Select("Windows_user = '" + System.Security.Principal.WindowsIdentity.GetCurrent().Name + "'"))
             {
-                System.Web.HttpContext.Current.Session.Add("__User", user);
+                System.Web.HttpContext.Current.Items.Add("__User", user);
                 return RedirectToAction("Index", "Home");
             }
-
+            System.Web.HttpContext.Current.Session.Abandon();
+            System.Web.HttpContext.Current.Session.Clear();
             base.Response.AppendHeader("Connection", "close");
             base.Response.StatusCode = 0x191;
             base.Response.Clear();

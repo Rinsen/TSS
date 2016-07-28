@@ -78,6 +78,21 @@ body {
 .area-newline {
   white-space: pre-wrap;
 }
+/*------------- Help Popover -------------*/
+
+#help-popover:hover {
+  color: #bee2f8;
+  display: inline-block;
+}
+#help-popover {
+  font-size: 22px;
+  color: #62b3e5;
+}
+/* Popover */
+
+.popover {
+  max-width: 600px;
+}
 /*------------- jQuery datepicker -------------*/
 
 .ui-datepicker {
