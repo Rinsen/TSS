@@ -230,8 +230,8 @@
         }
         @if (list.Count > 0)
         {
-            a = "drawButtonsExtension = function ($container) {" +
-                "dbExtensionCall($container);" +
+            a = "drawButtonsExtension = function ($container, pos) {" +
+                "dbExtensionCall($container, pos);" +
             "}";
             foreach(TietoCRM.Models.view_Help help in list)
             {
@@ -246,31 +246,49 @@
         }
         @Html.Raw(a);
 
-        var dbExtensionCall = function($container)
+        var dbExtensionCall = function($container, pos)
         {
+            pos = typeof pos == 'undefined' ? "right" : pos;
+
             $container.append("<div id='crm-help-info' class='crm-table-btn'><a href='#' id='help-popover' class='btn'><span id='help-popover-span' class='glyphicon glyphicon-question-sign'></span></a></div>");
             $pop = $container.find("#help-popover");
-            $pop.attr("data-content", "@Html.Raw(text)");
+            $dataContent = $('@Html.Raw(text)');
+            
+            // Hide reminder-help if there are no reminders.
+            if (!$('#remind-modal-button').is(':visible')) {
+                $dataContent.each(function (i, el) {
+                    if ($(el).hasClass('reminder-help')) {
+                        $(el).addClass('hidden');
+                    }
+                })
+            }
+            var htmlContent = "";
+            $dataContent.each(function(i, el){
+                htmlContent += $(el).prop('outerHTML');
+            });
+
+            $pop.attr("data-content", htmlContent);
             $pop.attr("data-toggle", "popover");
             $pop.attr("data-original-title", "Help");
-            $pop.attr("data-placement", "right")
+            $pop.attr("data-placement", pos)
             $pop.attr("data-trigger", "click");
             $pop.attr("tabindex", "0");
             $pop.popover({
                 html: true
             });
             $(document).on('shown.bs.popover', function () {
-                var popMID = ($pop.offset().top + ($pop.outerHeight() / 2));
-                var diff = (popMID - $('.popover').offset().top) - 5;
-                var newPos = (diff / $('.popover').height());
-                console.log(newPos * 100 + "%");
-                console.log($('.arrow'));
-                $('.arrow').css("top", Math.round(newPos * 100) + "%");
-                $('.popover').click(function (e) {
-                    console.log("You clicked me but I dont care");
-                    e.preventDefault();
-                    $(this).focus();
-                });
+                if (pos == "right")
+                {
+                    /* top: 70px !important; */
+                    var $popContainer = $('.popover');
+                    $popContainer.css("top", "70px");
+                    var popMID = ($pop.offset().top + ($pop.outerHeight() / 2));
+                    var diff = (popMID - $popContainer.offset().top) - 5;
+                    var newPos = (diff / $popContainer.height());
+                    
+                    $('.arrow').css("top", Math.round(newPos * 100) + "%");
+                }
+
             });
             $('body').on('click', function (e) {
                 //did not click a popover toggle or popover
@@ -279,6 +297,7 @@
                     //the 'has' for icons within a button that triggers a popup
                     if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
                         $(this).popover('hide');
+                        $('.popover').remove();
                     }
                 });
             });
@@ -362,7 +381,7 @@
         });
 
     </script>
-
     @RenderSection("scripts", required: false)
+    
 </body>
 </html>

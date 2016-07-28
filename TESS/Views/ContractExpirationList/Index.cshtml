@@ -1,6 +1,6 @@
 ﻿@using TietoCRM.Extensions;
     <div class="col-md-12" style="margin-bottom:20px">
-        <form class="form-inline">
+        <form id="expiration-form" class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">User:</label>
                 <select name="user" id="crm-select-user" class="selectpicker" data-live-search="true">
@@ -88,6 +88,8 @@
                 if (typeof onSuccess != "undefined")
                     onSuccess();
                 //drawButtons();
+                var $selRowContainer = $("#expiration-form");
+                drawButtonsExtension($selRowContainer);
             },
             "defaultContent": "",
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
@@ -95,7 +97,12 @@
             "columns": [@Html.Raw(DataObject)
             ],
             "columnDefs": [
-                { "orderable": false, "targets": 0 }
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "orderable": false,
+                    "targets": 0
+                },
             ],
             "scrollX": "1200px",
             "fnRowCallback": drawCallBack
@@ -141,8 +148,9 @@
                         $td.html(aData[name]);
                     }
 
-                    i++;
+                   
                 }
+                i++;
             }
         }
     }

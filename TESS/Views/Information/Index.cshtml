@@ -281,6 +281,27 @@
     function drawButtons() {
         var $selRowContainer = $("#information-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
+        $selRowContainer.append("<div id='create-information-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-information-button").bind("click", function () {
+            $("#sign-text").removeAttr("readonly");
+            $("#informationModal").appendTo("body").modal("show").draggable();
+            $("#save-information-changes").removeAttr("data-information");
+            var $selectedTds = $("#information-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#informationModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                if (!$currInput.is('button') || !$currInput.is('input.date'))
+                    $currInput.val("");
+
+            }
+            $('#author').selectpicker('refresh');
+            $('#type').selectpicker('refresh');
+        });
+
         $selRowContainer.append("<div id='crm-edit-information' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-information").bind("click", function () {
             if (selectedId != null) {
@@ -312,26 +333,7 @@
                 triggerAlert("You have to select a row to edit first.", "info");
         });
 
-        $selRowContainer.append("<div id='create-information-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-        $("#create-information-button").bind("click", function () {
-            $("#sign-text").removeAttr("readonly");
-            $("#informationModal").appendTo("body").modal("show").draggable();
-            $("#save-information-changes").removeAttr("data-information");
-            var $selectedTds = $("#information-table tr.selected td").not(".radios");
-            var tdLen = $selectedTds.length;
-
-            var $formInputs = $("#informationModal form").find(":input");
-
-            var frmInpLen = $formInputs.length;
-            for (var i = 0; i < frmInpLen; i++) {
-                var $currInput = $($formInputs[i]);
-                if (!$currInput.is('button') || !$currInput.is('input.date'))
-                    $currInput.val("");
-                
-            }
-            $('#author').selectpicker('refresh');
-            $('#type').selectpicker('refresh');
-        });
+        
 
         $selRowContainer.append("<div id='delete-user-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
         $("#delete-user-button").bind("click", function () {

@@ -105,7 +105,6 @@ body {
 
 .popover {
   position: fixed;
-  top: 70px !important;
   max-width: 600px;
 }
 .popover h4,
