@@ -311,6 +311,31 @@
 
     function drawButtons() {
         var $selRowContainer = $("#appointment-table_wrapper").find(".row").first().find(".col-sm-6").first();
+
+        $selRowContainer.append("<div id='create-appointment-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-appointment-button").bind("click", function () {
+            selectedApptContact = null;
+            $("#area-text").hide();
+            $("#id_pk-text").removeAttr("readonly");
+            $("#appointmentModal").appendTo("body").modal("show").draggable();
+            $("#save-appointment-changes").removeAttr("data-appointment");
+            var $selectedTds = $("#appointment-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#appointmentModal form").find(":input");
+            $("#contact_person").selectpicker('refresh');
+            $("#customer").selectpicker('refresh');
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                if ($currInput.attr("name") != "Customer" && $currInput.attr("name") != "Event_type")
+                    $currInput.val("");
+            }
+            $("#myModalLabel").html("Create Appointment");
+            $("#save-appointment-changes").html("Create");
+
+        });
+
         $selRowContainer.append("<div id='crm-edit-appointment' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-appointment").bind("click", function () {
             if (selectedId != null) {
@@ -359,29 +384,7 @@
                 triggerAlert("You have to select a row to edit first.", "info");
         });
 
-        $selRowContainer.append("<div id='create-appointment-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-        $("#create-appointment-button").bind("click", function () {
-            selectedApptContact = null;
-            $("#area-text").hide();
-            $("#id_pk-text").removeAttr("readonly");
-            $("#appointmentModal").appendTo("body").modal("show").draggable();
-            $("#save-appointment-changes").removeAttr("data-appointment");
-            var $selectedTds = $("#appointment-table tr.selected td").not(".radios");
-            var tdLen = $selectedTds.length;
-
-            var $formInputs = $("#appointmentModal form").find(":input");
-            $("#contact_person").selectpicker('refresh');
-            $("#customer").selectpicker('refresh');
-            var frmInpLen = $formInputs.length;
-            for (var i = 0; i < frmInpLen; i++) {
-                var $currInput = $($formInputs[i]);
-                if ($currInput.attr("name") != "Customer" && $currInput.attr("name") != "Event_type")
-                    $currInput.val("");
-            }
-            $("#myModalLabel").html("Create Appointment");
-            $("#save-appointment-changes").html("Create");
-
-        });
+        
 
         $selRowContainer.append("<div id='delete-appointment-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
         $("#delete-appointment-button").bind("click", function () {
@@ -429,6 +432,8 @@
             onclick="exportToCalendar();">\
             <button type="button" class="btn btn-default">Export to calendar</button></div>');
 
+        drawButtonsExtension($selRowContainer);
+
     }
 
     var exportToCalendar = function () {
@@ -443,14 +448,14 @@
                 },
                 'All appointments': {
                     label: 'All appointments',
-                    className: 'pull-right',
+                    className: 'pull-right btn-primary',
                     callback: function () {
                         location.href="@Url.Action("GetiCalendar", "Appointment", null, Request.Url.Scheme).Replace("http://","webcal://")";
                     }
                 },
                 'Selected appointment': {
                     label: 'Selected appointment',
-                    className: 'pull-right',
+                    className: 'pull-right btn-primary',
                     callback: function () {
                         if(selectedId != null)
                             location.href = "@Url.Action("GetiCalendar", "Appointment", null, Request.Url.Scheme).Replace("http://","webcal://")?id=" + selectedId;

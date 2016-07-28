@@ -286,6 +286,29 @@
             function drawButtons() {
                 var $selRowContainer = $("#tariff-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
+               
+
+                $selRowContainer.append("<div id='create-tariff-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+                $("#create-tariff-button").bind("click", function () {
+                    $("#tariffModal").appendTo("body").modal("show").draggable();
+                    $("#save-tariff-changes").removeAttr("data-tariff");
+                    var $selectedTds = $("#tariff-table tr.selected td").not(".radios");
+                    var tdLen = $selectedTds.length;
+
+                    var $formInputs = $("#tariffModal form").find(":input");
+
+                    var frmInpLen = $formInputs.length;
+                    for (var i = 0; i < frmInpLen; i++) {
+                        var $currInput = $($formInputs[i]);
+                        for (var j = 0; j < tdLen; j++) {
+                            var $currTD = $($selectedTds[j]);
+                            if ($currTD.data("property") == $currInput.attr("name")) {
+                                $currInput.val("");
+                            }
+                        }
+                    }
+                });
+
                 $selRowContainer.append("<div id='crm-edit-tariff' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
                 $("#crm-edit-tariff").bind("click", function () {
                     if (selectedId != null) {
@@ -310,27 +333,6 @@
                     }
                     else
                         triggerAlert("You have to select a row to edit first.", "info");
-                });
-
-                $selRowContainer.append("<div id='create-tariff-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-                $("#create-tariff-button").bind("click", function () {
-                    $("#tariffModal").appendTo("body").modal("show").draggable();
-                    $("#save-tariff-changes").removeAttr("data-tariff");
-                    var $selectedTds = $("#tariff-table tr.selected td").not(".radios");
-                    var tdLen = $selectedTds.length;
-
-                    var $formInputs = $("#tariffModal form").find(":input");
-
-                    var frmInpLen = $formInputs.length;
-                    for (var i = 0; i < frmInpLen; i++) {
-                        var $currInput = $($formInputs[i]);
-                        for (var j = 0; j < tdLen; j++) {
-                            var $currTD = $($selectedTds[j]);
-                            if ($currTD.data("property") == $currInput.attr("name")) {
-                                $currInput.val("");
-                            }
-                        }
-                    }
                 });
 
                 $selRowContainer.append("<div id='delete-tariff-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");

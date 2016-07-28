@@ -30,9 +30,20 @@ body {
 
  /* Popover */
 .popover {
+    position: fixed;
+    top: 70px !important;
     max-width: 600px;
+    h4, h5{
+        margin-bottom: 4px;
+        
+    } 
 }
-
+.popover-title{
+    background-color: lighten(@light-blue, 5%);
+    border-bottom: @light-blue;
+    border-radius: 5px 5px 0 0;
+    color: @base-color;
+}
 /*------------- jQuery datepicker -------------*/
 .ui-datepicker {
 	background-color: #fff;

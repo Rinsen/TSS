@@ -235,9 +235,8 @@
             "}";
             foreach(TietoCRM.Models.view_Help help in list)
             {
-                text += "<h4>" + help.Title + "</h4>";
-                text += "<p>" + help.Text + "</p>";
-                text += "</br></br>";
+                text += help.Title;
+                text += help.Text;
             }
         }
         else
@@ -249,16 +248,41 @@
 
         var dbExtensionCall = function($container)
         {
-            $container.append("<div id='crm-help-info' class='crm-table-btn'><a id='help-popover' class='btn'><span id='help-popover-span' class='glyphicon glyphicon-question-sign'></span></a></div>");
+            $container.append("<div id='crm-help-info' class='crm-table-btn'><a href='#' id='help-popover' class='btn'><span id='help-popover-span' class='glyphicon glyphicon-question-sign'></span></a></div>");
             $pop = $container.find("#help-popover");
             $pop.attr("data-content", "@Html.Raw(text)");
             $pop.attr("data-toggle", "popover");
             $pop.attr("data-original-title", "Help");
             $pop.attr("data-placement", "right")
-            //$pop.attr("data-trigger", "focus");
+            $pop.attr("data-trigger", "click");
+            $pop.attr("tabindex", "0");
             $pop.popover({
                 html: true
             });
+            $(document).on('shown.bs.popover', function () {
+                var popMID = ($pop.offset().top + ($pop.outerHeight() / 2));
+                var diff = (popMID - $('.popover').offset().top) - 5;
+                var newPos = (diff / $('.popover').height());
+                console.log(newPos * 100 + "%");
+                console.log($('.arrow'));
+                $('.arrow').css("top", Math.round(newPos * 100) + "%");
+                $('.popover').click(function (e) {
+                    console.log("You clicked me but I dont care");
+                    e.preventDefault();
+                    $(this).focus();
+                });
+            });
+            $('body').on('click', function (e) {
+                //did not click a popover toggle or popover
+                $('[id="help-popover"]').each(function () {
+                    //the 'is' for buttons that trigger popups
+                    //the 'has' for icons within a button that triggers a popup
+                    if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                        $(this).popover('hide');
+                    }
+                });
+            });
+            
         }
         checkMainReminder();
 

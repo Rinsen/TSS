@@ -298,44 +298,9 @@
     function drawButtons() {
         var $selRowContainer = $("#Reminder-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
-        $selRowContainer.append("<div id='crm-edit-Reminder' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        
 
-        $("#crm-edit-Reminder").bind("click", function () {
-            if (selectedId != null) {
-                $("#id_pk-text").prop("readonly", true);
-                $("#save-Reminder-changes").attr("data-Reminder", selectedId);
-                var $selectedTds = $("#Reminder-table tr.selected td").not(".radios");
-                var tdLen = $selectedTds.length;
-
-                var $formInputs = $("#ReminderModal form").find(":input");
-
-                var frmInpLen = $formInputs.length;
-                for (var i = 0; i < frmInpLen; i++) {
-                    var $currInput = $($formInputs[i]);
-                    for (var j = 0; j < tdLen; j++) {
-                        var $currTD = $($selectedTds[j]);
-                        if ($currTD.data("property") == $currInput.attr("name")) {
-                            if ($currInput.attr("name") == "Active") {
-                                if ($currTD.html() == "1") {
-                                    $currInput.prop("checked", true);
-                                }
-                                else {
-                                    $currInput.prop("checked", false);
-                                }
-                            }
-                            else
-                            {
-                                $currInput.val($currTD.html());
-                            }
-                        }
-                    }
-                }
-                $("#save-Reminder-changes").attr("data-Reminder", selectedId);
-                $("#ReminderModal").appendTo("body").modal("show").draggable();
-            }
-            else
-                triggerAlert("You have to select a row to edit first.", "info");
-        });
+        
 
         $selRowContainer.append("<div id='create-Reminder-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Reminder-button").bind("click", function () {
@@ -372,6 +337,43 @@
                 //    }
                 //}
             }
+        });
+
+        $selRowContainer.append("<div id='crm-edit-Reminder' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+        $("#crm-edit-Reminder").bind("click", function () {
+            if (selectedId != null) {
+                $("#id_pk-text").prop("readonly", true);
+                $("#save-Reminder-changes").attr("data-Reminder", selectedId);
+                var $selectedTds = $("#Reminder-table tr.selected td").not(".radios");
+                var tdLen = $selectedTds.length;
+
+                var $formInputs = $("#ReminderModal form").find(":input");
+
+                var frmInpLen = $formInputs.length;
+                for (var i = 0; i < frmInpLen; i++) {
+                    var $currInput = $($formInputs[i]);
+                    for (var j = 0; j < tdLen; j++) {
+                        var $currTD = $($selectedTds[j]);
+                        if ($currTD.data("property") == $currInput.attr("name")) {
+                            if ($currInput.attr("name") == "Active") {
+                                if ($currTD.html() == "1") {
+                                    $currInput.prop("checked", true);
+                                }
+                                else {
+                                    $currInput.prop("checked", false);
+                                }
+                            }
+                            else {
+                                $currInput.val($currTD.html());
+                            }
+                        }
+                    }
+                }
+                $("#save-Reminder-changes").attr("data-Reminder", selectedId);
+                $("#ReminderModal").appendTo("body").modal("show").draggable();
+            }
+            else
+                triggerAlert("You have to select a row to edit first.", "info");
         });
 
         $selRowContainer.append("<div id='delete-Reminder-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
@@ -416,6 +418,9 @@
                 },
             });
         });
+
+        drawButtonsExtension($selRowContainer);
+
 
     }
 

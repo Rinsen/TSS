@@ -254,6 +254,29 @@
     function drawButtons() {
         var $selRowContainer = $("#Sector-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
+        
+
+        $selRowContainer.append("<div id='create-Sector-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-Sector-button").bind("click", function () {
+            $("#id_pk-text").removeAttr("readonly");
+            $("#SectorModal").appendTo("body").modal("show").draggable();
+            $("#save-Sector-changes").removeAttr("data-Sector");
+            var $selectedTds = $("#Sector-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#SectorModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                for (var j = 0; j < tdLen; j++) {
+                    var $currTD = $($selectedTds[j]);
+                    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "id_pk") {
+                        $currInput.val("");
+                    }
+                }
+            }
+        });
         $selRowContainer.append("<div id='crm-edit-Sector' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
 
         $("#crm-edit-Sector").bind("click", function () {
@@ -281,29 +304,6 @@
             else
                 triggerAlert("You have to select a row to edit first.", "info");
         });
-
-        $selRowContainer.append("<div id='create-Sector-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-        $("#create-Sector-button").bind("click", function () {
-            $("#id_pk-text").removeAttr("readonly");
-            $("#SectorModal").appendTo("body").modal("show").draggable();
-            $("#save-Sector-changes").removeAttr("data-Sector");
-            var $selectedTds = $("#Sector-table tr.selected td").not(".radios");
-            var tdLen = $selectedTds.length;
-
-            var $formInputs = $("#SectorModal form").find(":input");
-
-            var frmInpLen = $formInputs.length;
-            for (var i = 0; i < frmInpLen; i++) {
-                var $currInput = $($formInputs[i]);
-                for (var j = 0; j < tdLen; j++) {
-                    var $currTD = $($selectedTds[j]);
-                    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "id_pk") {
-                        $currInput.val("");
-                    }
-                }
-            }
-        });
-
         $selRowContainer.append("<div id='delete-Sector-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
         $("#delete-Sector-button").bind("click", function () {
             bootbox.dialog({
@@ -346,7 +346,7 @@
                 },
             });
         });
-
+        drawButtonsExtension($selRowContainer);
     }
 
     var triggerAlert = function (msg, priorty) {

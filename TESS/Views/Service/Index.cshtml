@@ -230,6 +230,29 @@
     function drawButtons() {
         var $selRowContainer = $("#service-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
+       
+
+        $selRowContainer.append("<div id='create-service-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-service-button").bind("click", function () {
+            $("#serviceModal").appendTo("body").modal("show").draggable();
+            $("#save-service-changes").removeAttr("data-service");
+            var $selectedTds = $("#service-table tr.selected td").not(".radios");
+            var tdLen = $selectedTds.length;
+
+            var $formInputs = $("#serviceModal form").find(":input");
+
+            var frmInpLen = $formInputs.length;
+            for (var i = 0; i < frmInpLen; i++) {
+                var $currInput = $($formInputs[i]);
+                for (var j = 0; j < tdLen; j++) {
+                    var $currTD = $($selectedTds[j]);
+                    if ($currTD.data("property") == $currInput.attr("name")) {
+                        $currInput.val("");
+                    }
+                }
+            }
+        });
+
         $selRowContainer.append("<div id='crm-edit-service' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-service").bind("click", function () {
             if (selectedId != null) {
@@ -256,26 +279,6 @@
                 triggerAlert("You have to select a row to edit first.", "info");
         });
 
-        $selRowContainer.append("<div id='create-service-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-        $("#create-service-button").bind("click", function () {
-            $("#serviceModal").appendTo("body").modal("show").draggable();
-            $("#save-service-changes").removeAttr("data-service");
-            var $selectedTds = $("#service-table tr.selected td").not(".radios");
-            var tdLen = $selectedTds.length;
-
-            var $formInputs = $("#serviceModal form").find(":input");
-
-            var frmInpLen = $formInputs.length;
-            for (var i = 0; i < frmInpLen; i++) {
-                var $currInput = $($formInputs[i]);
-                for (var j = 0; j < tdLen; j++) {
-                    var $currTD = $($selectedTds[j]);
-                    if ($currTD.data("property") == $currInput.attr("name")) {
-                        $currInput.val("");
-                    }
-                }
-            }
-        });
         drawButtonsExtension($selRowContainer);
     }
 

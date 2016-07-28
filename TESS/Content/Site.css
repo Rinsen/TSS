@@ -37,7 +37,15 @@
   background-color: #8ec8ec;
   border-color: #8ec8ec;
 }
-.btn-primary {
+.btn-primary.active.focus,
+.btn-primary.active:focus,
+.btn-primary.active:hover,
+.btn-primary:active.focus,
+.btn-primary:active:focus,
+.btn-primary:active:hover,
+.open > .dropdown-toggle.btn-primary.focus,
+.open > .dropdown-toggle.btn-primary:focus,
+.open > .dropdown-toggle.btn-primary:hover {
   background-color: #0065a0;
   border-color: #0065a0;
 }
@@ -96,7 +104,19 @@ body {
 /* Popover */
 
 .popover {
+  position: fixed;
+  top: 70px !important;
   max-width: 600px;
+}
+.popover h4,
+.popover h5 {
+  margin-bottom: 4px;
+}
+.popover-title {
+  background-color: #d5ecfa;
+  border-bottom: #bee2f8;
+  border-radius: 5px 5px 0 0;
+  color: #0065a0;
 }
 /*------------- jQuery datepicker -------------*/
 

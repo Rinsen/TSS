@@ -16,7 +16,7 @@ namespace TietoCRM.Controllers.List_Management
         {
             ViewBag.Properties = typeof(TietoCRM.Models.view_Sector).GetProperties();
             //this.ViewData.Add("Properties", typeof(TietoCRM.Models.view_Sector).GetProperties());
-            this.ViewData["title"] = "Sectors";
+            this.ViewData["title"] = "System/Classification";
 
             return View();
         }

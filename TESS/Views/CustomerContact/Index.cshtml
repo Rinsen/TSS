@@ -337,6 +337,15 @@
     function drawButtons() {
         var $selRowContainer = $("#contact-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
+        $selRowContainer.append("<div id='create-contact-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $("#create-contact-button").bind("click", function () {
+            $("#contactModal").appendTo("body").modal("show").draggable();
+            $("#save-contact-changes").removeAttr("data-person");
+            $("#crm-select-customer").show();
+
+            clearData();
+        });
+
         $selRowContainer.append("<div id='crm-edit-contact' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-contact").bind("click", function () {
             if (selectedId != null) {
@@ -348,15 +357,6 @@
             else
                 triggerAlert("You have to select a row to edit first.", "info");
 
-        });
-
-        $selRowContainer.append("<div id='create-contact-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-        $("#create-contact-button").bind("click", function () {
-            $("#contactModal").appendTo("body").modal("show").draggable();
-            $("#save-contact-changes").removeAttr("data-person");
-            $("#crm-select-customer").show();
-
-            clearData();
         });
 
         $selRowContainer.append("<div id='delete-contact-person-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
@@ -392,7 +392,9 @@
 
         $selRowContainer.append('<div id="crm-export-vcard" class="crm-table-btn" \
             onclick="exportToContacts();">\
-            <button type="button" class="btn btn-default">Export to contacts</button></div>');
+            <button type="button" class="btn btn-default">Export to contact</button></div>');
+
+        drawButtonsExtension($selRowContainer);
 
     }
 

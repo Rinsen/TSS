@@ -386,8 +386,8 @@
         }
         var drawButtons = function(){
             var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
-            $selRowContainer.append("<div id='crm-edit-customer' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
             $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+            $selRowContainer.append("<div id='crm-edit-customer' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
             $selRowContainer.append('<div id="crm-export-ical" class="crm-table-btn" \
             onclick="location.href=\'@Url.Action("ExportAsCsv", "Customer", null, Request.Url.Scheme)\';">\
             <button type="button" class="btn btn-default">Export</button></div>');

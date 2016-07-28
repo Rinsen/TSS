@@ -45,7 +45,15 @@
   background-color: #8ec8ec;
   border-color: #8ec8ec;
 }
-.btn-primary {
+.btn-primary.active.focus,
+.btn-primary.active:focus,
+.btn-primary.active:hover,
+.btn-primary:active.focus,
+.btn-primary:active:focus,
+.btn-primary:active:hover,
+.open > .dropdown-toggle.btn-primary.focus,
+.open > .dropdown-toggle.btn-primary:focus,
+.open > .dropdown-toggle.btn-primary:hover {
   background-color: #0065a0;
   border-color: #0065a0;
 }
