@@ -455,11 +455,12 @@ namespace TietoCRM.Controllers
                     customer = customerNames[0];
             }
             List<view_CustomerOffer> customerOffers;
+            Stopwatch sw = Stopwatch.StartNew();
             if (customer != "*")
                 customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
             else
                 customerOffers = view_CustomerOffer.getAllCustomerOffers();
-
+            System.Diagnostics.Debug.WriteLine("-------- Time: " + sw.ElapsedMilliseconds);
             List<dynamic> customers = new List<dynamic>();
             List<view_Customer> vCustomers = new List<view_Customer>();
 

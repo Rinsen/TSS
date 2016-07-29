@@ -123,14 +123,13 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT Offer_number FROM " + databasePrefix + "CustomerOffer WHERE " + "Customer = @customer";
+                command.CommandText = "SELECT *, CAST(SSMA_TimeStamp AS BIGINT) AS ads FROM " + databasePrefix + "CustomerOffer WHERE " + "Customer = @customer";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
 
 
                 command.ExecuteNonQuery();
-
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -139,7 +138,21 @@ namespace TietoCRM.Models
                     {
                         if (reader.HasRows)
                         {
-                            view_CustomerOffer t = new view_CustomerOffer("Offer_number = " + reader["Offer_number"]);
+                            view_CustomerOffer t = new view_CustomerOffer();
+                            int i = 0;
+                            int j = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                String columnName = reader.GetName(i);
+                                if (columnName != "SSMA_TimeStamp" && columnName != "ID")
+                                {
+                                    t.SetValue(t.GetType().GetProperties()[j].Name, reader.GetValue(i));
+                                    j++;
+                                }
+                                i++;
+                            }
+                            t._OfferRows = view_OfferRow.getAllOfferRows(t._Offer_number.ToString());
+                            t._ConsultantRows = view_ConsultantRow.getAllConsultantRow(t._Offer_number.ToString());
                             list.Add(t);
                         }
                     }
@@ -160,21 +173,36 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 // Default query
-                command.CommandText = "SELECT Offer_number FROM " + databasePrefix + "CustomerOffer";
+                command.CommandText = "SELECT *, CAST(SSMA_TimeStamp AS BIGINT) AS ads FROM " + databasePrefix + "CustomerOffer";
 
                 command.Prepare();
 
                 command.ExecuteNonQuery();
 
+                List<view_OfferRow> oRows = view_OfferRow.getAllOfferRows();
+                List<view_ConsultantRow> cRows = view_ConsultantRow.getAllConsultantRow();
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-
                     while (reader.Read())
                     {
                         if (reader.HasRows)
                         {
-                            view_CustomerOffer t = new view_CustomerOffer("Offer_number = " + reader["Offer_number"]);
+                            view_CustomerOffer t = new view_CustomerOffer();
+                            int i = 0;
+                            int j = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                String columnName = reader.GetName(i);
+                                if (columnName != "SSMA_TimeStamp" && columnName != "ID")
+                                {
+                                    t.SetValue(t.GetType().GetProperties()[j].Name, reader.GetValue(i));
+                                    j++;
+                                }
+                                i++;
+                            }
+                            t._ConsultantRows = cRows.Where(c => c.Offer_number == t._Offer_number).ToList();
+                            t._OfferRows = oRows.Where(c => c.Offer_number == t._Offer_number).ToList();
                             list.Add(t);
                         }
                     }

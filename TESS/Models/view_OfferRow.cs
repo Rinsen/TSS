@@ -94,7 +94,55 @@ namespace TietoCRM.Models
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_OfferRow t = new view_OfferRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+        }
+        /// <summary>
+        /// Gets all the offer rows
+        /// </summary>
+        /// <returns>A list of all offer rows.</returns>
+        public static List<view_OfferRow> getAllOfferRows()
+        {
+            List<view_OfferRow> list = new List<view_OfferRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = @"SELECT Offer_number, Article_number, License, 
+                                        Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
+                                        ,Alias FROM " + databasePrefix + "OfferRow";
+
+                command.Prepare();
+
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
                     while (reader.Read())
                     {
                         if (reader.HasRows)

@@ -86,7 +86,54 @@ namespace TietoCRM.Models
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ConsultantRow t = new view_ConsultantRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+        }
+
+         /// <summary>
+         /// Gets all consultant rows
+         /// </summary>
+         /// <returns>A list of all consultant rows.</returns>
+        public static List<view_ConsultantRow> getAllConsultantRow()
+        {
+            List<view_ConsultantRow> list = new List<view_ConsultantRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = "SELECT Offer_number ,Code ,Amount ,Total_price ,Include_status, Alias, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ConsultantRow";
+
+                command.Prepare();
+
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
                     while (reader.Read())
                     {
                         if (reader.HasRows)

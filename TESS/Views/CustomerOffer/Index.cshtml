@@ -1103,7 +1103,7 @@
         $("#crm-edit-offer").bind("click", function(){
             //get selected item and add so the url is correct.
             if(typeof selectedId == "undefined" || selectedId == null)
-                triggerAlert("Select an item to edit", "info");
+                triggerAlert("Select an item to preview", "info");
             else if(rows.length <= 0)
             {
                 window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
