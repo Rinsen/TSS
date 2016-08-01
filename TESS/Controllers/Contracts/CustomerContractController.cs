@@ -1232,8 +1232,8 @@ namespace TietoCRM.Controllers.Contracts
                     }
                     else
                     {
-                        String temp = dict["License"].ToString().Replace(".", ",").Replace("%", "");
-                        License = Decimal.Parse(temp);
+                        License = Decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
+                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
                     }
                     int RowType = Convert.ToInt32(dict["Rowtype"]);
 
@@ -1464,8 +1464,9 @@ namespace TietoCRM.Controllers.Contracts
                             }
                             if ((Byte)result["Discount_type"] == 1)
                             {
-                                result["Maintenance"] = "0";
-                                result["License"] = result["Price_category"].ToString() + "%";
+                                int length = result["Price_category"].ToString().Length;
+                                result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
+                                result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
 
                             }
                             view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
@@ -1583,8 +1584,9 @@ namespace TietoCRM.Controllers.Contracts
                             }
                             if ((Byte)result["Discount_type"] == 1)
                             {
-                                result["Maintenance"] = "0";
-                                result["License"] = result["Price_category"].ToString() + "%";
+                                int length = result["Price_category"].ToString().Length;
+                                result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
+                                result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
 
                             }
                             view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();

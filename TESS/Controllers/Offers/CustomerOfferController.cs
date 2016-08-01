@@ -455,12 +455,10 @@ namespace TietoCRM.Controllers
                     customer = customerNames[0];
             }
             List<view_CustomerOffer> customerOffers;
-            Stopwatch sw = Stopwatch.StartNew();
             if (customer != "*")
                 customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
             else
                 customerOffers = view_CustomerOffer.getAllCustomerOffers();
-            System.Diagnostics.Debug.WriteLine("-------- Time: " + sw.ElapsedMilliseconds);
             List<dynamic> customers = new List<dynamic>();
             List<view_Customer> vCustomers = new List<view_Customer>();
 
@@ -743,9 +741,9 @@ namespace TietoCRM.Controllers
                                 }
                                 if ((Byte)result["Discount_type"] == 1)
                                 {
-                                    result["Maintenance"] = "0";
-                                    result["License"] = result["Price_category"].ToString() + "%";
-                                    result["Price_category"] = result["Price_category"].ToString() + "%";
+                                    int length = result["Price_category"].ToString().Length;
+                                    result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
+                                    result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
                                 }
                                 view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
                                 if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
@@ -846,8 +844,9 @@ namespace TietoCRM.Controllers
                                 }
                                 if ((Byte)result["Discount_type"] == 1)
                                 {
-                                    result["Maintenance"] = "0";
-                                    result["License"] = result["Price_category"].ToString() + "%";
+                                    int length = result["Price_category"].ToString().Length;
+                                    result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
+                                    result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
 
                                 }
                                 view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
@@ -913,7 +912,7 @@ namespace TietoCRM.Controllers
                     int Article_number = Convert.ToInt32(dict["Article_number"]);
                     decimal License = 0;
                     decimal Maintenance = 0;
-                    if((int)dict["Discount_type"] != 1)
+                    if(Convert.ToInt32(dict["Discount_type"]) != 1)
                     {
                         if (dict.Keys.Contains("License"))
                             License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
@@ -921,8 +920,8 @@ namespace TietoCRM.Controllers
                     }
                     else
                     {
-                        String temp = dict["License"].ToString().Replace(".", ",").Replace("%", "");
-                        License = Decimal.Parse(temp);
+                        License = Decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
+                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
                     }
 
                     String Alias = dict["Alias"].ToString();

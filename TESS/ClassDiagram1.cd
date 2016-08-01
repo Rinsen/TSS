@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TietoCRM.Models.view_Contract" Collapsed="true">
+    <Position X="44.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BwUigASFQABBAFAAAISQAAGCtARBCSYEQBWAQUkUIAE=</HashCode>
+      <FileName>Models\Contract\view_Contract.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ContractConsultantRow" Collapsed="true">
+    <Position X="36.75" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAgABAAIAAAAAAAAgAAGAJAABgQQAQAEAAFAAAAA=</HashCode>
+      <FileName>Models\Contract\view_ContractConsultantRow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ContractHead" Collapsed="true">
+    <Position X="36.75" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAABAAAABBAIAAAYCAEACEIBBABCABAAAAAQQAA=</HashCode>
+      <FileName>Models\Contract\view_ContractHead.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ContractOption" Collapsed="true">
+    <Position X="40" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAEQABgBEBAIAAAAAAAAEIAAABCAIBAAAKAQEACAA=</HashCode>
+      <FileName>Models\Contract\View_ContractOption.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ContractRow" Collapsed="true">
+    <Position X="40" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AGEAEwABABNBAGAAAABAAAMABBADAAYUQAALAEEgCQA=</HashCode>
+      <FileName>Models\Contract\view_ContractRow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ContractTemplate" Collapsed="true">
+    <Position X="31.5" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEEEAABBVEABAEBAACAABAEgEBT5zwAQ+M8AgQEAAKE=</HashCode>
+      <FileName>Models\Contract\view_ContractTemplate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ContractText" Collapsed="true">
+    <Position X="31.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAABQAABAEQQCIKAEAmAkAABAJAAABCAAAEQAAA=</HashCode>
+      <FileName>Models\Contract\view_ContractText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.CustomerStatistics" Collapsed="true">
+    <Position X="34.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIEAIEgBAAAAAAIIAAAAAAUAAAAAAAAAIAAAAAAIgAA=</HashCode>
+      <FileName>Models\CustomerStatistics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.HashtagDocument" Collapsed="true">
+    <Position X="45.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAAAACAEAAAABAAAABAKEAAAAAAAAAQAAEQAA=</HashCode>
+      <FileName>Models\HashtagDocument.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.SQLBaseClass" Collapsed="true">
+    <Position X="36.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAkAAAAAAIghAACAQQAAAAEEABCAAAAQAQAAAAAA=</HashCode>
+      <FileName>Models\SQLBaseClass.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.Statistics" Collapsed="true">
+    <Position X="35.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAQAAAAAAAAAIAAAAAAAACA=</HashCode>
+      <FileName>Models\Statistics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.UserStatistics" Collapsed="true">
+    <Position X="36.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAEAgAAIAIAAAAAAYAAAAAgABIIEAAAAAICQA=</HashCode>
+      <FileName>Models\UserStatistics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Appointment" Collapsed="true">
+    <Position X="42.5" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAhYAAAAGAAAABAAAAAAAAQAAIJABAACQAUAAE=</HashCode>
+      <FileName>Models\view_Appointment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ConsultantRow" Collapsed="true">
+    <Position X="31.75" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAwAAAAMBAAAAgAAgIACAIAAAgQAgAAEAIAEAAAA=</HashCode>
+      <FileName>Models\view_ConsultantRow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Customer" Collapsed="true">
+    <Position X="31.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUWACmEFmAoDBEAIFBARCIQQAAOhBACPAIBYRBGEQoA=</HashCode>
+      <FileName>Models\view_Customer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_CustomerContact" Collapsed="true">
+    <Position X="34" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEgAAABQCAAAEAgAgAAAAAAAAIAAACCAJAAgACUIgA=</HashCode>
+      <FileName>Models\view_CustomerContact.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_CustomerMissingProductReport" Collapsed="true">
+    <Position X="36.75" Y="5.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAUAEAAFAJAABBCAAAQQAAAAIAAAAAIAAAALCQAACQk=</HashCode>
+      <FileName>Models\view_CustomerMissingProductReport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_CustomerOffer" Collapsed="true">
+    <Position X="47" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABUAAQARQABJAUAQCAgAcAgAEAAIAJAAHBCAQREUAAE=</HashCode>
+      <FileName>Models\view_CustomerOffer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_CustomerProductRow" Collapsed="true">
+    <Position X="40" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AQUAMgAFAJYBBBCAAAQQAAEAAAQBAAAEAAAACAEAACg=</HashCode>
+      <FileName>Models\view_CustomerProductRow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Exception" Collapsed="true">
+    <Position X="42.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAEAAAAAAEiAAAAJgAAAIAAABAAQAARAAIAAECCA=</HashCode>
+      <FileName>Models\view_Exception.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Help" Collapsed="true">
+    <Position X="31.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAQAAAAEAAAAAAAAAAAAAIAAAICAAACAAEAgA=</HashCode>
+      <FileName>Models\view_Help.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Information" Collapsed="true">
+    <Position X="34" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gIQAAEAAQAAAAEAAgABAAIAAAAAhAgQAaQAAIEAEACA=</HashCode>
+      <FileName>Models\view_Information.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Module" Collapsed="true">
+    <Position X="34" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCQAMAAEALAhBACgIAQAAAAAAAEAAAABAAABCUEAAak=</HashCode>
+      <FileName>Models\view_Module.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_ModuleDiscount" Collapsed="true">
+    <Position X="36.75" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAEgAAAFIBAAAABQBAIAAAAAAEAAAACAAAAQgEAAE=</HashCode>
+      <FileName>Models\view_ModuleDiscount.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_OfferRow" Collapsed="true">
+    <Position X="36.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEwAAABMBgAAAgAAAAAAAAAAAAAIgAAALIAEACQA=</HashCode>
+      <FileName>Models\view_OfferRow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Population" Collapsed="true">
+    <Position X="40" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAABAgAQAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Models\view_Population.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Price" Collapsed="true">
+    <Position X="42.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAABAEAQAABAAAAAAAAAAA=</HashCode>
+      <FileName>Models\view_Price.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Reminder" Collapsed="true">
+    <Position X="31.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BIBAAgEAAAMABBABAAAQAAAAhAAAQQIhACAAIUAgAAE=</HashCode>
+      <FileName>Models\view_Reminder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Sector" Collapsed="true">
+    <Position X="34" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAIAIAABECAAAQAAAAAAEAAQIBQAACAAQAAAAE=</HashCode>
+      <FileName>Models\view_Sector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_SelectOption" Collapsed="true">
+    <Position X="34" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAACAAAAACAIAAggCQAMAAE=</HashCode>
+      <FileName>Models\view_SelectOption.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Service" Collapsed="true">
+    <Position X="36.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAQAgAAAAIAAgAAQAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\view_Service.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_Tariff" Collapsed="true">
+    <Position X="40" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAgCABAAAgAAgAAAAAAAQAAAIEAAAKAAEACAA=</HashCode>
+      <FileName>Models\view_Tariff.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_TextTemplate" Collapsed="true">
+    <Position X="40" Y="5.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AACAAIAAQAABAFAQCoKQEAiEFAAIRJAACBCAAAEQgAA=</HashCode>
+      <FileName>Models\view_TextTemplate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.view_User" Collapsed="true">
+    <Position X="42.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAIAEACAAQBAhIMAIASCASAAAYEAACGAIAAgQCACAE=</HashCode>
+      <FileName>Models\view_User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.Contract.view_ContractExpirationList" Collapsed="true">
+    <Position X="34" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EQUgABAFQAAAAFAAAACQAIEAkASBAQAkAAEAAQEAKAE=</HashCode>
+      <FileName>Models\Contract\view_ContractExpirationList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.Cloner&lt;T&gt;" Collapsed="true">
+    <Position X="43.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Cloner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.FeatureObservableCollection&lt;T&gt;" Collapsed="true">
+    <Position X="46.25" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAIAAAAAAAAAIIAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\FeatureObservableCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.FileLocationMapping" Collapsed="true">
+    <Position X="39.25" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAEQAABAAAAAAAAAAAAAIAAAACAAAAAAAAAQA=</HashCode>
+      <FileName>Models\FileLocationMapping.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.GlobalVariables" Collapsed="true">
+    <Position X="41.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAQAAEABAAAAAQAAAIAAAAAgAAAAAAAAAADAA=</HashCode>
+      <FileName>Models\GlobalVariables.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.MainContractText" Collapsed="true">
+    <Position X="46.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAQAAAAAQAAAAEAAQAAAEFACAAAYAgAEAAAAA=</HashCode>
+      <FileName>Models\MainContractText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.SelectOptions&lt;T&gt;" Collapsed="true">
+    <Position X="39.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAMAAAAAAAAEAAAgAAEAAAAABAAAAAAABAAAA=</HashCode>
+      <FileName>Models\SelectOptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.SortedByColumnCollection&lt;T&gt;" Collapsed="true">
+    <Position X="41.25" Y="8.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAEAQAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Models\SortedByColumnCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TietoCRM.Models.ViewCsvParser&lt;T&gt;" Collapsed="true">
+    <Position X="43.75" Y="7" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAACAAAAAAAAQAAAAEAAAIAAAIAAAAAAA=</HashCode>
+      <FileName>Models\ViewCsvParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="TietoCRM.Models.Interfaces.IViewCollection" Collapsed="true">
+    <Position X="39.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Models\Interfaces\IViewCollection.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="TietoCRM.Models.ContractType" Collapsed="true">
+    <Position X="41.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAMAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Contract\view_Contract.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

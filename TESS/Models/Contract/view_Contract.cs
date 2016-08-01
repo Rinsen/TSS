@@ -249,6 +249,10 @@ namespace TietoCRM.Models
                 command.ExecuteNonQuery();
 
 
+                List<view_ContractRow> cRows = view_ContractRow.GetAllContractRows();
+                List<view_ContractConsultantRow> ccRows = view_ContractConsultantRow.GetAllContractConsultantRow();
+                List<view_ContractOption>  cOptions = view_ContractOption.getAllOptions();
+
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -262,9 +266,9 @@ namespace TietoCRM.Models
                                 t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                 i++;
                             }
-                            t._ContractRows = view_ContractRow.GetAllContractRows(t.Contract_id, t.Customer);
-                            t._ContractConsultantRows = view_ContractConsultantRow.GetAllContractConsultantRow(t.Contract_id, t.Customer);
-                            t._ContractOptions = view_ContractOption.getAllOptions(t.Contract_id, t.Customer);
+                            t._ContractRows = cRows.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
+                            t._ContractConsultantRows = ccRows.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
+                            t._ContractOptions = cOptions.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
                             t.GetHashtags();
                             list.Add(t);
                         }

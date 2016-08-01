@@ -89,6 +89,51 @@ namespace TietoCRM.Models
         }
 
         /// <summary>
+        /// Gets all consultant rows.
+        /// </summary>
+        /// <returns>A list on consultant rows.</returns>
+        public static List<view_ContractConsultantRow> GetAllContractConsultantRow()
+        {
+            List<view_ContractConsultantRow> list = new List<view_ContractConsultantRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = "SELECT [Contract_id] ,[Code] ,[Customer] ,[Amount] ,[Total_price], [Alias] ,[Created] ,[Updated] FROM " + databasePrefix + "ContractConsultantRow";
+
+                command.Prepare();
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ContractConsultantRow t = new view_ContractConsultantRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+        }
+
+        /// <summary>
         /// Gets all consultant rows of a specific customer.
         /// </summary>
         /// <param name="customer">The customer to get from</param>

@@ -80,8 +80,15 @@ var fillArticleList = function(System, classification){
 var editArticle = function(editButton){
     var $editButton = $(editButton);
     var $articleBtn = $editButton.parent().parent().parent().find("td button");
-    var oldLicenseVal = $articleBtn.data("license");
-    var oldMaintenanceVal = $articleBtn.data("maintenance");
+    var oldLicenseVal, oldMaintenanceVal;
+    if ($articleBtn.data("discount") != '1') {
+        oldLicenseVal = parseFloat($articleBtn.data("license")).toFixed(2);
+        oldMaintenanceVal = parseFloat($articleBtn.data("maintenance")).toFixed(2);
+    }
+    else {
+        oldLicenseVal = parseInt($articleBtn.data("license"));
+        oldMaintenanceVal = parseInt($articleBtn.data("maintenance"));
+    }
     var oldAlias = $articleBtn.data("alias");
     var articleName = $articleBtn.find(".art-nr").next().html();
     var articleNr = $articleBtn.find(".art-nr").html();
@@ -138,11 +145,17 @@ var editArticle = function(editButton){
                     if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
                         $articleBtn.attr("data-license", $licenseEl.val());
                         $articleBtn.data("license", $licenseEl.val());
-                        $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
+                        if ($articleBtn.data("discount") != '1')
+                            $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
+                        else
+                            $articleBtn.find(".license").html($licenseEl.val() + "%");
                     }
                     $articleBtn.attr("data-maintenance", $maintenanceEl.val());
                     $articleBtn.data("maintenance", $maintenanceEl.val());
-                    $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
+                    if ($articleBtn.data("discount") != '1')
+                        $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
+                    else
+                        $articleBtn.find(".maintenance").html($maintenanceEl.val() + "%");
 
                     $articleBtn.attr("data-alias", $aliasEl.val());
                     $articleBtn.data("alias", $aliasEl.val());
@@ -212,25 +225,35 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 $tr.html("<th></th><th>Art. nr</th><th>Module</th><th>License</th><th>Maintenance</th>");
                 hasFixedRows = true;
             }
-            $newButton = $("<button onclick='moveItem(event, this)'                                             \
+            var button = "";
+            button += "<button onclick='moveItem(event, this)'                                             \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
-                                            data-alias='" + article.Module + "'                                      \
+                                            data-discount='" + article.Discount_type + "'                           \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
-                                            data-discount='" + article.Discount_type + "'                           \
+                                            data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
                                         + usedCell +
-                                           "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
+                                       "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
-                                            <td class='license'>" + formatCurrency(article.License) + "</td>        \
-                                            <td class='maintenance'>" + formatCurrency(article.Maintenance) + "</td>\
-                                        </tr>                                                                       \
+                                            ";
+            if (article.Discount_type != '1') {
+                button += "<td class='license'>" + formatCurrency(article.License) + "</td>        \
+                            <td class='maintenance'>" + formatCurrency(article.Maintenance) + "</td>";
+            }
+            else {
+                button += "<td class='license'>" + article.License + "%</td>        \
+                            <td class='maintenance'>" + article.Maintenance + "%</td>";
+            }
+
+            button += "</tr>                                                                       \
                                     </table>                                                                        \
-                                </button>");
+                                </button>";
+            $newButton = $(button);
         }
         var $buttonContainer = $("<table>                                                                                               \
                                         <tr>                                                                                                \
@@ -282,20 +305,29 @@ var calculateSums = function(){
         var $btn = $($selectedArticleButtons[i]);
         var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
         var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
-        if ($btn.data("discount") == '1')
-            discountArr.push(parseFloat(license));
-        LicenseTotal += parseFloat(license);
-        MaintenanceTotal += parseFloat(maintenance); 
+        if ($btn.data("discount") == '1'){
+            var discountObj = { "License": license, "Maintenance": maintenance };
+            discountArr.push(discountObj);
+        }
+        else {
+            LicenseTotal += parseFloat(license);
+            MaintenanceTotal += parseFloat(maintenance);
+        }
     }
     var daLenght = discountArr.length;
-    var discount = 0;
+    var discountL = 0;
+    var discountM = 0;
     for (var i = 0; i < daLenght; i++) {
-        discount += discountArr[i];
+        discountL += discountArr[i].License;
+        discountM += discountArr[i].Maintenance;
     }
-    if (discount > 100)
-        discount = 100;
-    LicenseTotal += LicenseTotal * discount / 100;
-    MaintenanceTotal += MaintenanceTotal * discount / 100;
+    if (discountL < -100)
+        discountL = -100;
+    if (discountM < -100)
+        discountM = -100;
+
+    LicenseTotal += LicenseTotal * discountL / 100;
+    MaintenanceTotal += MaintenanceTotal * discountM / 100;
     $("#articlesModal #article-license-total").html(formatCurrency(LicenseTotal));
     $("#articlesModal #article-maintenance-total").html(formatCurrency(MaintenanceTotal));
 }
@@ -377,12 +409,22 @@ var updateSelectedItems = function () {
                     else {
                         html += "<td class='alias'>" + module.Module + "</td>";
                     }
-                    html +=         "<td>" + formatCurrency(module.License) + "</td>                                \
+                    if (module.Discount_type != '1') {
+                        html += "<td>" + formatCurrency(module.License) + "</td>                                \
                                     <td>" + formatCurrency(module.Maintenance) + "</td>                             \
                                 </tr>                                                               \
                             </table>                                                                \
                         </button>                                                                   \
                         ";
+                    }
+                    else {
+                        html += "<td>" + module.License + "%</td>                                \
+                                    <td>" + module.Maintenance + "%</td>                             \
+                                </tr>                                                               \
+                            </table>                                                                \
+                        </button>                                                                   \
+                        ";
+                    }
                     $selectedArticles.append(html);
                 }
             }
@@ -420,8 +462,14 @@ var moveItem = function(event, element){
         $newButton.attr("data-selected", "true");
         $newButton.attr("data-rowtype", "3");
         $newButton.attr("type", "button");
-        $newButton.find('.license').html(formatCurrency(buttonLicense));
-        $newButton.find('.maintenance').html(formatCurrency(buttonMaintenance));
+        if ($button.data("discount") != '1') {
+            $newButton.find('.license').html(formatCurrency(buttonLicense));
+            $newButton.find('.maintenance').html(formatCurrency(buttonMaintenance));
+        }
+        else {
+            $newButton.find('.license').html(buttonLicense + "%");
+            $newButton.find('.maintenance').html(buttonMaintenance + "%");
+        }
         $newButton.appendTo($selectedArticles);
         calculateSums();
     } else {
