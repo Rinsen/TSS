@@ -73,13 +73,10 @@
                     var totalM = 0.0;
                     var totalL = 0.0;
                     for (var i = 0; i < Object.keys(json['data']).length; i++) {
-                        var m = json['data'][i]['maintenance'].replace(/[ ]+/g, "").replace("kr", "").replace(",", ".");
-                        m = parseFloat(m);
+                        var m = json['data'][i]['maintenance'];
                         totalM += m;
 
-                        var l = json['data'][i]['license'].replace(/[ ]+/g, "").replace("kr", "").replace(",", ".");
-                        console.log(totalM);
-                        l = parseFloat(l);
+                        var l = json['data'][i]['license'];
                         totalL += l;
                     }
                     $("#total-maintenance").text(formatCurrency(String(totalM)));
