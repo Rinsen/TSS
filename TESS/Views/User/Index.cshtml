@@ -5,6 +5,8 @@
     };
   
 }
+@using TietoCRM.Models
+
 <table draggable="true" id="user-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
         <tr>
@@ -48,10 +50,24 @@
                                     <div class="form-group">
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                         <div class="col-sm-10">
-                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
                                                 <option value="1">Supervisor</option>
                                                 <option value="2">Salesperson</option>
                                                 <option value="3">Product owner</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                }
+                                else if (pi.Name == "Area")
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                                @foreach (var so in (new SelectOptions<view_User>()).GetOptions("Area"))
+                                                {
+                                                    <option value="@so.Value" selected>@so.Text</option>
+                                                }
                                             </select>
                                         </div>
                                     </div>
@@ -61,7 +77,7 @@
                                     <div class="form-group">
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                         <div class="col-sm-10">
-                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
                                                 <option value="true">Yes</option>
                                                 <option value="false">No</option>
                                             </select>
@@ -506,6 +522,8 @@
     $('document').ready(function () {
 
        
+        $('.selectpicker').selectpicker();
+
         $('[data-toggle="tooltip"]').tooltip()
         
 

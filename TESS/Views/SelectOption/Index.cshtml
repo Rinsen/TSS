@@ -7,7 +7,7 @@
         <div class="form-group">
             <label for="select-selectOptions">Model:</label>
             <select name="user" id="select-selectModels" class="form-control selectpicker" data-live-search="true">
-                @foreach (view_SelectOption so in ViewBag.SelectModels)
+                @foreach (SelectListItem so in ViewBag.SelectModels)
                 {
                     <option value="@so.Value" selected>@so.Text</option>
                 }
@@ -17,6 +17,12 @@
             <label for="select-selectOptions">Property:</label>
             <select name="user" id="select-selectProperties" class="form-control selectpicker" data-live-search="true">
             </select>
+        </div>
+        <div class="form-group">
+            <button style="margin-top: 2em;" id="add-model-and-properties" 
+                    class="form-control btn btn-default" type="button">
+                Add Model and Properties
+            </button>
         </div>
     </form>
 </div>
@@ -35,6 +41,110 @@
         </tr>
     </thead>
 </table>
+
+@* Denna del beskriver editeringsformuläret som dyker upp när man trycker Add Model and Properties *@
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="addModelAndPropertiesModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add Model or Properties</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="all-model-names" class="col-sm-2 control-label">Models</label>
+                        <div class="col-sm-10">
+                            <select data-live-serach="true" class="form-control" 
+                                    type="text" id="all-model-names" name="allModelNames" data-live-search="true">
+                                @foreach (SelectListItem so in ViewBag.ModelNames)
+                                {
+                                    <option value="@so.Value" selected>@so.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="all-property-names" class="col-sm-2 control-label">Properties</label>
+                        <div class="col-sm-10">
+                            <select data-live-serach="true" class="form-control" 
+                                    type="text" id="all-property-names" name="allPropertyNames" data-live-search="true">
+                                <option value="-1">No Property Found</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-ModelAndProperties-changes" class="btn btn-primary">Add</button>
+            </div>
+            <script>
+                var $thisModal = $('#addModelAndPropertiesModal');
+                var $allModelsContainer = $('#all-model-names');
+                var $allPropertiesContainer = $('#all-property-names');
+                var $saveBtn = $('#save-ModelAndProperties-changes');
+                $allModelsContainer.selectpicker();
+                $allPropertiesContainer.selectpicker();
+
+                $allModelsContainer.change(function(){
+                    var $self = $(this);
+                    $.post("/SelectOption/GetProperties", {model: $self.val()}, onSuccess, "JSON");
+                    function onSuccess(data){
+                        if(data != '-1'){
+                            $allPropertiesContainer.html("");
+                            $.each(data, function(i, el){
+                                var $optionEl = $("<option></option>");
+                                $optionEl.val(el.Value);
+                                $optionEl.html(el.Text);
+                                $allPropertiesContainer.append($optionEl)
+                            });
+                            $allPropertiesContainer.selectpicker('refresh');
+                        }
+                    }
+                });
+
+                $saveBtn.click(function(){
+
+                    var json = {
+                        Model: $allModelsContainer.val(),
+                        Property: 'Property',
+                        Value: $allPropertiesContainer.val(),
+                        Text: $allPropertiesContainer.find("option:selected").text()
+                    }
+
+                    $.ajax({
+                        "url": "/SelectOption/InsertSelectOption/",
+                        "type": "POST",
+                        "data": {
+                            "json": JSON.stringify(json),
+                        },
+                        "success": function (data) {
+                            if (data > 0) {
+                                updateDataTable();
+                                console.log("success");
+                                $thisModal.modal("hide");
+                                $('#select-selectModels').val($allModelsContainer.val());
+                                $('#select-selectModels').selectpicker('refresh');
+                                updateSelectModels();
+                                onSelectModelsChange();
+                                triggerAlert("Successfully inserted the new information", "success");
+                            }
+                            else {
+                                console.log("failure");
+                                triggerAlert("Something went wrong when trying to insert the information to the server", "warning");
+                            }
+                        }
+                    });
+                });
+                
+
+
+            </script>
+        </div>
+    </div>
+</div>
+@*Slut på Modal*@
 
 @* Denna del beskriver editeringsformuläret som dyker upp när man trycker på Edit eller Create. Namn=Modal*@
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="selectOptionModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -94,6 +204,7 @@
     </div>
 </div>
 @*Slut på Modal*@
+
 
 <script>
     var propertyOption = null;
@@ -265,7 +376,26 @@
             }
 
         }
-       
+    var updateSelectModels = function(){
+        $.ajax({
+            url: '/SelectOption/GetSelectModels',
+            type: 'POST',
+            success: onSuccess
+        });
+
+        var $selectElement = $('#select-selectModels');
+
+        function onSuccess(data) {
+            $selectElement.html(""); // Clear old options
+            var selectOptions = JSON.parse(data);
+            $.each(selectOptions, function (index, selectOption) {
+                var $optionHtml = $('<option value="' + selectOption.Value + '">' + selectOption.Text + '</option>');
+                $selectElement.append($optionHtml);
+            });
+            $selectElement.selectpicker('refresh');
+        }
+    }
+
 </script>
 
 
@@ -489,6 +619,10 @@
     }
     
     $('document').ready(function () {
+        $('#add-model-and-properties').click(function(){
+            $('#addModelAndPropertiesModal').appendTo('body').modal('show').draggable();
+        });
+
     });
 
 

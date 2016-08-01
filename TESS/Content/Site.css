@@ -37,6 +37,13 @@
   background-color: #8ec8ec;
   border-color: #8ec8ec;
 }
+.btn-primary,
+.btn-primary:focus,
+.btn-primary:active,
+.dropdown-toggle.btn-primary,
+.btn-primary.active,
+.btn-primary:hover,
+.open > .dropdown-toggle.btn-primary,
 .btn-primary.active.focus,
 .btn-primary.active:focus,
 .btn-primary.active:hover,
@@ -52,6 +59,54 @@
 .btn-primary:hover {
   background-color: #0085d3;
   border-color: #0085d3;
+}
+.btn-close,
+.btn-close:focus,
+.btn-close:active,
+.dropdown-toggle.btn-close,
+.btn-close.active,
+.btn-close:hover,
+.open > .dropdown-toggle.btn-close,
+.btn-close.active.focus,
+.btn-close.active:focus,
+.btn-close.active:hover,
+.btn-close:active.focus,
+.btn-close:active:focus,
+.btn-close:active:hover,
+.open > .dropdown-toggle.btn-close.focus,
+.open > .dropdown-toggle.btn-close:focus,
+.open > .dropdown-toggle.btn-close:hover {
+  background-color: #bee2f8;
+  border-color: #bee2f8;
+  color: #0065a0;
+}
+.btn-close:hover {
+  background-color: #cce8f9;
+  border-color: #cce8f9;
+}
+.btn-success,
+.btn-success:focus,
+.btn-success:active,
+.dropdown-toggle.btn-success,
+.btn-success.active,
+.btn-success:hover,
+.open > .dropdown-toggle.btn-success,
+.btn-success.active.focus,
+.btn-success.active:focus,
+.btn-success.active:hover,
+.btn-success:active.focus,
+.btn-success:active:focus,
+.btn-success:active:hover,
+.open > .dropdown-toggle.btn-success.focus,
+.open > .dropdown-toggle.btn-success:focus,
+.open > .dropdown-toggle.btn-success:hover {
+  background-color: #00b057;
+  border-color: #00b057;
+  color: white;
+}
+.btn-success:hover {
+  background-color: #00bf5f;
+  border-color: #00bf5f;
 }
 .pagination > .disabled > a,
 .pagination > .disabled > a:focus,
@@ -909,7 +964,7 @@ table#articles-search-table .crm-selected-items table td:nth-child(4) {
 table#articles-table button[disabled],
 table.crm-items-table button[disabled],
 table#articles-search-table button[disabled] {
-  background-color: #9dcfae;
+  background-color: #00b057;
   color: white;
 }
 form#service-form .service-amount {

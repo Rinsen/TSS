@@ -30,6 +30,15 @@ namespace TietoCRM.Models
 
         }
 
+        public override int Insert()
+        {
+           
+            
+
+            return base.Insert();
+        }
+
+
         /// <summary>
         /// Gets all information.
         /// </summary>
