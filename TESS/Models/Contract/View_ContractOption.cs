@@ -49,7 +49,7 @@ namespace TietoCRM.Models
         /// </summary>
         /// <param name="contractID">The id of the contract/param>
         /// <param name="customer">The customer that has the contract.</param>
-        /// <returns>A list of contracts</returns>
+        /// <returns>A list of options</returns>
         public static List<view_ContractOption> getAllOptions(String contractID, String customer)
         {
             List<view_ContractOption> list = new List<view_ContractOption>();
@@ -67,6 +67,51 @@ namespace TietoCRM.Models
                 command.Parameters.AddWithValue("@contractID", contractID);
                 command.Parameters.AddWithValue("@customer", customer);
 
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ContractOption t = new view_ContractOption();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Gets all options.
+        /// </summary>
+        /// <returns>A list of options</returns>
+        public static List<view_ContractOption> getAllOptions()
+        {
+            List<view_ContractOption> list = new List<view_ContractOption>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Article_number] ,[Offer_number] ,[License] ,[Maintenance] ,[Date] ,[Choice] ,[Supplementary_contract] , CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractOption";
+
+                command.Prepare();
 
                 command.ExecuteNonQuery();
 

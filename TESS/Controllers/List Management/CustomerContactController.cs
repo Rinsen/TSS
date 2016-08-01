@@ -154,7 +154,7 @@ namespace TietoCRM.Controllers
             view_CustomerContact contact = new view_CustomerContact();
             contact.Select("ID=" + id);
 
-            byte[] byteArray = Encoding.UTF8.GetBytes(contact.ParseTovCard());
+            byte[] byteArray = Encoding.GetEncoding("iso-8859-1").GetBytes(contact.ParseTovCard());
 
             return File(byteArray, "text/x-vcard", contact.Contact_person.Replace(" ","_") + "_as_vcard.vcf");
 

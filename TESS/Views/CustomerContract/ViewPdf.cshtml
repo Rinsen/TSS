@@ -600,7 +600,8 @@
                                             @{
                                                 decimal LicenseTotal = 0;
                                                 decimal MaintenanceTotal = 0;
-                                                decimal discount = 0;
+                                                decimal discountM = 0;
+                                                decimal discountL = 0;
                                                 CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
                                             }
@@ -611,7 +612,8 @@
                                                 module.Select("Article_number = " + or.Article_number);
                                                 if (module.Discount_type == 1)
                                                 {
-                                                    discount += or.License ?? 0;
+                                                    discountM += or.License ?? 0;
+                                                    discountL += or.Maintenance ?? 0;
                                                 }
                                                 String License;
                                                 String Maintenance;
@@ -620,25 +622,25 @@
                                                 {
                                                     License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
                                                     Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
-                                                    LicenseTotal += Convert.ToDecimal(or.License);
-                                                    MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
+                                                    if(or.Removed == false)
+                                                    {
+                                                        LicenseTotal += Convert.ToDecimal(or.License);
+                                                        MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    License = or.License + "%";
-                                                    Maintenance = "0 kr";
-                                                }
-
-                                                if (or.Removed == false)
-                                                {
-                                                    LicenseTotal += Convert.ToDecimal(or.License);
-                                                    MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
+                                                    String l = ((int)or.License).ToString();
+                                                    String m = ((int)or.Maintenance).ToString();
+                                                    License = l + "%";
+                                                    Maintenance = m + "%";
                                                 }
 
                                                 <button id="selart-@or.Article_number"
                                                         type="button"
                                                         class="list-group-item"
                                                         data-selected="true"
+                                                        data-discount="@module.Discount_type"
                                                         @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."))  ; }
                                                         data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
                                                         data-alias="@or.Alias"
@@ -700,13 +702,17 @@
                                             }
                                             @{
                                                 // Format currency
-                                                if (discount < -100)
+                                                if (discountM < -100)
                                                 {
-                                                    discount = -100;
+                                                    discountM = -100;
+                                                }
+                                                if (discountL < -100)
+                                                {
+                                                    discountL = -100;
                                                 }
 
-                                                String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal * (decimal)discount / 100).Replace(".", " ");
-                                                String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal * (decimal)discount / 100).Replace(".", " ");
+                                                String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal * (decimal)discountM / 100).Replace(".", " ");
+                                                String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal * (decimal)discountL / 100).Replace(".", " ");
                                             }
 
                                         </div>

@@ -19,7 +19,8 @@ Produkter
 -------------------------------------*@
 <div id="crm-pdf-module-rows" class="">
     @{
-        decimal discounts = 0;
+        decimal discountsL = 0;
+        decimal discountsM = 0;
         decimal ProductLicenseTotal = 0;
         decimal ProductMaintenanceTotal = 0;
 
@@ -55,9 +56,10 @@ Produkter
         }
         else
         {
-            discounts += article.License;
-            License = article.License + "%";
-            Maintenance = "0 kr";
+            discountsL += article.License;
+            discountsM += article.Maintenance;
+            License = (int)article.License + "%";
+            Maintenance = (int)article.Maintenance + "%";
         }
         if (previousSystem != article.System)
         {
@@ -83,13 +85,17 @@ Produkter
         previousSystem = article.System;
     }
     @{
-        if (discounts < -100)
+        if (discountsL < -100)
         {
-            discounts = -100;
+            discountsL = -100;
+        }
+        if (discountsM < -100)
+        {
+            discountsM = -100;
         }
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discounts / 100).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discounts / 100).Replace(".", " ");
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsL / 100).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsM / 100).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">

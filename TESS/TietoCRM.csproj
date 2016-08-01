@@ -405,6 +405,7 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="Content\bootstrap-select.css.map" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Content\sidebar.less" />
     <Content Include="Content\img\overlay-bg-2.jpg" />
     <Content Include="Content\img\overlay-bg.jpg" />

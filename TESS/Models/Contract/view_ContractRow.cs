@@ -115,6 +115,55 @@ public class view_ContractRow : SQLBaseClass
         }
 
         /// <summary>
+        /// Gets all Contract rows.
+        /// </summary>
+        /// <returns>A list of contract rows.</returns>
+        public static List<view_ContractRow> GetAllContractRows()
+        {
+            List<view_ContractRow> list = new List<view_ContractRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
+                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
+                                        FROM " + databasePrefix + "ContractRow";
+
+                command.Prepare();
+
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ContractRow t = new view_ContractRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+        }
+
+        /// <summary>
         /// Gets of contract rows of a specific customer.
         /// </summary>
         /// <param name="customer">The customer to get from</param>
