@@ -30,6 +30,15 @@ namespace TietoCRM.Models
 
         }
 
+        public override int Insert()
+        {
+           
+            
+
+            return base.Insert();
+        }
+
+
         /// <summary>
         /// Gets all information.
         /// </summary>
@@ -37,8 +46,7 @@ namespace TietoCRM.Models
         public static List<view_SelectOption> getAllSelectOptionsWhere(String condition)
         {
             List<view_SelectOption> list = new List<view_SelectOption>();
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+           
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -64,8 +72,7 @@ namespace TietoCRM.Models
                     }
                 }
             }
-            sw.Stop();
-            Debug.Print(sw.Elapsed.TotalSeconds.ToString());
+            
             return list;
         }
 

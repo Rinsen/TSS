@@ -2,6 +2,7 @@
 @dark-blue: #62B3E5;
 @light-blue: #BEE2F8;
 @base-gray: #5E5F5F;
+@green-color: #00B057;
 .navbar-default{
     background-color: @base-color;
 }
@@ -24,14 +25,35 @@
     background-color: lighten(@dark-blue, 10%);
     border-color: lighten(@dark-blue, 10%);
 }
-
-.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+.btn-primary, .btn-primary:focus, .btn-primary:active, .dropdown-toggle.btn-primary, .btn-primary.active, .btn-primary:active, .btn-primary:hover, .open>.dropdown-toggle.btn-primary, .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover
+{
     background-color: @base-color;
     border-color: @base-color;
 }
 .btn-primary:hover{
     background-color: lighten(@base-color, 10%);
     border-color: lighten(@base-color, 10%);
+}
+
+.btn-close, .btn-close:focus, .btn-close:active, .dropdown-toggle.btn-close, .btn-close.active, .btn-close:active, .btn-close:hover, .open>.dropdown-toggle.btn-close, .btn-close.active.focus, .btn-close.active:focus, .btn-close.active:hover, .btn-close:active.focus, .btn-close:active:focus, .btn-close:active:hover, .open>.dropdown-toggle.btn-close.focus, .open>.dropdown-toggle.btn-close:focus, .open>.dropdown-toggle.btn-close:hover
+{
+    background-color: @light-blue;
+    border-color: @light-blue;
+    color: @base-color;
+}
+.btn-close:hover{
+    background-color: lighten(@light-blue, 3%);
+    border-color: lighten(@light-blue, 3%);
+}
+.btn-success, .btn-success:focus, .btn-success:active, .dropdown-toggle.btn-success, .btn-success.active, .btn-success:active, .btn-success:hover, .open>.dropdown-toggle.btn-success,.btn-success.active.focus, .btn-success.active:focus, .btn-success.active:hover, .btn-success:active.focus, .btn-success:active:focus, .btn-success:active:hover, .open>.dropdown-toggle.btn-success.focus, .open>.dropdown-toggle.btn-success:focus, .open>.dropdown-toggle.btn-success:hover
+{
+    background-color: @green-color;
+    border-color: @green-color;
+    color: white;
+}
+.btn-success:hover{
+    background-color: lighten( @green-color, 3%);
+    border-color: lighten( @green-color, 3%);
 }
 
 .pagination > .disabled >a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover{
