@@ -19,8 +19,10 @@ Produkter
 -------------------------------------*@
 <div id="crm-pdf-module-rows" class="">
     @{
-        decimal discountsL = 0;
-        decimal discountsM = 0;
+        decimal discountsMP = 0;
+        decimal discountsLP = 0;
+        decimal discountsLM = 0;
+        decimal discountsMM = 0;
         decimal ProductLicenseTotal = 0;
         decimal ProductMaintenanceTotal = 0;
 
@@ -47,17 +49,26 @@ Produkter
         String License;
         String Maintenance;
         // Format currency
-        if (article.Discount_type != 1)
+        if (article.Discount != 1 ||article.Discount_type == 0)
         {
             License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
             Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-            ProductLicenseTotal += Convert.ToDecimal(article.License);
-            ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+            if(article.Discount == 1)
+            {
+                discountsLM += article.License;
+                discountsMM += article.Maintenance;
+            }
+            else
+            {
+                ProductLicenseTotal += Convert.ToDecimal(article.License);
+                ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+            }
+
         }
         else
         {
-            discountsL += article.License;
-            discountsM += article.Maintenance;
+            discountsLP += article.License;
+            discountsMP += article.Maintenance;
             License = (int)article.License + "%";
             Maintenance = (int)article.Maintenance + "%";
         }
@@ -85,17 +96,21 @@ Produkter
         previousSystem = article.System;
     }
     @{
-        if (discountsL < -100)
+        if (discountsMP < -100)
         {
-            discountsL = -100;
+            discountsMP = -100;
         }
-        if (discountsM < -100)
+        if (discountsLP < -100)
         {
-            discountsM = -100;
+            discountsLP = -100;
         }
+
+        ProductLicenseTotal += discountsLM;
+        ProductMaintenanceTotal += discountsMM;
+
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsL / 100).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsM / 100).Replace(".", " ");
+        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
+        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">

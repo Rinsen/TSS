@@ -27,7 +27,10 @@ namespace TietoCRM.Models
 
         public ReadOnlyCollection<SelectOption> GetOptions(String prop)
         {
-            return this.options[prop].AsReadOnly();
+            if (this.Options.Keys.Contains(prop))
+                return this.options[prop].AsReadOnly();
+            else
+                return (new List<SelectOption>()).AsReadOnly();
         }
 
         public struct SelectOption

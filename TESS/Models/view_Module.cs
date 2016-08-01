@@ -39,6 +39,9 @@ namespace TietoCRM.Models
         private String comment;
         public String Comment { get { return comment; } set { comment = value; } }
 
+        private int discount;
+        public int Discount { get { return discount; } set { discount = value; } }
+
         private int discount_type;
         public int Discount_type { get { return discount_type; } set { discount_type = value; } }
 
@@ -66,7 +69,7 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 String query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
-                query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount_type, Multiple_type ,CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
 
                 SqlCommand command = new SqlCommand(query, connection);
 

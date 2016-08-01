@@ -54,7 +54,7 @@
                         <label for="system2" class="col-sm-2 control-label">System</label>
                         <div class="col-sm-10">
                             <select class="form-control" name="System" id="system2">
-                                @foreach (Dictionary<String,String> System in ViewBag.Systems)
+                                @foreach (Dictionary<String, String> System in ViewBag.Systems)
                                 {
                                     <option data-area="@System["Area"]" value="@System["Procapita"]">@System["Procapita"]</option>
                                 }
@@ -89,16 +89,31 @@
                             </div>
                             <div class="checkbox">
                                 <label for="discount2">
-                                    <input id="discount2" data-id="discount2" name="Discount_type" type="checkbox" />
-                                    Discount type
+                                    <input id="discount2" data-id="discount2" name="Discount" type="checkbox" />
+                                    Discount
                                 </label>
                             </div>
+
                             <div class="checkbox">
                                 <label for="multiple2">
                                     <input id="multiple2" data-id="multiple2" name="Multiple_type" type="checkbox" />
                                     Multiple select
                                 </label>
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="discount-type2" class="col-sm-2 control-label">Discount type</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" disabled name="Discount_type" id="discount-type2">
+                                @{
+                                    TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module> selectOptions = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>();
+                                    foreach(TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>.SelectOption so in selectOptions.GetOptions("Discount_type"))
+                                    {
+                                        <option value="@so.Value">@so.Text</option>
+                                    }
+                                  }
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -158,22 +173,40 @@
         });
     }
 
+    var handleDiscountCheck = function(){
+        $p = $("#price-category2");
+        if($("#discount2").is(":checked")) {
+            $("#discount-percentage").show();
+            $p.css("width","auto");
+            $p.css("display","inline-block");
+            $("#discount-type2").prop('disabled', false);
+        }
+        else{
+            $("#discount-percentage").hide();
+            $p.css("width","100%");
+            $p.css("display","block");
+            $("#discount-type2").prop('disabled', true);
+        }
+        handleDiscountTypeCheck();
+    }
+
+    var handleDiscountTypeCheck = function(){
+        if($("#discount-type2").val() == "1")
+            $("#discount-percentage").html("%");
+        else
+            $("#discount-percentage").html("kr");
+    }
+
     $(document).ready(function () {
         var uniqueRowNumber = 0;
         var $delBtns;
 
         $('#discount2').change(function() {
-            $p = $("#price-category2");
-            if($(this).is(":checked")) {
-                $("#discount-percentage").show();
-                $p.css("width","auto");
-                $p.css("display","inline-block");
-            }
-            else{
-                $("#discount-percentage").hide();
-                $p.css("width","100%");
-                $p.css("display","block");
-            }
+            handleDiscountCheck();
+        });
+
+        $('#discount-type2').change(function() {
+            handleDiscountTypeCheck();
         });
 
         $("#system2").change(function(){
@@ -343,12 +376,16 @@
                             var $currTD = $($selectedTds[j]);
                             if($currTD.data("property") == $currInput.attr("name")){
                                 var name = $currInput.attr("name");
-                                if (name == "Discount_type" || name == "Multiple_type" || name == "Expired" || name == "Fixed_price") {
+                                if ($currInput.attr("type") == "checkbox") {
                                     if ($currTD.html() == "true" || $currTD.html() == "1") {
                                         $currInput.prop("checked", true);
                                     }
                                     else {
                                         $currInput.prop("checked", false);
+                                    }
+                                    if(name == "Discount")
+                                    {
+                                        handleDiscountCheck();
                                     }
                                 }
                                 else {

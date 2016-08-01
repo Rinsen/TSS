@@ -600,8 +600,10 @@
                                             @{
                                                 decimal LicenseTotal = 0;
                                                 decimal MaintenanceTotal = 0;
-                                                decimal discountM = 0;
-                                                decimal discountL = 0;
+                                                decimal discountMP = 0;
+                                                decimal discountLP = 0;
+                                                decimal discountLM = 0;
+                                                decimal discountMM = 0;
                                                 CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
                                             }
@@ -610,15 +612,24 @@
                                                 // Fetch modules
                                                 view_Module module = new view_Module();
                                                 module.Select("Article_number = " + or.Article_number);
-                                                if (module.Discount_type == 1)
+                                                if (module.Discount == 1)
                                                 {
-                                                    discountM += or.License ?? 0;
-                                                    discountL += or.Maintenance ?? 0;
+                                                    if(module.Discount_type == 1)
+                                                    {
+                                                        discountMP += or.License ?? 0;
+                                                        discountLP += or.Maintenance ?? 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        discountLM += or.License ?? 0;
+                                                        discountMM += or.Maintenance ?? 0;
+                                                    }
+
                                                 }
                                                 String License;
                                                 String Maintenance;
                                                 // Format currency
-                                                if (module.Discount_type != 1)
+                                                if (module.Discount != 1 || module.Discount_type == 0)
                                                 {
                                                     License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
                                                     Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
@@ -640,7 +651,8 @@
                                                         type="button"
                                                         class="list-group-item"
                                                         data-selected="true"
-                                                        data-discount="@module.Discount_type"
+                                                        data-discount="@module.Discount"
+                                                        data-discount-type="@module.Discount_type"
                                                         @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."))  ; }
                                                         data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
                                                         data-alias="@or.Alias"
@@ -702,17 +714,20 @@
                                             }
                                             @{
                                                 // Format currency
-                                                if (discountM < -100)
+                                                if (discountMP < -100)
                                                 {
-                                                    discountM = -100;
+                                                    discountMP = -100;
                                                 }
-                                                if (discountL < -100)
+                                                if (discountLP < -100)
                                                 {
-                                                    discountL = -100;
+                                                    discountLP = -100;
                                                 }
 
-                                                String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal * (decimal)discountM / 100).Replace(".", " ");
-                                                String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal * (decimal)discountL / 100).Replace(".", " ");
+                                                LicenseTotal += discountLM;
+                                                MaintenanceTotal += discountMM;
+
+                                                String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal * (decimal)discountMP / 100).Replace(".", " ");
+                                                String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal * (decimal)discountLP / 100).Replace(".", " ");
                                             }
 
                                         </div>

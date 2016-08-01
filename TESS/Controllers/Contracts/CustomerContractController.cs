@@ -203,6 +203,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Maintenance = contractRow.Maintenance;
                 contractInfo.Price_category = module.Price_category;
                 contractInfo.Discount_type = module.Discount_type;
+                contractInfo.Discount = module.Discount;
 
                 view_Sector sector = new view_Sector();
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
@@ -1407,7 +1408,7 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Comment, M.Multiple_type, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level 
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -1462,7 +1463,7 @@ namespace TietoCRM.Controllers.Contracts
                                 result["License"] = "0";
 
                             }
-                            if ((Byte)result["Discount_type"] == 1)
+                            if ((Byte)result["Discount"] == 1)
                             {
                                 int length = result["Price_category"].ToString().Length;
                                 result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
@@ -1582,7 +1583,7 @@ namespace TietoCRM.Controllers.Contracts
                                 result["License"] = "0";
 
                             }
-                            if ((Byte)result["Discount_type"] == 1)
+                            if ((Byte)result["Discount"] == 1)
                             {
                                 int length = result["Price_category"].ToString().Length;
                                 result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);

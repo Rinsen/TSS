@@ -81,7 +81,7 @@ var editArticle = function(editButton){
     var $editButton = $(editButton);
     var $articleBtn = $editButton.parent().parent().parent().find("td button");
     var oldLicenseVal, oldMaintenanceVal;
-    if ($articleBtn.data("discount") != '1') {
+    if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0') {
         oldLicenseVal = parseFloat($articleBtn.data("license")).toFixed(2);
         oldMaintenanceVal = parseFloat($articleBtn.data("maintenance")).toFixed(2);
     }
@@ -145,14 +145,14 @@ var editArticle = function(editButton){
                     if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
                         $articleBtn.attr("data-license", $licenseEl.val());
                         $articleBtn.data("license", $licenseEl.val());
-                        if ($articleBtn.data("discount") != '1')
+                        if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
                             $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
                         else
                             $articleBtn.find(".license").html($licenseEl.val() + "%");
                     }
                     $articleBtn.attr("data-maintenance", $maintenanceEl.val());
                     $articleBtn.data("maintenance", $maintenanceEl.val());
-                    if ($articleBtn.data("discount") != '1')
+                    if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
                         $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
                     else
                         $articleBtn.find(".maintenance").html($maintenanceEl.val() + "%");
@@ -206,7 +206,8 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
                                             data-alias='" + article.Module + "'                                     \
-                                            data-discount='" + article.Discount_type + "'                           \
+                                            data-discount-type='" + article.Discount_type + "'                      \
+                                            data-discount='" + article.Discount + "'                                \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             type='button'>                                                          \
                                     <table>                                                                         \
@@ -229,7 +230,8 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
             button += "<button onclick='moveItem(event, this)'                                             \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
-                                            data-discount='" + article.Discount_type + "'                           \
+                                            data-discount-type='" + article.Discount_type + "'                      \
+                                            data-discount='" + article.Discount + "'                                \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             data-alias='" + article.Module + "'                                     \
@@ -306,7 +308,8 @@ var calculateSums = function(){
         var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
         var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
         if ($btn.data("discount") == '1'){
-            var discountObj = { "License": license, "Maintenance": maintenance };
+            var type = $btn.data("discount-type");
+            var discountObj = { "License": license, "Maintenance": maintenance, "Discount_type": type };
             discountArr.push(discountObj);
         }
         else {
@@ -315,19 +318,29 @@ var calculateSums = function(){
         }
     }
     var daLenght = discountArr.length;
-    var discountL = 0;
-    var discountM = 0;
+    var discountL = {"Percentage": 0, "Money": 0};
+    var discountM = { "Percentage": 0, "Money": 0 };
     for (var i = 0; i < daLenght; i++) {
-        discountL += discountArr[i].License;
-        discountM += discountArr[i].Maintenance;
-    }
-    if (discountL < -100)
-        discountL = -100;
-    if (discountM < -100)
-        discountM = -100;
+        if (discountArr[i].Discount_type == "1") {
+            discountL.Percentage += parseInt(discountArr[i].License);
+            discountM.Percentage += parseInt(discountArr[i].Maintenance);
+        }
+        else {
+            discountL.Money += parseFloat(discountArr[i].License);
+            discountM.Money += parseFloat(discountArr[i].Maintenance);
+        }
 
-    LicenseTotal += LicenseTotal * discountL / 100;
-    MaintenanceTotal += MaintenanceTotal * discountM / 100;
+    }
+
+    if (discountL.Percentage < -100)
+        discountL.Percentage = -100;
+    if (discountM.Percentage < -100)
+        discountM.Percentage = -100;
+
+    LicenseTotal += discountL.Money;
+    MaintenanceTotal += discountM.Money;
+    LicenseTotal += LicenseTotal * discountL.Percentage / 100;
+    MaintenanceTotal += MaintenanceTotal * discountM.Percentage / 100;
     $("#articlesModal #article-license-total").html(formatCurrency(LicenseTotal));
     $("#articlesModal #article-maintenance-total").html(formatCurrency(MaintenanceTotal));
 }
@@ -367,7 +380,8 @@ var updateSelectedItems = function () {
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
                                 data-alias='" + module.Module + "'                                   \
-                                data-discount='" + article.Discount_type + "'                           \
+                                data-discount='" + article.Discount + "'                           \
+                                data-discount-type='" + article.Discount_type + "'                  \
                                 data-multiple-select='" + module.Multiple_type + "'                    \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
@@ -390,7 +404,8 @@ var updateSelectedItems = function () {
                                 data-alias='" + module.Module + "'                                   \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
-                                data-discount='" + article.Discount_type + "'                           \
+                                data-discount='" + article.Discount + "'                           \
+                                data-discount-type='" + article.Discount_type + "'                  \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
@@ -409,7 +424,7 @@ var updateSelectedItems = function () {
                     else {
                         html += "<td class='alias'>" + module.Module + "</td>";
                     }
-                    if (module.Discount_type != '1') {
+                    if (module.Discount != '1' || module.Discount_type == '0') {
                         html += "<td>" + formatCurrency(module.License) + "</td>                                \
                                     <td>" + formatCurrency(module.Maintenance) + "</td>                             \
                                 </tr>                                                               \
@@ -462,7 +477,7 @@ var moveItem = function(event, element){
         $newButton.attr("data-selected", "true");
         $newButton.attr("data-rowtype", "3");
         $newButton.attr("type", "button");
-        if ($button.data("discount") != '1') {
+        if ($button.data("discount") != '1' || $button.data("discount-type") == '0') {
             $newButton.find('.license').html(formatCurrency(buttonLicense));
             $newButton.find('.maintenance').html(formatCurrency(buttonMaintenance));
         }

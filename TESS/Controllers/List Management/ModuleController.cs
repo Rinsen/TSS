@@ -83,7 +83,7 @@ namespace TietoCRM.Controllers
         public String ModuleJsonData()
         {
             this.Response.ContentType = "text/plain";
-            List<view_Module> l = view_Module.getAllModules().Where(m => System.Web.HttpContext.Current.GetUser().Area == m.Area || System.Web.HttpContext.Current.GetUser().Area == "*").ToList();
+            List<view_Module> l = view_Module.getAllModules().Where(m => System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area)).ToList();
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
         }
 

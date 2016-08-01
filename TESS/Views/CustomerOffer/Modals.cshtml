@@ -263,23 +263,23 @@ else if (Request["modal"] == "articles")
                                     decimal LicenseTotal = 0;
                                     decimal MaintenanceTotal = 0;
                                     CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
-                                    decimal discountL = 0;
-                                    decimal discountM = 0;
+                                    decimal discountMP = 0;
+                                    decimal discountLP = 0;
                                  }
                                 @foreach (view_OfferRow or in ViewBag.CustomerOffer._OfferRows)
                                 {
                                     // Fetch modules
                                     view_Module module = new view_Module();
                                     module.Select("Article_number = " + or.Article_number);
-                                    if (module.Discount_type == 1)
+                                    if (module.Discount == 1 && module.Discount_type == 1)
                                     {
-                                        discountL += or.License ?? 0;
-                                        discountM += or.Maintenance ?? 0;
+                                        discountMP += or.License ?? 0;
+                                        discountLP += or.Maintenance ?? 0;
                                     }
                                     String License;
                                     String Maintenance;
                                     // Format currency
-                                    if (module.Discount_type != 1)
+                                    if (module.Discount != 1 || module.Discount_type == 0)
                                     {
                                         License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
                                         Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
@@ -298,7 +298,8 @@ else if (Request["modal"] == "articles")
                                             type="button"
                                             class="list-group-item"
                                             data-selected="true"
-                                            data-discount="@module.Discount_type"
+                                            data-discount="@module.Discount"
+                                            data-discount-type="@module.Discount_type"
                                             @if(module.System != "Lärportal")
                                             {
                                                 @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."));
@@ -333,16 +334,17 @@ else if (Request["modal"] == "articles")
                                 }
                                 @{
                                     // Format currency
-                                    if (discountL < -100)
+                                    if (discountMP < -100)
                                     {
-                                        discountL = -100;
+                                        discountMP = -100;
                                     }
-                                    if (discountM < -100)
+                                    if (discountLP < -100)
                                     {
-                                        discountM = -100;
+                                        discountLP = -100;
                                     }
-                                    String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal* (decimal)discountL /100).Replace(".", " ");
-                                    String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal* (decimal)discountM /100).Replace(".", " ");
+
+                                    String LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal + LicenseTotal * (decimal)discountMP / 100).Replace(".", " ");
+                                    String MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal + MaintenanceTotal * (decimal)discountLP / 100).Replace(".", " ");
                                 }
 
                             </div>
@@ -464,7 +466,7 @@ else if (Request["modal"] == "articles")
         var $editButton = $(editButton); 
         var $articleBtn = $editButton.parent().parent().parent().find("td button");
         var oldLicenseVal, oldMaintenanceVal;
-        if($articleBtn.data("discount") != '1'){
+        if($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0'){
             oldLicenseVal = parseFloat($articleBtn.data("license")).toFixed(2);
             oldMaintenanceVal = parseFloat($articleBtn.data("maintenance")).toFixed(2);
         }
@@ -528,14 +530,14 @@ else if (Request["modal"] == "articles")
                             if(typeof $licenseEl != "undefined" && typeof $licenseEl != false){
                                 $articleBtn.attr("data-license", $licenseEl.val());
                                 $articleBtn.data("license", $licenseEl.val());
-                                if($articleBtn.data("discount") != '1')
+                                if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
                                     $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
                                 else
                                     $articleBtn.find(".license").html($licenseEl.val() + "%");
                             }
                             $articleBtn.attr("data-maintenance", $maintenanceEl.val());
                             $articleBtn.data("maintenance", $maintenanceEl.val());
-                            if($articleBtn.data("discount") != '1')
+                            if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
                                 $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
                             else
                                 $articleBtn.find(".maintenance").html($maintenanceEl.val() + "%");
@@ -589,7 +591,8 @@ else if (Request["modal"] == "articles")
                 $newButton = $("<button onclick='moveItem(event, this)'                                             \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
-                                            data-discount='" + article.Discount_type + "'                           \
+                                            data-discount-type='" + article.Discount_type + "'                      \
+                                            data-discount='" + article.Discount + "'                                \
                                             data-maintenance='" + article.Price_category + "'                       \
                                             data-alias='" + article.Module + "'                                      \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
@@ -615,7 +618,8 @@ else if (Request["modal"] == "articles")
                 button += "<button onclick='moveItem(event, this)'                                             \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
-                                            data-discount='" + article.Discount_type + "'                           \
+                                            data-discount-type='" + article.Discount_type + "'                      \
+                                            data-discount='" + article.Discount + "'                                \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             data-alias='" + article.Module + "'                                     \
@@ -712,7 +716,8 @@ else if (Request["modal"] == "articles")
             var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
             var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
             if($btn.data("discount") == '1'){
-                var discountObj = { "License": license, "Maintenance": maintenance };
+                var type = $btn.data("discount-type");
+                var discountObj = { "License": license, "Maintenance": maintenance, "Discount_type": type };
                 discountArr.push(discountObj);
             }
             else{
@@ -721,19 +726,28 @@ else if (Request["modal"] == "articles")
             }
         }
         var daLenght = discountArr.length;
-        var discountL = 0;
-        var discountM = 0;
+        var discountL = {"Percentage": 0, "Money": 0};
+        var discountM = { "Percentage": 0, "Money": 0 };
         for (var i = 0; i < daLenght; i++) {
-            discountL += discountArr[i].License;
-            discountM += discountArr[i].Maintenance;
+            if (discountArr[i].Discount_type == "1") {
+                discountL.Percentage += parseInt(discountArr[i].License);
+                discountM.Percentage += parseInt(discountArr[i].Maintenance);
+            }
+            else {
+                discountL.Money += parseFloat(discountArr[i].License);
+                discountM.Money += parseFloat(discountArr[i].Maintenance);
+            }
         }
-        if (discountL < -100)
-            discountL = -100;
-        if (discountM < -100)
-            discountM = -100;
+        if (discountL.Percentage < -100)
+            discountL.Percentage = -100;
+        if (discountM.Percentage < -100)
+            discountM.Percentage = -100;
 
-        LicenseTotal += LicenseTotal * discountL / 100;
-        MaintenanceTotal += MaintenanceTotal * discountM / 100;
+        LicenseTotal += discountL.Money;
+        MaintenanceTotal += discountM.Money;
+        
+        LicenseTotal += LicenseTotal * discountL.Percentage / 100;
+        MaintenanceTotal += MaintenanceTotal * discountM.Percentage / 100;
         $("#article-license-total").html(formatCurrency(LicenseTotal));
         $("#article-maintenance-total").html(formatCurrency(MaintenanceTotal));
     }
@@ -770,15 +784,13 @@ else if (Request["modal"] == "articles")
             }
             $newButton.attr("data-selected", "true");
             $newButton.attr("type", "button");
-            if($button.data("discount") != '1'){
+            if($button.data("discount") != '1' || $button.data("discount-type") == '0'){
                 $newButton.find('.license').html(formatCurrency(buttonLicense));
                 $newButton.find('.maintenance').html(formatCurrency(buttonMaintenance));
-                $newButton.data("discount", "0");
             }
             else{
                 $newButton.find('.license').html(buttonLicense + "%");
                 $newButton.find('.maintenance').html(buttonMaintenance + "%");
-                $newButton.data("discount", "1");
             }
             $newButton.appendTo($selectedArticles);
             calculateSums();

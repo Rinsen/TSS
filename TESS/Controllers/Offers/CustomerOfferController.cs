@@ -154,6 +154,7 @@ namespace TietoCRM.Controllers
 
                 offerInfo.Price_category = module.Price_category;
                 offerInfo.Discount_type = module.Discount_type;
+                offerInfo.Discount = module.Discount;
                 offerInfo.Price_type = sector.Price_type;
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
@@ -250,6 +251,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Classification = module.Classification;
                 offerInfo.Price_category = module.Price_category;
                 offerInfo.Discount_type = module.Discount_type;
+                offerInfo.Discount = module.Discount;
 
                 view_Sector sector = new view_Sector();
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
@@ -695,7 +697,7 @@ namespace TietoCRM.Controllers
                                         order by Article_number asc";*/
 
                     String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Comment, M.Multiple_type, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level 
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -739,7 +741,7 @@ namespace TietoCRM.Controllers
                                     result["License"] = "0";
 
                                 }
-                                if ((Byte)result["Discount_type"] == 1)
+                                if ((Byte)result["Discount"] == 1)
                                 {
                                     int length = result["Price_category"].ToString().Length;
                                     result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
@@ -795,7 +797,7 @@ namespace TietoCRM.Controllers
                     connection.Open();
 
                     String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
-                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Discount_type view_Module.Comment, view_Module.Area, view_Module.Multiple_type
+                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Discount_type, view_Module.Discount view_Module.Comment, view_Module.Area, view_Module.Multiple_type
                                         FROM view_Module                                                                                       
                                         JOIN view_Tariff                                                                                       
                                         on view_Module.Price_category = view_Tariff.Price_category
@@ -842,7 +844,7 @@ namespace TietoCRM.Controllers
                                     result["License"] = "0";
 
                                 }
-                                if ((Byte)result["Discount_type"] == 1)
+                                if ((Byte)result["Discount"] == 1)
                                 {
                                     int length = result["Price_category"].ToString().Length;
                                     result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
