@@ -1,4 +1,13 @@
-﻿<table draggable="true" id="@ViewBag.ControllerName-table" width="100%" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+﻿@{
+    String select = "<select class='form-control' name='Price_category' id='price-category2'>";
+    List<TietoCRM.Models.view_Price> prices = TietoCRM.Models.view_Price.getAllPrices();
+    foreach (TietoCRM.Models.view_Price price in prices)
+    {
+        select += "<option value='" + (int)price.Level + "'>" + (int)price.Level + "</option>";
+    }
+    select += "</select>";
+}
+<table draggable="true" id="@ViewBag.ControllerName-table" width="100%" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
         <tr>
             <th data-field="#" data-sortable="false">#</th>
@@ -45,9 +54,8 @@
                     </div>
                     <div class="form-group">
                         <label for="price-category2" class="col-sm-2 control-label">Price category</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Price_category" id="price-category2">
-                            <span id="discount-percentage" style="display:none">%</span>
+                        <div class="col-sm-10" id="price-category-container">
+                            @Html.Raw(select)
                         </div>
                     </div>
                     <div class="form-group">
@@ -76,9 +84,21 @@
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
                             <div class="checkbox">
+                                <label for="none2">
+                                    <input id="none2" data-id="none" checked name="none" type="radio" />
+                                    From price category
+                                </label>
+                            </div>
+                            <div class="checkbox">
                                 <label for="fixed-price2">
-                                    <input id="fixed-price2" data-id="fixed-price2" name="Fixed_price" type="checkbox" />
+                                    <input id="fixed-price2" data-id="fixed-price2" name="Fixed_price" type="radio" />
                                     Fixed price
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label for="discount2">
+                                    <input id="discount2" data-id="discount2" name="Discount" type="radio" />
+                                    Discount
                                 </label>
                             </div>
                             <div class="checkbox">
@@ -87,13 +107,6 @@
                                     Expired
                                 </label>
                             </div>
-                            <div class="checkbox">
-                                <label for="discount2">
-                                    <input id="discount2" data-id="discount2" name="Discount" type="checkbox" />
-                                    Discount
-                                </label>
-                            </div>
-
                             <div class="checkbox">
                                 <label for="multiple2">
                                     <input id="multiple2" data-id="multiple2" name="Multiple_type" type="checkbox" />
@@ -123,6 +136,8 @@
                         </div>
                     </div>
                 </form>
+                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -173,16 +188,40 @@
         });
     }
 
-    var handleDiscountCheck = function(){
-        $p = $("#price-category2");
-        if($("#discount2").is(":checked")) {
-            $("#discount-percentage").show();
+    var handleDiscountCheck = function(clicked){
+        $container = $("#price-category-container");
+        $discount = $("#discount2");
+        $fixedPrice = $("#fixed-price2");
+        $none = $("#none2");
+        $container.empty();
+        
+        if($(clicked).attr("name") == "Fixed_price"){
+            $discount.prop("checked", false);
+            $none.prop("checked", false);
+        }
+        else if($(clicked).attr("name") == "Discount"){
+            $fixedPrice.prop("checked", false);
+            $none.prop("checked", false);
+        }
+        else if($(clicked).attr("name") == "none"){
+            $fixedPrice.prop("checked", false);
+            $discount.prop("checked", false);
+        }
+
+        if($discount.is(":checked") || $fixedPrice.is(":checked") && !$none.is(":checked")) {
+            $container.html("<span id='discount-percentage'>%</span>");
+            $container.prepend("<input class='form-control' name='Price_category' id='price-category2' />");
+            $p = $("#price-category2");
             $p.css("width","auto");
             $p.css("display","inline-block");
-            $("#discount-type2").prop('disabled', false);
+            if($discount.is(":checked"))
+                $("#discount-type2").prop('disabled', false);
+            else
+                $("#discount-type2").prop('disabled', true);
         }
         else{
-            $("#discount-percentage").hide();
+            $container.prepend("@Html.Raw(select)");
+            $p = $("#price-category2");
             $p.css("width","100%");
             $p.css("display","block");
             $("#discount-type2").prop('disabled', true);
@@ -191,7 +230,7 @@
     }
 
     var handleDiscountTypeCheck = function(){
-        if($("#discount-type2").val() == "1")
+        if($("#discount-type2").val() == "1" && $("#discount2").is(":checked"))
             $("#discount-percentage").html("%");
         else
             $("#discount-percentage").html("kr");
@@ -202,11 +241,19 @@
         var $delBtns;
 
         $('#discount2').change(function() {
-            handleDiscountCheck();
+            handleDiscountCheck(this);
+        });
+
+        $('#fixed-price2').change(function() {
+            handleDiscountCheck(this);
         });
 
         $('#discount-type2').change(function() {
             handleDiscountTypeCheck();
+        });
+
+        $("#none2").change(function() {
+            handleDiscountCheck(this);
         });
 
         $("#system2").change(function(){
@@ -370,22 +417,21 @@
                     var $formInputs = $("#moduleModal form").find(":input");
 
                     var frmInpLen = $formInputs.length;
+                    var noneSelected = true;
                     for (var i = 0; i < frmInpLen; i++) {
                         var $currInput = $($formInputs[i]);
                         for (var j = 0; j < tdLen; j++) {
                             var $currTD = $($selectedTds[j]);
                             if($currTD.data("property") == $currInput.attr("name")){
                                 var name = $currInput.attr("name");
-                                if ($currInput.attr("type") == "checkbox") {
+                                if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
                                     if ($currTD.html() == "true" || $currTD.html() == "1") {
                                         $currInput.prop("checked", true);
+                                        if(name == "Discount" || name == "Fixed_price")
+                                            noneSelected = false;
                                     }
                                     else {
                                         $currInput.prop("checked", false);
-                                    }
-                                    if(name == "Discount")
-                                    {
-                                        handleDiscountCheck();
                                     }
                                 }
                                 else {
@@ -396,6 +442,11 @@
                            //console.log($currInput.attr("name"));
                         }
                     }
+                    if(noneSelected)
+                        $("#none2").prop("checked", true);
+                    handleDiscountCheck();
+                    $("#price-category2").val($($selectedTds[3]).html());
+
                     $("#save-module-changes").attr("data-Article-number",selectedId);
 
                     $("#moduleModal").appendTo("body").modal().draggable();
@@ -554,17 +605,18 @@
             var module = {}
 
             var $formInputs = $("#moduleModal form").find(":input");
-            console.log($formInputs);
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                if ($currInput.prop("type") == "checkbox") {
-                    module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                if($currInput.attr("id") != "none2")
+                {
+                    if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
+                        module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                    }
+                    else {
+                        module[$currInput.attr("name")] = $currInput.val();
+                    }
                 }
-                else {
-                    module[$currInput.attr("name")] = $currInput.val();
-                }
-
             }
 
             $.ajax({
@@ -602,11 +654,14 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                if ($currInput.prop("type") == "checkbox") {
-                    module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
-                }
-                else {
-                    module[$currInput.attr("name")] = $currInput.val();
+                if($currInput.attr("id") != "none2")
+                {
+                    if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
+                        module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                    }
+                    else {
+                        module[$currInput.attr("name")] = $currInput.val();
+                    }
                 }
 
             }
