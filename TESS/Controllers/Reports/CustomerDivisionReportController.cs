@@ -28,7 +28,7 @@ namespace TietoCRM.Controllers.Reports
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            ViewData.Add("Customers", (new SortedByColumnCollection<Dictionary<String, object>>(customers, sortDir, sortKey)).Collection);
+            ViewData.Add("Customers", (new SortedByColumnCollection(customers, sortDir, sortKey)).Collection);
             this.ViewData["Title"] = "Customer Division Report";
 
             ViewAsPdf pdf = new ViewAsPdf("Pdf");

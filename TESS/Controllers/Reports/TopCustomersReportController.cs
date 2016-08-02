@@ -39,7 +39,7 @@ namespace TietoCRM.Controllers.Reports
             String sortKey = Request["prop"];
             List<Dictionary<String, object>> TC = GenerateTopCustomers(user, area, year, 10);
 
-            ViewData.Add("TC", (new SortedByColumnCollection<Dictionary<String, object>>(TC, sortDirection, sortKey)).Collection);
+            ViewData.Add("TC", (new SortedByColumnCollection(TC, sortDirection, sortKey)).Collection);
 
             this.ViewData["Title"] = "Top Customers Report";
 

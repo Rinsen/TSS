@@ -135,6 +135,11 @@ namespace TietoCRM.Models
             return returnVal;
         }
 
+        private bool BaseSelect(String condition)
+        {
+            return base.Select(condition);
+        }
+
         public override void Update(string condition)
         {
             if (this._Representatives.Count > 0)
@@ -338,7 +343,9 @@ namespace TietoCRM.Models
             List<Dictionary<String, String>> result = GetAllRepresentatives();
             foreach (String id in GetCustomerIds(representive))
             {
-                view_Customer c = new view_Customer("ID=" + id);
+                view_Customer c = new view_Customer();
+                c.BaseSelect("ID=" + id);
+                
                 // Place all represenatives from CustomerDivision to Customer
                 List<String> reps = new List<string>();
                 foreach (Dictionary<String, String> res in result)

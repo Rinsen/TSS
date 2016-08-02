@@ -27,7 +27,7 @@ namespace TietoCRM.Controllers.Reports
             List<Dictionary<String, object>> contracts = this.GenerateValidContracts();
             String sortDirection = Request["sort"];
             String sortKey = Request["prop"];
-            ViewData.Add("Contracts", (new SortedByColumnCollection<Dictionary<String, object>>(contracts, sortDirection, sortKey)).Collection);
+            ViewData.Add("Contracts", (new SortedByColumnCollection(contracts, sortDirection, sortKey)).Collection);
 
             this.ViewData["Title"] = "Valid Contracts Report";
 

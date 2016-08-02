@@ -30,7 +30,7 @@ namespace TietoCRM.Controllers.Reports
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            ViewData.Add("Offers", (new SortedByColumnCollection<Dictionary<String, object>>(offers, sortDir, sortKey)).Collection);
+            ViewData.Add("Offers", (new SortedByColumnCollection(offers, sortDir, sortKey)).Collection);
 
             decimal? totalM = 0;
             decimal? totalL = 0;

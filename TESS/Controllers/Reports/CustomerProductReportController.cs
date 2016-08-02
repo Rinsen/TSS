@@ -67,7 +67,7 @@ namespace TietoCRM.Controllers
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            ViewData.Add("CustomerProductRows", (new SortedByColumnCollection<view_CustomerProductRow>(ProductReportRows, sortDir, sortKey)).Collection);
+            ViewData.Add("CustomerProductRows", (new SortedByColumnCollection(ProductReportRows.ToList<SQLBaseClass>(), sortDir, sortKey)).Collection);
             ViewData.Add("SystemNames", OrderedSystemNames);
             ViewData.Add("Properties", typeof(view_CustomerProductRow).GetProperties());
             List<String> ignoredPropertiesExtended = ignoredProperties.ToList();

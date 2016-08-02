@@ -88,7 +88,7 @@ namespace TietoCRM.Controllers.Reports
 
                 var sortedList = GetFilteredModules(Start, Stop).ToList();
  
-                ViewData.Add("ReturnModules", (new SortedByColumnCollection<Dictionary<String, object>>(sortedList, sortDir, sortKey).Collection));
+                ViewData.Add("ReturnModules", (new SortedByColumnCollection(sortedList, sortDir, sortKey).Collection));
                 ViewData.Add("Printable", Printable);
                 ViewData.Add("Properties", typeof(view_Module).GetProperties());
                 pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \" \"";

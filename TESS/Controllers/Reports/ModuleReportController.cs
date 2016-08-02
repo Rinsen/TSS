@@ -36,7 +36,7 @@ namespace TietoCRM.Controllers.Reports
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            ViewData.Add("Customermodules", (new SortedByColumnCollection<Dictionary<String, object>>(list, sortDir, sortKey)).Collection);
+            ViewData.Add("Customermodules", (new SortedByColumnCollection(list, sortDir, sortKey)).Collection);
 
             view_Module module = new view_Module();
             module.Select("Article_number=" + aNumb);

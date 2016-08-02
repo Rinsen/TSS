@@ -29,7 +29,7 @@ namespace TietoCRM.Controllers.Reports
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            ViewData.Add("Contracts", (new SortedByColumnCollection<Dictionary<String, object>>(contracts, sortDir, sortKey).Collection));
+            ViewData.Add("Contracts", (new SortedByColumnCollection(contracts, sortDir, sortKey).Collection));
 
             this.ViewData["Title"] = "Cancelled Contracts Report";
 

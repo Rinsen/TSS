@@ -49,7 +49,7 @@ namespace TietoCRM.Controllers
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            SortedByColumnCollection<view_CustomerMissingProductReport> scc = new SortedByColumnCollection<view_CustomerMissingProductReport>(CustomerMissingProducts, sortDir, sortKey);
+            SortedByColumnCollection scc = new SortedByColumnCollection(CustomerMissingProducts, sortDir, sortKey);
 
             
             ViewData.Add("CustomerMissingProducts", scc.Collection);

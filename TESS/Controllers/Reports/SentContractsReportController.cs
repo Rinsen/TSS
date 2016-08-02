@@ -28,7 +28,7 @@ namespace TietoCRM.Controllers.Reports
             String sortDirection = Request["sort"];
             String sortKey = Request["prop"];
 
-            ViewData.Add("Contracts", (new SortedByColumnCollection<Dictionary<String, object>>(contracts, sortDirection, sortKey)).Collection);
+            ViewData.Add("Contracts", (new SortedByColumnCollection(contracts, sortDirection, sortKey)).Collection);
 
             this.ViewData["Title"] = "Sent Contracts Report";
 
@@ -54,27 +54,28 @@ namespace TietoCRM.Controllers.Reports
             else
                 customers = view_Customer.getAllCustomers();
 
+            List<view_Contract> contracts = view_Contract.GetContracts();
+            view_User user = System.Web.HttpContext.Current.GetUser();
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
-            foreach (view_Customer customer in customers)
+            foreach (view_Contract contract in contracts)
             {
-                int amountValidContracts = 0;
-                List<view_Contract> contracts = view_Contract.GetContracts(customer.Customer);
-                foreach (view_Contract contract in contracts)
-                {
-                    if (contract.Status == "Sänt" && System.Web.HttpContext.Current.GetUser().IfSameArea(contract.Area))
-                    {
-                        Dictionary<String, object> dict = new Dictionary<String, object>();
-                        dict.Add("customer", customer.Customer);
-                        dict.Add("customer_type", customer.Customer_type);
-                        dict.Add("representative", customer.GetReprensentativesAsString());
-                        dict.Add("contact_person", contract.Contact_person);
-                        dict.Add("contract_id", contract.Contract_id);
-                        dict.Add("title", contract.Title);
-                        dict.Add("contract_type", contract.Contract_type);
-                        rows.Add(dict);
-                    }
-                }
+                List<view_Customer> t = customers.Where(c => c.Customer == contract.Customer).ToList();
+                view_Customer customer = null;
+                if (t.Count > 0)
+                    customer = t.First();
 
+                if (contract.Status == "Sänt" && user.IfSameArea(contract.Area) && customer != null)
+                {
+                    Dictionary<String, object> dict = new Dictionary<String, object>();
+                    dict.Add("customer", contract.Customer);
+                    dict.Add("customer_type", customer.Customer_type);
+                    dict.Add("representative", customer.GetReprensentativesAsString());
+                    dict.Add("contact_person", contract.Contact_person);
+                    dict.Add("contract_id", contract.Contract_id);
+                    dict.Add("title", contract.Title);
+                    dict.Add("contract_type", contract.Contract_type);
+                    rows.Add(dict);
+                }
             }
             return rows;
         }

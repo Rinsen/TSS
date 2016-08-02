@@ -27,7 +27,7 @@ namespace TietoCRM.Controllers.Reports
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            ViewData.Add("Modules", (new SortedByColumnCollection<Dictionary<String, object>>(modules, sortDir, sortKey)).Collection);
+            ViewData.Add("Modules", (new SortedByColumnCollection(modules, sortDir, sortKey)).Collection);
 
             this.ViewData["Title"] = "Product Report";
 

@@ -7,7 +7,7 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-    public class SortedByColumnCollection<T>
+    public class SortedByColumnCollection
     {
         private List<Dictionary<String, object>> collection;
         public List<Dictionary<String, object>> Collection
@@ -18,13 +18,32 @@ namespace TietoCRM.Models
             }
         }
 
-        public SortedByColumnCollection(IEnumerable<T> collection, String sortDirection, String sortKey)
+        public SortedByColumnCollection(IEnumerable<Dictionary<String, object>> collection, String sortDirection, String sortKey)
         {
-            this.Initializer(collection);
+            this.collection = (List<Dictionary<String, object>>)collection;
+            //this.Initializer(collection);
             this.Sort(sortDirection, sortKey);
         }
 
-        private void Initializer(IEnumerable<T> collection)
+        public SortedByColumnCollection(IEnumerable<SQLBaseClass> collection, String sortDirection, String sortKey)
+        {
+            // Convert List<SQLBaseClass> to List<Dictionary<String, object>
+            PropertyDescriptorCollection props = TypeDescriptor.GetProperties(collection.First().GetType());
+            List<Dictionary<String, object>> transferList = new List<Dictionary<String, object>>();
+            foreach (var view in collection)
+            {
+                Dictionary<String, object> transferDictionary = new Dictionary<String, object>();
+                foreach (PropertyDescriptor prop in props)
+                {
+                    transferDictionary.Add(prop.Name, prop.GetValue(view));
+                }
+                transferList.Add(transferDictionary);
+            }
+            this.collection = transferList;
+            this.Sort(sortDirection, sortKey);
+        }
+
+        /*private void Initializer(IEnumerable<T> collection)
         {
             if(typeof(SQLBaseClass).IsAssignableFrom(typeof(T)))
             {
@@ -50,7 +69,7 @@ namespace TietoCRM.Models
             {
                 throw new Exception("Unsupported collection: " + collection.GetType());
             }
-        }
+        }*/
 
 
         private void Sort(String sortDirection, String sortKey)
