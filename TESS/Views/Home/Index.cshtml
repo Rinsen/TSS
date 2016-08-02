@@ -134,18 +134,19 @@
                 chartLabels.push(stat.customer);
             }
             var aChart = new Chart(chartCTX, {
+                scaleStartValue : 0,
                 type: 'bar',
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                        label: '# of Votes',
+                        
                         data: chartValues,
                         backgroundColor: [
-                             'rgba(0, 101, 160, 0.2)',
-                             'rgba(71, 168, 189, 0.2)',
-                             'rgba(245, 230, 99, 0.2)',
-                             'rgba(223, 154, 87, 0.2)',
-                             'rgba(61, 250, 255, 0.2)',
+                             'rgba(0, 101, 160, 0.6)',
+                             'rgba(71, 168, 189, 0.6)',
+                             'rgba(245, 230, 99, 0.6)',
+                             'rgba(223, 154, 87, 0.6)',
+                             'rgba(61, 250, 255, 0.6)',
                         ],
                         borderColor: [
                              'rgba(0, 101, 160, 1)',
