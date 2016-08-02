@@ -84,7 +84,7 @@
                                         </div>
                                     </div>
                                 }
-                                else if (pi.Name == "Offer_file_location" || pi.Name == "Contract_file_location")
+                                else if (pi.Name == "Offer_file_location")
                                 {
                                     <div class="form-group">
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">
@@ -92,6 +92,21 @@
                                             <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"
                                                   data-toggle="tooltip" data-placement="top"
                                                   title="Here you can specify format of the file names. Just use &#64;ID &#64;TITLE &#64;REP &#64;CUSTOMER &#64;DATE"></span>
+                                        </label>
+
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                        </div>
+                                    </div>
+                                }
+                                else if (pi.Name == "Contract_file_location")
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">
+                                            @pName
+                                            <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"
+                                                  data-toggle="tooltip" data-placement="top"
+                                                  title="Here you can specify format of the file names. Just use &#64;ID &#64;TITLE &#64;REP &#64;CUSTOMER &#64;DATE &#64;TYPE"></span>
                                         </label>
 
                                         <div class="col-sm-10">
@@ -113,7 +128,7 @@
                                 {
                                     @Html.Raw("</td>")
                                 }
-                                count++;
+                            count++;
                             }
 
                         }

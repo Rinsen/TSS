@@ -9,9 +9,9 @@ namespace TietoCRM.Models
 {
     public class FileLocationMapping
     {
-        private SQLBaseClass document;
+        private HashtagDocument document;
 
-        public SQLBaseClass Document
+        public HashtagDocument Document
         {
             get
             {
@@ -54,12 +54,15 @@ namespace TietoCRM.Models
             foreach (KeyValuePair<String,String> Mapping in LocationMappingDic)
             {
                 int temp = returnString.IndexOf(Mapping.Key, pos);
+
                 String modifiedString = returnString.Substring(0, pos);
                 var regx = new Regex(Regex.Escape(Mapping.Key),RegexOptions.IgnoreCase);
                 int endPos = returnString.IndexOf(Mapping.Key, pos) + Mapping.Key.Length;
+
                 String sub = returnString.Substring(pos, endPos - pos);
                 String unmodifiedString = returnString.Substring(temp+Mapping.Key.Length, returnString.Length - temp - Mapping.Key.Length);
                 String middleString = regx.Replace(sub, Mapping.Value, 1);
+
                 returnString = modifiedString + middleString + unmodifiedString;
                 pos = (modifiedString + middleString).Length;
                 
@@ -106,6 +109,7 @@ namespace TietoCRM.Models
                 String ID = "";
                 String Customer = "";
                 String Title = "";
+                String Type = "";
                 if(Document.GetType() == typeof(view_CustomerOffer))
                 {
                     ID = ((view_CustomerOffer)Document)._Offer_number.ToString();
@@ -117,26 +121,33 @@ namespace TietoCRM.Models
                     ID = ((view_Contract)Document).Contract_id.ToString();
                     Customer = ((view_Contract)Document).Customer;
                     Title = ((view_Contract)Document).Title;
+                    Type = ((view_Contract)Document).Contract_type;
                 }
 
                 if (LM == "@ID" || LM == "@NR")
                     ReturnDic.Add(LM, ID ?? "");
                 else if (LM == "@DATE")
                     ReturnDic.Add(LM, DateTime.Now.ToString("yyyy-MM-dd"));
-               /* else if (FormatedDateRegex.IsMatch(LocationMapping))
-                {
-                    String DateFormat = FormatedDateRegex.Match(LocationMapping).Groups[1].Value.ToString();
-                    ReturnDic.Add(LocationMapping, DateTime.Now.ToString(DateFormat));
-                }*/
+                /* else if (FormatedDateRegex.IsMatch(LocationMapping))
+                 {
+                     String DateFormat = FormatedDateRegex.Match(LocationMapping).Groups[1].Value.ToString();
+                     ReturnDic.Add(LocationMapping, DateTime.Now.ToString(DateFormat));
+                 }*/
                 else if (LM == "@REP" || LM == "@REPRESENTATIVE")
                 {
                     view_Customer vCustomer = new view_Customer("Customer = " + Customer);
-                    ReturnDic.Add(LM, vCustomer.Representative ?? "");
+                    ReturnDic.Add(LM, vCustomer.GetReprensentativesAsString() ?? "");
                 }
                 else if (LM == "@TITLE")
                     ReturnDic.Add(LM, Title ?? "");
                 else if (LM == "@CUSTOMER")
-                    ReturnDic.Add(LM, Customer ?? "");   
+                    ReturnDic.Add(LM, Customer ?? "");
+                else if (LM == "@TYPE")
+                {
+                    if (Document.GetType() == typeof(view_Contract))
+                        ReturnDic.Add(LM, Type ?? "");
+                }
+                     
 
             }
 

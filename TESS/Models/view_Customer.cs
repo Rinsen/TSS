@@ -372,7 +372,9 @@ namespace TietoCRM.Models
             List<String> customerIds = GetCustomerIds(representive);
             foreach (String id in customerIds)
             {
-                list.Add((new view_Customer("ID=" + id)).Customer);
+                view_Customer c = new view_Customer();
+                c.BaseSelect("ID=" + id);
+                list.Add(c.Customer);
             }
             return list;
         }

@@ -260,7 +260,7 @@ namespace TietoCRM.Controllers
                 offerInfo.License = offerRow.License;
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
-
+                offerInfo.Sort_number = sector.SortNo;
                 articles.Add(offerInfo);
             }
 
@@ -290,7 +290,16 @@ namespace TietoCRM.Controllers
                     rep.Select("Sign=" + name);
                     users.Add(rep);
                 }
-                user = users.Where(u => u.Area == co.Area).First();
+                if (users.Count > 0)
+                {
+                    List<view_User> tempUsers = users.Where(u => u.Area == co.Area).ToList();
+                    if (tempUsers.Count > 0)
+                        user = tempUsers.First();
+                    else
+                        user = System.Web.HttpContext.Current.GetUser();
+                }
+                else
+                    user = System.Web.HttpContext.Current.GetUser();
             }
             ViewData.Add("Representative", user);
             String footerPath = Server.MapPath("~/Views/Shared/Footer_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
