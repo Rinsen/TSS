@@ -151,6 +151,7 @@ namespace TietoCRM.Models
                                 }
                                 i++;
                             }
+                            t.GetHashtags();
                             t._OfferRows = view_OfferRow.getAllOfferRows(t._Offer_number.ToString());
                             t._ConsultantRows = view_ConsultantRow.getAllConsultantRow(t._Offer_number.ToString());
                             list.Add(t);
@@ -201,6 +202,7 @@ namespace TietoCRM.Models
                                 }
                                 i++;
                             }
+                            t.GetHashtags();
                             t._ConsultantRows = cRows.Where(c => c.Offer_number == t._Offer_number).ToList();
                             t._OfferRows = oRows.Where(c => c.Offer_number == t._Offer_number).ToList();
                             list.Add(t);

@@ -441,9 +441,16 @@
                             //console.log($currTD.data("property"));
                            //console.log($currInput.attr("name"));
                         }
-                    }
-                    if(noneSelected)
+                    }    
+                    console.log(noneSelected);
+                    if(noneSelected){
                         $("#none2").prop("checked", true);
+                        $("#discount2").prop("checked", false);
+                        $("#fixed-price2").prop("checked", false);
+                    }
+                    else{
+                        $("#none2").prop("checked", false);
+                    }
                     handleDiscountCheck();
                     $("#price-category2").val($($selectedTds[3]).html());
 
