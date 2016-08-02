@@ -836,7 +836,10 @@ form#service-form{
 
 input.error{
     border-radius: 1px;
-    box-shadow: 0 0 5px #4E7987;
+    box-shadow: 0 0 5px @dark-blue;
+}
+a.tooltips{
+    text-decoration: none !important;
 }
 a.tooltips > span {
     position: relative;
@@ -850,7 +853,7 @@ a.tooltips > span {
     padding: 0.5em 1em;
     width:140px;
     color: #FCFCFC;
-    background: #4E7987;
+    background: @dark-blue;
     height: 30px;
     line-height: 30px;
     text-align: center;
@@ -863,7 +866,7 @@ a.tooltips > span:after {
     left: 50%;
     margin-left: -8px;
     width: 0; height: 0;
-    border-bottom: 8px solid #4E7987;
+    border-bottom: 8px solid @dark-blue;
     border-right: 8px solid transparent;
     border-left: 8px solid transparent;
 }

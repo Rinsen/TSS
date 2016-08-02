@@ -190,7 +190,7 @@
                             <div class="form-group">
                                 <label for="pul-text" class="col-sm-3 control-label">PUL</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control " name="PUL" id="pul-text">
+                                    <select class="form-control selectpicker" name="PUL" id="pul-text">
                                         <option value="false" selected>False</option>
                                         <option value="true">True</option>
                                     </select>
@@ -205,7 +205,7 @@
                             <div class="form-group">
                                 <label for="inhabitant-level-text" class="col-sm-3 control-label">Inhabitant level</label>
                                 <div class="col-sm-9">
-                                    <select class="form-control" name="Inhabitant_level" id="Inhabitant_level-select">
+                                    <select class="form-control selectpicker" name="Inhabitant_level" id="Inhabitant_level-select">
                                         @foreach (view_Population Level in ViewBag.Population)
                                         {
                                             <option value="@Level.ID_PK">@Level.MinPopulation - @Level.MaxPopulation</option>

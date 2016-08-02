@@ -50,7 +50,7 @@
                                                         <option>Telephone</option>
                                                         <option>User gathering</option>
                                                     </select>*@
-                                                    <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                    <select class="form-control selectpicker" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
                                                         @foreach(SelectOptions<view_Appointment>.SelectOption so in ViewBag.EventTypes)
                                                         {
                                                             <option value="@so.Value">@so.Text</option>

@@ -47,14 +47,14 @@
                                             <div class="col-sm-9">
                                                 @if (pi.PropertyType == typeof(bool?))
                                                 {
-                                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                         <option value="true">true</option>
                                                         <option value="false">false</option>
                                                     </select>
                                                 }
                                                 else if (pi.Name == "Sign")
                                                 {
-                                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                         @foreach (view_User User in ViewBag.Representatives)
                                                         {
                                                             if (System.Web.HttpContext.Current.GetUser().Windows_user == User.Windows_user)
@@ -70,16 +70,16 @@
                                                 }
                                                 else if (pi.Name == "Active")
                                                 {
-                                                    @*<label for="expired2" class="col-sm-2 control-label">Active</label>*@
-                                                    <div class="col-sm-10">
-                                                        <div class="pull-left list-inline" style="width:14%; display:inline-block;">
+                                                    
+                                                    <div class="checkbox">
+                                                        <label>
                                                             <input id="expired2" data-id="expired2" name="Active" type="checkbox" />
-                                                        </div>
+                                                        </label>
                                                     </div>
                                                 }
                                                 else if (pi.Name == "Customer_name")
                                                 {
-                                                    <select class="form-control" id="@pi.Name.ToLower()-select" name="@pi.Name">
+                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
                                                         @foreach (String types in ViewBag.Customers)
                                                         {
                                                             <option value="@types">@types</option>
