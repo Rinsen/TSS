@@ -59,7 +59,10 @@ namespace TietoCRM.Models
         
         public String GetValue(String prop, String value)
         {
-            return this.options[prop].Find(d => d.Value == value).Text;
+            if (this.options[prop].Any(d => d.Value == value))
+                return this.options[prop].Find(d => d.Value == value).Text;
+            else
+                return value;
         }
 
         public ReadOnlyCollection<SelectOption> GetOptions(String prop)

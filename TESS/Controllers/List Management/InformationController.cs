@@ -1,10 +1,16 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.List_Management
@@ -27,12 +33,7 @@ namespace TietoCRM.Controllers.List_Management
             ViewData.Add("Title", "Information Messages");
             ViewData.Add("Properties", typeof(view_Information).GetProperties());
 
-            Dictionary<String, String> repNames = new Dictionary<String,String>();
-            foreach (view_User user in view_User.getAllUsers())
-            {
-                repNames.Add(user.Sign,user.Name);
-            }
-            ViewData.Add("Representatives", repNames);
+            ViewData.Add("Representatives", view_User.getAllUsers());
 
             return View();
         }
@@ -86,6 +87,7 @@ namespace TietoCRM.Controllers.List_Management
                         info.SetValue(variable.Key, variable.Value);
                 }
 
+
                 info.Update("ID = " + variables["_ID"]);
 
                 return "1";
@@ -101,9 +103,11 @@ namespace TietoCRM.Controllers.List_Management
             try
             {
                 String json = Request.Form["json"];
+                Dictionary<String, Object> variables = null;
                 view_Information a = null;
                 try
                 {
+                    variables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
                     a = (view_Information)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Information));
                 }
                 catch (Exception e)
@@ -111,6 +115,22 @@ namespace TietoCRM.Controllers.List_Management
                     return "0";
                 }
 
+                if(variables["Send_mail_to"] != null)
+                {
+                    List<view_User> users = new List<view_User>();
+
+                    foreach (String sign in (System.Collections.ArrayList)variables["Send_mail_to"])
+                    {
+                        view_User user = new view_User();
+                        user.Select("Sign=" + sign);
+                        users.Add(user);
+                    }
+                    view_User currUser = System.Web.HttpContext.Current.GetUser();
+
+                    EmailSender es = new EmailSender(currUser, users);
+                    es.Send(a.Title, a.Message);
+                }
+                
                 a.Insert();
 
                 return "1";
