@@ -11,7 +11,7 @@
         <div class="form-group">
             <label for="template-number-select" class="col-sm-2 control-label">Offer text template</label>
             <div class="col-sm-10">
-                <select id="template-number-select" name="Template_number" class="form-control" >
+                <select id="template-number-select" name="Template_number" class="form-control selectpicker" >
                     <option value="current" selected>Current template used on offer</option>
                     @foreach (view_TextTemplate tt in ViewBag.TextTemplates)
                     {
@@ -161,6 +161,7 @@
                 }
             })
         }
+        $('.selectpicker').selectpicker();
     </script>
     <script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
@@ -189,33 +190,27 @@
 else if (Request["modal"] == "articles")
 {
 
-    <form class="form-inline" id="articles-form">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="System-select">System: </label>
-                    <select class="form-control" id="System-select">
-                        @foreach (String System in ViewBag.Systems)
-                        {
-                            <option value="@System">@System</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="classification-select">Classification: </label>
-                    <select class="form-control" id="classification-select"></select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="art-search" class="area-newline">Or    </label>
-                    <input class="form-control input-sm" id="art-search">
-                    <button id="search-button" type="button" class="btn btn-primary">Search</button>
-                </div>
-            </div>
+    <form class="form-inline">
+        <div class="col-sm-4">
+            <label for="System-select">System: </label>
+            <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select">
+                @foreach (String System in ViewBag.Systems)
+                {
+                    <option value="@System">@System</option>
+                }
+            </select>
         </div>
+        <div class="col-sm-4">
+            <label for="classification-select">Classification: </label>
+            <select style="float:none" class="form-control selectpicker" data-width="70%" id="classification-select"></select>
+        </div>
+        <div class="col-sm-4">
+            <label for="art-search">Or:</label>
+            <input class="form-control col-sm-offset-1" id="art-search">
+            <button id="search-button" type="button" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+    <form id="articles-form">
         <table id="articles-table">
             <tr>
                 <td valign="top">
@@ -368,6 +363,9 @@ else if (Request["modal"] == "articles")
 
 <script>
 
+    // Selectpickers
+    $('.selectpicker').selectpicker();
+
     // Global variables
     var $SystemSelect = $("#System-select");
     var $classificationSelect = $("#classification-select");
@@ -405,8 +403,10 @@ else if (Request["modal"] == "articles")
                             fillArticleList($SystemSelect.val(), $classificationSelect.val());
                     }
                 }
+                $classificationSelect.selectpicker('refresh');
             }
         });
+        $classificationSelect.selectpicker('refresh');
     }
     // Fill classifications select on page load
     fillClassificationSelect("@Html.Raw(ViewBag.Systems[0])")
@@ -1225,7 +1225,7 @@ else if (Request["modal"] == "head-information")
         <div class="form-group">
             <label for="contact-person-select" class="col-sm-2 control-label">Contact Person</label>
             <div class="col-sm-10">
-                <select class="form-control" name="Contact_person" id="contact-person-select" placeholder="Contact person">
+                <select class="form-control selectpicker" name="Contact_person" id="contact-person-select" placeholder="Contact person">
                     @foreach (view_CustomerContact cc in ViewBag.ContactPersons)
                     {
                         if (ViewBag.CustomerOffer.Contact_person == cc.Contact_person)
@@ -1256,7 +1256,7 @@ else if (Request["modal"] == "head-information")
         <div class="form-group">
             <label for="status-select" class="col-sm-2 control-label">Status</label>
             <div class="col-sm-10">
-                <select class="form-control" name="Offer_status" id="status-select"  placeholder="Status">
+                <select class="form-control selectpicker" name="Offer_status" id="status-select"  placeholder="Status">
                     @foreach (String status in ViewBag.Statuses)
                     {
                         if (ViewBag.CustomerOffer.Offer_status == status)
@@ -1295,7 +1295,8 @@ else if (Request["modal"] == "head-information")
 
     <script>
 
-        // Global variables
+        // Selectpicker
+        $('.selectpicker').selectpicker();
 
         // Get current browser information
         var get_browser = function() {
