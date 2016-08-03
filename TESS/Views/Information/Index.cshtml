@@ -32,9 +32,9 @@
                         {
 
                             String pName = pi.Name.Replace("_", " ");
-                            if(!ViewBag.SkipPropEdit.Contains(pi.Name))
+                            if (!ViewBag.SkipPropEdit.Contains(pi.Name))
                             {
-             
+
                                 <div class="form-group">
                                     <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                     <div class="col-sm-10">
@@ -45,30 +45,30 @@
                                         else if (pi.Name == "Type")
                                         {
                                             <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                @foreach(SelectOptions<view_Information>.SelectOption so in (new SelectOptions<view_Information>()).GetOptions("Type"))
+                                                @foreach (SelectOptions<view_Information>.SelectOption so in (new SelectOptions<view_Information>()).GetOptions("Type"))
                                                 {
                                                     <option value="@so.Value">@so.Text</option>
                                                 }
                                                 @*<option>Info</option>
-                                                <option>Warning</option>*@
+                                        <option>Warning</option>*@
                                             </select>
                                         }
                                         else if (pi.Name == "Message")
                                         {
-                                            <textarea  class="form-control" id="@pi.Name.ToLower()" name="@pi.Name"></textarea>
+                                            <textarea class="form-control" id="@pi.Name.ToLower()" name="@pi.Name"></textarea>
                                         }
                                         else if (pi.Name == "Author")
                                         {
                                             <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                @foreach (KeyValuePair<String, String> rep in ViewBag.Representatives)
+                                                @foreach (view_User rep in ViewBag.Representatives)
                                                 {
-                                                    if (rep.Key == System.Web.HttpContext.Current.GetUser().Sign)
+                                                    if (rep.Sign == System.Web.HttpContext.Current.GetUser().Sign)
                                                     {
-                                                        <option value="@rep.Key" selected>@rep.Key - @rep.Value</option>
+                                                        <option value="@rep.Sign" selected>@rep.Sign - @rep.Name</option>
                                                     }
                                                     else
                                                     {
-                                                        <option value="@rep.Key">@rep.Key - @rep.Value</option>
+                                                        <option value="@rep.Sign">@rep.Sign - @rep.Name</option>
                                                     }
                                                 }
                                             </select>
@@ -82,7 +82,18 @@
                             }
                         }
                     }
-
+                    <div class="form-group" id="hide-select-mail">
+                        <label for="send-mail-to-select" class="col-sm-2 control-label">Send mail to</label>
+                        <div class="col-sm-10">
+                            <select class="form-control selectpicker" name="Send_mail_to" id="send-mail-to-select" multiple data-live-search="true">
+                                @{ SelectOptions<view_User> selectOptions = new SelectOptions<view_User>();}
+                                @foreach (view_User User in ViewBag.Representatives)
+                                {
+                                    <option value="@User.Sign">@selectOptions.GetValue("Area", User.Area) - @User.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -298,8 +309,8 @@
                     $currInput.val("");
 
             }
-            $('#author').selectpicker('refresh');
-            $('#type').selectpicker('refresh');
+            $('.selectpicker').selectpicker('refresh');
+            $("#hide-select-mail").show();
         });
 
         $selRowContainer.append("<div id='crm-edit-information' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
@@ -331,6 +342,7 @@
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
+            $("#hide-select-mail").hide();
         });
 
         
@@ -443,6 +455,7 @@
         $('[data-toggle="tooltip"]').tooltip()
         $('#author').selectpicker();
         $('#type').selectpicker();
+        $("#send-mail-to-select").selectpicker();
 
 
         updateDataTable(function () {
