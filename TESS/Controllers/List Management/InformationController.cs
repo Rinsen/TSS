@@ -115,7 +115,8 @@ namespace TietoCRM.Controllers.List_Management
                     return "0";
                 }
 
-                if(variables["Send_mail_to"] != null)
+                // IF we ever get a valid email address to send from
+                /*if(variables["Send_mail_to"] != null)
                 {
                     List<view_User> users = new List<view_User>();
 
@@ -129,7 +130,7 @@ namespace TietoCRM.Controllers.List_Management
 
                     EmailSender es = new EmailSender(currUser, users);
                     es.Send(a.Title, a.Message);
-                }
+                }*/
                 
                 a.Insert();
 

@@ -55,8 +55,8 @@ namespace TietoCRM.Models
 
             System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
             client.Port = 587;
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = false;
+            client.DeliveryMethod = SmtpDeliveryMethod.PickupDirectoryFromIis;
+            client.UseDefaultCredentials = true;
             client.Credentials = CredentialCache.DefaultNetworkCredentials;
             client.Host = "mailrelay.tieto.com";
             client.Send(mailMessage);
