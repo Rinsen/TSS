@@ -194,20 +194,22 @@ var loadInfo = function () {
         "success": function (data) {
             if (data != "0") {
                 var items = JSON.parse(data);
-                console.log(items);
                 var $ttForm = $("#table-form");
                 var $inputs = $ttForm.find(":input");
                 var dataLen = Object.keys(items).length;
                 $inputs.each(function () {
                     var $formInput = $(this);
-                    if (items.hasOwnProperty($formInput.attr("name"))) {
-                        $formInput.val(items[$formInput.attr("name")]);
-
-                        if ($formInput.attr("name") == "Status") {
-                            oldStatus = items[$formInput.attr("name")];
+                    var formInputName = $formInput.attr("name");
+                    if (items.hasOwnProperty(formInputName)) {
+                        $formInput.val(items[formInputName]);
+                        if (formInputName == "Status") {
+                            oldStatus = items[formInputName];
+                            $formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
+                        } else if (formInputName == "Contract_type" || formInputName == "Sign" || formInputName == "Area") {
+                            $formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
                         }
                     }
-                    else if ($formInput.attr("name") == "Hashtags") {
+                    else if (formInputName == "Hashtags") {
                         var hashtags = items["_HashtagList"];
                         var tags = "";
                         var length = hashtags.length;
@@ -223,6 +225,7 @@ var loadInfo = function () {
                             $formInput.val("");
                     }
                 });
+                $('.selectpicker').selectpicker('refresh');
                 }
             }
         });
