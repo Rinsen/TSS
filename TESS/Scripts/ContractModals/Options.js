@@ -64,6 +64,7 @@ var fillOptionsClassificationSelect = function (System) {
                 }
                 fillOptionsArticleList(System, $classificationOptionSelect.val());
             }
+            $classificationOptionSelect.selectpicker('refresh');
         }
     });
 }

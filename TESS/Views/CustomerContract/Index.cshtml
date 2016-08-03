@@ -91,7 +91,7 @@
             </div>
             <div id="contact-modal" class="modal-body">
                 <div class="form-inline">
-                    <select id="crm-contact-select" class="form-control"></select>
+                    <select id="crm-contact-select" class="form-control selectpicker" data-live-search="true"></select>
                 </div>
                 <br />
                 <form class="form-horizontal">
@@ -250,7 +250,7 @@
 
                                         String pName = pi.Name.Replace("_", " ");
 
-                                        if (count == 0 || count == 5)
+                                        if (count == 0 || count == 7)
                                         {
                                             @Html.Raw("<td valign=\"top\">")
                                         }
@@ -269,7 +269,7 @@
                                                 }
                                                 else if (pi.Name == "Status")
                                                 {
-                                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                         @foreach (String status in ViewBag.Statuses)
                                                         {
                                                             <option value="@status">@status</option>
@@ -278,7 +278,7 @@
                                                 }
                                                 else if (pi.Name == "Contract_type")
                                                 {
-                                                    <select class="form-control" id="@pi.Name.ToLower()-select" name="@pi.Name">
+                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
                                                         @foreach (String types in ViewBag.ContractTypes)
                                                         {
                                                             <option value="@types">@types</option>
@@ -287,7 +287,7 @@
                                                 }
                                                 else if (pi.Name == "Contact_person" || pi.Name == "Main_contract_id")
                                                 {
-                                                    <select class="form-control" id="@pi.Name.ToLower()-select" name="@pi.Name"></select>
+                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name"></select>
                                                 }
                                                 
                                                 else
@@ -322,7 +322,7 @@
 
                                             </div>
                                         </div>
-                                        if (count == 4 || count == ViewBag.Properties.Length - 1)
+                                        if (count == 6 || count == ViewBag.Properties.Length - 1)
                                         {
                                             if (count == 4)
                                             {
@@ -377,7 +377,7 @@
         if ($("#contract_type-select").val() == "Modulavslut")
         {
             $("#main_contract_id-select").prop("disabled",true);
-            $("#main_contract_id-select").val("");
+            $("#main_contract_id-select").html("");
             $("#valid_through-date").val("");
             $("#valid_from-date").val($.datepicker.formatDate('yy-mm-dd',myDate));
             $("#expire-date").val("");
@@ -395,7 +395,7 @@
         if ($("#contract_type-select").val() == "Tjänsteavtal" || $("#contract_type-select").val() == "Tilläggsavtal")
         {
             $("#main_contract_id-select").prop("disabled",false);
-            $("#main_contract_id-select").val("");
+            $("#main_contract_id-select").html("");
             $("#valid_through-date").val("");
             $("#valid_from-date").val($.datepicker.formatDate('yy-mm-dd',myDate));
             $("#expire-date").val("");
@@ -408,12 +408,13 @@
             $("#term_of_notice-text").prop("disabled",false);
             $("#option_date-date").prop("disabled",false);
             $("#extension-text").prop("disabled",false);
+            loadMainContracts();
         }
 
         if ($("#contract_type-select").val() == "Huvudavtal" || $("#contract_type-select").val() == null) {
             $("#contract_type-select").val("Huvudavtal");
             $("#main_contract_id-select").prop("disabled","disabled");
-            $("#main_contract_id-select").val("");
+            $("#main_contract_id-select").html("");
             $("#valid_through-date").val($.datepicker.formatDate('yy-mm-dd',myDate3));
             $("#valid_from-date").val($.datepicker.formatDate('yy-mm-dd',myDate));
             $("#expire-date").val("");
@@ -427,6 +428,7 @@
             $("#option_date-date").prop("disabled",false);
             $("#extension-text").prop("disabled",false);
         }
+        $("#main_contract_id-select").selectpicker('refresh');
     }
 
     var checkReminder = function(customer){
@@ -515,7 +517,8 @@
                 "customer": $customerSelect.val()
             },
             "success": function(data){
-                mainIds = JSON.parse(data);
+                console.log(data);
+                var mainIds = JSON.parse(data);
                 $select = $("#main_contract_id-select");
                 $select.html("");
 
@@ -526,14 +529,14 @@
                     $select.append($("<option></option>").attr("value", mainID).html(mainID));
 
                 }
-                $select.prepend("<option value=''></option>").val("");
-
+                $select.selectpicker('refresh');
             }
         });
     }
 
     var loadNewContactData = function()
     {
+        var $select = $("#contact_person-select");
         $.ajax({
             "url": "@Url.Content("~/CustomerContract/GetContacts/")",
             "type": "POST",
@@ -542,9 +545,7 @@
             },
             "success": function(data){
                 currentPerson = JSON.parse(data);
-                $select = $("#contact_person-select");
                 $select.html("");
-
 
                 for(var i = 0; i < currentPerson.length; i++)
                 {
@@ -552,8 +553,7 @@
                     $select.append($("<option></option>").attr("innerText", person.Contact_person).html(person.Contact_person));
 
                 }
-                //$select.append("<option value='none'>None</option>");
-
+                $select.selectpicker('refresh');
             }
         });
     }
@@ -710,7 +710,7 @@
                     $button.hide();
                 else
                     $button.show();
-
+                $select.selectpicker('refresh');
             }
         });
     }
@@ -1240,7 +1240,7 @@
                 console.log("asd");
                 loadNewContactData();
                 loadCustomer();
-                loadMainContracts();
+                //loadMainContracts();
                 console.log(1);
                 setDefaultValues();
                 $("#newRowModal").appendTo("body").modal("show").draggable();
@@ -1419,7 +1419,7 @@
                     console.log("123");
                     loadNewContactData();
                     loadCustomer();
-                    loadMainContracts();
+                    //loadMainContracts();
                     console.log(1);
                     setDefaultValues();
                     $("#newRowModal").appendTo("body").modal("show").draggable();

@@ -23,6 +23,7 @@ $(document).ready(function () {
             $("#expire-date").datepicker();
             $("#observation-date").datepicker();
         }
+       $('.selectpicker').selectpicker('refresh');
     });
 
     var reCalcObservationDate = function () {
@@ -58,6 +59,7 @@ $(document).ready(function () {
         }
         else {
             $("#main_contract_id-text").prop("disabled", false);
+            $("#main_contract_id-text").selectpicker('refresh');
         }
     });
 
