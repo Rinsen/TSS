@@ -193,7 +193,7 @@ else if (Request["modal"] == "articles")
     <form class="form-inline">
         <div class="col-sm-4">
             <label for="System-select">System: </label>
-            <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select">
+            <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select" data-live-search="true">
                 @foreach (String System in ViewBag.Systems)
                 {
                     <option value="@System">@System</option>
@@ -206,7 +206,7 @@ else if (Request["modal"] == "articles")
         </div>
         <div class="col-sm-4">
             <label for="art-search">Or:</label>
-            <input class="form-control col-sm-offset-1" id="art-search">
+            <input class="form-control" type="text" id="art-search">
             <button id="search-button" type="button" class="btn btn-primary">Search</button>
         </div>
     </form>
