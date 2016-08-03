@@ -79,7 +79,13 @@
                     <div class="form-group">
                         <label for="area2" class="col-sm-2 control-label">Area</label>
                         <div class="col-sm-10">
-                            <input class="form-control" name="Area" id="area2" disabled>
+                            <select class="form-control selectpicker" name="Area" id="area2" disabled>
+                                @{ TietoCRM.Models.SelectOptions<TietoCRM.Models.view_User> selectOptions1 = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_User>();}
+                                @foreach (TietoCRM.Models.SelectOptions<TietoCRM.Models.view_User>.SelectOption so in selectOptions1.GetOptions("Area"))
+                                {
+                                    <option value="@so.Value">@so.Text</option>
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -229,6 +235,7 @@
             $("#discount-type2").prop('disabled', true);
         }
         handleDiscountTypeCheck();
+        $('.selectpicker').selectpicker('refresh');
     }
 
     var handleDiscountTypeCheck = function(){
