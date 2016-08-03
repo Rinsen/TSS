@@ -25,6 +25,7 @@ var fillClassificationSelect = function(System){
                 }
                 fillArticleList(System, $classificationSelect.val());
             }
+            $classificationSelect.selectpicker('refresh');
         }
     });
 }

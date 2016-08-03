@@ -70,7 +70,7 @@
                     <div class="form-group">
                         <label for="crm-type-select5" class="col-sm-2 control-label">Document type</label>
                         <div class="col-sm-2">
-                            <select id="crm-type-select5" class="form-control"></select>
+                            <select id="crm-type-select5" class="form-control selectpicker"></select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -402,6 +402,7 @@
             $selectType.append($("<option></option>").attr("value", "Tjänsteavtal").html("Tjänsteavtal"));
             $selectType.append($("<option></option>").attr("value", "Tilläggsavtal").html("Tilläggsavtal"));
             $selectType.append($("<option></option>").attr("value", "Modulavslut").html("Modulavslut"));
+            $selectType.selectpicker('refresh');
 
             $("#short_descr5").val("");
             $("#opening5").val("");

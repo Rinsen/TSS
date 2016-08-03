@@ -148,7 +148,8 @@ var loadData = function () {
 
                             }
                             
-                            $("#contact-person3").val(contractHead.Contact_person);
+                           $("#contact-person3").val(contractHead.Contact_person);
+                           $("#contact-person3").selectpicker('refresh');
                         }
 
                     }

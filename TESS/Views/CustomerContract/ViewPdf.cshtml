@@ -469,7 +469,7 @@
                     <div class="form-group">
                         <label for="contact-person3" class="col-sm-2 control-label">Contact person</label>
                         <div class="col-sm-10">
-                            <select class="form-control" id="contact-person3" name="Contact_person"></select>
+                            <select class="form-control selectpicker" id="contact-person3" name="Contact_person"></select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -527,33 +527,28 @@
                 <h4 class="modal-title" id="myModalLabel">Articles</h4>
             </div>
             <div id="article-modal" class="modal-body">
-                <form class="form-inline" id="articles-form">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="System-select">System: </label>
-                                <select class="form-control" id="System-select">
-                                    @foreach (String System in ViewBag.Systems)
-                                    {
-                                        <option value="@System">@System</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="classification-select">Classification: </label>
-                                <select class="form-control" id="classification-select"></select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="art-search">Or </label>
-                                <input class="form-control input-sm" id="art-search">
-                                <button id="search-button" type="button" class="btn btn-primary">Search</button>
-                            </div>
-                        </div>
+
+                <form class="form-inline">
+                    <div class="col-sm-4">
+                        <label for="System-select">System: </label>
+                        <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select" data-live-search="true">
+                            @foreach (String System in ViewBag.Systems)
+                            {
+                                <option value="@System">@System</option>
+                            }
+                        </select>
                     </div>
+                    <div class="col-sm-4">
+                        <label for="classification-select">Classification: </label>
+                        <select style="float:none" class="form-control selectpicker" data-width="70%" id="classification-select"></select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="art-search">Or:</label>
+                        <input class="form-control" type="text" id="art-search">
+                        <button id="search-button" type="button" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+                <form id="articles-form">
                     <table id="articles-table">
                         <tr>
                             <td valign="top">
@@ -766,33 +761,27 @@
                 <h4 class="modal-title" id="myModalLabel">Options</h4>
             </div>
             <div id="options-modal" class="modal-body">
-                <form class="form-inline modal-select-items" id="options-form">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="System-select">System: </label>
-                                <select class="form-control" id="System-select">
-                                    @foreach (String System in ViewBag.Systems)
-                                                    {
-                                        <option value="@System">@System</option>
-                                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="classification-select">Classification: </label>
-                                <select class="form-control" id="classification-select"></select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="opt-search">Or </label>
-                                <input class="form-control input-sm" id="opt-search">
-                                <button id="opt-search-button" type="button" class="btn btn-primary">Search</button>
-                            </div>
-                        </div>
+                <form class="form-inline">
+                    <div class="col-sm-4">
+                        <label for="System-select">System: </label>
+                        <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select" data-live-search="true">
+                            @foreach (String System in ViewBag.Systems)
+                            {
+                                <option value="@System">@System</option>
+                            }
+                        </select>
                     </div>
+                    <div class="col-sm-4">
+                        <label for="classification-select">Classification: </label>
+                        <select style="float:none" class="form-control selectpicker" data-width="70%" id="classification-select"></select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="art-search">Or:</label>
+                        <input class="form-control" type="text" id="art-search">
+                        <button id="search-button" type="button" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+                <form class="form-inline modal-select-items" id="options-form">
                     <table id="options-table" class="crm-items-table">
                         <tr>
                             <td valign="top">
@@ -1032,7 +1021,7 @@
                     <div class="form-group">
                         <label for="template-number-select" class="col-sm-2 control-label">Contract text template</label>
                         <div class="col-sm-10">
-                            <select id="template-number-select" name="Template_number" class="form-control">
+                            <select id="template-number-select" name="Template_number" class="form-control selectpicker">
                                 <option value="current" selected>Current template used on contract</option>
 
                             </select>
@@ -1106,7 +1095,7 @@
                         <div class="form-group">
                             <label for="main-template-number-select" class="col-sm-2 control-label">Contract text template</label>
                             <div class="col-sm-10">
-                                <select id="main-template-number-select" name="Template_number" class="form-control">
+                                <select id="main-template-number-select" name="Template_number" class="form-control selectpicker">
                                     <option value="current" selected>Current text</option>
                                     <option value="template" selected>Template text</option>
                                 </select>
@@ -1167,18 +1156,14 @@
                                     <div class="col-sm-10">
                                         @if (pi.PropertyType == typeof(bool?))
                                         {
-                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                 <option value="true">true</option>
                                                 <option value="false">false</option>
                                             </select>
                                         }
                                         else if (pi.Name == "Status")
                                         {
-                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @*@foreach (String status in ViewBag.Statuses)
-                                                {
-                                                    <option value="@status">@status</option>
-                                                }*@
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                 @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
                                                 {
                                                     <option value="@so.Value">@so.Text</option>
@@ -1187,11 +1172,7 @@
                                         }
                                         else if (pi.Name == "Contract_type")
                                         {
-                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @*@foreach (String types in ViewBag.ContractTypes)
-                                                {
-                                                    <option value="@types">@types</option>
-                                                }*@
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                 @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
                                                 {
                                                     <option value="@so.Value">@so.Text</option>
@@ -1200,7 +1181,7 @@
                                         }
                                         else if (pi.Name == "Main_contract_id")
                                         {
-                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                 <option value=""></option>
                                                 @foreach (String types in ViewBag.MainContracts)
                                                 {
@@ -1210,7 +1191,7 @@
                                         }
                                         else if (pi.Name == "Sign")
                                         {
-                                            <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                 @foreach (String types in ViewBag.Users)
                                                 {
                                                     <option value="@types">@types</option>
@@ -1593,7 +1574,6 @@
                         $select.append($("<option></option>").attr("value", mainID).html(mainID));
 
                     }
-                    $select.prepend("<option value=''></option>");
 
                 }
         });
