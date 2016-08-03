@@ -1,4 +1,5 @@
-﻿<table draggable="true" id="Sector-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+﻿@using TietoCRM.Models;
+<table draggable="true" id="Sector-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
         <tr>
             <th data-field="#" data-sortable="false">#</th>
@@ -31,13 +32,42 @@
                             if (!pi.Name.Equals("_ID_PK"))
                             {
                                 String pName = pi.Name.Replace("_", " ");
-
-                                <div class="form-group">
-                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                if(pi.Name == "Area")
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                @foreach(var so in (new SelectOptions<view_User>()).GetOptions("Area"))
+                                                {
+                                                    <option value="@so.Value">@so.Text</option>
+                                                }
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
+                                }
+                                else if(pi.Name == "Price_type"){
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                @foreach(var so in (new SelectOptions<view_Sector>()).GetOptions("Price_type"))
+                                                {
+                                                    <option value="@so.Value">@so.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                        </div>
+                                    </div>
+                                }
                             }
                         }
                     }
@@ -298,6 +328,7 @@
                         }
                     }
                 }
+                $('.selectpicker').selectpicker('refresh');
                 $("#save-Sector-changes").attr("data-Sector", selectedId);
                 $("#SectorModal").appendTo("body").modal("show").draggable();
             }

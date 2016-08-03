@@ -354,6 +354,7 @@
                     var $currInput = $($formInputs[i]);
                     for (var j = 0; j < tdLen; j++) {
                         var $currTD = $($selectedTds[j]);
+                        var propName = $currTD.data("property");
                         if ($currTD.data("property") == $currInput.attr("name")) {
                             if ($currInput.attr("name") == "Active") {
                                 if ($currTD.html() == "1") {
@@ -363,12 +364,17 @@
                                     $currInput.prop("checked", false);
                                 }
                             }
+                            else if (propName == "Customer" || propName == "Sign") {
+                                $currInput.find('option[value="' + $currTD.html() + '"]').prop("selected", true);
+                                console.log($currInput.find('option[value="' + $currTD.html() + '"]'));
+                            }
                             else {
                                 $currInput.val($currTD.html());
                             }
                         }
                     }
                 }
+                $('.selectpicker').selectpicker('refresh');
                 $("#save-Reminder-changes").attr("data-Reminder", selectedId);
                 $("#ReminderModal").appendTo("body").modal("show").draggable();
             }

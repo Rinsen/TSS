@@ -1198,6 +1198,15 @@
                                                 }
                                             </select>
                                         }
+                                        else if (pi.Name == "Area")
+                                        {
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                @foreach (var so in (new SelectOptions<view_User>()).GetOptions("Area"))
+                                                {
+                                                    <option value="@so.Value">@so.Text</option>
+                                                }
+                                            </select>
+                                        }
                                         else
                                         {
                                             String inputType = "";

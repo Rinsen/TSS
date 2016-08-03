@@ -33,7 +33,7 @@
                                 @foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                                 {
                                     String pName = pi.Name.Replace("_", " ");
-                                    if (!pi.Name.StartsWith("_") && pi.Name != "Area")
+                                    if (!pi.Name.StartsWith("_") )
                                     {
                                         <div class="form-group">
                                             <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
@@ -44,12 +44,6 @@
                                                 }
                                                 else if (pi.Name == "Event_type")
                                                 {
-                                                    @*<select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                        <option>Meeting</option>
-                                                        <option>Online</option>
-                                                        <option>Telephone</option>
-                                                        <option>User gathering</option>
-                                                    </select>*@
                                                     <select class="form-control selectpicker" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
                                                         @foreach(SelectOptions<view_Appointment>.SelectOption so in ViewBag.EventTypes)
                                                         {
@@ -75,19 +69,19 @@
                                                         }
                                                     </select>
                                                 }
-                                                else if (pi.Name != "Area")
+                                                else if (pi.Name == "Area")
+                                                {
+                                                    <select class="form-control selectpicker" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
+                                                        @foreach(var so in (new SelectOptions<view_User>()).GetOptions("Area"))
+                                                        {
+                                                            <option value="@so.Value">@so.Value</option>
+                                                        }
+                                                    </select>
+                                                }
+                                                else
                                                 {
                                                     <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
                                                 }
-                                            </div>
-                                        </div>
-                                    }
-                                    else if (pi.Name == "Area")
-                                    {
-                                        <div id="area-text" class="form-group">
-                                            <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
-                                            <div class="col-sm-9">
-                                                <input class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name" placeholder="@pName" />
                                             </div>
                                         </div>
                                     }
@@ -352,6 +346,7 @@
                     var $currInput = $($formInputs[i]);
                     for (var j = 0; j < tdLen; j++) {
                         var $currTD = $($selectedTds[j]);
+                        var propName = $currTD.attr("data-property");
                         if ($currTD.data("property") == $currInput.attr("name")) {
                             if ($currInput.attr("name") == "Active") {
                                 if ($currTD.html() == "1") {
@@ -366,6 +361,10 @@
                                 $currInput.val($currTD.html());
                                 $("#customer").trigger("change");
                             }
+                            else if (propName == "Event_type" || propName == "Customer" || propName == "Area" || propName == "Contact_person") {
+                                $currInput.find('option[value="' + $currTD.html() + '"]').prop("selected", true);
+                                console.log($currInput.find('option[value="' + $currTD.html() + '"]'));
+                            }
                             else
                             {
                                 $currInput.val($currTD.html());
@@ -373,8 +372,7 @@
                         }
                     }
                 }
-                $("#contact_person").selectpicker('refresh');
-                $("#customer").selectpicker('refresh');
+                $(".selectpicker").selectpicker('refresh');
                 $("#save-appointment-changes").attr("data-appointment", selectedId);
                 $("#appointmentModal").appendTo("body").modal("show").draggable();
                 $("#myModalLabel").html("Edit Appointment");

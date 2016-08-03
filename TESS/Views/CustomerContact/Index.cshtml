@@ -108,6 +108,9 @@
             "success": function (data) {
                 person = JSON.parse(data);
                 changePersonToShow(person);
+                console.log(person);
+                $('#crm-select-customer').val(person.Customer);
+                $('#crm-select-customer').selectpicker('refresh');
             }
         });
     }
@@ -120,6 +123,7 @@
         $("#mobileNumber3").val(person.Mobile);
         $("#address3").val(person.Address);
         $("#notes3").val($("<div>").html(person.Notes).text());
+
     }
 
 
