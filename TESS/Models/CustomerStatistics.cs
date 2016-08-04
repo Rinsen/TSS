@@ -176,8 +176,6 @@ namespace TietoCRM.Models
         /// <returns> returns a list of a dictionary that represents a a year and total spent</returns>
         protected override bool GetCachedData()
         {
-            List<Dictionary<String, Object>> dict = new List<Dictionary<String, Object>>();
-
             List<Dictionary<String, Object>> list = new List<Dictionary<String, Object>>();
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
             {
@@ -379,6 +377,54 @@ namespace TietoCRM.Models
                 Insert(Customer._ID.ToString(), (decimal)dic["Total_spent"], (DateTime)dic["Year"], (String)dic["Area"]);
             }
                 
+        }
+
+        public static List<CustomerStatistics> GetAllCustomerStatstics()
+        {
+            List<CustomerStatistics> list = new List<CustomerStatistics>();
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
+            {
+                connection.Open();
+
+                String query = "SELECT Customer, Customer_ID, Total_value, Year, Area FROM " + "dbo.view_" + "TCVCalculator";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            Dictionary<String, Object> dic = new Dictionary<String, Object>();
+                            int i = 1;
+                            while (reader.FieldCount > i)
+                            {
+                                dic.Add(reader.GetName(i), reader.GetValue(i));
+                                i++;
+                            }
+                            if (!list.Any(cs => cs.Customer._ID == (int)dic["Customer_ID"]))
+                            {
+                                view_Customer c = new view_Customer();
+                                c.Customer = dic["Customer"].ToString();
+                                c._ID = (int)dic["Customer_ID"];
+                                CustomerStatistics cs = new CustomerStatistics(c);
+                                cs.perYear = new List<Dictionary<string, object>>();
+                                cs.perYear.Add(dic);
+                            }
+                            else
+                            {
+                                CustomerStatistics cs = list.Find(c => c.Customer._ID == (int)dic["Customer_ID"]);
+                                cs.perYear.Add(dic);
+                            }
+                        }
+                    }
+                }
+            }
+            return list;
         }
     }
 }
