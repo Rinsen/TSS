@@ -48,12 +48,13 @@ namespace TietoCRM.Controllers.Reports
         public List<Dictionary<String, object>> GenerateValidContracts()
         {
             List<view_Customer> customers = view_Customer.getAllCustomers();
+            List<view_Contract> allContracts = view_Contract.GetContracts();
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
                 Dictionary<String, object> dict = new Dictionary<String, object>();
                 int amountValidContracts = 0;
-                List<view_Contract> contracts = view_Contract.GetContracts(customer.Customer);
+                List<view_Contract> contracts = allContracts.Where(c => c.Customer == customer.Customer).ToList();
                 foreach (view_Contract contract in contracts)
                 {
                     if (contract.Status == "Giltigt")
@@ -63,7 +64,7 @@ namespace TietoCRM.Controllers.Reports
                 }
                 dict.Add("customer", customer.Customer);
                 dict.Add("customer_type", customer.Customer_type);
-                dict.Add("representative", customer.Representative);
+                dict.Add("representative", customer.GetReprensentativesAsString());
                 dict.Add("it_manager", customer.IT_manager);
 
                 List<view_Contract> mainContracts = contracts.Where(c => c.Contract_type == "Huvudavtal" && c.Status == "Giltigt" &&  System.Web.HttpContext.Current.GetUser().IfSameArea(c.Area)).ToList();
