@@ -59,14 +59,14 @@ namespace TietoCRM.Models
                 so.Value = this.System;
                 so.Insert();
             }
-            else if (!selectOptions.Options["Classification"].Any(d => d.Value == this.Classification))
+            if (!selectOptions.Options["Classification"].Any(d => d.Value == this.Classification))
             {
                 so.Property = "Classification";
                 so.Text = this.Classification;
                 so.Value = this.Classification;
                 so.Insert();
             }
-            else if (!selectOptions.Options["Area"].Any(d => d.Value == this.Area))
+            if (!selectOptions.Options["Area"].Any(d => d.Value == this.Area))
             {
                 so.Property = "Area";
                 so.Text = this.Area;

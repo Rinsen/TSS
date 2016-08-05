@@ -90,34 +90,12 @@ namespace TietoCRM.Controllers.Reports
                 else
                     customers = view_Customer.getAllCustomers();
             }
-            //SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
+
             List<CustomerStatistics> statistics = CustomerStatistics.GetAllCustomerStatstics(customers, int.Parse(year));
             List<Dictionary<String, Object>> rows = new List<Dictionary<string, Object>>();
-            /*List<view_User> users = view_User.getAllUsers().Where(u => u.IfSameArea(area)).ToList();
-            view_User vUser = new view_User();
-            bool a = area == "*";
-            bool b = user == "*";
-            bool c = false;
-            if (!String.IsNullOrEmpty(user) && user != "*")
-            {
-                vUser.Select("Sign=" + user);
-                c = vUser.User_level > 1;
-            }*/
-                
-
 
             foreach (CustomerStatistics statistic in statistics)
             {
-                /*if (b && !a)
-                {
-                    if (!statistic.Customer._Representatives.Any(r => users.Any(u => u.Sign == r)))
-                        continue;
-                }
-                else if (c && !a)
-                {
-                    if (!statistic.Customer._Representatives.Contains(vUser.Sign))
-                        continue;
-                }*/
                 view_Customer customer = statistic.Customer;
 
                 Dictionary<String, object> dict = new Dictionary<string, object>();

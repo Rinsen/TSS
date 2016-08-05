@@ -65,9 +65,6 @@ namespace TietoCRM.Models
 
                 returnString = modifiedString + middleString + unmodifiedString;
                 pos = (modifiedString + middleString).Length;
-                
-                
-                //returnString = returnString.Replace(Mapping.Key, Mapping.Value);
             }
             return returnString;
         }
@@ -78,12 +75,9 @@ namespace TietoCRM.Models
 
             // Match any @Word or @Word(data)
             Regex Regx1 = new Regex(@"@[A-Za-z]+");
-            //Regex Regx2 = new Regex(@"@[A-Za-z]+\([^)]+\)");
             if (Document.GetType() == typeof(view_CustomerOffer))
             {
                 List<String> lst1 = Regx1.Matches(user.Offer_file_location).Cast<Match>().Select(match => match.Value).ToList();
-               // List<String> lst2 = Regx2.Matches(user.Offer_file_location).Cast<Match>().Select(match => match.Value).ToList();
-               // lst1.AddRange(lst2);
                 returnList = lst1;
             }
             else // view_Contract
@@ -98,9 +92,6 @@ namespace TietoCRM.Models
         {
             List<String> MappingList = SplitLocationString();
             Dictionary<String,String> ReturnDic = new Dictionary<String,String>();
-
-            // Match e.x. @Date(yyyy-MM-dd) and capture the specified date format.
-            //Regex FormatedDateRegex = new Regex(@"@DATE\((.*)\)", RegexOptions.IgnoreCase);
 
             foreach (String LocationMapping in MappingList)
             {
