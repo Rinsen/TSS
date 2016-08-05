@@ -88,8 +88,11 @@
                 if (typeof onSuccess != "undefined")
                     onSuccess();
                 //drawButtons();
-                var $selRowContainer = $("#expiration-form");
-                drawButtonsExtension($selRowContainer);
+                if ($('#help-popover').length === 0)
+                {
+                    var $selRowContainer = $("#expiration-form");
+                    drawButtonsExtension($selRowContainer);
+                }
             },
             "defaultContent": "",
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
@@ -101,7 +104,8 @@
                     "data": null,
                     "defaultContent": "",
                     "orderable": false,
-                    "targets": 0
+                    "targets": 0,
+                    "width": "30px",
                 },
             ],
             "scrollX": "1200px",
@@ -124,36 +128,60 @@
 
             for (var name in aData) {
                 var $td;
-
-
                 if (i == 0) {
                     $td = $('td:eq(' + i + ')', nRow);
 
                     if (aData["CanExtend"] == 1) {
-                        $td.html("<input style='margin-top: -1px; vertical-align: top' type='checkbox' value=" + aData["Extend"] + " name='selected-contact' \
-                                data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' onClick='cbClicked(this);'/>");
+                        $td.html("<input style='margin-top: -1px; z-index: -1999; vertical-align: top' type='checkbox' value=" + aData["Extend"] + " name='selected-contact' \
+                                data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' onclick='cbClicked(this)' />");
                     } else {
-                        $td.html("<input style='margin-top: -1px; vertical-align: top' type='checkbox' value=" + aData["Extend"] + " name='selected-contact' \
-                                data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' disabled onClick='cbClicked(this);'/>");
+                        $td.html("<input style='margin-top: -1px; z-index: -1999; vertical-align: top' type='checkbox' value=" + aData["Extend"] + " name='selected-contact' \
+                                data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' disabled onclick='cbClicked(this)' />");
                         $td.prop("title", "Cannot be extended, observation date not yet reached or extension eq zero");
                     }
-                    $td.addClass("checkbox");
-                    i++;
+                    //$(nRow).unbind('click').click(function () {
+                    //    checkThaBox(nRow, $(nRow).find('input'));
+                    //})
                 }
-
-                if (name != "Extend" && name != "CanExtend") {
-                    if (i < 11) {
+                else {
+                    if (i < 14) {
                         $td = $('td:eq(' + i + ')', nRow);
                         $td.attr("data-property", name);
                         $td.html(aData[name]);
+                        i++;
                     }
-
-                   
                 }
-                i++;
             }
         }
     }
+
+    //var checkThaBox = function (row, cb, isInput) {
+    //    isInput = typeof isInput === 'undefined' ? false : true;
+    //    var $row = $(row);
+    //    var $checkbox = $(cb);
+    //    console.log($checkbox.is(':checked'));
+    //    if (!$checkbox.is(":disabled")) {
+    //        if($checkbox.is(":checked") && !isInput){
+    //            console.log("unckecing");
+    //            $checkbox.prop("checked", false);
+    //            selectedNo += 1;
+    //        } else if(!$checkbox.is(":checked") || isInput) {
+    //            console.log("checkkking");
+    //            $checkbox.prop("checked", true);
+    //            selectedNo -= 1;
+    //        }
+    //        if ($row.hasClass('selected'))
+    //            $row.removeClass('selected');
+    //        else
+    //            $row.addClass('selected');
+    //    }
+    //}
+
+    //var ignore = function (ev, me) {
+    //    checkThaBox($(me).parent().parent(), me, true);
+    //    ev.preventDefault();
+    //    ev.stopPropagation();
+    //}
 
     var cbClicked = function (cb) {
         if (cb.checked) {
@@ -162,6 +190,7 @@
         else {
             selectedNo -= 1;
         }
+        console.log(selectedNo);
     }
 
     function extendContracts() {
