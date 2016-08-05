@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.DirectoryServices;
 using System.Linq;
 using System.Net;
@@ -37,7 +38,7 @@ namespace TietoCRM.Models
             string thisemailAddr = thisUser.Properties["mail"][0].ToString();
 
             System.Net.Mail.MailMessage mailMessage = new System.Net.Mail.MailMessage();
-            mailMessage.From = new System.Net.Mail.MailAddress(thisemailAddr, "TSS information noreply");
+            mailMessage.From = new System.Net.Mail.MailAddress("tieto.information.noreply@gmail.com", "TSS information noreply");
 
             foreach (view_User user in Receivers)
             {
@@ -54,11 +55,11 @@ namespace TietoCRM.Models
             mailMessage.Body = message;
 
             System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
+            client.Host = "smtp.gmail.com";
             client.Port = 587;
-            client.DeliveryMethod = SmtpDeliveryMethod.PickupDirectoryFromIis;
-            client.UseDefaultCredentials = true;
-            client.Credentials = CredentialCache.DefaultNetworkCredentials;
-            client.Host = "mailrelay.tieto.com";
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential("tieto.information.noreply@gmail.com", "tieto_tss_2016");
+            client.EnableSsl = true;
             client.Send(mailMessage);
         }
     }
