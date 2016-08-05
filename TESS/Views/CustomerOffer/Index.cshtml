@@ -905,7 +905,7 @@
         var i = 0, j = 0;
         var StateSelId = StateCookie.getCurrentSite().selectedId;
         var insertValue;
-        var selectOptions = "@Html.Raw(HttpUtility.JavaScriptStringEncode((new System.Web.Script.Serialization.JavaScriptSerializer()).Serialize( ViewBag.SelectOfferStatus)))";
+        var selectOptions = "@Html.Raw(HttpUtility.JavaScriptStringEncode((new System.Web.Script.Serialization.JavaScriptSerializer()).Serialize(ViewBag.SelectOfferStatus)))";
         var selectArr = JSON.parse(selectOptions);
         for (var name in JSON.parse(selectOptions)) {
             if (selectArr[j][0] == aData["Offer_status"]) {
@@ -964,10 +964,10 @@
     @{String DataObject = "\r\n";}
     @foreach (String ColumnName in ViewBag.Properties)
     {
-            if (ColumnName != "SSMA_timestamp" && ColumnName != "Customer")
-    {
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @ColumnName + "\"  },\r\n";
-    }
+        if (ColumnName != "SSMA_timestamp" && ColumnName != "Customer")
+        {
+            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @ColumnName + "\"  },\r\n";
+        }
     }
     var updateDataTable = function(customer, onSuccess)
     {
@@ -1095,63 +1095,70 @@
 
     function drawButtons()
     {
-        var $selRowContainer = $("#CustomerOffer-table_wrapper").find(".row").first().find(".col-sm-6").first();
+        @{
+            String disableCreate = "";
+            if (ViewBag.Customers.Count == 0)
+            {
+                disableCreate = "title='You will have to have at least one customer.' disabled";
+            }
+         }
+            var $selRowContainer = $("#CustomerOffer-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
-        $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button @Html.Raw(disableCreate) type='button' class='btn btn-default'>Create</button></div>");
         $selRowContainer.append("<div id='crm-edit-offer' class='crm-table-btn'><button type='button' class='btn btn-default'>Preview</button></div>");
 
-        var $editBtn = $("#crm-save-updates");
+            var $editBtn = $("#crm-save-updates");
         $("#crm-edit-offer").bind("click", function(){
-            //get selected item and add so the url is correct.
-            if(typeof selectedId == "undefined" || selectedId == null)
-                triggerAlert("Select an item to preview", "info");
-            else if(rows.length <= 0)
-            {
-                window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
+                //get selected item and add so the url is correct.
+                if(typeof selectedId == "undefined" || selectedId == null)
+                    triggerAlert("Select an item to preview", "info");
+                else if(rows.length <= 0)
+                {
+                    window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
                 $input = $("#CustomerOffer-table_filter").find(":input");
-                val = $input.val()
-                window.location = "ViewPdf?selected-offer=" + selectedId + "&search=" + val;
-            }
-            else
-            {
-                bootbox.dialog({
-                    title: 'Do you want to save changes?',
+                    val = $input.val()
+                    window.location = "ViewPdf?selected-offer=" + selectedId + "&search=" + val;
+                }
+                else
+                {
+                    bootbox.dialog({
+                        title: 'Do you want to save changes?',
                     message: "You are about to leave this page without saving your changes. Do you want to save changes?",
                     buttons: {
-                        'cancel': {
-                            label: 'Cancel',
+                            'cancel': {
+                                label: 'Cancel',
                             className: 'btn-default'
-                        },
+                            },
                         'yes': {
-                            label: 'Yes',
+                                label: 'Yes',
                             className: 'pull-right',
                             callback: function () {
-                                save(function(){
-                                    window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
-                                    window.location = "ViewPdf?selected-offer=" + selectedId;
-                                });
-                            }
-                        },
+                                    save(function(){
+                                        window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
+                                        window.location = "ViewPdf?selected-offer=" + selectedId;
+                                    });
+                                }
+                            },
                         'no': {
-                            label: 'No',
+                                label: 'No',
                             className: 'btn-danger pull-right',
                             callback: function () {
-                                window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
-                                window.location = "ViewPdf?selected-offer=" + selectedId;
+                                    window.history.pushState(null,null,["Index?selected-offer=" + selectedId]);
+                                    window.location = "ViewPdf?selected-offer=" + selectedId;
+                                }
                             }
-                        }
-                    },
+                        },
                 });
-            }
-        });
+                }
+            });
         $('#crm-save-btn').on('click', save);
 
         $("#crm-add-row").click(function(){
-            loadNewContactData();
+                loadNewContactData();
             $("#newRowModal").appendTo("body").modal("show").draggable();
-        });
+            });
 
-        drawButtonsExtension($selRowContainer, "bottom");
+            drawButtonsExtension($selRowContainer, "bottom");
 
     }
 

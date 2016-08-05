@@ -1,9 +1,10 @@
 ﻿@{
     Layout = null;
-    
+
 }
 @using TietoCRM.Models;
 @using System.Globalization;
+@using System.Linq;
 @if (Request["modal"] == "text-template")
 {
     <!-- #region asd -->
@@ -295,7 +296,7 @@ else if (Request["modal"] == "articles")
                                             data-selected="true"
                                             data-discount="@module.Discount"
                                             data-discount-type="@module.Discount_type"
-                                            @if(module.System != "Lärportal")
+                                            @if (module.System != "Lärportal")
                                             {
                                                 @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."));
                                             }
@@ -305,7 +306,7 @@ else if (Request["modal"] == "articles")
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
                                                 @if (or.Alias.IsEmpty())
-                                                { 
+                                                {
                                                     <td>@module.Module</td>
                                                 }
                                                 else
@@ -313,7 +314,7 @@ else if (Request["modal"] == "articles")
                                                     <td>@or.Alias</td>
                                                 }
                                                 
-                                                @if(module.System != "Lärportal")
+                                                @if (module.System != "Lärportal")
                                                 {
                                                     <td>@License</td>
                                                     <td>@Maintenance</td>
@@ -359,7 +360,7 @@ else if (Request["modal"] == "articles")
         </table>
     </form>
 
-   
+
 
 <script>
 
@@ -409,7 +410,14 @@ else if (Request["modal"] == "articles")
         $classificationSelect.selectpicker('refresh');
     }
     // Fill classifications select on page load
-    fillClassificationSelect("@Html.Raw(ViewBag.Systems[0])")
+    @{
+        String system = "No systems exist.";
+        if (ViewBag.Systems.Count > 0)
+        {
+            system = ViewBag.Systems[0];
+        }
+    }
+    fillClassificationSelect("@Html.Raw(system)")
 
     // Function to fill the article list depending on chosen System and classification
     var fillArticleList = function(System, classification){

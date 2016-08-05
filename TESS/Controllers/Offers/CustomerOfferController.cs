@@ -535,7 +535,6 @@ namespace TietoCRM.Controllers
                     }
                 }
             }
-
             return SystemList;
         }
 
@@ -629,9 +628,12 @@ namespace TietoCRM.Controllers
                         }
                     }
                 }
-                string temp = classificationList[0];
-                classificationList.Remove(temp);
-                classificationList.Add(temp);
+                if(classificationList.Count > 0)
+                {
+                    string temp = classificationList[0];
+                    classificationList.Remove(temp);
+                    classificationList.Add(temp);
+                }
 
                 return (new JavaScriptSerializer()).Serialize(classificationList);
             }
