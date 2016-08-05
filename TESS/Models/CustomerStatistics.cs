@@ -7,6 +7,39 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
+    public static class SqlCommandExt
+    {
+        /// <summary>
+        /// This will add an array of parameters to a SqlCommand. This is used for an IN statement.
+        /// Use the returned value for the IN part of your SQL call. (i.e. SELECT * FROM table WHERE field IN ({paramNameRoot}))
+        /// </summary>
+        /// <param name="cmd">The SqlCommand object to add parameters to.</param>
+        /// <param name="values">The array of strings that need to be added as parameters.</param>
+        /// <param name="paramNameRoot">What the parameter should be named followed by a unique value for each value. This value surrounded by {} in the CommandText will be replaced.</param>
+        /// <param name="start">The beginning number to append to the end of paramNameRoot for each value.</param>
+        /// <param name="separator">The string that separates the parameter names in the sql command.</param>
+        public static SqlParameter[] AddArrayParameters<T>(this SqlCommand cmd, IEnumerable<T> values, string paramNameRoot, int start = 1, string separator = ", ")
+        {
+            /* An array cannot be simply added as a parameter to a SqlCommand so we need to loop through things and add it manually. 
+             * Each item in the array will end up being it's own SqlParameter so the return value for this must be used as part of the
+             * IN statement in the CommandText.
+             */
+            var parameters = new List<SqlParameter>();
+            var parameterNames = new List<string>();
+            var paramNbr = start;
+            foreach (var value in values)
+            {
+                var paramName = string.Format("@{0}{1}", paramNameRoot, paramNbr++);
+                parameterNames.Add(paramName);
+                parameters.Add(cmd.Parameters.AddWithValue(paramName, value));
+            }
+
+            cmd.CommandText = cmd.CommandText.Replace("{" + paramNameRoot + "}", string.Join(separator, parameterNames));
+
+            return parameters.ToArray();
+        }
+    }
+
     public class CustomerStatistics : Statistics
     {
         private view_Customer customer;
@@ -51,13 +84,13 @@ namespace TietoCRM.Models
         public decimal GetTotalSpent(int year, String area)
         {
             List<Dictionary<String, Object>> list;
-            if (!useCachedData && this.perYear != null)
+            if (this.perYear == null)
                 this.perYear = list = this.GetMoneyPerYear();
             else
                 list = this.perYear;
             view_User user = new view_User();
             user.Area = area;
-            List<Dictionary<String, Object>> yearList = list.Where(d => ((DateTime)d["Year"]).Year == year && user.IfSameArea((String)d["Area"])).ToList();
+            List<Dictionary<String, Object>> yearList = list.Where(d => (int)d["Year"] == year && user.IfSameArea((String)d["Area"])).ToList();
             if (yearList.Count > 0)
             {
                 if (user.Area == "*")
@@ -73,7 +106,7 @@ namespace TietoCRM.Models
                     return (decimal)yearList[0]["Total_value"];
             }
             else
-                throw new StatisticsException("The year (" + year + ") didnt exist in this object", this.Customer);
+               throw new StatisticsException("The year (" + year + ") didnt exist in this object", this.Customer);
         }
 
         /// <summary>
@@ -343,7 +376,7 @@ namespace TietoCRM.Models
                 insertCommand.Prepare();
                 insertCommand.Parameters.AddWithValue("@customerid", customerId);
                 insertCommand.Parameters.AddWithValue("@val", totalValue);
-                insertCommand.Parameters.AddWithValue("@year", year.ToString("yyyy-MM-dd"));
+                insertCommand.Parameters.AddWithValue("@year", year.Year);
                 insertCommand.Parameters.AddWithValue("@area", area);
                 insertCommand.ExecuteNonQuery();
             }
@@ -379,18 +412,27 @@ namespace TietoCRM.Models
                 
         }
 
-        public static List<CustomerStatistics> GetAllCustomerStatstics()
+        public static List<CustomerStatistics> GetAllCustomerStatstics(List<view_Customer> customers, int? year)
         {
             List<CustomerStatistics> list = new List<CustomerStatistics>();
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
             {
                 connection.Open();
 
-                String query = "SELECT Customer, Customer_ID, Total_value, Year, Area FROM " + "dbo.view_" + "TCVCalculator";
+                String whereQuery = "";
+                if (year != null)
+                    whereQuery = " AND Year=@year";
+
+                String query = "SELECT Customer_ID, Total_value, Year, Area FROM " + "dbo.view_" + "TCVCalculator WHERE Customer_ID IN ({cid})" + whereQuery;
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
+
+                command.AddArrayParameters(customers.Select(c => c._ID), "cid");
+
+                if (year != null)
+                    command.Parameters.AddWithValue("@year", year);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -400,24 +442,27 @@ namespace TietoCRM.Models
                         if (reader.HasRows)
                         {
                             Dictionary<String, Object> dic = new Dictionary<String, Object>();
+                            int id = reader.GetInt32(0);
                             int i = 1;
                             while (reader.FieldCount > i)
                             {
                                 dic.Add(reader.GetName(i), reader.GetValue(i));
+
                                 i++;
                             }
-                            if (!list.Any(cs => cs.Customer._ID == (int)dic["Customer_ID"]))
+                            view_Customer customer = new view_Customer();
+                            customer = customers.Find(c => c._ID == id);
+                            CustomerStatistics cs;
+                            if (!list.Any(css => css.Customer._ID == id))
                             {
-                                view_Customer c = new view_Customer();
-                                c.Customer = dic["Customer"].ToString();
-                                c._ID = (int)dic["Customer_ID"];
-                                CustomerStatistics cs = new CustomerStatistics(c);
+                                cs = new CustomerStatistics(customer);
                                 cs.perYear = new List<Dictionary<string, object>>();
                                 cs.perYear.Add(dic);
+                                list.Add(cs);
                             }
                             else
                             {
-                                CustomerStatistics cs = list.Find(c => c.Customer._ID == (int)dic["Customer_ID"]);
+                                cs = list.Find(c => c.Customer._ID == id);
                                 cs.perYear.Add(dic);
                             }
                         }
