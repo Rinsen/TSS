@@ -51,13 +51,14 @@ namespace TietoCRM.Controllers.Reports
         {
 
             List<view_Customer> customers = view_Customer.getAllCustomers();
+            List<view_Contract> allContracts = view_Contract.GetContracts();
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
 
                 Dictionary<String, object> dict = new Dictionary<String, object>();
                 int amountValidContracts = 0;
-                List<view_Contract> contracts = view_Contract.GetContracts(customer.Customer);
+                List<view_Contract> contracts = allContracts.Where(c => c.Customer == customer.Customer).ToList();
                 foreach (view_Contract contract in contracts)
                 {
                     if (contract.Status == "Uppsagt")
