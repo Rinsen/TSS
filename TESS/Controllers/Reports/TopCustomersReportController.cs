@@ -121,18 +121,17 @@ namespace TietoCRM.Controllers.Reports
                 view_Customer customer = statistic.Customer;
 
                 Dictionary<String, object> dict = new Dictionary<string, object>();
-
-                dict.Add("customer", customer.Customer);
                 try
                 {
+                    dict.Add("customer", customer.Customer);
                     dict.Add("amount", Convert.ToInt32(statistic.GetTotalSpent(int.Parse(year), area)));
+                    dict.Add("representative", customer.GetReprensentativesAsString());
+                    dict.Add("customer_type", customer.Customer_type);
+                    dict.Add("county", selectOption.GetValue("County",customer.County.ToString()));
+
+                    rows.Add(dict);
                 }
                 catch { }
-                dict.Add("representative", customer.GetReprensentativesAsString());
-                dict.Add("customer_type", customer.Customer_type);
-                dict.Add("county", selectOption.GetValue("County",customer.County.ToString()));
-
-                rows.Add(dict);
 
             }
             return rows.OrderByDescending(d => d["amount"]).ToList().GetRange(0,Math.Min(ammount,rows.Count));

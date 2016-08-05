@@ -35,6 +35,45 @@ namespace TietoCRM.Models
             //ctr
         }
 
+        public override int Insert()
+        {
+            this.InsertSelectOptions();
+            return base.Insert();
+        }
+
+        public override void Update(string condition)
+        {
+            this.InsertSelectOptions();
+            base.Update(condition);
+        }
+
+        private void InsertSelectOptions()
+        {
+            SelectOptions<view_Sector> selectOptions = new SelectOptions<view_Sector>();
+            view_SelectOption so = new view_SelectOption();
+            so.Model = this.GetType().Name;
+            if (!selectOptions.Options["System"].Any(d => d.Value == this.System))
+            {
+                so.Property = "System";
+                so.Text = this.System;
+                so.Value = this.System;
+                so.Insert();
+            }
+            else if (!selectOptions.Options["Classification"].Any(d => d.Value == this.Classification))
+            {
+                so.Property = "Classification";
+                so.Text = this.Classification;
+                so.Value = this.Classification;
+                so.Insert();
+            }
+            else if (!selectOptions.Options["Area"].Any(d => d.Value == this.Area))
+            {
+                so.Property = "Area";
+                so.Text = this.Area;
+                so.Value = this.Area;
+                so.Insert();
+            }
+        }
 
         /// <summary>
         /// Gets all users.
@@ -73,15 +112,15 @@ namespace TietoCRM.Models
 
         public static HashSet<String> getAllAreas()
         {
-            List<view_Sector> sectors = view_Sector.getAllSectors();
-            HashSet<String> areas = new HashSet<string>();
+            SelectOptions<view_Sector> selectOptions = new SelectOptions<view_Sector>();
+            HashSet<String> hs = new HashSet<string>();
 
-            foreach(view_Sector sector in sectors)
+            foreach(SelectOptions<view_Sector>.SelectOption so in selectOptions.GetOptions("Area"))
             {
-                areas.Add(sector.Area);
+                hs.Add(so.Text);
             }
 
-            return areas;
+            return hs;
         }
     }
 
