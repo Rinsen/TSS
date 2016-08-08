@@ -195,9 +195,9 @@ else if (Request["modal"] == "articles")
         <div class="col-sm-4">
             <label for="System-select">System: </label>
             <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select" data-live-search="true">
-                @foreach (String System in ViewBag.Systems)
+                @foreach (var selectOption in ViewBag.Systems)
                 {
-                    <option value="@System">@System</option>
+                    <option value="@selectOption.Value">@selectOption.Text</option>
                 }
             </select>
         </div>
@@ -390,19 +390,19 @@ else if (Request["modal"] == "articles")
             "data": {
                 "requestData": "update_classification_select",
                 "System": System,
-                "customer": "@Html.Raw(ViewBag.CustomerName)"
-
+                "customer": "@Html.Raw(ViewBag.CustomerName)",
+                "Area": "@Html.Raw(ViewBag.CustomerOffer.Area)"
             },
             "success": function (data) {
                 if (data.length > 0) {
-                    var classifications = JSON.parse(data);
-                    var classificationsLen = Object.keys(classifications).length;
+                    var selectOptions = JSON.parse(data);
                     $classificationSelect.empty();
-                    for(var i = 0 ; i < classificationsLen ; i++){
-                        $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
-                        if(i == classificationsLen-1)
+                    $.each(selectOptions, function(i, selectOption){
+                        var $optionEl = $("<option></option>").val(selectOption.Value).html(selectOption.Text);
+                        $classificationSelect.append($optionEl);
+                        if(i == selectOptions.length-1)
                             fillArticleList($SystemSelect.val(), $classificationSelect.val());
-                    }
+                    });
                 }
                 $classificationSelect.selectpicker('refresh');
             }
@@ -414,7 +414,7 @@ else if (Request["modal"] == "articles")
         String system = "No systems exist.";
         if (ViewBag.Systems.Count > 0)
         {
-            system = ViewBag.Systems[0];
+            system = ViewBag.Systems[0].Value;
         }
     }
     fillClassificationSelect("@Html.Raw(system)")
@@ -1288,7 +1288,7 @@ else if (Request["modal"] == "head-information")
         <div class="form-group">
             <label for="area-text" class="col-sm-2 control-label">Area</label>
             <div class="col-sm-10">
-                <input id="area-text" name="Area" type="text" class="form-control" value="@ViewBag.CustomerOffer.Area">
+                <input id="area-text" name="Area" type="text" class="form-control" value="@ViewBag.CustomerOffer.Area" disabled>
             </div>
         </div>
         <div class="form-group">

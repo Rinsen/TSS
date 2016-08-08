@@ -413,13 +413,12 @@ namespace TietoCRM.Controllers
             ViewData.Add("CustomerName", customer);
 
 
-
-            ViewData.Add("Systems", GetAllSystemNames());
-
             ViewData.Add("Statuses", GetOfferStatus());
 
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             ViewData.Add("CustomerOffer", co);
+
+            ViewData.Add("Systems", GetAllSystemNames(co.Area));
 
             ViewData.Add("ContactPersons", view_CustomerContact.getAllCustomerContacts(customer));
 
@@ -513,29 +512,10 @@ namespace TietoCRM.Controllers
             });
         }
 
-        public List<String> GetAllSystemNames()
+        public List<SelectListItem> GetAllSystemNames(String area)
         {
-            List<String> SystemList = new List<String>();
-            String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            using (SqlCommand command = connection.CreateCommand())
-            {
-                connection.Open();
-                String queryTextClassification = @"SELECT DISTINCT System, Area FROM view_Sector";
-                command.CommandText = queryTextClassification;
-                command.Prepare();
-
-                command.ExecuteNonQuery();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        if(System.Web.HttpContext.Current.GetUser().IfSameArea(reader["Area"].ToString()))
-                            SystemList.Add(reader["System"].ToString());
-                    }
-                }
-            }
-            return SystemList;
+            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.Area == area).DistinctBy(a => a.System).ToList();
+            return allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();
         }
 
         public String JsonData()
@@ -608,34 +588,11 @@ namespace TietoCRM.Controllers
             else if (requestData == "update_classification_select")
             {
                 String System = Request.Form["System"];
-                List<String> classificationList = new List<String>();
-                String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-                    String queryTextClassification = @"SELECT Procapita, Indelning FROM V_Procapita WHERE Procapita = @Procapita";
-                    command.CommandText = queryTextClassification;
-                    command.Prepare();
-
-                    command.Parameters.AddWithValue("@Procapita", System);
-                    command.ExecuteNonQuery();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            classificationList.Add(reader["indelning"].ToString());
-                        }
-                    }
-                }
-                if(classificationList.Count > 0)
-                {
-                    string temp = classificationList[0];
-                    classificationList.Remove(temp);
-                    classificationList.Add(temp);
-                }
-
-                return (new JavaScriptSerializer()).Serialize(classificationList);
+                String Area = Request.Form["Area"];
+                List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.System == System && a.Area == Area).DistinctBy(a => a.Classification).ToList();
+                List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
+                returnList = returnList.OrderBy(a => a.Value == "-").ToList();
+                return (new JavaScriptSerializer()).Serialize(returnList);
             }
             else if (requestData == "update_view_Service")
             {

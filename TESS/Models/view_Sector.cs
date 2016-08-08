@@ -53,27 +53,60 @@ namespace TietoCRM.Models
             SelectOptions<view_Sector> selectOptions = new SelectOptions<view_Sector>();
             view_SelectOption so = new view_SelectOption();
             so.Model = this.GetType().Name;
-            if (!selectOptions.Options["System"].Any(d => d.Value == this.System))
+            if(selectOptions.Options.Any(a => a.Key == "System"))
+            {
+                if (!selectOptions.Options["System"].Any(d => d.Value == this.System))
+                {
+                    so.Property = "System";
+                    so.Text = this.System;
+                    so.Value = this.System;
+                    so.Insert();
+                }
+            }
+            else
             {
                 so.Property = "System";
                 so.Text = this.System;
                 so.Value = this.System;
                 so.Insert();
             }
-            if (!selectOptions.Options["Classification"].Any(d => d.Value == this.Classification))
+
+            if(selectOptions.Options.Any(a => a.Key == "Classification"))
+            {
+                if (!selectOptions.Options["Classification"].Any(d => d.Value == this.Classification))
+                {
+                    so.Property = "Classification";
+                    so.Text = this.Classification;
+                    so.Value = this.Classification;
+                    so.Insert();
+                }
+            }
+            else
             {
                 so.Property = "Classification";
                 so.Text = this.Classification;
                 so.Value = this.Classification;
                 so.Insert();
             }
-            if (!selectOptions.Options["Area"].Any(d => d.Value == this.Area))
+
+            if(selectOptions.Options.Any(a => a.Key == "Area"))
+            {
+                if (!selectOptions.Options["Area"].Any(d => d.Value == this.Area))
+                {
+                    so.Property = "Area";
+                    so.Text = this.Area;
+                    so.Value = this.Area;
+                    so.Insert();
+                }
+            }
+            else
             {
                 so.Property = "Area";
                 so.Text = this.Area;
                 so.Value = this.Area;
                 so.Insert();
             }
+
         }
 
         /// <summary>

@@ -366,6 +366,12 @@
         $("#crm-add-row").bind("click", function(){
             $("#article-number2").prop("readonly",false);
             $("#save-module-changes").removeAttr("data-Article-number");
+            @if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
+            {
+                <text>
+                    $('#area2').val("@HttpContext.Current.GetUser().Area");
+                </text>
+            }
             var $formInputs = $("#moduleModal form").find(":input");
             var frmInpLen = $formInputs.length;
             var ignoreTheseInputs = [
