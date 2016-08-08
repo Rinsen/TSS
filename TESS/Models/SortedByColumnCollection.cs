@@ -9,8 +9,8 @@ namespace TietoCRM.Models
 {
     public class SortedByColumnCollection
     {
-        private List<Dictionary<String, object>> collection;
-        public List<Dictionary<String, object>> Collection
+        private IEnumerable<Dictionary<String, object>> collection;
+        public IEnumerable<Dictionary<String, object>> Collection
         {
             get
             {
@@ -20,7 +20,7 @@ namespace TietoCRM.Models
 
         public SortedByColumnCollection(IEnumerable<Dictionary<String, object>> collection, String sortDirection, String sortKey)
         {
-            this.collection = (List<Dictionary<String, object>>)collection;
+            this.collection = collection;
             //this.Initializer(collection);
             this.Sort(sortDirection, sortKey);
         }

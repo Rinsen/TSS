@@ -107,6 +107,25 @@ namespace TietoCRM.Models
         {
         }
 
+        public override bool Equals(System.Object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to Point return false.
+            view_CustomerOffer p = obj as view_CustomerOffer;
+            if ((System.Object)p == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (this._Offer_number == p._Offer_number);
+        }
+
         /// <summary>
         /// Gets all the offers of a specific customer
         /// </summary>
