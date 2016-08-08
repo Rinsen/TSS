@@ -222,6 +222,25 @@ namespace TietoCRM.Models
             }
         }
 
+        public override bool Equals(System.Object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to Point return false.
+            view_Contract p = obj as view_Contract;
+            if ((System.Object)p == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            return (this.Contract_id == p.Contract_id) && (this.Customer == p.Customer);
+        }
+
         /// <summary>
         /// Gets all contracts.
         /// </summary>
