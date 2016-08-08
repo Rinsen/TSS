@@ -8,7 +8,7 @@
             <div class="form-group">
                 <label for="crm-select-year">Year:</label>
                 <select name="year" id="crm-select-year" class="form-control selectpicker" data-live-search="true">
-                    @for(int i = 1990; i <= DateTime.Now.Year; i++)
+                    @for(int i = DateTime.Now.Year; i <= 1990; i--)
                     {
                         <option value="@i">@i</option>
                     }

@@ -90,49 +90,26 @@ namespace TietoCRM.Controllers.Reports
                 else
                     customers = view_Customer.getAllCustomers();
             }
-            //SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
+
             List<CustomerStatistics> statistics = CustomerStatistics.GetAllCustomerStatstics(customers, int.Parse(year));
             List<Dictionary<String, Object>> rows = new List<Dictionary<string, Object>>();
-            /*List<view_User> users = view_User.getAllUsers().Where(u => u.IfSameArea(area)).ToList();
-            view_User vUser = new view_User();
-            bool a = area == "*";
-            bool b = user == "*";
-            bool c = false;
-            if (!String.IsNullOrEmpty(user) && user != "*")
-            {
-                vUser.Select("Sign=" + user);
-                c = vUser.User_level > 1;
-            }*/
-                
-
 
             foreach (CustomerStatistics statistic in statistics)
             {
-                /*if (b && !a)
-                {
-                    if (!statistic.Customer._Representatives.Any(r => users.Any(u => u.Sign == r)))
-                        continue;
-                }
-                else if (c && !a)
-                {
-                    if (!statistic.Customer._Representatives.Contains(vUser.Sign))
-                        continue;
-                }*/
                 view_Customer customer = statistic.Customer;
 
                 Dictionary<String, object> dict = new Dictionary<string, object>();
-
-                dict.Add("customer", customer.Customer);
                 try
                 {
+                    dict.Add("customer", customer.Customer);
                     dict.Add("amount", Convert.ToInt32(statistic.GetTotalSpent(int.Parse(year), area)));
+                    dict.Add("representative", customer.GetReprensentativesAsString());
+                    dict.Add("customer_type", customer.Customer_type);
+                    dict.Add("county", selectOption.GetValue("County",customer.County.ToString()));
+
+                    rows.Add(dict);
                 }
                 catch { }
-                dict.Add("representative", customer.GetReprensentativesAsString());
-                dict.Add("customer_type", customer.Customer_type);
-                dict.Add("county", selectOption.GetValue("County",customer.County.ToString()));
-
-                rows.Add(dict);
 
             }
             return rows.OrderByDescending(d => d["amount"]).ToList().GetRange(0,Math.Min(ammount,rows.Count));

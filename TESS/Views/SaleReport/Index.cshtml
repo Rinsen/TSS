@@ -34,7 +34,8 @@
                     <th data-field="valid_through" data-sortable="true">Valid through</th>
                     <th data-field="maintenance" data-sortable="true">Maintenance / month</th>
                     <th data-field="license" data-sortable="true">License</th>
-                    <th data-field="customer_type" data-sortable="true">Customer Type</th>
+                    <th data-field="contact_person" data-sortable="true">Contact person</th>
+                    <th data-field="customer_type" data-sortable="true">Customer type</th>
                 </tr>
             </thead>
         </table>
@@ -52,6 +53,7 @@
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "valid_through" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "maintenance" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "license" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contact_person" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}

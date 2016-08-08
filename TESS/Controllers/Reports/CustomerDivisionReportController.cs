@@ -48,6 +48,7 @@ namespace TietoCRM.Controllers.Reports
 
         public List<Dictionary<String, object>> generateCustomers(String user)
         {
+            SelectOptions<view_Customer> selectOptions = new SelectOptions<view_Customer>();
             List<Dictionary<String, object>> customers = new List<Dictionary<String, object>>();
             List<view_Customer> vCustomers = view_Customer.getAllCustomers(user);
             foreach(view_Customer customer in vCustomers)
@@ -57,6 +58,7 @@ namespace TietoCRM.Controllers.Reports
                 dict.Add("short_name", customer.Short_name);
                 dict.Add("customer_type", customer.Customer_type);
                 dict.Add("address", customer.Address);
+                dict.Add("county", selectOptions.GetValue("County", customer.County.ToString()));
                 dict.Add("zip_code", customer.Zip_code);
                 dict.Add("it_manager", customer.IT_manager);
                 dict.Add("inhabitant_level", customer.Inhabitant_level.ToString());

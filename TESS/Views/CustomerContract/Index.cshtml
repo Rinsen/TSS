@@ -942,7 +942,6 @@
                 ]);
             }
         }
-
     var openModal = function(){
         $("#appointmentModal").appendTo("body").modal("show").draggable();
     }
@@ -953,7 +952,8 @@
             var $table = $("#CustomerContract-table");
 
             $td.find("input").prop("checked", true);
-
+            selectedCustomer = $row.find("td[data-data='Customer']").html();
+            console.log(selectedCustomer);
             selectedId = $td.find("input").val();
             if(selectedId !== null)
                 generateSelectedContract($row);
@@ -1029,17 +1029,21 @@
 
         var generateSelectedContract = function($selectedRow){
             selectedContract.Contract_id = $selectedRow.find("td:nth-child(2)").html();
-            selectedContract.Customer = $customerSelect.val();
-            selectedContract.Contract_type = $selectedRow.find('[data-data="Contract_type"]').html();
-            selectedContract.Status = $selectedRow.find('[data-data="Status"]').html();
-            selectedContract.Valid_from = $selectedRow.find('[data-data="Valid_from"]').html();
-            selectedContract.Valid_through = $selectedRow.find('[data-data="Valid_through"]').html();
-            selectedContract.Main_contract_id = $selectedRow.find('[data-data="Main_contract_id"]').html();
-            selectedContract.Expire = $selectedRow.find('[data-data="Expire"]').html();
-            selectedContract.Observation = $selectedRow.find('[data-data="Observation"]').html();
-            selectedContract.Note = $selectedRow.find('[data-data="Note"]').html();
-            selectedContract.Contact_person = $selectedRow.find('[data-data="Contact_person"]').html();
-            selectedContract.Area = $selectedRow.find('[data-data="Area"]').html();
+            selectedContract.Customer = $selectedRow.find("td:nth-child(3)").html();
+            selectedContract.Title = $selectedRow.find("td:nth-child(4)").html();
+            selectedContract.Contract_type = $selectedRow.find('td:nth-child(5)').html();
+            selectedContract.Term_of_notice = $selectedRow.find('td:nth-child(6)').html();
+            selectedContract.Extension = $selectedRow.find('td:nth-child(7)').html();
+            selectedContract.Status = $selectedRow.find('td:nth-child(8)').html();
+            selectedContract.CRM_id = $selectedRow.find('td:nth-child(9)').html();
+            selectedContract.Valid_from = $selectedRow.find('td:nth-child(10)').html();
+            selectedContract.Valid_through = $selectedRow.find('td:nth-child(11)').html();
+            selectedContract.Main_contract_id = $selectedRow.find('td:nth-child(12)').html();
+            selectedContract.Expire = $selectedRow.find('td:nth-child(13)').html();
+            selectedContract.Observation = $selectedRow.find('td:nth-child(14)').html();
+            selectedContract.Note = $selectedRow.find('td:nth-child(15)').html();
+            selectedContract.Contact_person = $selectedRow.find('td:nth-child(16)').html();
+            selectedContract.Area = $selectedRow.find('td:nth-child(17)').html();
         }
         var uniqueRowNumber = 0;
         var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -1226,13 +1230,17 @@
                 if(typeof selectedId == "undefined" || selectedId == null)
                     triggerAlert("Select an item to preview", "info");
                 else
-                {   contract = selectedId;
+                {   
+                    contract = selectedId;
                     //console.log(contract.Contract_id);
-                window.history.pushState(null,null,["Index?contract-id=" + contract["Contract_id"] + "&customer=" + contract["Customer"] ]);
+                    
                     $input = $("#CustomerContract-table_filter").find(":input");
                     val = $input.val();
-
-                    window.location = "ViewPdf?contract-id=" + contract + "&customer=" + $customerSelect.val() + "&search=" + val;
+                    cval = $customerSelect.val();
+                    if(cval == "*")
+                        cval = selectedContract.Customer;
+                    window.history.pushState(null,null,["Index?contract-id=" + contract + "&customer=" + cval + "&search=" + val ]);
+                    window.location = "ViewPdf?contract-id=" + contract + "&customer=" + cval + "&search=" + val;
                 }
 
             });
