@@ -28,8 +28,6 @@ namespace TietoCRM.Controllers
 
             this.ViewData.Add("ControllerName", "module");
 
-            this.ViewData.Add("Systems", this.GetAllSystemNames());
-
             this.ViewData["Title"] = "Articles";
             //GlobalVariables.MostVisitedSites = this.getMostVisitedSite();
 
@@ -87,32 +85,45 @@ namespace TietoCRM.Controllers
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
         }
 
-        public List<Dictionary<String, String>> GetAllSystemNames()
+        public List<SelectListItem> GetAllSystems(String area = "")
         {
-            List<Dictionary<String, String>> SystemList = new List<Dictionary<String, String>>();
-            String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            using (SqlCommand command = connection.CreateCommand())
+            if (String.IsNullOrEmpty(area))
             {
-                connection.Open();
-                String queryTextClassification = @"SELECT DISTINCT Procapita, Area FROM V_Procapita";
-                command.CommandText = queryTextClassification;
-                command.Prepare();
-
-                command.ExecuteNonQuery();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Dictionary<String, String> dic = new Dictionary<String, String>();
-                        dic.Add("Area", reader["Area"].ToString());
-                        dic.Add("Procapita", reader["Procapita"].ToString());
-                        SystemList.Add(dic);
-                    }
-                }
+                area = System.Web.HttpContext.Current.GetUser().Area;
             }
+            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.Area == area).DistinctBy(a => a.System).ToList();
+            return allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();
+        }
+        public String GetAllSystemNames()
+        {
+            String area = "";
+            if (!String.IsNullOrEmpty(Request.Form["area"]))
+            {
+                area = Request.Form["area"];
+            }
+            return (new JavaScriptSerializer()).Serialize(GetAllSystems(area));
+        }
 
-            return SystemList;
+        public List<SelectListItem> GetAllClassifications(String system, String area = "")
+        {
+            if (String.IsNullOrEmpty(area))
+                area = System.Web.HttpContext.Current.GetUser().Area;
+            if (String.IsNullOrEmpty(system))
+                throw new Exception("No system was provided.");
+
+            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.System == system && a.Area == area).DistinctBy(a => a.Classification).ToList();
+            return allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
+        }
+        public String GetAllClassificationNames()
+        {
+            String system = "";
+            String area = "";
+            if (!String.IsNullOrEmpty(Request.Form["area"]) && !String.IsNullOrEmpty(Request.Form["system"]))
+            {
+                system = Request.Form["system"];
+                area = Request.Form["area"];
+            }
+            return (new JavaScriptSerializer()).Serialize(GetAllClassifications(system, area));
         }
 
 

@@ -7,6 +7,8 @@
     }
     select += "</select>";
 }
+@using TietoCRM.Models;
+@using TietoCRM.Extensions;
 
 <table draggable="true" id="@ViewBag.ControllerName-table" width="100%" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
     <thead>
@@ -60,32 +62,33 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="area2" class="col-sm-2 control-label">Area</label>
+                        <div class="col-sm-10">
+                            @if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
+                            {
+                                <input type="text" name="Area" id="area2" class="form-control" value="@HttpContext.Current.GetUser().Area" disabled />
+                            }
+                            else
+                            {
+                                <select class="form-control selectpicker" name="Area" id="area2" >
+                                    @foreach (var SelectOption in (new SelectOptions<view_Sector>()).GetOptions("Area").Where(a => a.Value != "*").ToList())
+                                    {
+                                        <option value="@SelectOption.Value">@SelectOption.Text</option>
+                                    }
+                                </select>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="system2" class="col-sm-2 control-label">System</label>
                         <div class="col-sm-10">
-                            <select class="form-control selectpicker" name="System" id="system2">
-                                @foreach (Dictionary<String, String> System in ViewBag.Systems)
-                                {
-                                    <option data-area="@System["Area"]" value="@System["Procapita"]">@System["Procapita"]</option>
-                                }
-                            </select>
+                            <select class="form-control selectpicker" name="System" id="system2"></select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="classification2" class="col-sm-2 control-label">Classification</label>
                         <div class="col-sm-10">
                             <select class="form-control selectpicker" name="Classification" id="classification2"></select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="area2" class="col-sm-2 control-label">Area</label>
-                        <div class="col-sm-10">
-                            <select class="form-control selectpicker" name="Area" id="area2" disabled>
-                                @{ TietoCRM.Models.SelectOptions<TietoCRM.Models.view_User> selectOptions1 = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_User>();}
-                                @foreach (TietoCRM.Models.SelectOptions<TietoCRM.Models.view_User>.SelectOption so in selectOptions1.GetOptions("Area"))
-                                {
-                                    <option value="@so.Value">@so.Text</option>
-                                }
-                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -181,7 +184,6 @@
 
     var handleStates = function(){
         var stateSearch = StateCookie.getCurrentSite().search;
-        console.log(stateSearch);
         var $searchBox = $("#module-table_filter").find(":input");
 
         if(stateSearch !== undefined)
@@ -264,10 +266,24 @@
         $("#none2").change(function() {
             handleDiscountCheck(this);
         });
+        $("#area2").change(function(){
+            getAndFillSystemSelect();
+        });
 
         $("#system2").change(function(){
             fillClassificationSelect(this.value);
-            $('#area2').val($(this).find(":selected").attr("data-area"));
+            @*@if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
+            {
+                <text>
+                    $('#area2').val("@HttpContext.Current.GetUser().Area");
+                </text>
+            }
+            else
+            {
+                <text>
+                    $('#area2').val($(this).find(':selected').attr('data-area'));
+                </text>
+            }*@
         });
 
         @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
@@ -339,7 +355,6 @@
     var drawButtons = function(){
         //var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
         var $selRowContainer = $('#module-table_wrapper').find('.col-sm-6').first();
-        console.log($selRowContainer);
 
         $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $selRowContainer.append("<div id='crm-edit' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
@@ -348,65 +363,33 @@
             <button type='button' class='btn btn-default'>Export</button></div>");
         drawButtonsExtension($selRowContainer);
 
-
-
-        //$("#module-delete").bind("click",function(){
-        //    if(selectedId != null){
-
-
-        //        $.ajax({
-        //            "url": "/Module/DeleteModule/",
-        //            "type": "POST",
-        //            "data": {
-        //                "primaryKey": selectedId
-        //            },
-        //            "success": function(data){
-        //                if(data > 0)
-        //                {
-
-        //                    console.log("success");
-        //                    selectedId = null;
-        //                    updateDataTable();
-        //                    drawButtons();
-        //                    triggerAlert("Successfully deleted", "success");
-        //                }
-        //                else {
-
-        //                    triggerAlert("Failed to delete from database.", "info");
-        //                    console.log("failure");
-        //                }
-
-
-        //            }
-        //        });
-        //    }
-        //    else
-        //        triggerAlert("You have to select a row to delete.", "info");
-
-        //});
-
-
         $("#crm-add-row").bind("click", function(){
             $("#article-number2").prop("readonly",false);
             $("#save-module-changes").removeAttr("data-Article-number");
             var $formInputs = $("#moduleModal form").find(":input");
-            console.log($formInputs);
             var frmInpLen = $formInputs.length;
+            var ignoreTheseInputs = [
+                "area2",
+                "system2",
+                "classification2"
+            ];
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                if ($currInput.prop("id") == "expired2") {
-                    $currInput.val("false");
-                }
-                else if ($currInput.prop("id") == "fixed-price2") {
-                    $currInput.val("false");
-                }
-                else {
-                    $currInput.val("");
+                if($.inArray($currInput.attr("id"), ignoreTheseInputs) == -1){
+                    if ($currInput.prop("id") == "expired2") {
+                        $currInput.val("false");
+                    }
+                    else if ($currInput.prop("id") == "fixed-price2") {
+                        $currInput.val("false");
+                    }
+                    else {
+                        $currInput.val("");
+                    }
                 }
             }
-            $("#system2 option:selected").prop("selected", false);
-            $("#system2 option:first").prop("selected", "selected");
-            $("#system2").trigger('change');
+            getAndFillSystemSelect(null, function(){
+                $("#system2").trigger('change');
+            });
             $("#moduleModal").appendTo("body").modal().draggable();
         });
 
@@ -416,58 +399,59 @@
                 var $selectedTds = $("#module-table tr.selected td").not(".radios");
 
                 var system = $("#module-table tr.selected td[data-property='System']").not(".radios").html();
+                var area = $("#module-table tr.selected td[data-property='Area']").not(".radios").html();
+                $('#area2').selectpicker().val(area);
+                getAndFillSystemSelect(area, function(){
 
+                    fillClassificationSelect(system, function(){
+                        $("#article-number2").prop("readonly",true);
+                        var $selectedTds = $("#module-table tr.selected td").not(".radios");
+                        var tdLen = $selectedTds.length;
 
-                fillClassificationSelect(system, function(){
-                    $("#article-number2").prop("readonly",true);
-                    var $selectedTds = $("#module-table tr.selected td").not(".radios");
-                    var tdLen = $selectedTds.length;
+                        var $formInputs = $("#moduleModal form").find(":input");
 
-                    var $formInputs = $("#moduleModal form").find(":input");
-
-                    var frmInpLen = $formInputs.length;
-                    var noneSelected = true;
-                    for (var i = 0; i < frmInpLen; i++) {
-                        var $currInput = $($formInputs[i]);
-                        for (var j = 0; j < tdLen; j++) {
-                            var $currTD = $($selectedTds[j]);
-                            if($currTD.data("property") == $currInput.attr("name")){
-                                var name = $currInput.attr("name");
-                                if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
-                                    if ($currTD.html() == "true" || $currTD.html() == "1") {
-                                        $currInput.prop("checked", true);
-                                        if(name == "Discount" || name == "Fixed_price")
-                                            noneSelected = false;
+                        var frmInpLen = $formInputs.length;
+                        var noneSelected = true;
+                        for (var i = 0; i < frmInpLen; i++) {
+                            var $currInput = $($formInputs[i]);
+                            for (var j = 0; j < tdLen; j++) {
+                                var $currTD = $($selectedTds[j]);
+                                if($currTD.data("property") == $currInput.attr("name")){
+                                    var name = $currInput.attr("name");
+                                    if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
+                                        if ($currTD.html() == "true" || $currTD.html() == "1") {
+                                            $currInput.prop("checked", true);
+                                            if(name == "Discount" || name == "Fixed_price")
+                                                noneSelected = false;
+                                        }
+                                        else {
+                                            $currInput.prop("checked", false);
+                                        }
                                     }
                                     else {
-                                        $currInput.prop("checked", false);
+                                        $currInput.val($currTD.html());
                                     }
                                 }
-                                else {
-                                    $currInput.val($currTD.html());
-                                }
                             }
-                            //console.log($currTD.data("property"));
-                           //console.log($currInput.attr("name"));
+                        }    
+                        if(noneSelected){
+                            $("#none2").prop("checked", true);
+                            $("#discount2").prop("checked", false);
+                            $("#fixed-price2").prop("checked", false);
                         }
-                    }    
-                    console.log(noneSelected);
-                    if(noneSelected){
-                        $("#none2").prop("checked", true);
-                        $("#discount2").prop("checked", false);
-                        $("#fixed-price2").prop("checked", false);
-                    }
-                    else{
-                        $("#none2").prop("checked", false);
-                    }
-                    handleDiscountCheck();
-                    $("#price-category2").val($($selectedTds[3]).html());
+                        else{
+                            $("#none2").prop("checked", false);
+                        }
+                        handleDiscountCheck();
+                        $("#price-category2").val($($selectedTds[3]).html());
 
-                    $("#save-module-changes").attr("data-Article-number",selectedId);
+                        $("#save-module-changes").attr("data-Article-number",selectedId);
 
-                    $("#moduleModal").appendTo("body").modal().draggable();
+                        $("#moduleModal").appendTo("body").modal().draggable();
 
-                });
+                    });
+                })
+
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -586,28 +570,61 @@
 
     });
 
-    var fillClassificationSelect = function(System, onSuccess){
-        var $classificationSelect = $("#classification2");
+    var getAndFillSystemSelect = function(area, onSuccess){
+        var area = area || $('#area2').val();
+        area = area == null ? $('#area2').val() : area;
+        var $systemSelect = $("#system2");
+        var $systemTD = $("#module-table tr.selected td[data-property='System']");
         $.ajax({
-            "url": "@Url.Content("~/Module/ClassificationData/")",
+            url: "@Url.Content("~/Module/GetAllSystemNames")",
+            type: "POST",
+            data: {
+                area: area
+            },
+            success: function(data){
+                if(data.length > 0){
+                    var selectOptions = JSON.parse(data);
+                    if(selectOptions.length > 0){
+                        $systemSelect.html("");
+                        $.each(selectOptions, function(i,selectOption){
+                            var $optionEL = $('<option></option>').val(selectOption.Value).html(selectOption.Text);
+                            if(selectOption.Value == $systemTD.html()){
+                                $optionEL.prop("selected", true);
+                            }
+                            $systemSelect.append($optionEL);
+                        });
+                    } else {
+                        $systemSelect.html("");
+                        $systemSelect.append($('<option></option>').val('').html('No system exist.'));
+                    }
+                    $systemSelect.selectpicker('refresh');
+                    if(typeof onSuccess !== 'undefined')
+                        onSuccess();
+                }
+            }
+        });
+    }
+
+    var fillClassificationSelect = function(system, onSuccess){
+        var $classificationSelect = $("#classification2");
+        var area = $("#area2").val();
+        $.ajax({
+            "url": "@Url.Content("~/Module/GetAllClassificationNames/")",
             "type": "POST",
             "data": {
-                "System": System,
+                "system": system,
+                "area": area
             },
             "success": function (data) {
                 if (data.length > 0) {
-                    var classifications = JSON.parse(data);
-                    var classificationsLen = Object.keys(classifications).length;
+                    var selectOptions = JSON.parse(data);
                     $classificationSelect.empty();
-                    for(var i = 0 ; i < classificationsLen ; i++){
-                        if(classifications[i] == "Modul"){
-                            $classificationSelect.append($("<option></option>").attr("value",classifications[i]).attr("selected","selected").html(classifications[i]));
-                        }
-                        else{
-                            $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));
-                        }
-
-                    }
+                    $.each(selectOptions, function(i, selectOption){
+                        var $selectEl = $("<option></option>").attr("value", selectOption.Value).html(selectOption.Text);
+                        if(selectOption.Value == "Modul" || selectOption == "Module")
+                            $selectEl.prop("selected", true);
+                        $classificationSelect.append($selectEl);
+                    });
                     if(typeof onSuccess != "undefined")
                         onSuccess();
                     $classificationSelect.selectpicker('refresh');
@@ -626,7 +643,7 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                if($currInput.attr("id") != "none2")
+                if($currInput.attr("id") != "none2" && !$currInput.is("button"))
                 {
                     if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
                         module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
@@ -647,7 +664,6 @@
                 },
                 "success": function (data) {
                     if (data > 0) {
-                        console.log("success");
                         updateDataTable(handleStates);
                         drawButtons();
                         triggerAlert("Successfully updated", "success");
@@ -657,7 +673,6 @@
                     else {
 
                         triggerAlert("Failed to update database.", "info");
-                        console.log("failure");
                     }
                 }
 
@@ -668,7 +683,6 @@
             var module = {}
 
             var $formInputs = $("#moduleModal form").find(":input");
-            console.log($formInputs);
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
@@ -697,7 +711,6 @@
 
                         StateCookie.updateSite(null, module.Article_number);
 
-                        console.log("success");
                         updateDataTable(handleStates);
                         drawButtons();
                         triggerAlert("Successfully added", "success");
@@ -706,7 +719,6 @@
                     else {
 
                         triggerAlert("Failed to insert into database.", "info");
-                        console.log("failure");
                     }
                 }
             });

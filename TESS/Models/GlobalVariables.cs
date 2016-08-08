@@ -12,6 +12,26 @@ namespace TietoCRM.Models
 {
     public static class GlobalVariables
     {
+        /// <summary>
+        /// User Level types 
+        /// </summary>
+        public enum UserLevel
+        {
+            /// <summary>
+            /// Can see everything 
+            /// </summary>
+            Supervisor = 1,
+            /// <summary>
+            /// Can only see things within same area 
+            /// </summary>
+            Salesperson = 2,
+
+            /// <summary>
+            /// Can see everything except Users, Contracts and Offers
+            /// </summary>
+            ProductOwner = 3
+        }
+
         public static void Initializer()
         {
             HttpContext.Current.Application["ApplicationName"] = ConfigurationManager.AppSettings["applicationName"];
@@ -33,6 +53,32 @@ namespace TietoCRM.Models
             else
                 return true;
         }
+
+        public static bool isAuthorized(UserLevel level)
+        {
+            view_User user = new view_User();
+            user.Select("windows_user='" + WindowsIdentity.GetCurrent().Name + "'");
+            System.Web.HttpContext.Current.UpdateUser(user);
+            switch (level)
+            {
+                case UserLevel.Supervisor:
+                    if (user.User_level <= 1)
+                        return true;
+                    break;
+                case UserLevel.Salesperson:
+                    if (user.User_level == 2)
+                        return true;
+                    break;
+                case UserLevel.ProductOwner:
+                    if (user.User_level == 3)
+                        return true;
+                    break;
+                default:
+                    return false;
+            }
+            return false;
+        }
+
         // read-write variable
         public static string ApplicationName
         {

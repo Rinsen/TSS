@@ -7,6 +7,8 @@
 @functions{
     bool containsHtml(String str)
     {
+        if (String.IsNullOrEmpty(str))
+            return false;
         Regex re = new Regex(@"<(\s*[(\/?)\w+]*)");
         if (re.IsMatch(str))
             return true;
