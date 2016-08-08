@@ -21,6 +21,12 @@ namespace TietoCRM.Models
             {
                 this.viewModel = viewModel;
             }
+
+            public StatisticsException(String message) : base(message)
+            {
+                this.viewModel = viewModel;
+                this.viewModel = null;
+            }
         }
 
         public abstract void UpdateToSQLServer();

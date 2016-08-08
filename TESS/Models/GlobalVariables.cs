@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Configuration;
 using TietoCRM;
 using TietoCRM.Extensions;
+using System.Security;
 
 namespace TietoCRM.Models
 {
@@ -19,7 +20,7 @@ namespace TietoCRM.Models
         public static void checkIfAuthorized(String site)
         {
             if(!isAuthorized(site))
-                throw new Exception("Invalid user level. You do not have premission to be here!");
+                throw new SecurityException("Invalid user level. The user does not have premission to be enter this area!");
         }
 
         public static bool isAuthorized(String site)

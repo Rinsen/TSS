@@ -23,6 +23,7 @@ namespace TietoCRM.Models
         public EmailSender(view_User sender)
         {
             this.sender = sender;
+            this.receivers = new List<view_User>();
         }
 
         public EmailSender(view_User sender, List<view_User> receivers)
