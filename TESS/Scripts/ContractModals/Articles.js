@@ -130,14 +130,14 @@ var editArticle = function(editButton){
         buttons: {
             close: {
                 label: "Close",
-                className: "btn-close",
+                className: "btn-default",
                 callback: function () {
                     $(".small-modal").remove();
                 }
             },
             success: {
                 label: "Save",
-                className: "btn-success",
+                className: "btn-primary",
                 callback: function () {
                     var $licenseEl = $("#license-text");
                     var $maintenanceEl = $("#maintenance-text");
