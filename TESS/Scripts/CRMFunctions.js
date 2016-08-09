@@ -463,3 +463,8 @@ var calculateValue = function (val, oldVal) {
 
     return val;
 }
+
+var calculateDiscount = function (val, oldVal){
+    val = parseFloat(val);
+    return (oldVal - oldVal * (val / 100)).toFixed(2);
+}

@@ -491,8 +491,8 @@ else if (Request["modal"] == "articles")
                                 <label for='license-text' class='col-sm-2 control-label'>License</label>                                                \
                                 <div class='col-sm-10'>                                                                   \
                                     <input class='form-control' id='license-text' name='License' value='" + oldLicenseVal + "'>                         \
-                                    <input class='form-control' id='license-percent-text' name='License_percent' value='0%'>                          \
-                                    <button type='button' class='btn btn-search' id='license-percent-button'>-</button>                  \
+                                    <input class='form-control' id='license-percent-text' name='License_percent' value='0'> %                          \
+                                    <button type='button' class='btn btn-default' id='license-percent-button'>&minus;</button>                  \
                                 </div>                                                                                                                 \
                             </div>  ";
         }
@@ -512,8 +512,8 @@ else if (Request["modal"] == "articles")
                             <label for='maintenance-text' class='col-sm-2 control-label'>Maintenance</label>                                        \
                             <div class='col-sm-10'>                                                                   \
                                 <input class='form-control' id='maintenance-text' name='Maintenance' value='" + oldMaintenanceVal + "'>             \
-                                <input class='form-control' id='maintenance-percent-text' name='Maintenance_percent' value='0%'>                  \
-                                <button type='button' class='btn btn-search' id='maintenance-percent-button'>-</button>                  \
+                                <input class='form-control' id='maintenance-percent-text' name='Maintenance_percent' value='0'> %                  \
+                                <button type='button' class='btn btn-default' id='maintenance-percent-button'>&minus;</button>                  \
                             </div>                                                                                                                  \
                         </div>                                                                                                                       \
                         " + licenseText  + "                                                                                                        \
@@ -522,14 +522,14 @@ else if (Request["modal"] == "articles")
                 buttons: {
                     close: {                
                         label: "Close",
-                        className: "btn-close",
+                        className: "btn-default",
                         callback: function(){
                             $(".small-modal").remove();
                         }
                     },
                     success: {
                         label: "Save",
-                        className: "btn-success",
+                        className: "btn-primary",
                         callback: function () {
                             var $licenseEl = $("#license-text");
                             var $maintenanceEl = $("#maintenance-text");           
@@ -541,14 +541,14 @@ else if (Request["modal"] == "articles")
                                 if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
                                     $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
                                 else
-                                    $articleBtn.find(".license").html($licenseEl.val() + "%");
+                                    $articleBtn.find(".license").html($licenseEl.val());
                             }
                             $articleBtn.attr("data-maintenance", $maintenanceEl.val());
                             $articleBtn.data("maintenance", $maintenanceEl.val());
                             if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
                                 $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
                             else
-                                $articleBtn.find(".maintenance").html($maintenanceEl.val() + "%");
+                                $articleBtn.find(".maintenance").html($maintenanceEl.val());
 
                             $articleBtn.attr("data-alias", $aliasEl.val());
                             $articleBtn.data("alias", $aliasEl.val());
@@ -563,12 +563,12 @@ else if (Request["modal"] == "articles")
         });
         $("#maintenance-percent-button").click(function () {
             var $maintenanceEl = $("#maintenance-text");
-            $maintenanceEl.val(calculateValue($("#maintenance-percent-text").val(), $maintenanceEl.val()));
+            $maintenanceEl.val(calculateDiscount($("#maintenance-percent-text").val(), $maintenanceEl.val()));
         });
 
         $("#license-percent-button").click(function () {
             var $licenseEl = $("#license-text");
-            $licenseEl.val(calculateValue($("#license-percent-text").val(), $licenseEl.val()));
+            $licenseEl.val(calculateDiscount($("#license-percent-text").val(), $licenseEl.val()));
         });
     }
 
@@ -845,6 +845,7 @@ else if (Request["modal"] == "articles")
             }
             selectedArticlesArray.push(newArticle);
         }
+        console.log(selectedArticlesArray);
         
         $.ajax({
             "url": "/CustomerOffer/JsonData/",

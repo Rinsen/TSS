@@ -189,7 +189,7 @@ var loadSelectData = function () {
                     $("#template-number-select").append($("<option class='added'></option>").attr("value", selectVal).html(id));
                 }
                 
-
+                $('.selectpicker').selectpicker('refresh');
             }
 
         }

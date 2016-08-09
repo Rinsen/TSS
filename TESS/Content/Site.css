@@ -546,11 +546,11 @@ div.ColVis {
 /*-------------CustomerOffer-------------------*/
 
 #maintenance-percent-text {
-  width: 15%;
+  width: 8%;
   display: inline-block;
 }
 #license-percent-text {
-  width: 15%;
+  width: 8%;
   display: inline-block;
 }
 #maintenance-text {
