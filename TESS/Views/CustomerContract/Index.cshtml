@@ -522,13 +522,16 @@
                 $select = $("#main_contract_id-select");
                 $select.html("");
 
-
-                for(var i = 0; i < mainIds.length; i++)
-                {
-                    var mainID = mainIds[i];
-                    $select.append($("<option></option>").attr("value", mainID).html(mainID));
-
+                if(mainIds.length > 0){
+                    for(var i = 0; i < mainIds.length; i++)
+                    {
+                        var mainID = mainIds[i];
+                        $select.append($("<option></option>").attr("value", mainID).html(mainID));
+                    }
+                } else {
+                   $select.append($("<option></option>").attr("value", "ignore").html("No \"Giltiga\" Main Contracts found."));
                 }
+
                 $select.selectpicker('refresh');
             }
         });
@@ -631,7 +634,13 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                if($currInput.attr("name") != "Hashtags")
+                if($currInput.attr("name") == "Main_contract_id"){
+                    console.log($currInput.attr("name"), $currInput.val())
+                    if($currInput.val() !== "ignore"){
+                        newContract[$currInput.attr("name")] = $currInput.val();
+                    }
+                }
+                else if($currInput.attr("name") != "Hashtags")
                     newContract[$currInput.attr("name")] = $currInput.val();
                 else
                     hashtags = $currInput.val();
@@ -650,7 +659,6 @@
                     "success": function(data){
                         if(data != "0" || data != "-1"){
                             updateDataTable($("#crm-select-customer").val());
-                            console.log("success");
                             triggerAlert("Successfully added new contract.", "success");
                             $("#newRowModal").modal("toggle");
 
@@ -661,7 +669,6 @@
                         }
                         else {
                             triggerAlert("Failed to add new contract.", "warning");
-                            console.log("fail");
                         }
                     }
                 });
@@ -839,7 +846,6 @@
             $option = $("#crm-contact-select").find("option:selected");
             var oldPerson = JSON.parse($option.val());
             var person = {}
-            console.log("asd");
             person.oldName = oldPerson.Contact_person;
             person.oldEmail = oldPerson.Email;
             if(selectedId != null)
@@ -865,14 +871,12 @@
                     {
                         updateDataTable($("#crm-select-customer").val());
                         selectedId = null;
-                        console.log("success");
                         triggerAlert("Successfully updated contact.", "success");
                         $("#contactModal").modal("toggle");
                     }
                     else
                     {
                         triggerAlert("Failed to update contact.", "warning");
-                        console.log("failure");
                     }
                 }
             });
@@ -909,12 +913,10 @@
                         $select.val(json);
                         triggerAlert("Successfully added contact.", "success");
                         updateContact();
-                        console.log("success");
                     }
                     else
                     {
                         triggerAlert("Failed to add contact.", "warning");
-                        console.log("failure");
                     }
                 }
         });
@@ -953,7 +955,6 @@
 
             $td.find("input").prop("checked", true);
             selectedCustomer = $row.find("td[data-data='Customer']").html();
-            console.log(selectedCustomer);
             selectedId = $td.find("input").val();
             if(selectedId !== null)
                 generateSelectedContract($row);
@@ -963,10 +964,7 @@
 
             var $selRowContainer = $("#CustomerContract-table_wrapper").find(".row").first().find(".col-sm-6").first();
             $button = $selRowContainer.find("#crm-delete-contract");
-            console.log($button);
-            console.log(selectedContract);
             if(selectedContract.Status == "Makulerat" && $button.length == 0){
-                console.log("ad");
                 $selRowContainer.append("<div id='crm-delete-contract' class='crm-table-btn'><button type='button' class='btn btn-danger'>Remove</button></div>");
                 $selRowContainer.find("#crm-delete-contract").bind("click", function(){
                     bootbox.dialog({
@@ -1014,7 +1012,6 @@
 
         var handleStates = function () {
             var stateSearch = StateCookie.getCurrentSite().search;
-            console.log(stateSearch);
             var $searchBox = $("#CustomerContract-table_filter").find(":input");
 
             if (stateSearch !== undefined) {
@@ -1022,8 +1019,13 @@
                 $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
             }
 
+            var waitBeforeSave;
             $searchBox.bind('keyup', function () {
-                StateCookie.updateSite($searchBox.val());
+                clearTimeout(waitBeforeSave);
+                waitBeforeSave = setTimeout(function(){
+                    console.log("running keydown");
+                    StateCookie.updateSite($searchBox.val());
+                }, 500)
             });
         }
 
@@ -1269,7 +1271,7 @@
         });
 
 
-        $formValidation = $("#newRowModal form").validate({
+        $formValidation1 = $("#new-contract-modal form").validate({
             ignore: ".ignore",
             rules: {
                 "Term_of_notice": {
@@ -1307,22 +1309,9 @@
                                 }
                             }
                         }
+                    
                 }
             },
-            //messages:{
-            //    "Main_contract_id": {
-            //        required:  {
-            //            depends:function() {
-            //                if($("#contract_type-select").val() == "Tilläggsavtal") {
-            //                    return "Required when 'Tilläggsavtal'";
-            //                }
-            //                else {
-            //                    return "";
-            //                }
-            //            }
-            //        }
-            //    }
-            //},
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
             errorPlacement: function (error, element) {
