@@ -412,7 +412,8 @@ CRMCookie.prototype.appendCurrentSite = function () {
         this.sites.push({
             location: currentSiteName,
             search: undefined,
-            selectedId: undefined
+            selectedId: undefined,
+            area: undefined
         });
         return true;
     }
@@ -425,9 +426,10 @@ CRMCookie.prototype.appendCurrentSite = function () {
  * @param [string]  search filter string
  * @param [int]     the id of the currently selected row
  */
-CRMCookie.prototype.updateSite = function (search, selectedId) {
+CRMCookie.prototype.updateSite = function (search, selectedId, area) {
     var _search = search === undefined ? null : search;
     var _selectedId = selectedId === undefined ? null : selectedId;
+    var _area = area === undefined ? null : area;
 
     // Make sure that the current site exists.
     this.appendCurrentSite();
@@ -441,7 +443,9 @@ CRMCookie.prototype.updateSite = function (search, selectedId) {
             this.sites[_siteID].selectedId = JSON.parse(_selectedId);
         else
             this.sites[_siteID].selectedId = _selectedId;
-        
+    if(_area != null)
+        this.sites[_siteID].area = _area;
+
     // Update the cookie
     this.updateCookie();
 }
@@ -468,3 +472,15 @@ var calculateDiscount = function (val, oldVal){
     val = parseFloat(val);
     return (oldVal - oldVal * (val / 100)).toFixed(2);
 }
+
+// Handle where to put error messages if selectpickers exist.
+var handleErrorPlacement = function (error, $element) {
+    error.next().addClass("tooltips");
+    error.addClass("tooltips");
+    if ($element.hasClass('selectpicker')) {
+        error.insertAfter($element.parent());
+    } else {
+        error.insertAfter($element);
+    }
+} 
+            

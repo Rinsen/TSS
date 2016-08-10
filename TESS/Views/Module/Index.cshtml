@@ -168,12 +168,15 @@
         var $row = $(element).parent();
         var $table = $("#module-table");
 
+        console.log($td, $row);
 
 
         selectedId = $td.find("input").val();
+        area = $row.find('td[data-property="Area"]').html();
+        console.log(area);
 
 
-        StateCookie.updateSite(null, selectedId);
+        StateCookie.updateSite(null, selectedId, area);
 
         $table.find("tr.selected").removeClass("selected");
 
@@ -271,19 +274,8 @@
         });
 
         $("#system2").change(function(){
+            console.log(this.value);
             fillClassificationSelect(this.value);
-            @*@if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
-            {
-                <text>
-                    $('#area2').val("@HttpContext.Current.GetUser().Area");
-                </text>
-            }
-            else
-            {
-                <text>
-                    $('#area2').val($(this).find(':selected').attr('data-area'));
-                </text>
-            }*@
         });
 
         @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
@@ -311,6 +303,7 @@
         //var $colvisBtn = $(colvis.button());
 
         //$('.dataTables_filter').append($colvisBtn);
+        //$.validator.addMethod("");
 
         $formValidation = $("#moduleModal form").validate({
             ignore: ".ignore",
@@ -342,14 +335,8 @@
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
-            errorPlacement: function (error, element) {
-                error.next().addClass("tooltips");
-                error.addClass("tooltips");
-                error.insertAfter(element);
-            }
+            errorPlacement: handleErrorPlacement
         });
-
-        //fillClassificationSelect($("#system2").val());
     });
 
     var drawButtons = function(){
@@ -521,6 +508,8 @@
         var i = 0, j = 0;
 
         var StateSelid = StateCookie.getCurrentSite().selectedId;
+        var StateArea = StateCookie.getCurrentSite().area;
+        var rowArea = aData["Area"];
 
         for (var name in aData) {
             var $td;
@@ -538,7 +527,7 @@
                 $td.addClass("radios");
                 $td.html("<input type='radio' value='" + aData["Article_number"] + "' name='selected-contact' onClick=''/>");
 
-                if( $td.find("input").val() == StateSelid){
+                if( $td.find("input").val() == StateSelid && rowArea == StateArea){
 
                     selectRow($($td));
 
@@ -601,9 +590,10 @@
                         });
                     } else {
                         $systemSelect.html("");
-                        $systemSelect.append($('<option></option>').val('').html('No system exist.'));
+                        $systemSelect.append($('<option></option>').val('').html('No system exist.').prop('selected', true));
                     }
                     $systemSelect.selectpicker('refresh');
+                    $systemSelect.trigger('change');
                     if(typeof onSuccess !== 'undefined')
                         onSuccess();
                 }
@@ -614,29 +604,35 @@
     var fillClassificationSelect = function(system, onSuccess){
         var $classificationSelect = $("#classification2");
         var area = $("#area2").val();
-        $.ajax({
-            "url": "@Url.Content("~/Module/GetAllClassificationNames/")",
-            "type": "POST",
-            "data": {
-                "system": system,
-                "area": area
-            },
-            "success": function (data) {
-                if (data.length > 0) {
-                    var selectOptions = JSON.parse(data);
-                    $classificationSelect.empty();
-                    $.each(selectOptions, function(i, selectOption){
-                        var $selectEl = $("<option></option>").attr("value", selectOption.Value).html(selectOption.Text);
-                        if(selectOption.Value == "Modul" || selectOption == "Module")
-                            $selectEl.prop("selected", true);
-                        $classificationSelect.append($selectEl);
-                    });
-                    if(typeof onSuccess != "undefined")
-                        onSuccess();
-                    $classificationSelect.selectpicker('refresh');
+        if(system != ""){
+            $.ajax({
+                "url": "@Url.Content("~/Module/GetAllClassificationNames/")",
+                "type": "POST",
+                "data": {
+                    "system": system,
+                    "area": area
+                },
+                "success": function (data) {
+                    if (data.length > 0) {
+                        var selectOptions = JSON.parse(data);
+                        $classificationSelect.empty();
+                        $.each(selectOptions, function(i, selectOption){
+                            var $selectEl = $("<option></option>").attr("value", selectOption.Value).html(selectOption.Text);
+                            if(selectOption.Value == "Modul" || selectOption == "Module")
+                                $selectEl.prop("selected", true);
+                            $classificationSelect.append($selectEl);
+                        });
+                        if(typeof onSuccess != "undefined")
+                            onSuccess();
+                        $classificationSelect.selectpicker('refresh');
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            $classificationSelect.empty();
+            $classificationSelect.append($('<option value="">No Classification exist.</option>').prop('selected', true));
+        }
+
         $classificationSelect.selectpicker('refresh');
     }
 
@@ -670,6 +666,7 @@
                 },
                 "success": function (data) {
                     if (data > 0) {
+                        StateCookie.updateSite(null, module.Article_number, module.Area);
                         updateDataTable(handleStates);
                         drawButtons();
                         triggerAlert("Successfully updated", "success");
@@ -715,7 +712,7 @@
                 "success": function (data) {
                     if (data > 0) {
 
-                        StateCookie.updateSite(null, module.Article_number);
+                        StateCookie.updateSite(null, module.Article_number, module.Area);
 
                         updateDataTable(handleStates);
                         drawButtons();

@@ -96,7 +96,7 @@ namespace TietoCRM.Models
             bool r = base.Select(condition);
             if(r)
             {
-                this._OfferRows = view_OfferRow.getAllOfferRows(Convert.ToString(this._Offer_number));
+                this._OfferRows = view_OfferRow.getAllOfferRows(Convert.ToString(this._Offer_number), this.Area);
                 this._ConsultantRows = view_ConsultantRow.getAllConsultantRow(Convert.ToString(this._Offer_number));
             }
             return r;
@@ -171,7 +171,7 @@ namespace TietoCRM.Models
                                 i++;
                             }
                             t.GetHashtags();
-                            t._OfferRows = view_OfferRow.getAllOfferRows(t._Offer_number.ToString());
+                            t._OfferRows = view_OfferRow.getAllOfferRows(t._Offer_number.ToString(), t.Area);
                             t._ConsultantRows = view_ConsultantRow.getAllConsultantRow(t._Offer_number.ToString());
                             list.Add(t);
                         }

@@ -112,7 +112,8 @@ namespace TietoCRM.Controllers
                 throw new Exception("No system was provided.");
 
             List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.System == system && a.Area == area).DistinctBy(a => a.Classification).ToList();
-            return allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
+            List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
+            return returnList.OrderBy(a => a.Value == "-").ToList();
         }
         public String GetAllClassificationNames()
         {
@@ -188,7 +189,7 @@ namespace TietoCRM.Controllers
                 }
 
                 view_Module module = new view_Module();
-                module.Select("Article_number = " + oldArtNr);
+                module.Select("Article_number = " + oldArtNr + " AND Area = " + variables["Area"]);
                 try
                 {
                     foreach (KeyValuePair<String, object> variable in variables)
@@ -196,7 +197,7 @@ namespace TietoCRM.Controllers
                         module.SetValue(variable.Key, variable.Value);
                     }
 
-                    module.Update("Article_number = " + oldArtNr);
+                    module.Update("Article_number = " + oldArtNr + " AND Area = " + variables["Area"]);
 
                     return "1";
                 }

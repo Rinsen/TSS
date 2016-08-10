@@ -12,22 +12,25 @@ var fillClassificationSelect = function(System){
         "data": {
             "requestData": "update_classification_select",
             "System": System,
-            "customer": customerName
+            "customer": customerName,
+            "Area": area
 
         },
         "success": function (data) {
             if (data.length > 0) {
-                var classifications = JSON.parse(data);
-                var classificationsLen = Object.keys(classifications).length;
+                var selectOptions = JSON.parse(data);
                 $classificationSelect.empty();
-                for(var i = 0 ; i < classificationsLen ; i++){
-                    $classificationSelect.append($("<option></option>").attr("value",classifications[i]).html(classifications[i]));           
-                }
-                fillArticleList(System, $classificationSelect.val());
+                $.each(selectOptions, function(i, selectOption){
+                    var $optionEl = $("<option></option>").val(selectOption.Value).html(selectOption.Text);
+                    $classificationSelect.append($optionEl);
+                    if(i == selectOptions.length-1)
+                        fillArticleList($SystemSelect.val(), $classificationSelect.val());
+                });
             }
             $classificationSelect.selectpicker('refresh');
         }
     });
+    $classificationSelect.selectpicker('refresh');
 }
 
 //Hämtar samtliga gällande artiklar och markerar de i kontraktet befintliga 

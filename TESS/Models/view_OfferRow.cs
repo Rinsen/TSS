@@ -32,6 +32,9 @@ namespace TietoCRM.Models
         private String alias;
         public String Alias { get { return alias; } set { alias = value; } }
 
+        private String area;
+        public String Area { get { return area; } set { area = value; } }
+
         public view_OfferRow()
             : base("OfferRow")
         {
@@ -69,8 +72,9 @@ namespace TietoCRM.Models
         /// Gets all the offer rows with a specific offer number
         /// </summary>
         /// <param name="offerNumber">The offer number</param>
+        /// <param name="area">The offer area</param>
         /// <returns>A list of offer rows with a specific offer number.</returns>
-        public static List<view_OfferRow> getAllOfferRows(String offerNumber)
+        public static List<view_OfferRow> getAllOfferRows(String offerNumber, String area)
         {
             List<view_OfferRow> list = new List<view_OfferRow>();
 
@@ -83,10 +87,11 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias FROM " + databasePrefix + "OfferRow WHERE " + "Offer_number = @offerNumber";
+                                        ,Alias , Area FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
+                command.Parameters.AddWithValue("@area", area);
 
 
                 command.ExecuteNonQuery();
@@ -132,7 +137,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias FROM " + databasePrefix + "OfferRow";
+                                        ,Alias , Area FROM " + databasePrefix + "OfferRow";
 
                 command.Prepare();
 
