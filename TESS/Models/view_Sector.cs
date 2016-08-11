@@ -42,8 +42,8 @@ namespace TietoCRM.Models
 
         public override void Update(string condition)
         {
-            this.InsertSelectOptions();
             base.Update(condition);
+            this.InsertSelectOptions();
         }
 
         private void InsertSelectOptions()

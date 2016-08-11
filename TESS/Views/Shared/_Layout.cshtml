@@ -380,6 +380,15 @@
             }
         });
 
+        // Hide console output in the production environment.
+        @if (!HttpContext.Current.IsDebuggingEnabled)
+        {
+            <text>
+                var console = {};
+                console.log = function () { };
+            </text>
+        }
+
     </script>
     @RenderSection("scripts", required: false)
     

@@ -102,7 +102,6 @@
             var Sector = {}
 
             var $formInputs = $("#SectorModal form").find(":input");
-            console.log($formInputs);
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
@@ -120,12 +119,10 @@
                 "success": function (data) {
                     if (data > 0) {
                         updateDataTable();
-                        console.log("success");
                         $("#SectorModal").modal("hide");
                         triggerAlert("Successfully updated this Sector", "success");
                     }
                     else {
-                        console.log("failure");
                         triggerAlert("Something went wrong when trying to update the Sector on the server", "warning");
                     }
                 }
@@ -135,7 +132,6 @@
             var Sector = {}
 
             var $formInputs = $("#Sector-modal form").find(":input");
-            console.log($formInputs);
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
@@ -152,12 +148,10 @@
                 "success": function (data) {
                     if (data > 0) {
                         updateDataTable();
-                        console.log("success");
                         $("#SectorModal").modal("hide");
                         triggerAlert("Successfully inserted the new Sector", "success");
                     }
                     else {
-                        console.log("failure");
                         triggerAlert("Something went wrong when trying to insert the Sector to the server", "warning");
                     }
                 }
@@ -224,8 +218,9 @@
         $td.find("input").prop("checked", true);
 
         selectedId = $td.find("input").val();
+        area = $row.find('td[data-property="Area"]').html();
 
-        StateCookie.updateSite(null, selectedId);
+        StateCookie.updateSite(null, selectedId, area);
 
         $table.find("tr.selected").removeClass("selected");
 
@@ -234,7 +229,6 @@
 
     var handleStates = function () {
         var stateSearch = StateCookie.getCurrentSite().search;
-        console.log(stateSearch);
         var $searchBox = $("#Sector-table_filter").find(":input");
 
         if (stateSearch !== undefined) {
@@ -372,11 +366,9 @@
                                 "success": function (data) {
                                     if (data > 0) {
                                         updateDataTable();
-                                        console.log("success");
                                         triggerAlert("Successfully deleted row", "success");
                                     }
                                     else {
-                                        console.log("failure");
                                         triggerAlert("Something went wrong when trying to delete this row", "warning");
                                     }
                                 }
@@ -408,6 +400,7 @@
         var i = 0, j = 0;
         var insertValue;
         var StateSelId = StateCookie.getCurrentSite().selectedId;
+        var rowArea = StateCookie.getCurrentSite().area;
         for (var name in aData) {
 
             var i = 0;
@@ -427,7 +420,7 @@
                     });
                     $td.html("<input type='radio' value=" + aData["_ID_PK"] + " name='selected-contact' onClick=''/>");
                     $td.addClass("radios");
-                    if ($td.find("input").val() == StateSelId) {
+                    if ($td.find("input").val() == StateSelId && rowArea == aData["Area"]) {
                         selectRow($td);
                     }
                     else if ($td.find("input").val() != selectedId) {

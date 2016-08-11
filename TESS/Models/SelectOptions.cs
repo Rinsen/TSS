@@ -12,6 +12,10 @@ using System.Web;
 namespace TietoCRM.Models
 {
 
+    /// <summary>
+    /// Wrapper class to fetch select options for a specified view_ 
+    /// </summary>
+    /// <typeparam name="T">The target view_ e.g view_Customer</typeparam>
     public class SelectOptions<T> where T : SQLBaseClass
     {
         private Dictionary<String, List<SelectOption>> options;
