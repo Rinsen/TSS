@@ -127,6 +127,20 @@ namespace TietoCRM.Controllers
             return (new JavaScriptSerializer()).Serialize(GetAllClassifications(system, area));
         }
 
+        /// <summary>
+        /// Check if Module does not already exist in database
+        /// </summary>
+        /// <param name="Article_number">The Article number of the Module to check</param>
+        /// <returns>True if not already in database</returns>
+        /// <exception cref="System.FormatException">Throws FormatException if Article_number is not parsable as an Integer</exception>
+        public String ModuleDoesNotExist(String Article_number)
+        {
+            int _Article_number;
+            if (int.TryParse(Article_number, out _Article_number))
+                return (new view_Module()).Select("Article_number = " + _Article_number) ? "false" : "true";
+            else
+                throw new FormatException("Article_number is not parsable as Integer");
+        }
 
         public String InsertModule()
         {
@@ -145,26 +159,37 @@ namespace TietoCRM.Controllers
                     return "0";
                 }
 
-                view_Module module = new view_Module();
-                try
+                if (Convert.ToBoolean(ModuleDoesNotExist(variables["Article_number"].ToString())))
                 {
-                    foreach (KeyValuePair<String, object> variable in variables)
+                    view_Module module = new view_Module();
+                    try
                     {
-                        module.SetValue(variable.Key, variable.Value);
+                        foreach (KeyValuePair<String, object> variable in variables)
+                        {
+                            module.SetValue(variable.Key, variable.Value);
+                        }
+
+                        module.Insert();
+
+                        return "1";
                     }
-
-                    module.Insert();
-
-                    return "1";
+                    catch (Exception ex)
+                    {
+                        return "0";
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    return "0";
+                    return "2"; // Module already exists in the database.
                 }
+
             }
-            catch
+            catch (Exception ex)
             {
-                return "-1";
+                if (ex.GetType() == typeof(FormatException))
+                    return "-2";
+                else
+                    return "-1";
             }
             
         }
@@ -188,27 +213,37 @@ namespace TietoCRM.Controllers
                     return "0";
                 }
 
-                view_Module module = new view_Module();
-                module.Select("Article_number = " + oldArtNr + " AND Area = " + variables["Area"]);
-                try
+                if (!Convert.ToBoolean(ModuleDoesNotExist(variables["Article_number"].ToString())))
                 {
-                    foreach (KeyValuePair<String, object> variable in variables)
+                    view_Module module = new view_Module();
+                    module.Select("Article_number = " + oldArtNr);
+                    try
                     {
-                        module.SetValue(variable.Key, variable.Value);
+                        foreach (KeyValuePair<String, object> variable in variables)
+                        {
+                            module.SetValue(variable.Key, variable.Value);
+                        }
+
+                        module.Update("Article_number = " + oldArtNr);
+
+                        return "1";
                     }
-
-                    module.Update("Article_number = " + oldArtNr + " AND Area = " + variables["Area"]);
-
-                    return "1";
+                    catch (Exception ex)
+                    {
+                        return "0";
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    return "0";
+                    return "2"; // Module does not exist, cannot update
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return "-1";
+                if (ex.GetType() == typeof(FormatException))
+                    return "-2";
+                else
+                    return "-1";
             }
             
 

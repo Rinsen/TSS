@@ -310,7 +310,15 @@
             rules: {
                 "Article_number": {
                     required: true,
-                    digits: true
+                    digits: true,
+                    remote: {
+                        param: {
+                            url: "@Url.Content("~/Module/ModuleDoesNotExist/")",   
+                        },
+                        depends: function($element){
+                            return typeof $("#save-module-changes").attr("data-Article-number") == "undefined";
+                        }
+                    }
                 },
                 "Module": {
                     required: true,
@@ -332,6 +340,11 @@
                     required: true,
 
                 },
+            },
+            messages:{
+                "Article_number": {
+                    remote: "The Article_number already exists in the database."
+                }
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
@@ -590,7 +603,7 @@
                         });
                     } else {
                         $systemSelect.html("");
-                        $systemSelect.append($('<option></option>').val('').html('No system exist.').prop('selected', true));
+                        $systemSelect.append($('<option></option>').val('').html('No system exists.').prop('selected', true));
                     }
                     $systemSelect.selectpicker('refresh');
                     $systemSelect.trigger('change');
@@ -630,7 +643,7 @@
             });
         } else {
             $classificationSelect.empty();
-            $classificationSelect.append($('<option value="">No Classification exist.</option>').prop('selected', true));
+            $classificationSelect.append($('<option value="">No Classification exists.</option>').prop('selected', true));
         }
 
         $classificationSelect.selectpicker('refresh');
@@ -665,18 +678,21 @@
 
                 },
                 "success": function (data) {
-                    if (data > 0) {
+                    if (data == "1") {
                         StateCookie.updateSite(null, module.Article_number, module.Area);
                         updateDataTable(handleStates);
                         drawButtons();
                         triggerAlert("Successfully updated", "success");
                         $("#save-module-changes").removeAttr("data-Article-number");
                         $("#moduleModal").modal("toggle");
+                    } else if(data == "2") {
+                        triggerAlert("Failed to insert into database. Does not exist, cannot update.", "info");
+                    } else if(data == "-2") {
+                        triggerAlert("Failed to insert into database. Wrong format provided.", "info");
+                    } else {
+                        triggerAlert("Failed to insert into database.", "info");
                     }
-                    else {
 
-                        triggerAlert("Failed to update database.", "info");
-                    }
                 }
 
             });
@@ -710,7 +726,7 @@
 
                 },
                 "success": function (data) {
-                    if (data > 0) {
+                    if (data == "1") {
 
                         StateCookie.updateSite(null, module.Article_number, module.Area);
 
@@ -718,9 +734,11 @@
                         drawButtons();
                         triggerAlert("Successfully added", "success");
                         $("#moduleModal").modal("toggle");
-                    }
-                    else {
-
+                    } else if(data == "2") {
+                        triggerAlert("Failed to insert into database. Article_id already exists.", "info");
+                    } else if(data == "-2") {
+                        triggerAlert("Failed to insert into database. Wrong format provided.", "info");
+                    } else {
                         triggerAlert("Failed to insert into database.", "info");
                     }
                 }
