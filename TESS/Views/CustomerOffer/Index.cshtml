@@ -391,15 +391,15 @@
                 $select = $("#contactPerson4");
                 $select.html("");
              
-
-                for(var i = 0; i < currentPerson.length; i++)
-                {
-                    var person = currentPerson[i];
-                    $select.append($("<option></option>").attr("innerText", person.Contact_person).html(person.Contact_person));
-     
-                }
+                if(currentPerson.length > 0){
+                    for(var i = 0; i < currentPerson.length; i++)
+                    {
+                        var person = currentPerson[i];
+                        $select.append($("<option></option>").attr("innerText", person.Contact_person).html(person.Contact_person));
+                    }
+                }                 
                 $select.append("<option value='none'>None</option>");
-
+                $select.selectpicker('refresh');
             }
         });
     }
@@ -510,8 +510,8 @@
                     }
 
                 }
-                $select.selectpicker('refresh');
                 $select.append("<option new-person='true'>New person</option>");
+                $select.selectpicker('refresh');
 
                 if($select.children().length > 1)
                     $button.hide();
