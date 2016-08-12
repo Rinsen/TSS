@@ -81,7 +81,7 @@ namespace TietoCRM.Controllers
                 ViewData.Add("Customer", Request["customer"]);
             }
 
-            if (Request["selected-offer"] != null && Request["selected-offer"] != "")
+            if (Request["selected-offer"] != null && Request["selected-offer"] != "" && Request["selected-offer"] != "undefined")
             {
                 int number = Convert.ToInt32(Request["selected-offer"]);
                 view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + number);
@@ -126,7 +126,7 @@ namespace TietoCRM.Controllers
             String search = Request["search"];
             ViewData.Add("Search", search);
             int offerID = 0;
-            if (!String.IsNullOrEmpty(request))
+            if (!String.IsNullOrEmpty(request) && request != "undefined")
             {
                 offerID = int.Parse(request);
             }

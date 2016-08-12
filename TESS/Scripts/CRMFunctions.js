@@ -352,26 +352,26 @@ function isJSONString(str) {
     return true;
 }
 
-/* CRMCookies Namespace */
-var CRMCookie = function()
+/* CRMSessionDatas Namespace */
+var CRMSessionData = function()
 {
     // Constructor
-    var _ic = Cookies.getJSON("CRMSessionData");
-    this.sites = _ic === undefined || _ic.sites === undefined ? this.bake().sites : _ic.sites;
-     
+    var _ic = JSON.parse(sessionStorage.getItem("CRMSessionData"));
+    console.log(_ic);
+    this.sites = _ic === null || _ic.sites === null ? this.bake().sites : _ic.sites;
 }
 
-CRMCookie.prototype.bake = function () {
+CRMSessionData.prototype.bake = function () {
     console.log("Baking, mmm");
     var CRMSessionData = {
         sites: []
     }
-    Cookies.set('CRMSessionData', CRMSessionData);
+    sessionStorage.setItem('CRMSessionData', JSON.stringify(CRMSessionData));
 
     return CRMSessionData;
 }
 
-CRMCookie.prototype.findSite = function (site) {
+CRMSessionData.prototype.findSite = function (site) {
     for (var i = 0; i < this.sites.length; i++) {
         if (site == this.sites[i].location)
             return i;
@@ -379,25 +379,25 @@ CRMCookie.prototype.findSite = function (site) {
     return -1;
 }
 
-CRMCookie.prototype.hasSite = function (site) {
+CRMSessionData.prototype.hasSite = function (site) {
     if (this.findSite(site) != -1)
         return true;
     else
         return false;
 }
 
-CRMCookie.prototype.updateCookie = function () {
-    Cookies.set('CRMSessionData', {
+CRMSessionData.prototype.updateSessionData = function () {
+    sessionStorage.setItem('CRMSessionData', JSON.stringify({
         sites: this.sites
-    });
+    }));
 }
 
 
-CRMCookie.prototype.getCurrentSiteName = function () {
+CRMSessionData.prototype.getCurrentSiteName = function () {
     return window.location.pathname.split('/')[1];
 }
 
-CRMCookie.prototype.getCurrentSite = function () {
+CRMSessionData.prototype.getCurrentSite = function () {
     // Make sure that the current site exists.
     this.appendCurrentSite();
 
@@ -406,7 +406,7 @@ CRMCookie.prototype.getCurrentSite = function () {
     return this.sites[_siteID];
 }
 
-CRMCookie.prototype.appendCurrentSite = function () {
+CRMSessionData.prototype.appendCurrentSite = function () {
     var currentSiteName = this.getCurrentSiteName();
     if (!this.hasSite(currentSiteName)) {
         this.sites.push({
@@ -426,7 +426,7 @@ CRMCookie.prototype.appendCurrentSite = function () {
  * @param [string]  search filter string
  * @param [int]     the id of the currently selected row
  */
-CRMCookie.prototype.updateSite = function (search, selectedId, area) {
+CRMSessionData.prototype.updateSite = function (search, selectedId, area) {
     var _search = search === undefined ? null : search;
     var _selectedId = selectedId === undefined ? null : selectedId;
     var _area = area === undefined ? null : area;
@@ -447,7 +447,7 @@ CRMCookie.prototype.updateSite = function (search, selectedId, area) {
         this.sites[_siteID].area = _area;
 
     // Update the cookie
-    this.updateCookie();
+    this.updateSessionData();
 }
 
 //calculate what the value should be if it is precentage

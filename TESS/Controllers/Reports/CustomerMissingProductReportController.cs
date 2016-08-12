@@ -21,8 +21,6 @@ namespace TietoCRM.Controllers
             List<String> OrderedCustomerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
             OrderedCustomerNames.Sort();
 
-            List<view_CustomerMissingProductReport> ProductReportRows = view_CustomerMissingProductReport.getCustomerMissingProducts(OrderedCustomerNames[0]);
-
             ViewData.Add("CustomerNames", OrderedCustomerNames);
             ViewData.Add("Users", view_User.getAllUsers());
             ViewData.Add("Properties", typeof(view_CustomerMissingProductReport).GetProperties());

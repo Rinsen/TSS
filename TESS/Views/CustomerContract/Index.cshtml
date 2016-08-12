@@ -1404,7 +1404,6 @@
         $customerSelect.val("@Html.Raw(ViewBag.Customer)");
         $(".selectpicker").selectpicker("refresh");
         updateDataTable("@Html.Raw(ViewBag.Customer)", function(){
-            @Html.Raw("selectRow($(\"input[value='" + Request["contract-id"] + "'][type='radio'][name='selected-contract']\").parent());")
             if($customerSelect.val() == "")
             {
                 $("#crm-add-row").unbind("click");
@@ -1423,8 +1422,6 @@
                 });
             }
             $input = $("#CustomerContract-table_filter").find(":input");
-            @Html.Raw("$input.val('" + Request["search"] + "');");
-            $input.trigger($.Event("keyup", { keyCode: 13} ));
         });
     });
 </script>

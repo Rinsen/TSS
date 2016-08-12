@@ -152,6 +152,7 @@ namespace TietoCRM.Controllers
                     {
                         if (customerVariable.Key == "_Representatives")
                         {
+                            customer._Representatives = new List<string>();
                             foreach(String rep in ((System.Collections.ArrayList)customerVariable.Value))
                             {
                                 customer._Representatives.Add(rep);

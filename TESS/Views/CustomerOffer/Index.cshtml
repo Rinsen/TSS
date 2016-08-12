@@ -1286,15 +1286,11 @@
         $customerSelect.val("@Html.Raw(@ViewBag.OfferNumber)");
         $(".selectpicker").selectpicker("refresh");
         updateDataTable("@Html.Raw(@ViewBag.OfferNumber)", function(){
-            @Html.Raw("selectRow($(\"input[value='" + Request["selected-offer"] + "'][type='radio'][name='selected-offer']\").parent());")
             drawButtons();
             if($customerSelect.val() == "")
                 $("#crm-add-row").unbind("click");
 
             $input = $("#CustomerOffer-table_filter").find(":input");
-            @Html.Raw("$input.val('" + Request["search"] + "');");
-            $input.trigger($.Event("keyup", { keyCode: 13} ));
-
        });
 
 
