@@ -50,7 +50,7 @@ namespace TietoCRM.Controllers.Reports
 
                 ViewData.Add("Appointments", (new SortedByColumnCollection(allApp, sortDir, sortKey)).Collection);
 
-                pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \" \"";
+                pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"Area: " + System.Web.HttpContext.Current.GetUser().Area + " \"";
                 pdf.RotativaOptions.CustomSwitches += " --header-center \" Appointments between " + Start.ToString("yyyy-MM-dd") + " and " + Stop.ToString("yyyy-MM-dd") + " \"";
             }
             else

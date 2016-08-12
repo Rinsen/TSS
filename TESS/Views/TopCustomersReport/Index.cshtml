@@ -2,13 +2,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @using TietoCRM.Extensions;
+@using TietoCRM.Models;
 <row>
     <div class="col-md-12">
         <form method="get" action="~/TopCustomersReport/Pdf" target="_blank" class="form-inline">
             <div class="form-group">
                 <label for="crm-select-year">Year:</label>
                 <select name="year" id="crm-select-year" class="form-control selectpicker" data-live-search="true">
-                    @for(int i = DateTime.Now.Year; i <= 1990; i--)
+                    @for(int i = DateTime.Now.Year; i >= 1990; i--)
                     {
                         <option value="@i">@i</option>
                     }
@@ -17,10 +18,9 @@
             <div class="form-group">
                 <label for="crm-select-area">Area:</label>
                 <select name="area" id="crm-select-area" class="form-control selectpicker" data-live-search="true">
-                    <option value="*">All</option>
-                    @foreach (String area in ViewBag.Areas)
+                    @foreach (var SelectOption in (new SelectOptions<view_Sector>()).GetOptions("Area"))
                     {
-                        <option value="@area">@area</option>
+                        <option value="@SelectOption.Value">@SelectOption.Text</option>
                     }
                 </select>
             </div>
