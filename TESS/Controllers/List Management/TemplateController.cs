@@ -255,7 +255,7 @@ namespace TietoCRM.Controllers.List_Management
                     return "1";
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 return "-1";
             }

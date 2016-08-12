@@ -360,8 +360,16 @@ namespace TietoCRM.Models
                 }
                 query = query.Remove(query.Length - 1);
 
-                if(returnId)
-                    query += ") OUTPUT INSERTED.ID VALUES (";
+                if (returnId)
+                {
+                    foreach (PropertyInfo pi in this.propertyInfos)
+                    {
+                        if (pi.Name.Equals("ID_PK"))
+                            query += ") OUTPUT INSERTED.ID_PK VALUES (";
+                        else if(pi.Name.Equals("ID"))
+                            query += ") OUTPUT INSERTED.ID VALUES (";
+                    }
+                }
                 else
                     query += ") VALUES (";
 

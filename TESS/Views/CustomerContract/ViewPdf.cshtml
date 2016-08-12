@@ -824,56 +824,53 @@
 
                                         </table>
                                         <div class="crm-selected-items list-group" id="selected-options">
-                                            @{
-                                                            LicenseTotal = 0;
-                                                            MaintenanceTotal = 0;
+                                        @{
+                                            LicenseTotal = 0;
+                                            MaintenanceTotal = 0;
+                                        }
+                                        @foreach (view_ContractOption or in ViewBag.CustomerContract._ContractOptions)
+                                        {
+                                            // Fetch modules
+                                            view_Module module = new view_Module();
+                                            module.Select("Article_number = " + or.Article_number);
 
-                                            }
-                                            @foreach (view_ContractOption or in ViewBag.CustomerContract._ContractOptions)
-                                                            {
-                                                            // Fetch modules
-                                                            view_Module module = new view_Module();
-                                                            module.Select("Article_number = " + or.Article_number);
+                                            // Format currency
 
-                                                            // Format currency
+                                            String License = String.Format(se, "{0:C2}", or.License);
+                                            String Maintenance = String.Format(se, "{0:C2}", or.Maintenance);
 
-                                                            String License = String.Format(se, "{0:C2}", or.License);
-                                                            String Maintenance = String.Format(se, "{0:C2}", or.Maintenance);
+                                            LicenseTotal += Convert.ToInt32(or.License);
+                                            MaintenanceTotal += Convert.ToInt32(or.Maintenance);
 
-                                                            LicenseTotal += Convert.ToInt32(or.License);
-                                                            MaintenanceTotal += Convert.ToInt32(or.Maintenance);
+                                            <button onclick="moveOption(event, this)"
+                                                    type="button"
+                                                    class="list-group-item"
+                                                    data-selected="true"
+                                                    @if (module.System !="Lärportal" ) { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "." )) ; }
+                                                    data-maintenance="@or.Maintenance.ToString().Replace(",", ".")">
+                                                <table>
+                                                    <tr>
+                                                        <td class="art-nr">@or.Article_number</td>
+                                                        <td>@module.Module</td>
+                                                        @if (module.System != "Lärportal")
+                                                        {
+                                                            <td>@License</td>
+                                                            <td>@Maintenance</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td style='float:right; width:auto;'>@Maintenance</td>
+                                                        }
 
-                                                <button onclick="moveOption(event, this)"
-                                                        type="button"
-                                                        class="list-group-item"
-                                                        data-selected="true"
-                                                        @if (module.System !="Lärportal" ) { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "." )) ; }
-                                                        data-maintenance="@or.Maintenance.ToString().Replace(",", ".")">
-                                                    <table>
-                                                        <tr>
-                                                            <td class="art-nr">@or.Article_number</td>
-                                                            <td>@module.Module</td>
-                                                            @if (module.System != "Lärportal")
-                                                                        {
-                                                                <td>@License</td>
-                                                                <td>@Maintenance</td>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                <td style='float:right; width:auto;'>@Maintenance</td>
-                                                                        }
-
-                                                        </tr>
-                                                    </table>
-                                                </button>
-                                                            }
-                                            @{
-                                                            // Format currency
-
-                                                            LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal);
-                                                            MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal);
-                                            }
-
+                                                    </tr>
+                                                </table>
+                                            </button> 
+                                        }
+                                        @{
+                                            // Format currency
+                                            LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal);
+                                            MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal);
+                                        }
                                         </div>
                                         <table>
                                             <tr>

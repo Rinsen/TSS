@@ -11,7 +11,12 @@
     color: #fff;
     background-color: @base-color;
 }
-
+.bootstrap-select.btn-group.disabled, .bootstrap-select.btn-group>.disabled, .bootstrap-select.btn-group.disabled:active {
+    cursor: not-allowed;
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+    opacity: 1 !important;
+}
 
 .btn-default, .btn-default:focus, .btn-default:active, .dropdown-toggle.btn-default, .btn-default.active, .btn-default:active, .btn-default:hover, .open>.dropdown-toggle.btn-default, .dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover, .dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover  {
     background-color: @dark-blue;

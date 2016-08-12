@@ -159,6 +159,8 @@
        
         tinyMCE.execCommand('mceAddControl', false, 'opening5');
         tinyMCE.execCommand('mceAddControl', false, 'body5');
+
+        $('.selectpicker').selectpicker('refresh');
         
     })
 
@@ -474,6 +476,8 @@
                         var currentED = tinyMCE.editors[i];
                         currentED.setContent($('#' + currentED.id).val());
                     }
+
+                    $("#crm-type-select5").selectpicker('refresh')
 
                 }
             }
