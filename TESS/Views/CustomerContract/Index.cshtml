@@ -657,7 +657,7 @@
                         "hashtags": hashtags
                     },
                     "success": function(data){
-                        if(data != "0" || data != "-1"){
+                        if(data != "0" && data != "-1"){
                             updateDataTable($("#crm-select-customer").val());
                             triggerAlert("Successfully added new contract.", "success");
                             $("#newRowModal").modal("toggle");
@@ -1247,13 +1247,17 @@
 
             });
             $("#crm-add-row").bind("click", function(){
-                console.log("asd");
-                loadNewContactData();
-                loadCustomer();
-                //loadMainContracts();
-                console.log(1);
-                setDefaultValues();
-                $("#newRowModal").appendTo("body").modal("show").draggable();
+                if($('#crm-select-customer').val() != "*"){
+                    console.log("asd");
+                    loadNewContactData();
+                    loadCustomer();
+                    //loadMainContracts();
+                    console.log(1);
+                    setDefaultValues();
+                    $("#newRowModal").appendTo("body").modal("show").draggable();
+                } else {
+                    triggerAlert("You will have to select a valid customer first", "info")
+                }
             });
 
             drawButtonsExtension($selRowContainer, "bottom");
@@ -1412,13 +1416,16 @@
             else
             {
                 $("#crm-add-row").bind("click", function(){
-                    console.log("123");
-                    loadNewContactData();
-                    loadCustomer();
-                    //loadMainContracts();
-                    console.log(1);
-                    setDefaultValues();
-                    $("#newRowModal").appendTo("body").modal("show").draggable();
+                    if($('#crm-select-customer').val() != "*"){
+                        loadNewContactData();
+                        loadCustomer();
+                        //loadMainContracts();
+                        console.log(1);
+                        setDefaultValues();
+                        $("#newRowModal").appendTo("body").modal("show").draggable();
+                    } else {
+                        triggerAlert("You will need to select a valid customer first.", "info")
+                    }
                 });
             }
             $input = $("#CustomerContract-table_filter").find(":input");

@@ -366,7 +366,7 @@ namespace TietoCRM.Models
                     {
                         if (pi.Name.Equals("ID_PK"))
                             query += ") OUTPUT INSERTED.ID_PK VALUES (";
-                        else if(pi.Name.Equals("ID"))
+                        else if(pi.Name.Equals("_ID") || pi.Name.Equals("ID"))
                             query += ") OUTPUT INSERTED.ID VALUES (";
                     }
                 }
