@@ -425,7 +425,7 @@
                                 if($currTD.data("property") == $currInput.attr("name")){
                                     var name = $currInput.attr("name");
                                     if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
-                                        if ($currTD.html() == "true" || $currTD.html() == "1") {
+                                        if ($currTD.text() == "true" || $currTD.text() == "1") {
                                             $currInput.prop("checked", true);
                                             if(name == "Discount" || name == "Fixed_price")
                                                 noneSelected = false;
@@ -435,7 +435,7 @@
                                         }
                                     }
                                     else {
-                                        $currInput.val($currTD.html());
+                                        $currInput.val($currTD.text());
                                     }
                                 }
                             }
@@ -449,12 +449,12 @@
                             $("#none2").prop("checked", false);
                         }
                         handleDiscountCheck();
-                        $("#price-category2").val($($selectedTds[3]).html());
+                        $("#price-category2").val($($selectedTds[3]).text());
 
                         $("#save-module-changes").attr("data-Article-number",selectedId);
 
                         $("#moduleModal").appendTo("body").modal().draggable();
-
+                        $('.selectpicker').selectpicker('refresh')
                     });
                 })
 
