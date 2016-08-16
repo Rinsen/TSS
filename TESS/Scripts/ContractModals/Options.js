@@ -50,18 +50,17 @@ var fillOptionsClassificationSelect = function (System) {
         "data": {
             "requestData": "update_classification_select",
             "System": System,
-            "customer": customerName
+            "customer": customerName,
+            "Area": area
 
         },
         "success": function (data) {
             if (data.length > 0) {
-                console.log(123);
-                var classifications = JSON.parse(data);
-                var classificationsLen = Object.keys(classifications).length;
+                var selectOptions = JSON.parse(data);
                 $classificationOptionSelect.empty();
-                for (var i = 0 ; i < classificationsLen ; i++) {
-                    $classificationOptionSelect.append($("<option></option>").attr("value", classifications[i]).html(classifications[i]));
-                }
+                $.each(selectOptions, function (i, $selectOption) {
+                    $classificationOptionSelect.append($("<option></option>").val($selectOption.Value).text($selectOption.Text));
+                });
                 fillOptionsArticleList(System, $classificationOptionSelect.val());
             }
             $classificationOptionSelect.selectpicker('refresh');

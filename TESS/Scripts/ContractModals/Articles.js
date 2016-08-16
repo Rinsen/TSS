@@ -384,8 +384,8 @@ var updateSelectedItems = function () {
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
                                 data-alias='" + module.Module + "'                                   \
-                                data-discount='" + article.Discount + "'                           \
-                                data-discount-type='" + article.Discount_type + "'                  \
+                                data-discount='" + module.Discount + "'                           \
+                                data-discount-type='" + module.Discount_type + "'                  \
                                 data-multiple-select='" + module.Multiple_type + "'                    \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
@@ -408,8 +408,8 @@ var updateSelectedItems = function () {
                                 data-alias='" + module.Module + "'                                   \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
-                                data-discount='" + article.Discount + "'                           \
-                                data-discount-type='" + article.Discount_type + "'                  \
+                                data-discount='" + module.Discount + "'                           \
+                                data-discount-type='" + module.Discount_type + "'                  \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \

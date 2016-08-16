@@ -38,6 +38,7 @@
             obj.Article_number = $input.attr("data-id");
             obj.License = $input.attr("data-license");
             obj.Maintenance = $input.attr("data-maintenance");
+            obj.Discount_type = $input.attr("data-discount_type")
 
             moduleList.push(obj);
         }
@@ -59,7 +60,7 @@
                 "contract-id": contractId,
             },
             "success": function (data) {
-                if (data > 0) {
+                if (data == 1) {
 
                     $.ajax({
                         "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",

@@ -910,9 +910,10 @@ namespace TietoCRM.Controllers.Contracts
                     cRow.Created = DateTime.Now;
                     decimal License = 0;
                     decimal Maintenance = 0;
-                    if ((int)article["Discount_type"] != 1)
+                    
+                    if (int.Parse(article["Discount_type"]) != 1)
                     {
-                        if (article.Keys.Contains("License"))
+                        if (article.ContainsKey("License"))
                             License = Decimal.Parse(article["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
                         Maintenance = Decimal.Parse(article["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
                     }
@@ -952,7 +953,7 @@ namespace TietoCRM.Controllers.Contracts
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
                 return "1";
             }
-            catch
+            catch (Exception e)
             {
                 return "-1";
             }
