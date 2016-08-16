@@ -354,9 +354,6 @@ namespace TietoCRM.Controllers
             return fs;
         }
 
-
-
-
         public FileStream updateHeader(String headerPath, view_User user)
         {
             String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
@@ -514,7 +511,11 @@ namespace TietoCRM.Controllers
 
         public List<SelectListItem> GetAllSystemNames(String area)
         {
-            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.Area == area).DistinctBy(a => a.System).ToList();
+            List<view_Sector> allSectors = view_Sector.getAllSectors()
+                .Where(a => a.Area == area)
+                .DistinctBy(a => a.System)
+                .OrderBy(a => a.SortNo)
+                .ToList();
             return allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();
         }
 

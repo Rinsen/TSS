@@ -532,9 +532,9 @@
                     <div class="col-sm-4">
                         <label for="System-select">System: </label>
                         <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select" data-live-search="true">
-                            @foreach (String System in ViewBag.Systems)
+                            @foreach (var SelectOption in ViewBag.Systems)
                             {
-                                <option value="@System">@System</option>
+                                <option value="@SelectOption.Value">@SelectOption.Text</option>
                             }
                         </select>
                     </div>
@@ -765,9 +765,9 @@
                     <div class="col-sm-4">
                         <label for="System-select">System: </label>
                         <select style="float:none" class="form-control selectpicker" data-width="80%" id="System-select" data-live-search="true">
-                            @foreach (String System in ViewBag.Systems)
+                            @foreach (var SelectOption in ViewBag.Systems)
                             {
-                                <option value="@System">@System</option>
+                                <option value="@SelectOption.Value">@SelectOption.Text</option>
                             }
                         </select>
                     </div>
@@ -1198,7 +1198,7 @@
                                         else if (pi.Name == "Area")
                                         {
                                             <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @foreach (var so in (new SelectOptions<view_User>()).GetOptions("Area"))
+                                                @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
                                                 {
                                                     <option value="@so.Value">@so.Text</option>
                                                 }

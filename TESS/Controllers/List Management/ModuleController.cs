@@ -91,7 +91,11 @@ namespace TietoCRM.Controllers
             {
                 area = System.Web.HttpContext.Current.GetUser().Area;
             }
-            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.Area == area).DistinctBy(a => a.System).ToList();
+            List<view_Sector> allSectors = view_Sector.getAllSectors()
+                .Where(a => a.Area == area)
+                .DistinctBy(a => a.System)
+                .OrderBy(a => a.SortNo)
+                .ToList();
             return allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();
         }
         public String GetAllSystemNames()
@@ -111,7 +115,10 @@ namespace TietoCRM.Controllers
             if (String.IsNullOrEmpty(system))
                 throw new Exception("No system was provided.");
 
-            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.System == system && a.Area == area).DistinctBy(a => a.Classification).ToList();
+            List<view_Sector> allSectors = view_Sector.getAllSectors()
+                .Where(a => a.System == system && a.Area == area)
+                .DistinctBy(a => a.Classification)
+                .ToList();
             List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
             return returnList.OrderBy(a => a.Value == "-").ToList();
         }
@@ -251,7 +258,11 @@ namespace TietoCRM.Controllers
         public void ExportAsCsv()
         {
             ViewCsvParser<view_Module> vcp = new ViewCsvParser<view_Module>("Modules");
-            vcp.WriteExcelWithNPOI(view_Module.getAllModules());
+            String Area = System.Web.HttpContext.Current.GetUser().Area; 
+            if(Area == "*")
+                vcp.WriteExcelWithNPOI(view_Module.getAllModules());
+            else
+                vcp.WriteExcelWithNPOI(view_Module.getAllModules().Where(a => a.Area == Area).ToList());
         }
     }
 }

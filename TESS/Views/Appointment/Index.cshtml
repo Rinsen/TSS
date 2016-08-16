@@ -72,9 +72,9 @@
                                                 else if (pi.Name == "Area")
                                                 {
                                                     <select class="form-control selectpicker" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                        @foreach(var so in (new SelectOptions<view_User>()).GetOptions("Area"))
+                                                        @foreach(var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
                                                         {
-                                                            <option value="@so.Value">@so.Value</option>
+                                                            <option value="@so.Value">@so.Text</option>
                                                         }
                                                     </select>
                                                 }

@@ -145,7 +145,7 @@ namespace TietoCRM.Controllers.Contracts
             text.Select("Contract_id = '" + contract.Contract_id + "' AND Customer = '" + contract.Customer + "'");
             ViewData.Add("ContractText", text);
 
-            ViewData.Add("Systems", GetAllSystemNames());
+            ViewData.Add("Systems", GetAllSystemNames(contract.Area));
             ViewData.Add("MainCtrResign", GetMainContractsToResign(urlCustomer));
 
             view_ContractTemplate contractTemplate = new view_ContractTemplate();
@@ -430,9 +430,6 @@ namespace TietoCRM.Controllers.Contracts
             writer.Close();
             return fs;
         }
-
-
-
 
         public FileStream updateHeader(String headerPath, view_User user)
         {
@@ -723,7 +720,6 @@ namespace TietoCRM.Controllers.Contracts
 
             return (new JavaScriptSerializer()).Serialize(l);
         }
-
         public String SaveContact()
         {
 
@@ -1635,31 +1631,15 @@ namespace TietoCRM.Controllers.Contracts
             }
         }
 
-
-        public List<String> GetAllSystemNames()
+        public List<SelectListItem> GetAllSystemNames(String area)
         {
-            List<String> SystemList = new List<String>();
-            String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            using (SqlCommand command = connection.CreateCommand())
-            {
-                connection.Open();
-                String queryTextClassification = @"SELECT DISTINCT System, Area FROM view_Sector";
-                command.CommandText = queryTextClassification;
-                command.Prepare();
+            IEnumerable<view_Sector> allSectors = view_Sector.getAllSectors()
+                 .Where(a => a.Area == area)
+                 .DistinctBy(a => a.System)
+                 .OrderBy(a => a.SortNo);
+            List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();
 
-                command.ExecuteNonQuery();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        if (System.Web.HttpContext.Current.GetUser().IfSameArea(reader["Area"].ToString()))
-                            SystemList.Add(reader["System"].ToString());
-                    }
-                }
-            }
-
-            return SystemList;
+            return returnList;
         }
 
         public List<String> GetMainContractsToResign(String customer)

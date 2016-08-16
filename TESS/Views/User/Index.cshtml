@@ -64,7 +64,7 @@
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                         <div class="col-sm-10">
                                             <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
-                                                @foreach (var so in (new SelectOptions<view_User>()).GetOptions("Area"))
+                                                @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
                                                 {
                                                     <option value="@so.Value" selected>@so.Text</option>
                                                 }
