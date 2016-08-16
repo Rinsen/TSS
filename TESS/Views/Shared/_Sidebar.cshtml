@@ -117,3 +117,9 @@
         </div>
     </div>
 </div>
+<script>
+    $('ul.sub-menu.collapse li').bind('click', function () {
+        var $listItem = $(this);
+        window.location = $listItem.find('a').attr("href");
+    })
+</script>

@@ -384,11 +384,11 @@
                 if($.inArray($currInput.attr("id"), ignoreTheseInputs) == -1){
                     if ($currInput.prop("id") == "expired2") {
                         $currInput.val("false");
-                    }
-                    else if ($currInput.prop("id") == "fixed-price2") {
+                    } else if ($currInput.prop("id") == "fixed-price2") {
                         $currInput.val("false");
-                    }
-                    else {
+                    } else if ($currInput.attr("name") == "Price_category"){
+                        $currInput.val("0");
+                    } else {
                         $currInput.val("");
                     }
                 }
