@@ -322,7 +322,9 @@ namespace TietoCRM.Controllers.Contracts
             
             this.ViewData.Add("Services", view_Service.getAllServices());
 
-            List<view_CustomerOffer> openOffers = view_CustomerOffer.getAllCustomerOffers(customer.Customer).Where(o => o.Offer_status == "Öppen").ToList();
+            List<view_CustomerOffer> openOffers = view_CustomerOffer.getAllCustomerOffers(customer.Customer)
+                .Where(o => o.Offer_status == "Öppen" && o.Area == contract.Area)
+                .ToList();
 
             List<view_OfferRow> modules = new List<view_OfferRow>();
             List<view_ConsultantRow> services = new List<view_ConsultantRow>();
