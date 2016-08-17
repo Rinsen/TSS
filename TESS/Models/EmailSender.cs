@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using System.Web.Configuration;
 
 namespace TietoCRM.Models
 {
@@ -41,7 +42,7 @@ namespace TietoCRM.Models
                 string thisemailAddr = thisUser.Properties["mail"][0].ToString();
 
                 System.Net.Mail.MailMessage mailMessage = new System.Net.Mail.MailMessage();
-                mailMessage.From = new System.Net.Mail.MailAddress("salessystem@tieto.com", this.Sender.Name);
+                mailMessage.From = new System.Net.Mail.MailAddress(WebConfigurationManager.AppSettings["emailSender"], this.Sender.Name);
                 foreach (view_User user in Receivers)
                 {
                     searcher.Filter = string.Format("sAMAccountName={0}", user.Windows_user.Remove(0, user.Windows_user.IndexOf("\\") + 1));
@@ -57,7 +58,7 @@ namespace TietoCRM.Models
                 mailMessage.Body = message;
 
                 System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
-                client.Host = "centnagios.tec.pad.tieto.com";
+                client.Host = WebConfigurationManager.AppSettings["emailRelay"];
                 client.Port = 25;
                 client.UseDefaultCredentials = true;
                 client.EnableSsl = false;
