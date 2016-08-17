@@ -41,8 +41,7 @@ namespace TietoCRM.Models
                 string thisemailAddr = thisUser.Properties["mail"][0].ToString();
 
                 System.Net.Mail.MailMessage mailMessage = new System.Net.Mail.MailMessage();
-                mailMessage.From = new System.Net.Mail.MailAddress("noreply.tss@tieto.com", this.Sender.Name);
-
+                mailMessage.From = new System.Net.Mail.MailAddress("salessystem@tieto.com", this.Sender.Name);
                 foreach (view_User user in Receivers)
                 {
                     searcher.Filter = string.Format("sAMAccountName={0}", user.Windows_user.Remove(0, user.Windows_user.IndexOf("\\") + 1));
@@ -58,12 +57,12 @@ namespace TietoCRM.Models
                 mailMessage.Body = message;
 
                 System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
-                client.Host = "smtp.gmail.com";
-                client.Port = 587;
-                client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential("tieto.information.noreply@gmail.com", "tieto_tss_2016");
-                client.EnableSsl = true;
+                client.Host = "centnagios.tec.pad.tieto.com";
+                client.Port = 25;
+                client.UseDefaultCredentials = true;
+                client.EnableSsl = false;
                 client.Send(mailMessage);
+                mailMessage.Dispose();
                 client.Dispose();
             }
             else
