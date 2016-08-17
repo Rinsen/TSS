@@ -115,21 +115,21 @@ namespace TietoCRM.Controllers.List_Management
                     return "0";
                 }
 
-                if(variables["Send_mail_to"] != null)
-                {
-                    List<view_User> users = new List<view_User>();
+                //if(variables["Send_mail_to"] != null)
+                //{
+                //    List<view_User> users = new List<view_User>();
 
-                    foreach (String sign in (System.Collections.ArrayList)variables["Send_mail_to"])
-                    {
-                        view_User user = new view_User();
-                        user.Select("Sign=" + sign);
-                        users.Add(user);
-                    }
-                    view_User currUser = System.Web.HttpContext.Current.GetUser();
+                //    foreach (String sign in (System.Collections.ArrayList)variables["Send_mail_to"])
+                //    {
+                //        view_User user = new view_User();
+                //        user.Select("Sign=" + sign);
+                //        users.Add(user);
+                //    }
+                //    view_User currUser = System.Web.HttpContext.Current.GetUser();
 
-                    EmailSender es = new EmailSender(currUser, users);
-                    es.Send(a.Title, a.Message);
-                }
+                //    EmailSender es = new EmailSender(currUser, users);
+                //    es.Send(a.Title, a.Message);
+                //}
                 
                 a.Insert();
 
