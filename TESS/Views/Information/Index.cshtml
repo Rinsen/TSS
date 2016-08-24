@@ -45,9 +45,9 @@
                                         else if (pi.Name == "Type")
                                         {
                                             <select class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                @foreach (SelectOptions<view_Information>.SelectOption so in (new SelectOptions<view_Information>()).GetOptions("Type"))
+                                                @foreach (var SelectOption in (new SelectOptions<view_Information>()).GetOptions("Type"))
                                                 {
-                                                    <option value="@so.Value">@so.Text</option>
+                                                    <option value="@SelectOption.Value">@SelectOption.Text</option>
                                                 }
                                                 @*<option>Info</option>
                                         <option>Warning</option>*@
@@ -60,16 +60,24 @@
                                         else if (pi.Name == "Author")
                                         {
                                             <select data-live-serach="true" class="form-control" type="text" id="@pi.Name.ToLower()" name="@pi.Name">
-                                                @foreach (view_User rep in ViewBag.Representatives)
+                                                @if(GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Supervisor))
                                                 {
-                                                    if (rep.Sign == System.Web.HttpContext.Current.GetUser().Sign)
+                                                    foreach (view_User rep in ViewBag.Representatives)
                                                     {
-                                                        <option value="@rep.Sign" selected>@rep.Sign - @rep.Name</option>
+                                                        if (rep.Sign == System.Web.HttpContext.Current.GetUser().Sign)
+                                                        {
+                                                            <option value="@rep.Sign" selected>@rep.Sign - @rep.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@rep.Sign">@rep.Sign - @rep.Name</option>
+                                                        }
                                                     }
-                                                    else
-                                                    {
-                                                        <option value="@rep.Sign">@rep.Sign - @rep.Name</option>
-                                                    }
+                                                }
+                                                else
+                                                {
+                                                    view_User user = System.Web.HttpContext.Current.GetUser();
+                                                    <option value="@user.Sign">@user.Sign - @user.Name</option>
                                                 }
                                             </select>
                                         }

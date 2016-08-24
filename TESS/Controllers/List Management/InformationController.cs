@@ -41,7 +41,12 @@ namespace TietoCRM.Controllers.List_Management
         public String InformationJsonData()
         {
             this.Response.ContentType = "text/plain";
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Information.getAllInformation()) + "}";
+            List<view_Information> allInfo = view_Information.getAllInformation();
+            if (!GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Supervisor))
+            {
+                allInfo = allInfo.Where(a => a.Author == System.Web.HttpContext.Current.GetUser().Sign).ToList();
+            }
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(allInfo) + "}";
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
                 DateTime dt = new DateTime(1970, 1, 1, 2, 0, 0, 0); // not sure how this works with summer time and winter time

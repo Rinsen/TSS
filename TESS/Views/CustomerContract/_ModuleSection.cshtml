@@ -297,7 +297,8 @@ Konsulttjänster
 
 
             // Format currency
-            string Price = string.Format(se, "{0:C2}", cr.Total_price / cr.Amount).Replace(".", " ");
+            decimal? totPrice = cr.Amount != 0 ? (cr.Total_price / cr.Amount) : 0;
+            string Price = string.Format(se, "{0:C2}", totPrice).Replace(".", " ");
             string TotalPrice = string.Format(se, "{0:C2}", cr.Total_price).Replace(".", " ");
             <div class="crm-pdf-subrows_1">
                 <table>
