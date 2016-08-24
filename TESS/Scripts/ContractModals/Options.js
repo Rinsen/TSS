@@ -69,7 +69,7 @@ var fillOptionsClassificationSelect = function (System) {
 }
 
 
-var fillArticleOptSearchList = function (System, classification) {
+var fillArticleOptSearchList = function () {
     var $searchText = $("#opt-search");
     console.log("Search");
     $.ajax({

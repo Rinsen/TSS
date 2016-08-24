@@ -34,8 +34,9 @@ var fillClassificationSelect = function(System){
 }
 
 //Hämtar samtliga gällande artiklar och markerar de i kontraktet befintliga 
-var fillArticleSearchList = function (System, classification) {
+var fillArticleSearchList = function () {
     var $searchText = $("#art-search");
+    console.log($searchText);
     $.ajax({
         "url": serverPrefix + "CustomerContract/GetModulesAll/",
         "type": "POST",
