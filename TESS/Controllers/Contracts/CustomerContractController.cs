@@ -1224,6 +1224,11 @@ namespace TietoCRM.Controllers.Contracts
                     int Article_number = Convert.ToInt32(dict["Article_number"]);
                     decimal License = 0;
                     decimal Maintenance = 0;
+                    if(dict["Discount_type"].GetType() == typeof(string))
+                    {
+                        dict["Discount_type"] = (string)dict["Discount_type"] == "undefined" ? 0 : dict["Discount_type"];
+                    }
+
                     if ((int)dict["Discount_type"] != 1)
                     {
                         if (dict.Keys.Contains("License"))
