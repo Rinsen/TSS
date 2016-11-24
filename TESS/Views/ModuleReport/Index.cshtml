@@ -30,6 +30,7 @@
         </table>
     </div>
     <script>
+    var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Customer" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Contract_id" + "\"  },\r\n";}
@@ -45,7 +46,7 @@
             "bPaginate": false,
             //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax": {
-                "url": "/ModuleReport/Module/",
+                "url": serverPrefix + "ModuleReport/Module/",
                 "type": "POST",
                 "data": {
                     "module": module,
@@ -81,7 +82,7 @@
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            window.open('/ModuleReport/Pdf?module=' + module + sort, "_blank");
+            window.open(serverPrefix + 'ModuleReport/Pdf?module=' + module + sort, "_blank");
         })
 
     });

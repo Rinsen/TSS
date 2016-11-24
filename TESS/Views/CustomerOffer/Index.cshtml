@@ -358,11 +358,12 @@
     Script for new offer modal
 -->
 <script>
-    
+    var serverPrefix = "@Url.Content("~/")";
+   
     var $customerSelect = $("#crm-select-customer");
     var checkReminder = function(customer){
         $.ajax({
-            "url": "/CustomerOffer/checkReminder/",
+            "url": serverPrefix + "CustomerOffer/checkReminder/",
             "type": "POST",
             "data": {
                 "customer": customer
@@ -381,7 +382,7 @@
     var loadNewContactData = function()
     {
         $.ajax({
-            "url": "/CustomerOffer/GetContacts/",
+            "url": serverPrefix + "CustomerOffer/GetContacts/",
             "type": "POST",
             "data": {
                 "customer": $customerSelect.val()
@@ -446,7 +447,7 @@
         newOffer.Title =  $("#offerTitle4").val();
         
         $.ajax({
-            "url": "/CustomerOffer/Insert/",
+            "url": serverPrefix + "CustomerOffer/Insert/",
             "type": "POST",
             "data": {
                 "json": JSON.stringify(newOffer),
@@ -489,7 +490,7 @@
     var loadContactData = function()
     {
         $.ajax({
-            "url": "/CustomerOffer/GetContacts/",
+            "url": serverPrefix + "CustomerOffer/GetContacts/",
             "type": "POST",
             "data": {
                 "customer": $("#crm-select-customer").val()
@@ -527,7 +528,7 @@
     var loadReminders = function()
     {
         $.ajax({
-            "url": "/CustomerOffer/GetReminders/",
+            "url": serverPrefix + "CustomerOffer/GetReminders/",
             "type": "POST",
             "data": {
                 "customer": $("#crm-select-customer").val()
@@ -563,7 +564,7 @@
             $input = $($inputs[i]);
             var id = $input.attr("data-id");
             $.ajax({
-                "url": "/CustomerOffer/DeactivateReminder/",
+                "url": serverPrefix + "CustomerOffer/DeactivateReminder/",
                 "type": "POST",
                 "data": {
                     "id_pk": id
@@ -630,7 +631,7 @@
     var loadAppointments = function()
     {
         $.ajax({
-            "url": "/Appointment/GetAppointments/",
+            "url": serverPrefix + "Appointment/GetAppointments/",
             "type": "POST",
             "data": {
                 "customer": $contactSelect.val()
@@ -716,7 +717,7 @@
             person.Notes = $("#notes3").val();
 
             $.ajax({
-                "url": "/CustomerOffer/InsertContact/",
+                "url": serverPrefix + "CustomerOffer/InsertContact/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(person)
@@ -763,7 +764,7 @@
                 person.Notes = $("#notes3").val();
 
                 $.ajax({
-                    "url": "/CustomerOffer/SaveContact/",
+                    "url": serverPrefix + "CustomerOffer/SaveContact/",
                     "type": "POST",
                     "data": {
                         "json": JSON.stringify(person),
@@ -843,7 +844,7 @@
                             className: 'btn-danger pull-right',
                             callback: function () {
                                 $.ajax({
-                                    "url": "/CustomerOffer/DeleteOffer/",
+                                    "url": serverPrefix + "CustomerOffer/DeleteOffer/",
                                     "type": "POST",
                                     "data": {
                                         "id": selectedOffer.Offer_number
@@ -980,7 +981,7 @@
             "processing": true,
             //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax": {
-                "url": "/CustomerOffer/CustomerOfferJsonData/",
+                "url": serverPrefix + "CustomerOffer/CustomerOfferJsonData/",
                 "type": "POST",
                 "data": {
                     "customer": customer

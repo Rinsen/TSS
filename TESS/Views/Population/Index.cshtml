@@ -54,7 +54,8 @@
 @*Slut på Modal*@
 
 <script>
-//Sparar ändringar alternativ ny post
+    var serverPrefix = "@Url.Content("~/")";
+    //Sparar ändringar alternativ ny post
     var uploadToServer = function () {
         if (typeof $("#save-Population-changes").attr("data-Population") != "undefined") {
 
@@ -70,7 +71,7 @@
                 Population[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/Population/SavePopulation/",
+                "url": serverPrefix + "Population/SavePopulation/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(Population),
@@ -101,7 +102,7 @@
                 Population[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/Population/InsertPopulation/",
+                "url": serverPrefix + "Population/InsertPopulation/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(Population),
@@ -207,7 +208,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/Population/PopulationJsonData/",
+                "url": serverPrefix + "Population/PopulationJsonData/",
             },
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
@@ -308,7 +309,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $.ajax({
-                                "url": "/Population/DeletePopulation/",
+                                "url": serverPrefix + "Population/DeletePopulation/",
                                 "type": "POST",
                                 "data": {
                                     "id_pk": selectedId,
@@ -400,7 +401,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/Population/PopulationJsonData/",
+                "url": serverPrefix + "Population/PopulationJsonData/",
             },
             "initComplete": function (settings, json) {
                 handleStates();

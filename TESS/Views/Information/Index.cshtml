@@ -114,6 +114,7 @@
 @*Slut på Modal*@
 
 <script>
+    var serverPrefix = "@Url.Content("~/")";
     var uploadToServer = function () {
         if (typeof $("#save-information-changes").attr("data-information") != "undefined") {
 
@@ -124,14 +125,14 @@
             }
 
             var $formInputs = $("#informationModal form").find(":input");
-           
+
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
                 info[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/Information/SaveInformation/",
+                "url": serverPrefix + "Information/SaveInformation/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(info),
@@ -151,7 +152,7 @@
             });
         }
         else {
-          
+
             var info = {}
 
             var $formInputs = $("#informationModal form").find(":input");
@@ -159,17 +160,17 @@
             $('#type').selectpicker('refresh');
 
             var frmInpLen = $formInputs.length;
-          
+
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
                 if (!$currInput.is("button"))
                 {
-                    info[$currInput.attr("name")] = $currInput.val();                 
+                    info[$currInput.attr("name")] = $currInput.val();
                 }
-                   
+
             }
             $.ajax({
-                "url": "/Information/InsertInformation/",
+                "url": serverPrefix + "Information/InsertInformation/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(info),
@@ -200,14 +201,14 @@
         $formValidation = $("#informationModal form").validate({
             ignore: ".ignore",
             rules: {
-                
+
                 "Title": {
                     required: true,
-                   
+
                 },
                 "Message": {
                     required: true,
-                    
+
                 },
                 "Type": {
                     required: true,
@@ -264,7 +265,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/Information/InformationJsonData/",
+                "url": serverPrefix + "Information/InformationJsonData/",
             },
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
@@ -371,7 +372,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $.ajax({
-                                "url": "/Information/DeleteInformation/",
+                                "url": serverPrefix + "Information/DeleteInformation/",
                                 "type": "POST",
                                 "data": {
                                     "_ID": selectedId,

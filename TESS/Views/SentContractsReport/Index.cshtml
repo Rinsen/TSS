@@ -24,6 +24,7 @@
         </table>
     </div>
     <script>
+    var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @{
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
@@ -42,7 +43,7 @@
             "processing": true,
             "bPaginate": false,
             "ajax": {
-                "url": "/SentContractsReport/SentContacts/",
+                "url": serverPrefix + "SentContractsReport/SentContacts/",
                 "type": "POST",
 
             },
@@ -73,7 +74,7 @@
             var sortArr = $dt.order();
             var sort = "?sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            window.open('/SentContractsReport/Pdf' + sort, "_blank");
+            window.open(serverPrefix + 'SentContractsReport/Pdf' + sort, "_blank");
         })
     });
 

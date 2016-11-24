@@ -136,7 +136,8 @@
 @*Slut på Modal*@
 
 <script>
-//Sparar ändringar alternativ ny post
+    var serverPrefix = "@Url.Content("~/")";
+    //Sparar ändringar alternativ ny post
     var uploadToServer = function () {
         var oldReminder = $("#save-Reminder-changes").attr("data-Reminder");
 
@@ -158,7 +159,7 @@
         if (typeof $("#save-Reminder-changes").attr("data-Reminder") != "undefined") {
 
             $.ajax({
-                "url": "/Reminder/SaveReminder/",
+                "url": serverPrefix + "Reminder/SaveReminder/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(Reminder),
@@ -180,7 +181,7 @@
         }
         else {
             $.ajax({
-                "url": "/Reminder/InsertReminder/",
+                "url":serverPrefix + "Reminder/InsertReminder/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(Reminder),
@@ -298,10 +299,6 @@
     function drawButtons() {
         var $selRowContainer = $("#Reminder-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
-        
-
-        
-
         $selRowContainer.append("<div id='create-Reminder-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Reminder-button").bind("click", function () {
             $("#id_pk-text").removeAttr("readonly");
@@ -398,7 +395,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $.ajax({
-                                "url": "/Reminder/DeleteReminder/",
+                                "url": serverPrefix + "Reminder/DeleteReminder/",
                                 "type": "POST",
                                 "data": {
                                     "id_pk": selectedId,
@@ -497,7 +494,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/Reminder/ReminderJsonData/",
+                "url": serverPrefix + "Reminder/ReminderJsonData/",
                 "type": "POST",
                 "data": {
                     "area": defSys

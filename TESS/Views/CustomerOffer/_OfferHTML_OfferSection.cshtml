@@ -56,7 +56,10 @@
             License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
             Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
             ProductLicenseTotal += Convert.ToDecimal(article.License);
-            ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+            if(article.Price_type == "Underhåll / Månad")
+            {
+                ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+            }
         }
         else
         {

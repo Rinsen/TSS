@@ -31,14 +31,14 @@
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "description" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function()
+        var updateDataTable = function()
     {
         $('#report-table').DataTable({
             "destroy": true,
             "processing": true,
             "bPaginate": false,
             "ajax": {
-                "url": "/ProductReport/Products/",
+                "url": serverPrefix + "ProductReport/Products/",
                 "type": "POST",
 
             },
@@ -52,6 +52,7 @@
 
     }
     $('document').ready(function () {
+        var serverPrefix = "@Url.Content("~/")";
 
         updateDataTable();
         $('#fetch-pdf').click(function () {

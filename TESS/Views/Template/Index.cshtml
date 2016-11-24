@@ -126,6 +126,7 @@
 </div>
 <script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
 <script>
+    var serverPrefix = "@Url.Content("~/")";
 
     $(document).on('show.bs.modal', '#templateModal', function () {
         tinymce.init({
@@ -156,12 +157,12 @@
             tinyMCE.execCommand('mceAddControl', false, 'deluhtext5');
             tinyMCE.execCommand('mceAddControl', false, 'deluhtitle5');
         }
-       
+
         tinyMCE.execCommand('mceAddControl', false, 'opening5');
         tinyMCE.execCommand('mceAddControl', false, 'body5');
 
         $('.selectpicker').selectpicker('refresh');
-        
+
     })
 
     $('#templateModal').bind('hidden.bs.modal', function () {
@@ -196,13 +197,13 @@
     var setFields5 = function (docTyp) {
         if (docTyp == "Offert") {
             //$selectType.append($("<option></option>").attr("value", textTemplate.Document_type).html(textTemplate.Document_type));
-            
+
             $deluhTitleObj.parent().parent().hide();
-            
+
             $deluhTextObj.parent().parent().hide();
-            
+
             $bodytitleObj.parent().parent().hide();
-           
+
             $titleObj.prop("disabled", false);
             $bodyObj.parent().parent().show();
         }
@@ -229,15 +230,15 @@
             // $bodyObj.prop("disabled", true);
             $bodyObj.parent().parent().hide();
         }
-        
-       
+
+
        // initMCE(function () { });
-       
+
 
 
     };
 
-    
+
     //Start - selectRow function Aktiveras när man markerar en rad/klickar i en radiobutton
     var selectRow = function (element) {
         var $td = $(element);
@@ -315,7 +316,7 @@
             "processing": true,
             //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax": {
-                "url": "/Template/TemplateJsonData/",
+                "url": serverPrefix + "Template/TemplateJsonData/",
                 "type": "POST",
                 "data": {
                     "sign": sign
@@ -345,7 +346,7 @@
     //End - UpdateDataTable function
 
 
-    //Start - DrawButtons function including functions for the buttons 
+    //Start - DrawButtons function including functions for the buttons
     function drawButtons() {
         var $selRowContainer = $("#Template-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
@@ -385,7 +386,7 @@
                 getTemplate();
                 $("#templateModal").appendTo("body").modal("show");
                 $("#save-template-btn").attr("onclick", "save('update');");
-               
+
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
@@ -394,7 +395,7 @@
         $("#main-contract-template-button").click(function () {
             window.location = "MainContractTemplate";
         });
-        
+
         $("#new-template-modal-button").click(function () {
             //$selectType = $("#crm-type-select5");
             $("#title5").val("");
@@ -413,18 +414,18 @@
             $("#deluhtitle5").val("");
             $("#deluhtext5").val("");
 
-           
+
 
             setFields5("Offert");
-            
-            
-           
+
+
+
             $("#templateModal").appendTo("body").modal("show");
-           
+
 
             $("#save-template-btn").attr("onclick", "save('insert');");
         });
-        
+
         drawButtonsExtension($selRowContainer);
     }
     //End - DrawButtons function
@@ -441,7 +442,7 @@
         //var sign = $("#crm-select-user").val();
         var pk_id = selectedId;
        $.ajax({
-            "url": "/Template/SpecificTemplateData/",
+            "url": serverPrefix + "Template/SpecificTemplateData/",
             "type": "POST",
             "data": {
                 "ID": pk_id,
@@ -450,7 +451,7 @@
                 if (data.length > 0) {
                     var textTemplate = JSON.parse(data);
                     //$selectType = $("#crm-type-select5");
-                    
+
                     $("#crm-type-select5").html("");
 
                     setFields5(textTemplate.Document_type);
@@ -494,7 +495,7 @@
         var ID = selectedId;
 
         $.ajax({
-            "url": "/Template/SaveTemplate/",
+            "url": serverPrefix + "Template/SaveTemplate/",
             "type": "POST",
             "data": {
                 "method": "delete",
@@ -535,7 +536,7 @@
                     //Template_number: templateNumber,
                     Document_type: $selectType.val(),
                     Short_descr: $("#short_descr5").val(),
-                    Document_head: $("#title5").val(),  
+                    Document_head: $("#title5").val(),
                     //Page_head: $("#opening5").val(),
                     Page_head: tinyMCE.get('opening5').getContent(),
                     //Document_foot: $("#body5").val(),
@@ -582,7 +583,7 @@
 
 
             $.ajax({
-                "url": "/Template/SaveTemplate/",
+                "url": serverPrefix + "Template/SaveTemplate/",
                 "type": "POST",
                 "data": {
                     "method": method,
@@ -606,8 +607,8 @@
 
     $(document).ready(function () {
 
-        
-        
+
+
 
         $('.selectpicker').selectpicker();
         $("#crm-select-user").change(function () {
@@ -635,7 +636,7 @@
                     maxlength: 25
                 },
                 "Title": {
-                    
+
                     required: true,
                     maxlength: 255
                 },
@@ -645,9 +646,9 @@
                 },
                 "Text": {
                     required: true,
-                    
+
                 },
-                
+
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
@@ -669,13 +670,13 @@
         updateDataTable($("#crm-select-user").val());
         drawButtons();
 
-        // prevent Bootstrap from hijacking TinyMCE modal focus    
+        // prevent Bootstrap from hijacking TinyMCE modal focus
         $(document).on('focusin', function (e) {
             if ($(e.target).closest(".mce-window").length) {
                 e.stopImmediatePropagation();
             }
         });
-        
+
     });
-    
+
 </script>

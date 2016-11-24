@@ -52,6 +52,7 @@
         </div>-->
     </form>
     <script>
+        var serverPrefix = "@Url.Content("~/")";
         var currentOfferValues = @Html.Raw(ViewBag.CustomerOfferJSON);
         // Itterate through form inputs and json data and match input with correct values.
         var updateModalFields = function (data, targetFormId) {
@@ -87,7 +88,7 @@
             }
             else{
                 $.ajax({
-                    "url": "/CustomerOffer/JsonData/",
+                    "url": serverPrefix + "CustomerOffer/JsonData/",
                     "type": "POST",
                     "data": {
                         "requestData": "view_TextTemplate",
@@ -137,7 +138,7 @@
 
 
             $.ajax({
-                "url": "/CustomerOffer/JsonData/",
+                "url": serverPrefix + "CustomerOffer/JsonData/",
                 "type": "POST",
                 "data": {
                     "requestData": "update_view_CustomerOffer",
@@ -355,7 +356,7 @@ else if (Request["modal"] == "articles")
                         </div>
                     </div>
                    <p>Click on an item above to remove it from the list</p>
-                </td>messasges
+                </td>
             </tr>
         </table>
     </form>
@@ -363,6 +364,7 @@ else if (Request["modal"] == "articles")
 
 
 <script>
+    var serverPrefix = "@Url.Content("~/")";
 
     // Selectpickers
     $('.selectpicker').selectpicker();
@@ -385,7 +387,7 @@ else if (Request["modal"] == "articles")
     var fillClassificationSelect = function(System){
         var $classificationSelect = $("#classification-select");
         $.ajax({
-            "url": "/CustomerOffer/JsonData/",
+            "url": serverPrefix + "CustomerOffer/JsonData/",
             "type": "POST",
             "data": {
                 "requestData": "update_classification_select",
@@ -422,7 +424,7 @@ else if (Request["modal"] == "articles")
     // Function to fill the article list depending on chosen System and classification
     var fillArticleList = function(System, classification){
         $.ajax({
-            "url": "/CustomerOffer/JsonData/",
+            "url": serverPrefix + "CustomerOffer/JsonData/",
             "type": "POST",
             "data": {
                 "requestData": "get_modules",
@@ -444,7 +446,7 @@ else if (Request["modal"] == "articles")
     var fillArticleListSearch = function(){
         var $searchText = $("#art-search");
         $.ajax({
-            "url": "/CustomerOffer/JsonData/",
+            "url": serverPrefix + "CustomerOffer/JsonData/",
             "type": "POST",
             "data": {
                 "requestData": "get_modules_all",
@@ -848,7 +850,7 @@ else if (Request["modal"] == "articles")
         console.log(selectedArticlesArray);
         
         $.ajax({
-            "url": "/CustomerOffer/JsonData/",
+            "url": serverPrefix + "CustomerOffer/JsonData/",
             "type": "POST",
             "data": {
                 "requestData": "update_module_rows",
@@ -863,7 +865,7 @@ else if (Request["modal"] == "articles")
                 if (data > 0) {
                     // Success to update db. Now update the preview section.
                     $.ajax({
-                        "url": "/CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
+                        "url": serverPrefix + "CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
                         "type": "GET",
                         "success": function (data) {
                             $(".crm-pdf-offer-section").html(data);
@@ -982,6 +984,7 @@ else if (Request["modal"] == "services")
 
 <script>
     var services = [];
+    var serverPrefix = "@Url.Content("~/")";
     var addService = function(code, cost, amount, desc)
     {
         if(typeof amount == "undefined")
@@ -1192,7 +1195,7 @@ else if (Request["modal"] == "services")
         var saveFunction = function(){
 
             $.ajax({
-                "url": "/CustomerOffer/JsonData/",
+                "url": serverPrefix + "CustomerOffer/JsonData/",
                 "type": "POST",
                 "data": {
                     "requestData": "update_view_Service",
@@ -1207,7 +1210,7 @@ else if (Request["modal"] == "services")
                     if (data > 0) {
                         // Success to update db. Now update the preview section.
                         $.ajax({
-                            "url": "/CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
+                            "url": serverPrefix + "CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
                             "type": "GET",
                             "success": function (data) {
                                 $(".crm-pdf-offer-section").html(data);
@@ -1303,6 +1306,7 @@ else if (Request["modal"] == "head-information")
 
 
     <script>
+        var serverPrefix = "@Url.Content("~/")";
 
         // Selectpicker
         $('.selectpicker').selectpicker();
@@ -1338,27 +1342,27 @@ else if (Request["modal"] == "head-information")
             var updateData = {};
             var $sndForm = $("#head-information-form");
             var $inputs = $sndForm.find(":input");
-           
+
             $inputs.each(function () {
                 var $formInput = $(this);
                 var inputProp = $formInput.attr("name");
                 if(inputProp != "Sign" && inputProp != "Template_number" && inputProp != "SSMA_timestamp" && typeof inputProp != 'undefined'){
-                    updateData[$formInput.attr("name")] = $formInput.val(); 
+                    updateData[$formInput.attr("name")] = $formInput.val();
                 }
-                   
+
             });
-            
-            
+
+
 
 
             $.ajax({
-                "url": "/CustomerOffer/JsonData/",
+                "url": serverPrefix + "CustomerOffer/JsonData/",
                 "type": "POST",
                 "data": {
                     "requestData": "update_head_information",
                     "object": JSON.stringify(updateData),
                     "offerNumber": offerNumber
-                    
+
                 },
                 dataType: 'text',
                 // iOS 6 has a dreadful bug where POST requests are not sent to the
@@ -1372,7 +1376,7 @@ else if (Request["modal"] == "head-information")
                         $.each(updateData, function(key, val){
                             if(key == "Contact_person"){
                                 $.ajax({
-                                    "url": "/CustomerOffer/GetCustomerContact/",
+                                    "url": serverPrefix + "CustomerOffer/GetCustomerContact/",
                                     "type": "POST",
                                     "data": {
                                         "offerNumber": offerNumber,
@@ -1398,7 +1402,7 @@ else if (Request["modal"] == "head-information")
                                     $updateTarget.html(val);
                                 }
                             }
-                            
+
                         })
                     }
                 }
@@ -1414,7 +1418,7 @@ else if (Request["modal"] == "head-information")
                     $dateInput.prop("disabled", true);
                 } else {
                     $dateInput.prop("disabled", false);
-                }              
+                }
             });
             if(!webkit)
             {

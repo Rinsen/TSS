@@ -93,7 +93,8 @@
 @*Slut på Modal*@
 
 <script>
-//Sparar ändringar alternativ ny post
+    var serverPrefix = "@Url.Content("~/")";
+    //Sparar ändringar alternativ ny post
     var uploadToServer = function () {
         if (typeof $("#save-Sector-changes").attr("data-Sector") != "undefined") {
 
@@ -110,7 +111,7 @@
                 }
             }
             $.ajax({
-                "url": "/Sector/SaveSector/",
+                "url": serverPrefix + "Sector/SaveSector/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(Sector),
@@ -140,7 +141,7 @@
                 }
             }
             $.ajax({
-                "url": "/Sector/InsertSector/",
+                "url": serverPrefix + "Sector/InsertSector/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(Sector),
@@ -258,7 +259,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/Sector/SectorJsonData/",
+                "url": serverPrefix + "Sector/SectorJsonData/",
             },
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
@@ -359,7 +360,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $.ajax({
-                                "url": "/Sector/DeleteSector/",
+                                "url": serverPrefix + "Sector/DeleteSector/",
                                 "type": "POST",
                                 "data": {
                                     "id_pk": selectedId,
@@ -449,7 +450,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/Sector/SectorJsonData/",
+                "url": serverPrefix + "Sector/SectorJsonData/",
             },
             "initComplete": function (settings, json) {
                 handleStates();

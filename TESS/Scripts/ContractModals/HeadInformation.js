@@ -114,7 +114,7 @@ $(document).ready(function () {
                         
                         //window.location = "/CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName;
                         //$.ajax({
-                        //    "url": "/CustomerContract/ViewPdf?selected-contract=" + ssma_timestamp + "&contract-section=_HeaderSection",
+                        //    "url": serverPrefix + "CustomerContract/ViewPdf?selected-contract=" + ssma_timestamp + "&contract-section=_HeaderSection",
                         //    "type": "GET",
                         //    "success": function (data) {
                         //        $(".crm-pdf-header-section").html(data);

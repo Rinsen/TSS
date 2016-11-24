@@ -2,7 +2,8 @@
    
     Layout = null;
     @section Styles{
-        <link rel="stylesheet" media="all" href="@Server.MapPath("~/Content/OfferPdf.css")" />
+        <link rel="stylesheet" media="all" href="@Url.Content("~/Content/OfferPdf.css")" />
+        @*<link rel="stylesheet" media="all" href="@Server.MapPath("../Content/OfferPdf.css")" />*@
     }
     string offerValid = Convert.ToString(ViewBag.CustomerOffer.Offer_valid);
     if (offerValid != null)
@@ -53,7 +54,7 @@
             @if(ViewBag.UseLogo)
             {
             <span id="crm-pdf-tieto-logo-com">
-                <img src="@GetWorkingUrl("/Content/img/tieto-logo-com.png")" alt=""/>
+                <img src="@GetWorkingUrl("../Content/img/tieto-logo-com.png")" alt=""/>
 
             </span>
             }
@@ -104,13 +105,14 @@
             </div>
             <div id="crm-pdf-footer-regards">
                 <p>Med vänlig hälsning</p>
-                <p>Tieto Sweden Healthcare & Wellfare AB</p>
+                <p>Tieto Sweden Healthcare & Welfare AB</p>
                 <div class="signature-container">
                     @{
-                        String url = "~/Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
+                        String url = "../Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
                         if (System.IO.File.Exists(Request.MapPath(url)))
                         {
-                            <img src="@GetWorkingUrl(url.Remove(0,1))" alt="" />
+                            <img src="@GetWorkingUrl(url)" alt="" />
+                            @*<img src="@GetWorkingUrl(url.Remove(0,1))" alt="" />*@
                         }
                         else
                         {
@@ -129,7 +131,7 @@
             @if(ViewBag.UseLogo)
             {
             <div class="crm-pdf-foot-logo">
-                <img src="@GetWorkingUrl("/Content/img/tieto-logo.png")" alt="tieto-logo" />
+                <img src="@GetWorkingUrl("../Content/img/tieto-logo.png")" alt="tieto-logo" />
             </div>
             }
         </div>

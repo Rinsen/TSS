@@ -768,11 +768,12 @@ namespace TietoCRM.Controllers
                     String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
                                         view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type
                                         FROM view_Module                                                                                       
-                                        JOIN view_Tariff                                                                                       
+                                        Left JOIN view_Tariff                                                                                       
                                         on view_Module.Price_category = view_Tariff.Price_category
                                         WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
                                         view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
-                                        AND Inhabitant_level = (
+                                        AND IsNull(Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
+                                            where Customer = @customer)) = (
                                             Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer
                                         )

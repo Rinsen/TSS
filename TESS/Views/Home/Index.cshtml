@@ -89,6 +89,8 @@
 </div>
 
 <script>
+    var serverPrefix = "@Url.Content("~/")";
+
     var getTopFiveCustomers = function()
     {
         var $topFiveContainer = $('#top-five-body');
@@ -96,7 +98,7 @@
         var $laodingContainer = $topFiveContainer.find('.crm-loading');
 
         $.ajax({
-            "url": '/Home/GetTopFiveCustomers',
+            "url": serverPrefix + "Home/GetTopFiveCustomers",
             "type": "POST",
             "beforeSend": function(){
                 $laodingContainer.show();
@@ -139,7 +141,7 @@
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                        
+
                         data: chartValues,
                         backgroundColor: [
                              'rgba(0, 101, 160, 0.6)',
@@ -212,7 +214,7 @@
     {
         var $widgetData = $widget.find('.widget-data');
         $.ajax({
-            "url": url,
+            "url": serverPrefix + url,
             "type": "POST",
             "beforeSend": function(){
                 handleLoadingIcon($widget, "show");
@@ -251,7 +253,7 @@
         $infoList.append($emptyMsg);
 
         $.ajax({
-            "url": "/Home/GetAllInformation/",
+            "url": serverPrefix + "Home/GetAllInformation/",
             "type": "POST",
             "dataType": "json",
             "beforeSend": function () {
@@ -336,9 +338,9 @@
     var $expiringContractsWidget = $('#expiring-contracts');
 
     var getAllStatistics = function () {
-        getStatisticsValue("/Home/GetAmountOpenOffers/", $openOffersWidget);
-        getStatisticsValue("/Home/GetAmountSentContracts/", $sentContractsWidget);
-        getStatisticsValue("/Home/GetAmountExpiringContracts/", $expiringContractsWidget);
+        getStatisticsValue("Home/GetAmountOpenOffers/", $openOffersWidget);
+        getStatisticsValue("Home/GetAmountSentContracts/", $sentContractsWidget);
+        getStatisticsValue("Home/GetAmountExpiringContracts/", $expiringContractsWidget);
     }
 
     $(document).ready(function () {

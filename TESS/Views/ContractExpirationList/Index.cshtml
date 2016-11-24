@@ -57,6 +57,7 @@
 
     var selectedId = null;
     var selectedNo = 0;
+    var serverPrefix = "@Url.Content("~/")";
 
     @{String DataObject = "";}
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
@@ -78,7 +79,8 @@
             "processing": true,
             "paging": false,
             "ajax": {
-                "url": "/ContractExpirationList/JsonData/",
+                //"url": serverPrefix + "ContractExpirationList/JsonData/",
+                "url": serverPrefix + "ContractExpirationList/JsonData/",
                 "type": "POST",
                 "data": {
                     "sign": sign
@@ -206,7 +208,7 @@
             contractList.push(obj);
         }
         $.ajax({
-            "url": "/ContractExpirationList/ExtendContracts/",
+            "url": serverPrefix + "ContractExpirationList/ExtendContracts/",
             "type": "POST",
             "data": {
                 "contracts": JSON.stringify(contractList),

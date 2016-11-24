@@ -45,6 +45,7 @@
         <label style="float:right; margin-right:5%;">Total Maintenance: <span class="text" id="total-maintenance"> 0 kr</span></label>
 </div>
     <script>
+    var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @{
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
@@ -65,7 +66,7 @@
             "bFilter": false,
             "bPaginate": false,
             "ajax": {
-                "url": "/SaleReport/User/",
+                "url": serverPrefix + "SaleReport/User/",
                 "type": "POST",
                 "data": {
                     "user": user,
@@ -117,7 +118,7 @@
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            window.open('/SaleReport/Pdf?user=' + user + sort, "_blank");
+            window.open(serverPrefix + 'SaleReport/Pdf?user=' + user + sort, "_blank");
         })
 
     });

@@ -61,7 +61,10 @@ Produkter
             else
             {
                 ProductLicenseTotal += Convert.ToDecimal(article.License);
-                ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+                if (article.Price_type == "Underhåll / Månad")
+                {
+                    ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+                }
             }
 
         }

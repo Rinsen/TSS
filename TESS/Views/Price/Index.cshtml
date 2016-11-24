@@ -54,7 +54,8 @@
 @*Slut på Modal*@
 
 <script>
-//Sparar ändringar alternativ ny post
+    var serverPrefix = "@Url.Content("~/")";
+    //Sparar ändringar alternativ ny post
     var uploadToServer = function () {
         if (typeof $("#save-price-changes").attr("data-price") != "undefined") {
 
@@ -70,7 +71,7 @@
                 price[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/price/Saveprice/",
+                "url": serverPrefix + "price/Saveprice/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(price),
@@ -101,7 +102,7 @@
                 price[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/price/Insertprice/",
+                "url": serverPrefix + "price/Insertprice/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(price),
@@ -204,7 +205,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/price/priceJsonData/",
+                "url": serverPrefix + "price/priceJsonData/",
             },
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
@@ -305,7 +306,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $.ajax({
-                                "url": "/price/Deleteprice/",
+                                "url": serverPrefix + "price/Deleteprice/",
                                 "type": "POST",
                                 "data": {
                                     "id_pk": selectedId,
@@ -401,7 +402,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/price/priceJsonData/",
+                "url": serverPrefix + "price/priceJsonData/",
             },
             "initComplete": function (settings, json) {
                 handleStates();

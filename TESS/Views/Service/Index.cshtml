@@ -47,6 +47,7 @@
 </div>
 
 <script>
+    var serverPrefix = "@Url.Content("~/")";
     var uploadToServer = function()
     {
         if (typeof $("#save-service-changes").attr("data-service") != "undefined") {
@@ -63,7 +64,7 @@
                 service[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/Service/SaveService/",
+                "url": serverPrefix + "Service/SaveService/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(service),
@@ -94,7 +95,7 @@
                 service[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/Service/InsertService/",
+                "url": serverPrefix + "Service/InsertService/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(service),
@@ -196,7 +197,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/service/serviceJsonData/",
+                "url": serverPrefix + "service/serviceJsonData/",
             },
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
@@ -343,7 +344,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/service/serviceJsonData/",
+                "url": serverPrefix + "service/serviceJsonData/",
             },
             "initComplete": function (settings, json) {
                 handleStates();

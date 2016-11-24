@@ -145,10 +145,11 @@
 @*Slut på Modal*@
 
 <script>
+    var serverPrefix = "@Url.Content("~/")";
     var updateCurrentUserSection = function ()
     {
         $.ajax({
-            "url": "/Shared/CurrentUserSection/",
+            "url": serverPrefix + "Shared/CurrentUserSection/",
             "success": function (data) {
                 $('#currentUserSection').html(data);
             }
@@ -162,14 +163,14 @@
             var user = {}
 
             var $formInputs = $("#userModal form").find(":input");
-            
+
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
                 user[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/User/SaveUser/",
+                "url": serverPrefix + "User/SaveUser/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(user),
@@ -194,14 +195,14 @@
             var user = {}
 
             var $formInputs = $("#user-modal form").find(":input");
-            
+
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
                 user[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/User/InsertUser/",
+                "url": serverPrefix + "User/InsertUser/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(user),
@@ -319,7 +320,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/User/UserJsonData/",
+                "url": serverPrefix + "User/UserJsonData/",
             },
             "initComplete": function (settings, json) {
                 if (typeof onSuccess != "undefined")
@@ -421,7 +422,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $.ajax({
-                                "url": "/User/DeleteUser/",
+                                "url": serverPrefix + "User/DeleteUser/",
                                 "type": "POST",
                                 "data": {
                                     "sign": selectedId,
@@ -547,7 +548,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/User/UserJsonData/",
+                "url": serverPrefix + "User/UserJsonData/",
             },
             "initComplete": function (settings, json) {
                 drawButtons();

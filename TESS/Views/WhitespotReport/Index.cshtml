@@ -25,6 +25,7 @@
         </table>
     </div>
     <script>
+    var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @{
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
@@ -44,7 +45,7 @@
             "processing": true,
             "bPaginate": false,
             "ajax": {
-                "url": "/WhitespotReport/Contracts/",
+                "url": serverPrefix + "WhitespotReport/Contracts/",
                 "type": "POST",
 
             },
@@ -76,7 +77,7 @@
             var sortArr = $dt.order();
             var sort = "?sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            window.open('/WhitespotReport/Pdf' + sort, "_blank");
+            window.open(serverPrefix + 'WhitespotReport/Pdf' + sort, "_blank");
         })
     });
 

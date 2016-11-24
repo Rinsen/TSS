@@ -51,6 +51,7 @@
         </table>
     </div>
 <script>
+    var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
@@ -70,7 +71,7 @@
             "bPaginate": false,
             //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax": {
-                "url": "/CustomerProductReport/Customer/",
+                "url": serverPrefix + "CustomerProductReport/Customer/",
                 "type": "POST",
                 "data": {
                     "customer": customer,
@@ -87,7 +88,7 @@
     }
     var getData = function (target, $container, value) {
         $.ajax({
-            "url": "/CustomerProductReport/" + target,
+            "url": serverPrefix + "CustomerProductReport/" + target,
             "type": "POST",
             "data": {
                 "key": value
@@ -110,7 +111,7 @@
         });
     }
     $('document').ready(function () {
-        
+
         $('.selectpicker').selectpicker();
 
         $userContainer = $("#crm-select-user");
@@ -122,7 +123,7 @@
         });
 
         updateDataTable($customerContainer.val());
-        
+
         $userContainer.change(function () {
             getData("CustomerNames", $customerContainer, this.value);
 
@@ -137,7 +138,7 @@
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            window.open('/CustomerProductReport/Pdf?customer=' + customer + '&user=' + user + sort, "_blank");
+            window.open(serverPrefix + 'CustomerProductReport/Pdf?customer=' + customer + '&user=' + user + sort, "_blank");
         })
     });
 

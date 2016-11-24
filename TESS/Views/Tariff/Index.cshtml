@@ -94,6 +94,7 @@
         </div>
 
         <script>
+            var serverPrefix = "@Url.Content("~/")";
             var uploadToServer = function () {
                 if (typeof $("#save-tariff-changes").attr("data-tariff") != "undefined") {
 
@@ -109,7 +110,7 @@
                         tariff[$currInput.attr("name")] = $currInput.val();
                     }
                     $.ajax({
-                        "url": "/Tariff/SaveTariff/",
+                        "url": serverPrefix + "Tariff/SaveTariff/",
                         "type": "POST",
                         "data": {
                             "json": JSON.stringify(tariff),
@@ -140,7 +141,7 @@
                         tariff[$currInput.attr("name")] = $currInput.val();
                     }
                     $.ajax({
-                        "url": "/Tariff/InsertTariff/",
+                        "url": serverPrefix + "Tariff/InsertTariff/",
                         "type": "POST",
                         "data": {
                             "json": JSON.stringify(tariff),
@@ -253,7 +254,7 @@
                     "destroy": true,
                     "processing": true,
                     "ajax": {
-                        "url": "/Tariff/TariffJsonData/",
+                        "url": serverPrefix + "Tariff/TariffJsonData/",
                     },
                     "initComplete": function (settings, json) {
                         if (typeof onSuccess != "undefined")
@@ -352,7 +353,7 @@
                                     className: 'btn-danger pull-right',
                                     callback: function () {
                                         $.ajax({
-                                            "url": "/Tariff/DeleteTariff/",
+                                            "url": serverPrefix + "Tariff/DeleteTariff/",
                                             "type": "POST",
                                             "data": {
                                                 "ssma_timestamp": selectedId,
@@ -480,7 +481,7 @@
                     "destroy": true,
                     "processing": true,
                     "ajax": {
-                        "url": "/Tariff/TariffJsonData/",
+                        "url": serverPrefix + "Tariff/TariffJsonData/",
                     },
                     "initComplete": function (settings, json) {
                         handleStates();

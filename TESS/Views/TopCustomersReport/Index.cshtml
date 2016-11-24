@@ -49,6 +49,7 @@
         </table>
     </div>
     <script>
+    var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @{
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
@@ -65,7 +66,7 @@
             "processing": true,
             "bPaginate": false,
             "ajax": {
-                "url": "/TopCustomersReport/TopCustomers/",
+                "url": serverPrefix + "TopCustomersReport/TopCustomers/",
                 "type": "POST",
                 "data": {
                     "user": $userContainer.val(),
@@ -115,7 +116,7 @@
     });
     var updateUser = function(){
         $.ajax({
-            "url": "/TopCustomersReport/GetUsers/",
+            "url": serverPrefix + "TopCustomersReport/GetUsers/",
             "type": "POST",
             "data": {
                 "area": $("#crm-select-area").val()
@@ -144,7 +145,7 @@
         var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
         var params = "?user=" + user + "&area=" + area + "&year=" + year;
 
-        window.open('/TopCustomersReport/Pdf' + params + sort, "_blank");
+        window.open(serverPrefix + 'TopCustomersReport/Pdf' + params + sort, "_blank");
     })
 
     </script>

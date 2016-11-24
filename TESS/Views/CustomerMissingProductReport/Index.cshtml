@@ -50,6 +50,7 @@
         </table>
     </div>
     <script>
+    var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
     {
@@ -73,7 +74,7 @@
             },
             //"ajax": "/CustomerMissingProductReport/CustomerData/",
             "ajax": {
-                "url": "/CustomerMissingProductReport/GetData/",
+                "url": serverPrefix + "CustomerMissingProductReport/GetData/",
                 "type": "POST",
                 "data": {
                     "customer": customer,
@@ -92,7 +93,7 @@
     }
     var getData = function (target, $container, value) {
         $.ajax({
-            "url": "/CustomerMissingProductReport/" + target,
+            "url": serverPrefix + "CustomerMissingProductReport/" + target,
             "type": "POST",
             "data": {
                 "key": value
@@ -139,7 +140,7 @@
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            window.open('/CustomerMissingProductReport/Pdf?customer=' + customer + '&user=' + user + sort, "_blank");
+            window.open(serverPrefix + 'CustomerMissingProductReport/Pdf?customer=' + customer + '&user=' + user + sort, "_blank");
         })
 
     });

@@ -510,7 +510,7 @@ var moveItem = function(event, element){
                 $button.empty().append(cont1);
 
                 //$.ajax({
-                //    "url": "/CustomerContract/ToggleRewritten/",
+                //    "url": serverPrefix + "CustomerContract/ToggleRewritten/",
                 //    "type": "POST",
                 //    "data": {
                 //        "contractid": contractId,
@@ -537,7 +537,7 @@ var moveItem = function(event, element){
                     var cont1 = cont.innerHTML;
                     cont.innerHTML = cont1;
                     //$.ajax({
-                    //    "url": "/CustomerContract/ToggleRewritten/",
+                    //    "url": serverPrefix + "CustomerContract/ToggleRewritten/",
                     //    "type": "POST",
                     //    "data": {
                     //        "contractid": contractId,

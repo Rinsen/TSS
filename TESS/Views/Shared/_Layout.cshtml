@@ -83,7 +83,7 @@
                 <a class="navbar-brand crm-navbar-brand menu-toggle btn">
                     <span class="glyphicon glyphicon glyphicon-list" aria-hidden="false"></span>
                 </a>
-                <a class="navbar-brand btn" onclick="window.location = '/'">
+                <a class="navbar-brand btn" onclick="window.location = @Url.Content("~/")">
                     @TietoCRM.Models.GlobalVariables.ApplicationName
                 </a>
 
@@ -92,7 +92,7 @@
                 <ul class="nav navbar-nav">
                     <li>
                         <ol class="breadcrumb">
-                            <li><a href="/">Home</a></li>
+                            <li><a href=@Url.Content("~/")>Home</a></li>
                             @GetCurrentPagePath() &nbsp &nbsp
                             <button type='button' class='btn-xs btn-warning form-inline' data-toggle="modal" id='main-remind-modal-button' onclick="loadMainReminders()" style="display: none">Reminder</button>
                         </ol>

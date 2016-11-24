@@ -1441,7 +1441,7 @@
                             className: 'btn-danger pull-right',
                             callback: function () {
                                 $.ajax({
-                                    "url": "/CustomerContract/FinalizeModuleTermination/",
+                                    "url": serverPrefix + "CustomerContract/FinalizeModuleTermination/",
                                     "type": "POST",
                                     "data": {
                                         "avtalsid": contractId,

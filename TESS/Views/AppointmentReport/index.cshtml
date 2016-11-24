@@ -86,7 +86,8 @@
         </table>
     </div>
     <script>
-        @{
+        var serverPrefix = "@Url.Content("~/")";
+       @{
             String DataObject = "\r\n";
         }
         @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
@@ -109,7 +110,7 @@
                 "bFilter": true,
                 "bPaginate": false,
                 "ajax": {
-                    "url": "/AppointmentReport/GetAppointments/",
+                    "url": serverPrefix + "AppointmentReport/GetAppointments/",
                     "type": "POST",
                     "data": {
                         "start": $("#start-date").val(),
@@ -167,7 +168,7 @@
                 var sortArr = $dt.order();
                 var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-                window.open('/AppointmentReport/Pdf?start=' + start + '&stop=' + stop + "&user=" + user + sort, "_blank");
+                window.open(serverPrefix + 'AppointmentReport/Pdf?start=' + start + '&stop=' + stop + "&user=" + user + sort, "_blank");
             })
 
             updateDataTable();
