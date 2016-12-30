@@ -41,7 +41,7 @@
 
     <table id="crm-pdf-head-table">
         <tr>
-            <td style="width: 35%">
+            <td style="width: 37%">
                 <table id="crm-pdf-head-contract-info">
                     @if (ViewBag.CustomerContract.Is(ContractType.MainContract))
                     {
@@ -61,6 +61,13 @@
                     {
                         <tr>
                             <td class="crm-table-title">Tilläggsavtal:</td>
+                            <td>@ViewBag.CustomerContract.Contract_id</td>
+                        </tr>
+                    }
+                    @if (ViewBag.CustomerContract.Is(ContractType.ServiceContract))
+                    {
+                        <tr>
+                            <td class="crm-table-title">Tjänsteavtal:</td>
                             <td>@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }

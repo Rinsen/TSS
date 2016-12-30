@@ -100,7 +100,7 @@ public class view_ContractRow : SQLBaseClass
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
-                                        FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer";
+                                        FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer Order By Alias";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@contractID", contractID);
@@ -151,7 +151,7 @@ public class view_ContractRow : SQLBaseClass
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
-                                        FROM " + databasePrefix + "ContractRow";
+                                        FROM " + databasePrefix + "ContractRow Order By Alias";
 
                 command.Prepare();
 
@@ -200,7 +200,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer Order By Alias";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -245,7 +245,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE " + "Customer = @customer";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE " + "Customer = @customer Order By Alias";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -290,7 +290,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber Order By Alias";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@articleNumber", articleNumber);
@@ -353,7 +353,7 @@ public class view_ContractRow : SQLBaseClass
                     view_Contract.Customer=view_ContractRow.Customer and 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                     view_Contract.Valid_from >= @startDate AND
-                    view_Contract.Valid_from <= @stopDate";
+                    view_Contract.Valid_from <= @stopDate Order By Alias";
                 //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
                 //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
 

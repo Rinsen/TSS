@@ -33,7 +33,7 @@
                                 int count = 0;
                                 foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                                 {
-                                    if (pi.Name != "SSMA_timestamp" && pi.Name != "ID_PK" && !pi.Name.StartsWith("_"))
+                                    if (pi.Name != "SSMA_timestamp" && pi.Name != "ID_PK" && pi.Name != "Area" && pi.Name != "Creation_date" && !pi.Name.StartsWith("_"))
                                     {
 
                                         String pName = pi.Name.Replace("_", " ");

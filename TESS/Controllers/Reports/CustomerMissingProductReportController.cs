@@ -38,7 +38,7 @@ namespace TietoCRM.Controllers
             HashSet<String> SystemNames = new HashSet<String>();
             foreach (view_CustomerMissingProductReport row in CustomerMissingProducts)
             {
-                SystemNames.Add(row.Fixed_price + "#" + row.System);
+                SystemNames.Add(row.SortNo + "#" + row.System);
             }
             List<String> OrderedSystemNames = SystemNames.ToList();
 

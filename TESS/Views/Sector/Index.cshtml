@@ -310,7 +310,7 @@
                 var $currInput = $($formInputs[i]);
                 for (var j = 0; j < tdLen; j++) {
                     var $currTD = $($selectedTds[j]);
-                    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "id_pk") {
+                    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "id_pk" && $currTD.data("property") != "Area") {
                         $currInput.val("");
                     }
                 }

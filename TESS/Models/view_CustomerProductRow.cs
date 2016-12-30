@@ -172,14 +172,14 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, ";
                 command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
-                command.CommandText += databasePrefix + "CustomerProductRow  WHERE " + "Customer = @customer And Discount_type = 0 Order By SortNo, Classification, Article_number";
+                command.CommandText += databasePrefix + "CustomerProductRow  WHERE " + "Customer = @customer And Discount_type = 0 Order By SortNo, Classification, Module";
                 
                 // If contract id is specified
                 if(contractId != null)
                 {
                     command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, ";
                     command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
-                    command.CommandText += databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer AND Contract_id = @contract_id And Discount_type = 0 Order By SortNo, Classification, Article_number";
+                    command.CommandText += databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer AND Contract_id = @contract_id And Discount_type = 0 Order By SortNo, Classification, Module";
                     command.Prepare();
                     command.Parameters.AddWithValue("@contract_id", contractId);
                 }

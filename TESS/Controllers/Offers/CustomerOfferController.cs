@@ -164,7 +164,7 @@ namespace TietoCRM.Controllers
                 articles.Add(offerInfo);
             }
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList(); ;
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -264,7 +264,7 @@ namespace TietoCRM.Controllers
                 articles.Add(offerInfo);
             }
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -670,7 +670,7 @@ namespace TietoCRM.Controllers
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
-	                                    Where A.System = @System AND A.Classification = @classification";
+	                                    Where A.System = @System AND A.Classification = @classification Order By A.Module";
 
                     // Default query
                     command.CommandText = queryText;
@@ -777,7 +777,7 @@ namespace TietoCRM.Controllers
                                             Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer
                                         )
-                                        order by Article_number asc";
+                                        order by Module asc";
 
                     // Default query
                     command.CommandText = queryText;

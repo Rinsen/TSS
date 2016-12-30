@@ -87,7 +87,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias , Area FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area";
+                                        ,Alias , Area FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area Order By Alias";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -137,7 +137,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias , Area FROM " + databasePrefix + "OfferRow";
+                                        ,Alias , Area FROM " + databasePrefix + "OfferRow Order By Alias";
 
                 command.Prepare();
 

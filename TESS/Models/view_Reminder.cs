@@ -27,18 +27,28 @@ namespace TietoCRM.Models
         public String Reminder_text { get; set; }
 
         private DateTime _creation_date;
-        public DateTime _Creation_date { get; set; }
+        public DateTime Creation_date { get; set; }
 
         private String sign;
         public String Sign { get; set; }
 
         private String _area;
-        public String _Area { get; set; }
+        public String Area { get; set; }
 
         public view_Reminder()
             : base("Reminder")
         {
             //ctr
+        }
+
+        /// <summary>
+        /// Inserts this object into the SQL server. And automatically inserts the Creation_date field.
+        /// </summary>
+        public override int Insert()
+        {
+            this.Creation_date = DateTime.Now;
+            //this.Area = view_User.
+            return base.Insert();
         }
 
 

@@ -47,7 +47,7 @@ namespace TietoCRM.Controllers.List_Management
             else
                 customers = view_Customer.getCustomerNames();
 
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Reminder.getAllReminders().Where(r => user.IfSameArea(r._Area) && r.Sign == user.Sign && customers.Contains(r.Customer_name))) + "}";
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Reminder.getAllReminders().Where(r => user.IfSameArea(r.Area) && r.Sign == user.Sign && customers.Contains(r.Customer_name))) + "}";
 
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
@@ -109,7 +109,7 @@ namespace TietoCRM.Controllers.List_Management
                 {
                     return "0";
                 }
-                a._Area = System.Web.HttpContext.Current.GetUser().Area;
+                a.Area = System.Web.HttpContext.Current.GetUser().Area;
 
                 a.Insert();
 

@@ -222,17 +222,24 @@ namespace TietoCRM.Controllers.Contracts
                     articles.Add(contractInfo);
             }
 
-            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
-            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
-            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
+            oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
+            remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
+
+            //oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            //oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            //remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
 
             ViewData.Add("OldEducationPortals", oldEducationPortals);
             ViewData.Add("OldArticles", oldArticles);
             ViewData.Add("RemEducationPortals", remEducationPortals);
             ViewData.Add("CtrResign", ctrResign);
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
-            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
+            remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
+
+            //articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            //remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -263,7 +270,8 @@ namespace TietoCRM.Controllers.Contracts
                 options.Add(article);
             }
 
-            ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList());
+            ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Module).ToList());
+            //ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList());
             ViewData.Add("EducationalOptions", eduOptions);
 
             view_CustomerContact cc = new view_CustomerContact();
@@ -1237,7 +1245,8 @@ namespace TietoCRM.Controllers.Contracts
                     }
                     else
                     {
-                        License = Decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
+                        if (dict.Keys.Contains("License"))
+                            License = Decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
                         Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
                     }
                     int RowType = Convert.ToInt32(dict["Rowtype"]);
@@ -1416,7 +1425,7 @@ namespace TietoCRM.Controllers.Contracts
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
-	                                    Where A.System = @System AND A.Classification = @classification";
+	                                    Where A.System = @System AND A.Classification = @classification Order By Module";
 
                 //                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
                 //                                    view_Module.Price_category, view_Module.System, view_Module.Classification,view_Module.Comment
@@ -1452,11 +1461,7 @@ namespace TietoCRM.Controllers.Contracts
                             int i = 0;
                             while (reader.FieldCount > i)
                             {
-
                                 result.Add(reader.GetName(i), reader.GetValue(i));
-
-
-
                                 i++;
                             }
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
@@ -1529,14 +1534,14 @@ namespace TietoCRM.Controllers.Contracts
                     queryText = @"SELECT * FROM qry_GetModulesContractTermination
                                     WHERE Customer = @customer And (Cast(Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(Article_number As Varchar(30)) Else @searchtext End Or
                                     Module Like Case @searchtext When '' Then Module Else @searchtext End) 
-                                    order by Article_number asc";
+                                    order by Module asc";
                 }
                 else
                 {
                     queryText = @"SELECT * FROM qry_GetModulesContractNormal 
                                     WHERE Customer = @customer And (Cast(Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(Article_number As Varchar(30)) Else @searchtext End Or
                                     Module Like Case @searchtext When '' Then Module Else @searchtext End) 
-                                    order by Article_number asc";
+                                    order by Module asc";
                 }
 
 //                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,

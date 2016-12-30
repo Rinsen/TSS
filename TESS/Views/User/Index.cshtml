@@ -72,7 +72,7 @@
                                         </div>
                                     </div>
                                 }
-                                else if (pi.Name == "Use_logo")
+                                @*else if (pi.Name == "Use_logo")
                                 {
                                     <div class="form-group">
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
@@ -81,6 +81,19 @@
                                                 <option value="true">Yes</option>
                                                 <option value="false">No</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                }*@
+                                else if (pi.Name == "Use_logo")
+                                {
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="checkbox">
+                                                <label for="@pi.Name.ToLower()">
+                                                    <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Use_logo" type="checkbox" />
+                                                    Use Logo
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 }
@@ -167,7 +180,12 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                user[$currInput.attr("name")] = $currInput.val();
+                if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
+                    user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");
+                }
+                else {
+                    user[$currInput.attr("name")] = $currInput.val();
+                }
             }
             $.ajax({
                 "url": serverPrefix + "User/SaveUser/",
@@ -228,6 +246,10 @@
             if ($("#user-modal form").valid()) {
                 uploadToServer();
             }
+        });
+
+        $('#user_logo').change(function () {
+            handleDiscountCheck(this);
         });
 
         $formValidation = $("#userModal form").validate({
@@ -372,7 +394,17 @@
                     for (var j = 0; j < tdLen; j++) {
                         var $currTD = $($selectedTds[j]);
                         if ($currTD.data("property") == $currInput.attr("name")) {
-                            $currInput.val($currTD.html());
+                            if ($currInput.attr("type") == "checkbox") {
+                                if ($currTD.text() == "1") {
+                                    $currInput.prop("checked", true);
+                                }
+                                else {
+                                    $currInput.prop("checked", false);
+                                }
+                            }
+                            else {
+                                $currInput.val($currTD.text());
+                            }
                         }
                     }
                 }
@@ -400,7 +432,11 @@
                 for (var j = 0; j < tdLen; j++) {
                     var $currTD = $($selectedTds[j]);
                     if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "Sign") {
-                        $currInput.val("");
+                        if ($currInput.prop("id") == "use_logo") {
+                            $currInput.val("false");
+                        } else {
+                            $currInput.val("");
+                        }
                     }
                 }
             }
