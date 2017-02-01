@@ -110,6 +110,8 @@
 }
 .crm-pdf div.crm-pdf-header-section table td.crm-table-title {
   background-color: #d7d7d7;
+  font-size: 8pt;
+  font-weight: bold;
 }
 .crm-pdf div.crm-pdf-header-section h4 {
   font-weight: normal;
@@ -489,6 +491,8 @@
 }
 .crm-pdf div#crm-pdf-signing-section table td.crm-table-title {
   background-color: #d7d7d7;
+  font-size: 8pt;
+  font-weight: bold;
 }
 .crm-pdf div#crm-pdf-signing-section table td.crm-empty-signing-field {
   height: 2.5em;
@@ -518,29 +522,36 @@
   width: 100%;
 }
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(1) {
-  width: 60%;
+  width: 66%;
   text-align: left;
   font-weight: bold;
+  font-size: 11pt;
 }
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(2) {
   width: 8%;
   text-align: center;
+  font-weight: bold;
 }
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(3) {
   text-align: right;
-  width: 16%;
+  width: 13%;
+  font-weight: bold;
+  font-size: 11pt;
 }
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(4) {
   text-align: right;
-  width: 16%;
+  width: 13%;
+  font-weight: bold;
+  font-size: 11pt;
 }
 .crm-pdf div.crm-pdf-subrows_1 table {
   page-break-before: auto;
   width: 100%;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(1) {
-  width: 60%;
+  width: 66%;
   text-align: left;
+  font-size: 10.5pt;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(2) {
   width: 8%;
@@ -549,13 +560,15 @@
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(3) {
   text-align: right;
-  width: 16%;
+  width: 13%;
   vertical-align: text-top;
+  font-size: 10.5pt;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(4) {
   text-align: right;
-  width: 16%;
+  width: 13%;
   vertical-align: text-top;
+  font-size: 10.5pt;
 }
 .crm-pdf div.crm-pdf-subrows_2 table {
   page-break-before: auto;
@@ -563,28 +576,33 @@
 }
 .crm-pdf div.crm-pdf-subrows_2 table td:nth-child(1) {
   padding-left: 0.5em;
+  width: 8%;
+  text-align: left;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_2 table td:nth-child(2) {
   width: 20%;
   text-align: left;
   vertical-align: text-top;
-}
-.crm-pdf div.crm-pdf-subrows_2 table td:nth-child(2) {
-  width: 10%;
-  text-align: left;
-  vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subrows_2 table td:nth-child(3) {
-  width: 38%;
+  width: 46%;
   text-align: left;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subrows_2 table td:nth-child(4) {
   text-align: right;
-  width: 16%;
+  width: 13%;
   vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subrows_2 table td:nth-child(5) {
   text-align: right;
-  width: 16%;
+  width: 13%;
   vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table {
   page-break-before: auto;
@@ -596,19 +614,22 @@
   font-size: 8pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(2) {
-  width: 28%;
+  width: 34%;
   text-align: right;
   vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(3) {
   text-align: right;
-  width: 16%;
+  width: 13%;
   vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(4) {
   text-align: right;
-  width: 16%;
+  width: 13%;
   vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subheader_terminate table {
   page-break-before: auto;
@@ -700,18 +721,19 @@ td.RewrittenRewritten {
             <td style="width: 37%">
                 <table id="crm-pdf-head-contract-info">
                         <tr>
-                            <td class="crm-table-title" >Avtalsbeteckning:</td>
-                            <td>VOO TBR 2015-03-23 01</td>
+                            <td class="crm-table-title">Avtalsbeteckning:</td>
+                            <td></td>
                         </tr>
-                                                        </table>
+                                            <tr>
+                            <td class="crm-table-title">Tilläggsavtal:</td>
+                            <td>VOO CFT 2017-01-25 02</td>
+                        </tr>
+                                    </table>
             </td>
             <td class="crm-contract-title" style="text-align:center">
-                <span><strong>Huvudavtal</strong></span>
+                <span><strong>Till&#228;ggsavtal</strong></span>
             </td>
             <td style="text-align:right">
-                <span id="crm-pdf-tieto-logo-com">
-                    <img id ="tieto-logo" src="D:\Projekt\Workspaces\GITHUB\TSS\TESS\Content\img\tieto-logo-com.png" alt=""  />
-                </span>
             </td>
         </tr>
     </table>

@@ -39,27 +39,42 @@ Produkter
                     <tr>
                         <td>Produkter</td>
                         <td></td>
-                        <td>Engångsbelopp</td>
+                        <td>Engångs-belopp</td>
                         <td>@article.Price_type</td>
                     </tr>
                 </table>
             </div>
             <div class="large-divider"></div>
-        }
-        String License;
-        String Maintenance;
-        // Format currency
-        if (article.Discount != 1 ||article.Discount_type == 0)
-        {
-            License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-            if(article.Discount == 1)
-            {
-                discountsLM += article.License;
-                discountsMM += article.Maintenance;
             }
-            else
+            String License;
+            String Maintenance;
+            // Format currency
+            if (article.Discount != 1 ||article.Discount_type == 0)
             {
+                if ((article.License % 1) == 0)
+                {
+                    License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+                }
+                else
+                {
+                    License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+                }
+
+                if ((article.Maintenance % 1) == 0)
+                {
+                    Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+                }
+                else
+                {
+                    Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+                }
+                if (article.Discount == 1)
+                {
+                    discountsLM += article.License;
+                    discountsMM += article.Maintenance;
+                }
+                else
+                {
                 ProductLicenseTotal += Convert.ToDecimal(article.License);
                 if (article.Price_type == "Underhåll / Månad")
                 {
@@ -70,13 +85,13 @@ Produkter
         }
         else
         {
-            discountsLP += article.License;
-            discountsMP += article.Maintenance;
-            License = (int)article.License + "%";
-            Maintenance = (int)article.Maintenance + "%";
-        }
-        if (previousSystem != article.System)
-        {
+        discountsLP += article.License;
+        discountsMP += article.Maintenance;
+        License = (int)article.License + "%";
+        Maintenance = (int)article.Maintenance + "%";
+    }
+    if (previousSystem != article.System)
+    {
             <div class="crm-pdf-subrows_1">
                 <table>
                     <tr>
@@ -88,8 +103,8 @@ Produkter
         <div class="crm-pdf-subrows_2">
             <table>
                 <tr>
-                    <td>@article.Classification</td>
                     <td>@article.Article_number</td>
+                    <td>@article.Classification</td>
                     <td>@article.Module</td>
                     <td>@License</td>
                     <td>@Maintenance</td>
@@ -112,8 +127,24 @@ Produkter
         ProductMaintenanceTotal += discountsMM;
 
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
+        String ProductLicenseTotalFormated;
+        String ProductMaintenanceTotalFormated;
+        if ((ProductLicenseTotal % 1) == 0)
+        {
+            ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
+        }
+        else
+        {
+            ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
+        }
+        if ((ProductMaintenanceTotal % 1) == 0)
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
+        }
+        else
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
+        }
     }
     <span class="large-divider"></span>
     <div class="crm-pdf-subsum_1">
@@ -139,7 +170,7 @@ Main contract and Options
                 <tr>
                     <td>Optioner</td>
                     <td></td>
-                    <td>Engångsbelopp</td>
+                    <td>Engångs-belopp</td>
                     <td>Underhåll/mån</td>
                 </tr>
             </table>
@@ -157,9 +188,26 @@ Main contract and Options
             OptionLicenseTotal += Convert.ToDecimal(option.License);
             OptionMaintenanceTotal += Convert.ToDecimal(option.Maintenance);
 
+            String License;
+            String Maintenance;
             // Format currency
-            String License = string.Format(se, "{0:C2}", option.License).Replace(".", " ");
-            String Maintenance = string.Format(se, "{0:C2}", option.Maintenance).Replace(".", " ");
+            if ((option.License % 1) == 0)
+            {
+                License = string.Format(se, "{0:C0}", option.License).Replace(".", " ");
+            }
+            else
+            {
+                License = string.Format(se, "{0:C2}", option.License).Replace(".", " ");
+            }
+
+            if ((option.Maintenance % 1) == 0)
+            {
+                Maintenance = string.Format(se, "{0:C0}", option.Maintenance).Replace(".", " ");
+            }
+            else
+            {
+                Maintenance = string.Format(se, "{0:C2}", option.Maintenance).Replace(".", " ");
+            }
             if (previousSystem != option.System)
             {
             <div class="crm-pdf-subrows_1">
@@ -173,8 +221,8 @@ Main contract and Options
             <div class="crm-pdf-subrows_2">
                 <table>
                     <tr>
-                        <td>@option.Classification</td>
                         <td>@option.Article_number</td>
+                        <td>@option.Classification</td>
                         <td>@option.Article</td>
                         <td>@License</td>
                         <td>@Maintenance</td>
@@ -185,8 +233,24 @@ Main contract and Options
         }
         @{
             // Format currency for total sums
-            string OptionLicenseTotalFormated = string.Format(se, "{0:C2}", OptionLicenseTotal).Replace(".", " ");
-            string OptionMaintenanceTotalFormated = string.Format(se, "{0:C2}", OptionMaintenanceTotal).Replace(".", " ");
+            String OptionLicenseTotalFormated;
+            String OptionMaintenanceTotalFormated;
+            if ((OptionLicenseTotal % 1) == 0)
+            {
+                OptionLicenseTotalFormated = string.Format(se, "{0:C0}", OptionLicenseTotal).Replace(".", " ");
+            }
+            else
+            {
+                OptionLicenseTotalFormated = string.Format(se, "{0:C2}", OptionLicenseTotal).Replace(".", " ");
+            }
+            if ((OptionMaintenanceTotal % 1) == 0)
+            {
+                OptionMaintenanceTotalFormated = string.Format(se, "{0:C0}", OptionMaintenanceTotal).Replace(".", " ");
+            }
+            else
+            {
+                OptionMaintenanceTotalFormated = string.Format(se, "{0:C2}", OptionMaintenanceTotal).Replace(".", " ");
+            }
         }
         <span class="large-divider"></span>
         <div class="crm-pdf-subsum_1">
@@ -223,7 +287,25 @@ Main contract and Educational Options
         }
         @foreach (dynamic article in ViewBag.EducationalOptions)
         {
-            String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            String License;
+            String Maintenance;
+            if ((article.License % 1) == 0)
+            {
+                License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+            }
+            else
+            {
+                License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+            }
+
+            if ((article.Maintenance % 1) == 0)
+            {
+                Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            }
+            else
+            {
+                Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            }
             // Calculate total sums
             OptionMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
             view_Module module = new view_Module();
@@ -231,12 +313,11 @@ Main contract and Educational Options
 
             // Format currency
 
-            String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
             <div class="crm-pdf-subrows_2">
                 <table>
                     <tr>
-                        <td style="padding-left:0em">@article.Classification</td>
                         <td>@article.Article_number</td>
+                        <td style="padding-left:0em">@article.Classification</td>
                         <td>@article.Article</td>
                         <td></td>
                         <td>@Maintenance</td>
@@ -301,8 +382,24 @@ Konsulttjänster
 
             // Format currency
             decimal? totPrice = cr.Amount != 0 ? (cr.Total_price / cr.Amount) : 0;
-            string Price = string.Format(se, "{0:C2}", totPrice).Replace(".", " ");
-            string TotalPrice = string.Format(se, "{0:C2}", cr.Total_price).Replace(".", " ");
+            String Price;
+            String TotalPrice;
+            if ((totPrice % 1) == 0)
+            {
+                Price = string.Format(se, "{0:C0}", totPrice).Replace(".", " ");
+            }
+            else
+            {
+                Price = string.Format(se, "{0:C2}", totPrice).Replace(".", " ");
+            }
+            if ((cr.Total_price % 1) == 0)
+            {
+                TotalPrice = string.Format(se, "{0:C0}", cr.Total_price).Replace(".", " ");
+            }
+            else
+            {
+                TotalPrice = string.Format(se, "{0:C2}", cr.Total_price).Replace(".", " ");
+            }
             <div class="crm-pdf-subrows_1">
                 <table>
                     <tr>
@@ -315,8 +412,16 @@ Konsulttjänster
             </div>
         }
         @{
-        // Format currency for total sums
-        string ServicesTotalFormated = string.Format(se, "{0:C2}", ServicesTotal).Replace(".", " ");
+            // Format currency for total sums
+            String ServicesTotalFormated;
+            if ((ServicesTotal % 1) == 0)
+            {
+                ServicesTotalFormated = string.Format(se, "{0:C0}", ServicesTotal).Replace(".", " ");
+            }
+            else
+            {
+                ServicesTotalFormated = string.Format(se, "{0:C2}", ServicesTotal).Replace(".", " ");
+            }
         }
         <span class="large-divider"></span>
         <div class="crm-pdf-subsum_1">
