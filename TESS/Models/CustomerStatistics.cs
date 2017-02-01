@@ -278,6 +278,7 @@ namespace TietoCRM.Models
                 bool a = (contract.Is(ContractType.SupplementaryContract) && contract.Created.HasValue);
                 bool b = (contract.Is(ContractType.MainContract) && contract.Valid_from.HasValue && contract.Valid_through.HasValue);
                 bool c = (contract.Status == "Giltigt" || contract.Status == "Avslutat");
+//Om kontraktet är tilläggsavtal (varför saknas tjänsteavtal?) eller huvudavtal samt är av status Giltigt eller Avslutat
                 if ((a || b) && c)
                 {
                     view_Customer customer = new view_Customer();

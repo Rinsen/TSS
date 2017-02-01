@@ -218,23 +218,23 @@ namespace TietoCRM.Models
             int ec = this.getAmountExpiringContracts();
             int sc = this.getAmounSentContracts();
 
-            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
-            {
-                connection.Open();
+            //using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
+            //{
+            //    connection.Open();
 
-                String updateQuery = @"UPDATE dbo.view_Statistics SET Open_offers=@oo,Expiring_contracts=@ec,Sent_contracts=@sc WHERE Sign='" + this.User.Sign + @"'
-                    IF @@ROWCOUNT=0
-                    INSERT INTO dbo.view_Statistics (Sign,Open_offers,Expiring_contracts,Sent_contracts) VALUES(@sign,@oo,@ec,@sc)";
+            //    String updateQuery = @"UPDATE dbo.view_Statistics SET Open_offers=@oo,Expiring_contracts=@ec,Sent_contracts=@sc WHERE Sign='" + this.User.Sign + @"'
+            //        IF @@ROWCOUNT=0
+            //        INSERT INTO dbo.view_Statistics (Sign,Open_offers,Expiring_contracts,Sent_contracts) VALUES(@sign,@oo,@ec,@sc)";
 
-                SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
+            //    SqlCommand updateCommand = new SqlCommand(updateQuery, connection);
 
-                updateCommand.Prepare();
-                updateCommand.Parameters.AddWithValue("@sign", this.User.Sign);
-                updateCommand.Parameters.AddWithValue("@oo", oo);
-                updateCommand.Parameters.AddWithValue("@ec", ec);
-                updateCommand.Parameters.AddWithValue("@sc", sc);
-                updateCommand.ExecuteNonQuery();
-            }
+            //    updateCommand.Prepare();
+            //    updateCommand.Parameters.AddWithValue("@sign", this.User.Sign);
+            //    updateCommand.Parameters.AddWithValue("@oo", oo);
+            //    updateCommand.Parameters.AddWithValue("@ec", ec);
+            //    updateCommand.Parameters.AddWithValue("@sc", sc);
+            //    updateCommand.ExecuteNonQuery();
+            //}
 
             if(UseCachedData)
             {

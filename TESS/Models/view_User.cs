@@ -58,7 +58,7 @@ namespace TietoCRM.Models
         {
             int ret = base.Insert();
             UserStatistics stats = new UserStatistics(this);
-            stats.UpdateToSQLServer();
+            //stats.UpdateToSQLServer();
             return ret;
         }
 

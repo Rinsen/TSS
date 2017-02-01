@@ -32,7 +32,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Users", view_User.getAllUsers());
 
             this.ViewData["Title"] = "Contract Supervision";
-            ViewData.Add("Contracts", view_Contract.GetValidContracts(Request["sign"]).OrderBy(c => c.Observation));
+            ViewData.Add("Contracts", view_Contract.GetContractsByStatus(Request["sign"], "Giltigt").OrderBy(c => c.Observation));
 
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             view_User user = new view_User();
@@ -46,7 +46,7 @@ namespace TietoCRM.Controllers.Contracts
             String sign = Request.Form["sign"];
             view_User user = new view_User();
             user.Select("Sign=" + sign);
-            List<dynamic> contracts = view_Contract.GetValidContracts(sign).Where(c => user.IfSameArea(c.Area)).OrderBy(c => c.Observation).Select(c => new
+            List<dynamic> contracts = view_Contract.GetContractsByStatus(sign, "Giltigt").Where(c => user.IfSameArea(c.Area)).OrderBy(c => c.Observation).Select(c => new
                 {
                     Customer = c.Customer,
                     Contract_id = c.Contract_id,

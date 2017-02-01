@@ -247,9 +247,6 @@ namespace TietoCRM.Models
         /// <returns>List of contracts.</returns>
         public static List<view_Contract> GetContracts()
         {
-            
-            
-
             List<view_Contract> list = new List<view_Contract>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -259,14 +256,14 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status], [CRM_id] ,[Valid_from] ,[Valid_through] ,[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Area, Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
+                command.CommandText = @"SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,
+                                        [Term_of_notice] ,[Extension] ,[Status], [CRM_id] ,[Valid_from] ,
+                                        [Valid_through] ,[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,
+                                        [Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Area, 
+                                        Resigned_contract, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
 
                 command.Prepare();
-               
-
-
                 command.ExecuteNonQuery();
-
 
                 List<view_ContractRow> cRows = view_ContractRow.GetAllContractRows();
                 List<view_ContractConsultantRow> ccRows = view_ContractConsultantRow.GetAllContractConsultantRow();
@@ -293,8 +290,6 @@ namespace TietoCRM.Models
                         }
                     }
                 }
-
-
             }
             return list;
         }
@@ -303,12 +298,10 @@ namespace TietoCRM.Models
         /// Gets all valid contracts of a client that the specific user is a representative of.
         /// </summary>
         /// <param name="sign">The sign of the user</param>
+        /// <param name="ctrStatus">The status of the Contract</param>
         /// <returns>A list of valid contracts.</returns>
-        public static List<view_Contract> GetValidContracts(String sign)
+        public static List<view_Contract> GetContractsByStatus(String sign, String ctrStatus)
         {
-
-
-
             List<view_Contract> list = new List<view_Contract>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -318,17 +311,16 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = @"SELECT vc.[ID], vc.[Contract_id] ,vc.[Customer], vc.[Title] ,vc.[Contract_type] ,vc.[Term_of_notice] ,vc.[Extension] ,vc.[Status] ,vc.[Valid_from] ,vc.[Valid_through] ,
-                    vc.[Main_contract_id] ,vc.[Expire] ,vc.[Observation] ,vc.[Note] ,vc.[Contact_person] ,vc.[Created] ,
-                    vc.[Updated] ,vc.[Option_date], vc.[Sign], vc.[Area], Resigned_contract, CAST(vc.SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                   FROM " + databasePrefix + "Contract as vc, " + databasePrefix + "Customer as cus where cus.Representative = @sign and vc.Customer = cus.Customer and vc.status = 'Giltigt' and vc.Contract_type = 'huvudavtal'";
+                command.CommandText = @"SELECT vc.[ID], vc.[Contract_id] ,vc.[Customer], vc.[Title] ,vc.[Contract_type] ,
+                                        vc.[Term_of_notice] ,vc.[Extension] ,vc.[Status] ,vc.[Valid_from] ,vc.[Valid_through] ,
+                                        vc.[Main_contract_id] ,vc.[Expire] ,vc.[Observation] ,vc.[Note] ,vc.[Contact_person] ,vc.[Created] ,
+                                        vc.[Updated] ,vc.[Option_date], vc.[Sign], vc.[Area], Resigned_contract, CAST(vc.SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
+                                        FROM " + databasePrefix + "Contract as vc, " + databasePrefix + 
+                                        @"Customer as cus where cus.Representative = @sign and vc.Customer = cus.Customer and 
+                                        vc.status = " + ctrStatus + " and vc.Contract_type = 'huvudavtal'";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@sign", sign);
-
-
-
-
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {

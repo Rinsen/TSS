@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
 
-    
+    var frm = $("#templatesModal form");
 
     $("#textTemplate-modal-button").click(function () {
         
@@ -27,55 +27,57 @@
         loadModuleText();
     });
     $("#save-template-changes").click(function () {
-        var text = {};
-        text["Contract_type"] = $("#document-type-text").val();
-        text["Title"] = $("#title-text").val();
-        //text["Page_head"] = $("#page-head-text").val();
-        text["Page_head"] = tinymce.get('page-head-text').getContent();
-        //text["Document_foot"] = $("#document-foot-text").val();
-        text["Document_foot"] = tinymce.get('document-foot-text').getContent();
-        text["Document_foot_title"] = $("#bodytitle").val(),
-        text["Delivery_maint_title"] = tinymce.get("deluhtitle").getContent(),
-        //text["Delivery_maint_text"] = $("#deluhtext").val()
-        text["Delivery_maint_text"] = tinymce.get('deluhtext').getContent();
-        text["Contract_id"] = contractId;
-        text["Customer"] = customerName;
-        text["Page_foot"] = "";
-        text["Document_head"] = "";
+        if ($("#template-modal form").valid()) {
+            var text = {};
+            text["Contract_type"] = $("#document-type-text").val();
+            text["Title"] = $("#title-text").val();
+            //text["Page_head"] = $("#page-head-text").val();
+            text["Page_head"] = tinymce.get('page-head-text').getContent();
+            //text["Document_foot"] = $("#document-foot-text").val();
+            text["Document_foot"] = tinymce.get('document-foot-text').getContent();
+            text["Document_foot_title"] = $("#bodytitle").val(),
+            text["Delivery_maint_title"] = tinymce.get("deluhtitle").getContent(),
+            //text["Delivery_maint_text"] = $("#deluhtext").val()
+            text["Delivery_maint_text"] = tinymce.get('deluhtext').getContent();
+            text["Contract_id"] = contractId;
+            text["Customer"] = customerName;
+            text["Page_foot"] = "";
+            text["Document_head"] = "";
 
 
-        $.ajax({
-            "url": serverPrefix + "CustomerContract/SaveContractText/",
-            "type": "POST",
-            "data": {
-                "customer": customerName,
-                "contract-id": contractId,
-                "json": JSON.stringify(text)
-            },
-            "success": function (data) {
-                
+            $.ajax({
+                "url": serverPrefix + "CustomerContract/SaveContractText/",
+                "type": "POST",
+                "data": {
+                    "customer": customerName,
+                    "contract-id": contractId,
+                    "json": JSON.stringify(text)
+                },
+                "success": function (data) {
 
-                if (data > 0) {
 
-                    console.log("success");
-                    $.each(text, function (key, val) {
-                        var $updateTarget = $("#template-" + key);
-                        if ($updateTarget.length > 0) {
-                            $updateTarget.html(val);
-                        }
-                    })
-                    
-                    $("#templatesModal").modal("hide");
-                    triggerAlert("Successfully updated this contract text", "success");
+                    if (data > 0) {
+
+                        console.log("success");
+                        $.each(text, function (key, val) {
+                            var $updateTarget = $("#template-" + key);
+                            if ($updateTarget.length > 0) {
+                                $updateTarget.html(val);
+                            }
+                        })
+
+                        $("#templatesModal").modal("hide");
+                        triggerAlert("Successfully updated this contract text", "success");
+                    }
+                    else {
+                        console.log("failure");
+                        triggerAlert("Something went wrong when trying to update the contract text on the server", "warning");
+                    }
+
+
                 }
-                else {
-                    console.log("failure");
-                    triggerAlert("Something went wrong when trying to update the contract text on the server", "warning");
-                }
-                
-
-            }
-        });
+            });
+        };
     });
 
     $("#save-main-template-changes").click(function () {
@@ -123,6 +125,25 @@
 
         });
     });
+
+    $formValidation = $("#templatesModal form").validate({
+        rules: {
+            "DeluhTitle": {
+                maxlength: 255
+            },
+            "Document_foot": {
+                maxlength: 255
+            }
+        },
+        errorElement: "span",
+        wrapper: "a",  // a wrapper around the error message
+        errorPlacement: function (error, element) {
+            error.next().addClass("tooltips");
+            error.addClass("tooltips");
+            error.insertAfter(element);
+        }
+    });
+
 });
 
 

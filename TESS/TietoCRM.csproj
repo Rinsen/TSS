@@ -393,6 +393,7 @@
     <Content Include="Content\img\Signatures\ESM.png" />
     <Content Include="Content\img\Signatures\JAJ.png" />
     <Content Include="Content\img\Signatures\MLO.png" />
+    <Content Include="Content\img\Signatures\RJS.png" />
     <Content Include="Content\img\Signatures\SLT.png" />
     <Content Include="Content\img\tieto-logo-com.png" />
     <Content Include="Content\img\tieto-logo.png" />
