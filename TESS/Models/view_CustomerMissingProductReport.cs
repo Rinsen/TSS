@@ -55,7 +55,7 @@ namespace TietoCRM.Models
         /// Gets all the product rows
         /// </summary>
         /// <returns>A list of product rows.</returns>
-        public static List<view_CustomerMissingProductReport> getCustomerMissingProducts(string customer)
+        public static List<view_CustomerMissingProductReport> getCustomerMissingProducts(string customer, string area)
         {
 
             List<view_CustomerMissingProductReport> list = new List<view_CustomerMissingProductReport>();
@@ -63,12 +63,16 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT * FROM " + databasePrefix + "CustomerProductsMissing Where Customer = @customer Order By Fixed_price, classification, status, module";
+                //String query = "SELECT * FROM " + databasePrefix + "CustomerProductsMissing Where Customer = @customer Order By Fixed_price, classification, status, module";
+                String query = "stp_MissingProducts";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
+                command.CommandType = CommandType.StoredProcedure;
                 command.Prepare();
-                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@pCustomer", customer);
+                command.Parameters.AddWithValue("@pArea", area);
+                //command.Parameters.AddWithValue("@area", user.Area);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -88,6 +92,7 @@ namespace TietoCRM.Models
                         }
                     }
                 }
+                connection.Close();
             }
             return list;
         }

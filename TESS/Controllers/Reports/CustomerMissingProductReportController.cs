@@ -32,7 +32,11 @@ namespace TietoCRM.Controllers
 
         public ActionResult Pdf()
         {
-            List<view_CustomerMissingProductReport> CustomerMissingProducts = view_CustomerMissingProductReport.getCustomerMissingProducts(Request["customer"]);
+            String sign = Request["user"];
+
+            view_User user = new view_User();
+            user.Select("Sign=" + sign);
+            List<view_CustomerMissingProductReport> CustomerMissingProducts = view_CustomerMissingProductReport.getCustomerMissingProducts(Request["customer"], user.Area);
 
             // Store all unique Customer name in a set
             HashSet<String> SystemNames = new HashSet<String>();
@@ -72,38 +76,35 @@ namespace TietoCRM.Controllers
             view_User user = new view_User();
             user.Select("Sign=" + sign);
 
-            List<view_CustomerMissingProductReport> ProductReportRows = view_CustomerMissingProductReport.getCustomerMissingProducts(customer);
+            List<view_CustomerMissingProductReport> ProductReportRows = view_CustomerMissingProductReport.getCustomerMissingProducts(customer, user.Area);
 
             ProductReportRows.OrderBy(m => m.Classification).ThenBy(m => m.Status).ThenBy(m => m.Article_number);
 
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
             foreach (view_CustomerMissingProductReport cpr in ProductReportRows)
             {
-                if(user.IfSameArea(cpr.Area))
+                Dictionary<String, String> dic = new Dictionary<String, String>();
+                foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
                 {
-                    Dictionary<String, String> dic = new Dictionary<String, String>();
-                    foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
+                    if (pi.Name != "SSMA_timestamp" && pi.Name != "Customer" && pi.Name != "Sign")
                     {
-                        if (pi.Name != "SSMA_timestamp" && pi.Name != "Customer" && pi.Name != "Sign")
+                        if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
                         {
-                            if (pi.PropertyType == typeof(DateTime) || pi.PropertyType == typeof(DateTime?))
-                            {
-                                if (pi.GetValue(cpr) != null)
-                                    dic.Add(pi.Name, ((DateTime)pi.GetValue(cpr)).ToString("yyyy-MM-dd"));
-                                else
-                                    dic.Add(pi.Name, null);
-                            }
+                            if (pi.GetValue(cpr) != null)
+                                dic.Add(pi.Name, ((DateTime)pi.GetValue(cpr)).ToString("yyyy-MM-dd"));
                             else
-                            {
-                                if (pi.GetValue(cpr) != null)
-                                    dic.Add(pi.Name, pi.GetValue(cpr).ToString());
-                                else
-                                    dic.Add(pi.Name, null);
-                            }
+                                dic.Add(pi.Name, null);
+                        }
+                        else
+                        {
+                            if (pi.GetValue(cpr) != null)
+                                dic.Add(pi.Name, pi.GetValue(cpr).ToString());
+                            else
+                                dic.Add(pi.Name, null);
                         }
                     }
-                    rows.Add(dic);
                 }
+                rows.Add(dic);
             }
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";

@@ -270,7 +270,7 @@ namespace TietoCRM.Controllers.Contracts
                 options.Add(article);
             }
 
-            ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Module).ToList());
+            ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article).ToList());
             //ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList());
             ViewData.Add("EducationalOptions", eduOptions);
 

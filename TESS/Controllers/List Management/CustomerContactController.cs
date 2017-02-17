@@ -164,23 +164,24 @@ namespace TietoCRM.Controllers
         {
             try
             {
-                String json = Request.Form["json"];
+                String id = Request["id"];
 
                 Dictionary<String, Object> variables = null;
 
-                try
-                {
-                    variables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
-                }
-                catch
-                {
-                    return "0";
-                }
+                //try
+                //{
+                //    variables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
+                //}
+                //catch
+                //{
+                //    return "0";
+                //}
 
                 view_CustomerContact contact = new view_CustomerContact();
                 try
                 {
-                    contact.Delete("Contact_person = '" + System.Web.HttpUtility.HtmlDecode(variables["Contact_person"].ToString()) + "' AND Email = '" + System.Web.HttpUtility.HtmlDecode(variables["Email"].ToString()) + "' AND Customer = '" + System.Web.HttpUtility.HtmlDecode(variables["Customer"].ToString()) + "'");
+                    //contact.Delete("Contact_person = '" + System.Web.HttpUtility.HtmlDecode(variables["Contact_person"].ToString()) + "' AND Email = '" + System.Web.HttpUtility.HtmlDecode(variables["Email"].ToString()) + "' AND Customer = '" + System.Web.HttpUtility.HtmlDecode(variables["Customer"].ToString()) + "'");
+                    contact.Delete("ID=" + id);
                 }
                 catch
                 {
