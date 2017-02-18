@@ -32,7 +32,7 @@
         var $el = $(this);
         var classification = $el.val();
         var System = $SystemSelect.val();
-        fillOptionsArticleList(System, classification);
+        fillOptionsArticleList($SystemOptionSelect.val(), $classificationOptionSelect.val());
     });
 });
 
