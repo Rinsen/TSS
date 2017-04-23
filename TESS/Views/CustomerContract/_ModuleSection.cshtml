@@ -25,6 +25,8 @@ Produkter
         decimal discountsMM = 0;
         decimal ProductLicenseTotal = 0;
         decimal ProductMaintenanceTotal = 0;
+        bool uhManFinns = false;
+        bool summera = true;
 
         String previousSystem = "";
         String previousPriceType = "";
@@ -33,65 +35,84 @@ Produkter
     {
         if (previousPriceType != article.Price_type)
         {
+            if (article.Price_type == "Underhåll / Månad")
+            {
+                if (uhManFinns == false)
+                {
+                    ProductLicenseTotal = 0;
+                    ProductMaintenanceTotal = 0;
+                }
+
+                uhManFinns = true;
+                summera = true;
+            }
+            if (article.Price_type == "Användare / År" && uhManFinns == true)
+            {
+                summera = false;
+            }
+            if (article.Price_type == "Användare / År" && uhManFinns == false)
+            {
+                summera = true;
+            }
             previousPriceType = article.Price_type;
             <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
                 <table>
                     <tr>
                         <td>Produkter</td>
                         <td></td>
-                        <td>Engångs-belopp</td>
+                        <td>Engångsavgift</td>
                         <td>@article.Price_type</td>
                     </tr>
                 </table>
             </div>
             <div class="large-divider"></div>
-            }
-            String License;
-            String Maintenance;
-            // Format currency
-            if (article.Discount != 1 ||article.Discount_type == 0)
-            {
-                if ((article.License % 1) == 0)
-                {
-                    License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
                 }
-                else
+                String License;
+                String Maintenance;
+                // Format currency
+                if (article.Discount != 1 || article.Discount_type == 0)
                 {
-                    License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-                }
+                    if ((article.License % 1) == 0)
+                    {
+                        License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+                    }
+                    else
+                    {
+                        License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+                    }
 
-                if ((article.Maintenance % 1) == 0)
-                {
-                    Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
-                }
-                else
-                {
-                    Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-                }
-                if (article.Discount == 1)
-                {
-                    discountsLM += article.License;
-                    discountsMM += article.Maintenance;
-                }
-                else
-                {
-                ProductLicenseTotal += Convert.ToDecimal(article.License);
-                if (article.Price_type == "Underhåll / Månad")
-                {
-                    ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
-                }
-            }
+                    if ((article.Maintenance % 1) == 0)
+                    {
+                        Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+                    }
+                    else
+                    {
+                        Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+                    }
+                    if (article.Discount == 1)
+                    {
+                        discountsLM += article.License;
+                        discountsMM += article.Maintenance;
+                    }
+                    else
+                    {
+                        ProductLicenseTotal += Convert.ToDecimal(article.License);
+                        if (summera == true)
+                        {
+                            ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+                        }
+                    }
 
-        }
-        else
-        {
-        discountsLP += article.License;
-        discountsMP += article.Maintenance;
-        License = (int)article.License + "%";
-        Maintenance = (int)article.Maintenance + "%";
-    }
-    if (previousSystem != article.System)
-    {
+                }
+                else
+                {
+                    discountsLP += article.License;
+                    discountsMP += article.Maintenance;
+                    License = (int)article.License + "%";
+                    Maintenance = (int)article.Maintenance + "%";
+                }
+                if (previousSystem != article.System)
+                {
             <div class="crm-pdf-subrows_1">
                 <table>
                     <tr>
@@ -170,7 +191,7 @@ Main contract and Options
                 <tr>
                     <td>Optioner</td>
                     <td></td>
-                    <td>Engångs-belopp</td>
+                    <td>Engångsavgift</td>
                     <td>Underhåll månad</td>
                 </tr>
             </table>
@@ -277,7 +298,7 @@ Main contract and Educational Options
                     <td>Option: Lärportal</td>
                     <td></td>
                     <td></td>
-                    <td>Person/år</td>
+                    <td>Person / år</td>
                 </tr>
             </table>
         </div>
@@ -354,7 +375,7 @@ Konsulttjänster
         <div class="crm-pdf-subheader_1">
             <table>
                 <tr>
-                    <td>Konsulttjänster/Teknikinstallation</td>
+                    <td>Tjänster</td>
                     <td>Antal</td>
                     <td>Àpris</td>
                     <td>Summa</td>
@@ -400,7 +421,7 @@ Konsulttjänster
             {
                 TotalPrice = string.Format(se, "{0:C2}", cr.Total_price).Replace(".", " ");
             }
-            <div class="crm-pdf-subrows_1">
+            <div class="crm-pdf-subrows_3">
                 <table>
                     <tr>
                         <td>@Service.Description</td>

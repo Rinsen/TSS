@@ -23,7 +23,7 @@
 @*    @Styles.Render("//www.datatables.net/release-datatables/extensions/ColVis/css/dataTables.colVis.css")*@
     @Styles.Render("//cdn.datatables.net/buttons/1.2.1/css/buttons.dataTables.min.css")
     @Styles.Render("//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css")
-
+    
     <!-- Speical style for the Feature page-->
     @RenderSection("Styles", false)
     <!-- Speical style for the Feature page ends-->
@@ -56,6 +56,8 @@
     
     @Scripts.Render("~/Scripts/flatpickr.min.js")
     @Styles.Render("~/Content/flatpickr.min.css")
+
+    @Styles.Render("~/Content/DataTables/css/jquery.dataTables.css")
     <!-- Script section ends-->
     @functions
     {

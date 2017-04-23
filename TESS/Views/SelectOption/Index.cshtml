@@ -80,6 +80,7 @@
                 <button type="button" id="save-ModelAndProperties-changes" class="btn btn-primary">Add</button>
             </div>
             <script>
+                var serverPrefix = "@Url.Content("~/")";
                 var $thisModal = $('#addModelAndPropertiesModal');
                 var $allModelsContainer = $('#all-model-names');
                 var $allPropertiesContainer = $('#all-property-names');
@@ -114,7 +115,7 @@
                     }
 
                     $.ajax({
-                        "url": "/SelectOption/InsertSelectOption/",
+                        "url": serverPrefix + "SelectOption/InsertSelectOption/",
                         "type": "POST",
                         "data": {
                             "json": JSON.stringify(json),
@@ -207,6 +208,7 @@
 
 
 <script>
+    var serverPrefix = "@Url.Content("~/")";
     var propertyOption = null;
     var uploadToServer = function () {
         if (typeof $("#save-selectOption-changes").attr("data-information") != "undefined") {
@@ -228,7 +230,7 @@
                 info[$currInput.attr("name")] = $currInput.val();
             }
             $.ajax({
-                "url": "/SelectOption/SaveSelectOption/",
+                "url": serverPrefix + "SelectOption/SaveSelectOption/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(info),
@@ -271,7 +273,7 @@
                    
             }
             $.ajax({
-                "url": "/SelectOption/InsertSelectOption/",
+                "url": serverPrefix + "SelectOption/InsertSelectOption/",
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(info),
@@ -351,7 +353,7 @@
             var $selectElement = $('#select-selectProperties');
 
             $.ajax({
-                url: '/SelectOption/GetSelectProperties',
+                url: serverPrefix + "SelectOption/GetSelectProperties",
                 type: 'POST',
                 data: {
                     model: $el.val()
@@ -378,7 +380,7 @@
         }
     var updateSelectModels = function(){
         $.ajax({
-            url: '/SelectOption/GetSelectModels',
+            url: serverPrefix + "SelectOption/GetSelectModels",
             type: 'POST',
             success: onSuccess
         });
@@ -444,7 +446,7 @@
             "destroy": true,
             "processing": true,
             "ajax": {
-                "url": "/SelectOption/GetTableSelectOptions/",
+                "url": serverPrefix + "SelectOption/GetTableSelectOptions/",
                 type: 'POST',
                 data: data
             },
@@ -539,7 +541,7 @@
                         className: 'btn-danger pull-right',
                         callback: function () {
                             $.ajax({
-                                "url": "/SelectOption/DeleteSelectOption/",
+                                "url": serverPrefix + "SelectOption/DeleteSelectOption/",
                                 "type": "POST",
                                 "data": {
                                     "_ID": selectedId,

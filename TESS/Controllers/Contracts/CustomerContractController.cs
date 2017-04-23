@@ -56,6 +56,7 @@ namespace TietoCRM.Controllers.Contracts
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
             else
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames());
+            this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_kontrakt);
             this.ViewData.Add("ControllerName", "CustomerContract");
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
             String on;
@@ -365,7 +366,7 @@ namespace TietoCRM.Controllers.Contracts
                         p.Name == "Contract_id" || p.Name == "Title" || p.Name == "Status" || p.Name == "Main_contract_id" || p.Name == "Contract_type" ||
                         p.Name == "Term_of_notice" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Valid_from" || p.Name == "Valid_through" ||
                         p.Name == "Extension" || p.Name == "Expire" || p.Name == "Observation" || p.Name == "Note" ||
-                        p.Name == "Sign" || p.Name == "Area"
+                        p.Name == "Sign" || p.Name == "Area" || p.Name == "Summera"
                     ).ToList();
             }
             else
@@ -727,7 +728,6 @@ namespace TietoCRM.Controllers.Contracts
                 contact.Contact_person = System.Web.HttpUtility.HtmlEncode(contact.Contact_person);
                 contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
             }
-
             return (new JavaScriptSerializer()).Serialize(l);
         }
         public String SaveContact()

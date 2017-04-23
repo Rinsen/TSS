@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -68,51 +69,91 @@ namespace TietoCRM.Controllers.Reports
         /// <returns></returns>
         public static List<Dictionary<String, object>> GenerateTopCustomers(String user, String area, String year, int ammount)
         {
-            view_User vUser = new view_User();
-            SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
-            List<view_Customer> customers;
-            if (area == "*")
-                customers = view_Customer.getAllCustomers();
-            else if(user == "*")
-            {
-                customers = new List<view_Customer>();
-                List<view_User> users = view_User.getAllUsers().Where(u => u.IfSameArea(area)).ToList();
-                foreach(view_User vUser1 in users)
-                {
-                    customers.AddRange(view_Customer.getAllCustomers(vUser1.Sign));
-                }
-            }
-            else
-            {
-                vUser.Select("Sign=" + user);
-                if (vUser.User_level > 1)
-                    customers = view_Customer.getAllCustomers(user);
-                else
-                    customers = view_Customer.getAllCustomers();
-            }
+            //view_User vUser = new view_User();
+            //SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
+            //List<view_Customer> customers;
+            //if (area == "*")
+            //    customers = view_Customer.getAllCustomers();
+            //else if(user == "*")
+            //{
+            //    customers = new List<view_Customer>();
+            //    List<view_User> users = view_User.getAllUsers().Where(u => u.IfSameArea(area)).ToList();
+            //    foreach(view_User vUser1 in users)
+            //    {
+            //        customers.AddRange(view_Customer.getAllCustomers(vUser1.Sign));
+            //    }
+            //}
+            //else
+            //{
+            //    vUser.Select("Sign=" + user);
+            //    if (vUser.User_level > 1)
+            //        customers = view_Customer.getAllCustomers(user);
+            //    else
+            //        customers = view_Customer.getAllCustomers();
+            //}
 
-            List<CustomerStatistics> statistics = CustomerStatistics.GetAllCustomerStatstics(customers, int.Parse(year));
+            //List<CustomerStatistics> statistics = CustomerStatistics.GetAllCustomerStatstics(customers, int.Parse(year));
+            //List<Dictionary<String, Object>> rows = new List<Dictionary<string, Object>>();
+
+            //foreach (CustomerStatistics statistic in statistics)
+            //{
+            //    view_Customer customer = statistic.Customer;
+
+            //    Dictionary<String, object> dict = new Dictionary<string, object>();
+            //    try
+            //    {
+            //        dict.Add("customer", customer.Customer);
+            //        dict.Add("amount", Convert.ToInt32(statistic.GetTotalSpent(int.Parse(year), area)));
+            //        dict.Add("representative", customer.GetReprensentativesAsString());
+            //        dict.Add("customer_type", customer.Customer_type);
+            //        dict.Add("county", selectOption.GetValue("County",customer.County.ToString()));
+
+            //        rows.Add(dict);
+            //    }
+            //    catch { }
+
+            //}
+            SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
             List<Dictionary<String, Object>> rows = new List<Dictionary<string, Object>>();
 
-            foreach (CustomerStatistics statistic in statistics)
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
             {
-                view_Customer customer = statistic.Customer;
+                connection.Open();
+                String query = "stp_TopCustomer";
 
-                Dictionary<String, object> dict = new Dictionary<string, object>();
-                try
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.CommandType = CommandType.StoredProcedure;
+                command.Prepare();
+                command.Parameters.AddWithValue("@pYear", int.Parse(year));
+                command.Parameters.AddWithValue("@pSign", user);
+                command.Parameters.AddWithValue("@pArea", area);
+                command.Parameters.AddWithValue("@pAntal", ammount);
+                //command.Parameters.AddWithValue("@area", user.Area);
+
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    dict.Add("customer", customer.Customer);
-                    dict.Add("amount", Convert.ToInt32(statistic.GetTotalSpent(int.Parse(year), area)));
-                    dict.Add("representative", customer.GetReprensentativesAsString());
-                    dict.Add("customer_type", customer.Customer_type);
-                    dict.Add("county", selectOption.GetValue("County",customer.County.ToString()));
 
-                    rows.Add(dict);
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            Dictionary<String, object> dict = new Dictionary<string, object>();
+                            try
+                            {
+                                dict.Add("customer", reader.GetString(0));
+                                dict.Add("amount", Convert.ToInt32(reader.GetValue(5)));
+                                dict.Add("customer_type", reader.GetString(1));
+                                dict.Add("county", reader.GetString(2));
+                                dict.Add("representative", reader.GetString(6));
+                                rows.Add(dict);
+                            }
+                            catch { }
+                        }
+                    }
                 }
-                catch { }
-
             }
-            return rows.OrderByDescending(d => d["amount"]).ToList().GetRange(0,Math.Min(ammount,rows.Count));
+            return rows.OrderByDescending(d => d["amount"]).ToList();
         }
     }
 }

@@ -32,7 +32,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [ID_PK], [Level] FROM " + databasePrefix + "Price";
+                String query = "SELECT [ID_PK], [Level] FROM " + databasePrefix + "Price Order By [Level]";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -53,6 +53,7 @@ namespace TietoCRM.Models
                     }
                 }
             }
+            //list.OrderBy(p => p.Level);
             return list;
         }
     }

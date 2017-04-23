@@ -97,8 +97,47 @@
                                         </div>
                                     </div>
                                 }
-                                else if (pi.Name == "Offer_file_location")
+                                else if (pi.Name == "Std_sum_offert")
                                 {
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="checkbox">
+                                                <label for="@pi.Name.ToLower()">
+                                                    <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Std_sum_offert" type="checkbox" />
+                                                    Std sum offert
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else if (pi.Name == "Std_sum_kontrakt")
+                                {
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="checkbox">
+                                                <label for="@pi.Name.ToLower()">
+                                                    <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Std_sum_kontrakt" type="checkbox" />
+                                                    Std sum kontrakt
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                        }
+                        else if (pi.Name == "Kr_every_row")
+                        {
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <div class="checkbox">
+                                        <label for="@pi.Name.ToLower()">
+                                            <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Kr_every_row" type="checkbox" />
+                                            Kr on every row
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (pi.Name == "Offer_file_location")
+                        {
                                     <div class="form-group">
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">
                                             @pName
@@ -217,7 +256,14 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                user[$currInput.attr("name")] = $currInput.val();
+                if ($currInput.attr("name") != undefined) {
+                    if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
+                        user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "true" : "false");
+                    }
+                    else {
+                        user[$currInput.attr("name")] = $currInput.val();
+                    }
+                }
             }
             $.ajax({
                 "url": serverPrefix + "User/InsertUser/",
@@ -246,10 +292,6 @@
             if ($("#user-modal form").valid()) {
                 uploadToServer();
             }
-        });
-
-        $('#user_logo').change(function () {
-            handleDiscountCheck(this);
         });
 
         $formValidation = $("#userModal form").validate({
@@ -386,7 +428,6 @@
                 var tdLen = $selectedTds.length;
 
                 var $formInputs = $("#userModal form").find(":input");
-               
 
                 var frmInpLen = $formInputs.length;
                 for (var i = 0; i < frmInpLen; i++) {
@@ -395,7 +436,7 @@
                         var $currTD = $($selectedTds[j]);
                         if ($currTD.data("property") == $currInput.attr("name")) {
                             if ($currInput.attr("type") == "checkbox") {
-                                if ($currTD.text() == "1") {
+                                if ($currTD.text() == "true" || $currTD.text() == "1") {
                                     $currInput.prop("checked", true);
                                 }
                                 else {
@@ -429,15 +470,11 @@
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                for (var j = 0; j < tdLen; j++) {
-                    var $currTD = $($selectedTds[j]);
-                    if ($currTD.data("property") == $currInput.attr("name") && $currTD.data("property") != "Sign") {
-                        if ($currInput.prop("id") == "use_logo") {
-                            $currInput.val("false");
-                        } else {
-                            $currInput.val("");
-                        }
-                    }
+                //console.log($currInput.attr("name"));
+                if ($currInput.attr("id") == "use_logo" || $currInput.attr("id") == "std_sum_offert" || $currInput.attr("id") == "std_sum_kontrakt" || $currInput.attr("id") == "kr_every_row") {
+                    $currInput.attr("checked", false);
+                } else {
+                    $currInput.val("");
                 }
             }
         });
@@ -528,7 +565,7 @@
                     }
                     i++;
                 }
-                console.log(name);
+                //console.log(name);
 
                 if (name == "File_format")
                 {
@@ -537,7 +574,7 @@
 
                
 
-                if (i < 12) {
+                if (i < 16) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
 

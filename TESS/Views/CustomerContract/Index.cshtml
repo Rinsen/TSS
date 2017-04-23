@@ -260,7 +260,7 @@
                                         <div class="form-group">
                                             <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
                                             <div class="col-sm-9">
-                                                @if (pi.PropertyType == typeof(bool?))
+                                                @if (pi.PropertyType == typeof(bool?) || pi.PropertyType == typeof(bool))
                                                 {
                                                     <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
                                                         <option value="true">true</option>
@@ -289,7 +289,15 @@
                                                 {
                                                     <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name"></select>
                                                 }
-                                                
+
+                                                else if (pi.Name == "Summera")
+                                                {
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Summera" type="checkbox" />
+                                                        </label>
+                                                    </div>
+                                                }
                                                 else
                                                 {
                                                     String inputType = "";
@@ -308,7 +316,7 @@
                                                                 inputVal = "";
                                                             }
                                                             else
-                                                            { 
+                                                            {
                                                                 inputVal = DateTime.Now.AddMonths(3).ToShortDateString();
                                                             }
                                                         }
@@ -362,6 +370,7 @@
 -->
 <script>
     var serverPrefix = "@Url.Content("~/")";
+    //var summera = "@Html.Raw(ViewBag.Summera)";
 
     var setDefaultValues = function(){
         //validator.resetForm();
@@ -385,12 +394,14 @@
             $("#observation-date").val("");
             $("#term_of_notice-text").val("");
             $("#option_date-date").val("");
+            $("#summera-text").val("@Html.Raw(ViewBag.Summera.ToString().ToLower())");
             $("#valid_through-date").prop("disabled",true);
             $("#expire-date").prop("disabled",true);
             $("#observation-date").prop("disabled",true);
             $("#term_of_notice-text").prop("disabled",true);
             $("#option_date-date").prop("disabled",true);
             $("#extension-text").prop("disabled",true);
+            $("#summera-text").prop("disabled",false);
         }
 
         if ($("#contract_type-select").val() == "Tjänsteavtal" || $("#contract_type-select").val() == "Tilläggsavtal")
@@ -403,12 +414,14 @@
             $("#observation-date").val("");
             $("#term_of_notice-text").val("");
             $("#option_date-date").val("");
+            $("#summera-text").val("@Html.Raw(ViewBag.Summera.ToString().ToLower())");
             $("#valid_through-date").prop("disabled",false);
             $("#expire-date").prop("disabled",false);
             $("#observation-date").prop("disabled",false);
             $("#term_of_notice-text").prop("disabled",false);
             $("#option_date-date").prop("disabled",false);
             $("#extension-text").prop("disabled",false);
+            $("#summera-text").prop("disabled",false);
             loadMainContracts();
         }
 
@@ -422,12 +435,14 @@
             $("#term_of_notice-text").val("3");
             $("#observation-date").val($.datepicker.formatDate('yy-mm-dd',myDate3m));
             $("#option_date-date").val("");
+            $("#summera-text").val("@Html.Raw(ViewBag.Summera.ToString().ToLower())");
             $("#valid_through-date").prop("disabled",false);
             $("#expire-date").prop("disabled",false);
             $("#observation-date").prop("disabled",false);
             $("#term_of_notice-text").prop("disabled",false);
             $("#option_date-date").prop("disabled",false);
             $("#extension-text").prop("disabled",false);
+            $("#summera-text").prop("disabled",false);
         }
         $("#main_contract_id-select").selectpicker('refresh');
     }
@@ -641,8 +656,11 @@
                         newContract[$currInput.attr("name")] = $currInput.val();
                     }
                 }
-                else if($currInput.attr("name") != "Hashtags")
+                else if($currInput.attr("name") != "Hashtags" && $currInput.attr("name") != "Summera")
                     newContract[$currInput.attr("name")] = $currInput.val();
+                else if ($currInput.attr("name") == "Summera") {
+                    newContract["Summera"] = (($currInput.prop("checked")) ? "1" : "0");
+                }
                 else
                     hashtags = $currInput.val();
             }

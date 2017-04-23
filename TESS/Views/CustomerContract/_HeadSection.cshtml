@@ -53,21 +53,21 @@
                     else
                     {
                         <tr>
-                            <td class="crm-table-title">Avtalsbeteckning:</td>
+                            <td class="crm-table-title">Huvudavtal:</td>
                             <td>@ViewBag.CustomerContract.Main_contract_id</td>
                         </tr>
                     }
                     @if (ViewBag.CustomerContract.Is(ContractType.SupplementaryContract))
                     {
                         <tr>
-                            <td class="crm-table-title">Tilläggsavtal:</td>
+                            <td class="crm-table-title">Avtalsbeteckning:</td>
                             <td>@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }
                     @if (ViewBag.CustomerContract.Is(ContractType.ServiceContract))
                     {
                         <tr>
-                            <td class="crm-table-title">Tjänsteavtal:</td>
+                            <td class="crm-table-title">Avtalsbeteckning:</td>
                             <td>@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }

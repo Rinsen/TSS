@@ -80,6 +80,10 @@ $(document).ready(function () {
                 else if($formInput.attr("name") == "Hashtags"){
                     hashtags = $formInput.val();
                 }
+                else if ($formInput.attr("name") == "Summera") {
+                    contract["Summera"] = (($formInput.prop("checked")) ? "1" : "0");
+                }
+
             });
             $.ajax({
                 "url": serverPrefix + "CustomerContract/UpdateTableInfo/",
@@ -201,12 +205,18 @@ var loadInfo = function () {
                     var $formInput = $(this);
                     var formInputName = $formInput.attr("name");
                     if (items.hasOwnProperty(formInputName)) {
-                        $formInput.val(items[formInputName]);
                         if (formInputName == "Status") {
                             oldStatus = items[formInputName];
                             $formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
                         } else if (formInputName == "Contract_type" || formInputName == "Sign" || formInputName == "Area") {
-                            $formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
+                            //$("#list option[value=" + selectValue + "]").text();
+                            //$formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
+                            //$formInput.find('option[value="' + items[formInputName] + '"]').attr("selected", true);
+                            $formInput.val(items[formInputName].toString()).change();
+                        } else if (formInputName == "Summera") {
+                            $formInput.prop("checked", (items[formInputName] == 1 ? true : false));
+                        } else {
+                            $formInput.val(items[formInputName]);
                         }
                     }
                     else if (formInputName == "Hashtags") {

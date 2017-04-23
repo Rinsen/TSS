@@ -40,7 +40,7 @@
             <thead>
                 <tr>
                     <th data-field="customer" data-sortable="true">Customer</th>
-                    <th data-field="amount" data-sortable="true">Total spent</th>
+                    <th data-field="amount" data-sortable="true">Total Contract Amount</th>
                     <th data-field="representative" data-sortable="true">Representative</th>
                     <th data-field="customer_type" data-sortable="true">Customer type</th>
                     <th data-field="county" data-sortable="true">County</th>
@@ -52,19 +52,20 @@
     var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @{
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "amount" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "representative" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "county" + "\"  },\r\n";
+        DataObject += "\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
+        DataObject += "\t\t\t\t{ \"data\": \"" + "amount" + "\" },\r\n";
+        DataObject += "\t\t\t\t{ \"data\": \"" + "representative" + "\"  },\r\n";
+        DataObject += "\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
+        DataObject += "\t\t\t\t{ \"data\": \"" + "county" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function()
+    var updateDataTable = function()      
     {
         $('#report-table').DataTable({
             "destroy": true,
             "processing": true,
             "bPaginate": false,
+            "language": {"thousands": " "},
             "ajax": {
                 "url": serverPrefix + "TopCustomersReport/TopCustomers/",
                 "type": "POST",
@@ -77,6 +78,8 @@
             "defaultContent": "",
             "columns": [@Html.Raw(DataObject)
             ],
+            "columnDefs": [ { className: "dt-right", "targets": [ 1 ] },
+                            { render: $.fn.dataTable.render.number(" ", ",", 0, "", " kr"), "targets": [1] }],
             "order": [[1, "desc"]],
             "scrollX": true,
 

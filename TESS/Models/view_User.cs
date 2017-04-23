@@ -49,6 +49,15 @@ namespace TietoCRM.Models
         private bool use_logo;
         public bool Use_logo { get { return use_logo; } set { use_logo = value; } }
 
+        private int std_sum_offert;
+        public int Std_sum_offert { get { return std_sum_offert; } set { std_sum_offert = value; } }
+
+        private int std_sum_kontrakt;
+        public int Std_sum_kontrakt { get { return std_sum_kontrakt; } set { std_sum_kontrakt = value; } }
+
+        private int kr_every_row;
+        public int Kr_every_row { get { return kr_every_row; } set { kr_every_row = value; } }
+
         public view_User() : base("User")
 		{
 			//ctr

@@ -1142,105 +1142,126 @@
             </div>
             <div id="table-items-modal" class="modal-body">
                 <form class="form-horizontal" id="table-form">
-                    @{
-                        foreach (System.Reflection.PropertyInfo pi in ViewBag.TableItems)
-                        {
-                            if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_"))
-                            {
+                    <table style="width: 100%;">
+                        <tr>
+                            @Html.Raw("<td valign=\"top\">")
+@*                            <div class="col-md-6">*@
+                                @{
+                                    foreach (System.Reflection.PropertyInfo pi in ViewBag.TableItems)
+                                    {
+                                        if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_"))
+                                        {
 
-                                String pName = pi.Name.Replace("_", " ");
+                                            String pName = pi.Name.Replace("_", " ");
 
+                                            if (pi.Name == "Main_contract_id")
+                                            {
+                                                @Html.Raw("</td>")
+                                                @Html.Raw("<td valign=\"top\">")
+                                                @*@Html.Raw("</div><div class='col-md-6'>")*@
+                                            }
+                                            <div class="form-group">
+                                                <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                                <div class="col-sm-10">
+                                                    @if (pi.PropertyType == typeof(bool?) @*|| pi.PropertyType == typeof(bool)*@)
+                                                    {
+                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                            <option value="true">true</option>
+                                                            <option value="false">false</option>
+                                                        </select>
+                                                    }
+                                                    else if (pi.Name == "Summera")
+                                                    {
+                                                        <div class="checkbox">
+                                                            <label>
+                                                                <input id="summera" data-id="summera" name="Summera" type="checkbox" />
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                    else if (pi.Name == "Status")
+                                                    {
+                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                            @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
+                                                            {
+                                                                <option value="@so.Value">@so.Text</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                    else if (pi.Name == "Contract_type")
+                                                    {
+                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                            @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
+                                                            {
+                                                                <option value="@so.Value">@so.Text</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                    else if (pi.Name == "Main_contract_id")
+                                                    {
+                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                            <option value=""></option>
+                                                            @foreach (String types in ViewBag.MainContracts)
+                                                            {
+                                                                <option value="@types">@types</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                    else if (pi.Name == "Sign")
+                                                    {
+                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                            @foreach (String types in ViewBag.Users)
+                                                            {
+                                                                <option value="@types">@types</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                    else if (pi.Name == "Area")
+                                                    {
+                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                                            @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
+                                                            {
+                                                                <option value="@so.Value">@so.Text</option>
+                                                            }
+                                                        </select>
+                                                    }
+                                                    else
+                                                    {
+                                                        String inputType = "";
+                                                        String inputVal = "";
+                                                        if (pi.PropertyType == typeof(DateTime?))
+                                                        {
+                                                            inputType = "date";
+                                                            inputVal = DateTime.Now.ToShortDateString();
+                                                        }
+                                                        else
+                                                        {
+                                                            inputType = "text";
+                                                        }
+                                                        if (pi.Name == "Contract_id")
+                                                        {
+                                                            <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+                                                        }
 
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
                                 <div class="form-group">
-                                    <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                    <label for="hashtags-text" class="col-sm-2 control-label">Tags</label>
                                     <div class="col-sm-10">
-                                        @if (pi.PropertyType == typeof(bool?))
-                                        {
-                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                <option value="true">true</option>
-                                                <option value="false">false</option>
-                                            </select>
-                                        }
-                                        else if (pi.Name == "Status")
-                                        {
-                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
-                                                {
-                                                    <option value="@so.Value">@so.Text</option>
-                                                }
-                                            </select>
-                                        }
-                                        else if (pi.Name == "Contract_type")
-                                        {
-                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
-                                                {
-                                                    <option value="@so.Value">@so.Text</option>
-                                                }
-                                            </select>
-                                        }
-                                        else if (pi.Name == "Main_contract_id")
-                                        {
-                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                <option value=""></option>
-                                                @foreach (String types in ViewBag.MainContracts)
-                                                {
-                                                    <option value="@types">@types</option>
-                                                }
-                                            </select>
-                                        }
-                                        else if (pi.Name == "Sign")
-                                        {
-                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @foreach (String types in ViewBag.Users)
-                                                {
-                                                    <option value="@types">@types</option>
-                                                }
-                                            </select>
-                                        }
-                                        else if (pi.Name == "Area")
-                                        {
-                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
-                                                {
-                                                    <option value="@so.Value">@so.Text</option>
-                                                }
-                                            </select>
-                                        }
-                                        else
-                                        {
-                                            String inputType = "";
-                                            String inputVal = "";
-                                            if (pi.PropertyType == typeof(DateTime?))
-                                            {
-                                                inputType = "date";
-                                                inputVal = DateTime.Now.ToShortDateString();
-                                            }
-                                            else
-                                            {
-                                                inputType = "text";
-                                            }
-                                            if (pi.Name == "Contract_id")
-                                            {
-                                                <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
-                                            }
-                                            else
-                                            {
-                                                <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
-                                            }
-
-                                        }
+                                        <input data-id="" class="form-control" type="text" id="hashtags-text" name="Hashtags" placeholder="Tags" value="" />
                                     </div>
                                 </div>
-                            }
-                        }
-                    }
-                    <div class="form-group">
-                        <label for="hashtags-text" class="col-sm-2 control-label">Tags</label>
-                        <div class="col-sm-10">
-                            <input data-id="" class="form-control" type="text" id="hashtags-text" name="Hashtags" placeholder="Tags" value="" />
-                        </div>
-                    </div>
+                          @*</div>*@
+                                @Html.Raw("</td>")
+            </tr>
+            </table>
                 </form>
             </div>
             <div class="modal-footer">
