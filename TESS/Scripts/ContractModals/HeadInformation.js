@@ -207,12 +207,13 @@ var loadInfo = function () {
                     if (items.hasOwnProperty(formInputName)) {
                         if (formInputName == "Status") {
                             oldStatus = items[formInputName];
-                            $formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
+                            //$formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
+                            $formInput.val(items[formInputName]).change();
                         } else if (formInputName == "Contract_type" || formInputName == "Sign" || formInputName == "Area") {
                             //$("#list option[value=" + selectValue + "]").text();
                             //$formInput.find('option[value="' + formInputName + '"]').prop("selected", true);
                             //$formInput.find('option[value="' + items[formInputName] + '"]').attr("selected", true);
-                            $formInput.val(items[formInputName].toString()).change();
+                            $formInput.val(items[formInputName]).change();
                         } else if (formInputName == "Summera") {
                             $formInput.prop("checked", (items[formInputName] == 1 ? true : false));
                         } else {

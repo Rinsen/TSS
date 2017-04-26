@@ -90,7 +90,7 @@
                 }
 
                 td {
-                    text-align: left;
+                    text-align: right;
 
                     span {
                         padding-left: 1em;
@@ -107,6 +107,11 @@
             float: right;
             margin-top: -5px;
         }
+    }
+
+    td.crm-contract-title {
+        font-weight: bold;
+        font-size: 15pt;
     }
 
     div.crm-pdf-header-section {
@@ -509,7 +514,7 @@
 
                     span.signing-line {
                         border-bottom: 1px solid black;
-                        width: 80%;
+                        width: 95%;
                         display: block;
                         margin-bottom: 0.5em;
                     }
@@ -566,6 +571,111 @@
             }
         }
     }
+    div.crm-pdf-subheader_1-rubkr {
+        table {
+            page-break-before: auto;
+            margin-top: 1em;
+            width: 100%;
+            background-color: @row-color;
+           td:nth-child(1) {
+                width: 72%;
+                text-align: left;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(2) {
+                width: 8%;
+                text-align: center;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(3) {
+                text-align: right;
+                width: 10%;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(4) {
+                text-align: right;
+                width: 10%;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+        }
+    }
+    div.crm-pdf-subheader_2 {
+        table {
+            page-break-before: auto;
+            margin-top: 1em;
+            width: 100%;
+            background-color: @row-color;
+           td:nth-child(1) {
+                width: 66%;
+                text-align: left;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(2) {
+                width: 8%;
+                text-align: center;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(3) {
+                text-align: right;
+                width: 13%;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(4) {
+                text-align: right;
+                width: 13%;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+        }
+    }
+    div.crm-pdf-subheader_2-rubkr {
+        table {
+            page-break-before: auto;
+            margin-top: 1em;
+            width: 100%;
+            background-color: @row-color;
+           td:nth-child(1) {
+                width: 72%;
+                text-align: left;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(2) {
+                width: 8%;
+                text-align: center;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(3) {
+                text-align: right;
+                width: 10%;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+
+            td:nth-child(4) {
+                text-align: right;
+                width: 10%;
+                font-weight: bold;
+                font-size: 8pt;
+            }
+        }
+    }
     div.crm-pdf-subrows_1 {
         table {
             page-break-before: auto;
@@ -573,7 +683,7 @@
            td:nth-child(1) {
                 width: 66%;
                 text-align: left;
-                font-size: 10.5pt;
+                font-size: 9.5pt;
                 font-weight: bold;
             }
 
@@ -587,14 +697,14 @@
                 text-align: right;
                 width: 13%;
                 vertical-align: text-top;
-                font-size: 10.5pt;
+                font-size: 9.5pt;
             }
 
             td:nth-child(4) {
                 text-align: right;
                 width: 13%;
                 vertical-align: text-top;
-                font-size: 10.5pt;
+                font-size: 9.5pt;
             }
         }
     }
@@ -638,6 +748,46 @@
             }
         }
     }
+    div.crm-pdf-subrows_2-rubkr {
+        table {
+            page-break-before: auto;
+            width: 100%;
+           td:nth-child(1) {
+                padding-left: 0.5em;
+                width: 8%;
+                text-align: left;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+
+            td:nth-child(2) {
+                width: 16%;
+                text-align: left;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+
+            td:nth-child(3) {
+                width: 56%;
+                text-align: left;
+                font-size: 10pt;
+                vertical-align: text-top;
+            }
+            td:nth-child(4) {
+                text-align: right;
+                width: 10%;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+
+            td:nth-child(5) {
+                text-align: right;
+                width: 10%;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+        }
+    }
     div.crm-pdf-subrows_3 {
         table {
             page-break-before: auto;
@@ -645,7 +795,7 @@
            td:nth-child(1) {
                 width: 66%;
                 text-align: left;
-                font-size: 10.5pt;
+                font-size: 10pt;
                 font-weight: normal;
             }
 
@@ -659,14 +809,46 @@
                 text-align: right;
                 width: 13%;
                 vertical-align: text-top;
-                font-size: 10.5pt;
+                font-size: 10pt;
             }
 
             td:nth-child(4) {
                 text-align: right;
                 width: 13%;
                 vertical-align: text-top;
-                font-size: 10.5pt;
+                font-size: 10pt;
+            }
+        }
+    }
+    div.crm-pdf-subrows_3-rubkr {
+        table {
+            page-break-before: auto;
+            width: 100%;
+           td:nth-child(1) {
+                width: 72%;
+                text-align: left;
+                font-size: 10pt;
+                font-weight: normal;
+            }
+
+            td:nth-child(2) {
+                width: 8%;
+                text-align: center;
+                vertical-align: text-top;
+            }
+
+            td:nth-child(3) {
+                text-align: right;
+                width: 10%;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+
+            td:nth-child(4) {
+                text-align: right;
+                width: 10%;
+                vertical-align: text-top;
+                font-size: 10pt;
             }
         }
     }
@@ -697,6 +879,38 @@
             td:nth-child(4) {
                 text-align: right;
                 width: 13%;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+        }
+    }
+    div.crm-pdf-subsum_1-rubkr {
+        table {
+            page-break-before: auto;
+            width: 100%;
+           td:nth-child(1) {
+                width: 40%;
+                text-align: left;
+                font-size: 8pt;
+            }
+
+            td:nth-child(2) {
+                width: 40%;
+                text-align: right;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+
+            td:nth-child(3) {
+                text-align: right;
+                width: 10%;
+                vertical-align: text-top;
+                font-size: 10pt;
+            }
+
+            td:nth-child(4) {
+                text-align: right;
+                width: 10%;
                 vertical-align: text-top;
                 font-size: 10pt;
             }

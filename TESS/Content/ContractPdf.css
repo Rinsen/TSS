@@ -77,7 +77,7 @@
   width: 10%;
 }
 .crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info td {
-  text-align: left;
+  text-align: right;
 }
 .crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info td span {
   padding-left: 1em;
@@ -89,6 +89,10 @@
   width: 110px;
   float: right;
   margin-top: -5px;
+}
+.crm-pdf td.crm-contract-title {
+  font-weight: bold;
+  font-size: 15pt;
 }
 .crm-pdf div.crm-pdf-header-section {
   margin-top: 1em;
@@ -492,7 +496,7 @@
 }
 .crm-pdf div#crm-pdf-signing-section table td.crm-empty-signing-field span.signing-line {
   border-bottom: 1px solid black;
-  width: 80%;
+  width: 95%;
   display: block;
   margin-bottom: 0.5em;
 }
@@ -538,6 +542,96 @@
   font-weight: bold;
   font-size: 8pt;
 }
+.crm-pdf div.crm-pdf-subheader_1-rubkr table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+  background-color: #d7d7d7;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(1) {
+  width: 72%;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+  background-color: #d7d7d7;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(1) {
+  width: 66%;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(3) {
+  text-align: right;
+  width: 13%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(4) {
+  text-align: right;
+  width: 13%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+  background-color: #d7d7d7;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(1) {
+  width: 72%;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
+  font-weight: bold;
+  font-size: 8pt;
+}
 .crm-pdf div.crm-pdf-subrows_1 table {
   page-break-before: auto;
   width: 100%;
@@ -545,7 +639,7 @@
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(1) {
   width: 66%;
   text-align: left;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
   font-weight: bold;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(2) {
@@ -557,13 +651,13 @@
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(4) {
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
 }
 .crm-pdf div.crm-pdf-subrows_2 table {
   page-break-before: auto;
@@ -600,6 +694,41 @@
   vertical-align: text-top;
   font-size: 10pt;
 }
+.crm-pdf div.crm-pdf-subrows_2-rubkr table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(1) {
+  padding-left: 0.5em;
+  width: 8%;
+  text-align: left;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(2) {
+  width: 16%;
+  text-align: left;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(3) {
+  width: 56%;
+  text-align: left;
+  font-size: 10pt;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(5) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
 .crm-pdf div.crm-pdf-subrows_3 table {
   page-break-before: auto;
   width: 100%;
@@ -607,7 +736,7 @@
 .crm-pdf div.crm-pdf-subrows_3 table td:nth-child(1) {
   width: 66%;
   text-align: left;
-  font-size: 10.5pt;
+  font-size: 10pt;
   font-weight: normal;
 }
 .crm-pdf div.crm-pdf-subrows_3 table td:nth-child(2) {
@@ -619,13 +748,40 @@
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subrows_3 table td:nth-child(4) {
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(1) {
+  width: 72%;
+  text-align: left;
+  font-size: 10pt;
+  font-weight: normal;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table {
   page-break-before: auto;
@@ -651,6 +807,33 @@
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(4) {
   text-align: right;
   width: 13%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(1) {
+  width: 40%;
+  text-align: left;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(2) {
+  width: 40%;
+  text-align: right;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
   vertical-align: text-top;
   font-size: 10pt;
 }

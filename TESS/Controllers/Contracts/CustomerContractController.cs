@@ -371,7 +371,7 @@ namespace TietoCRM.Controllers.Contracts
             }
             else
             {
-                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Sign").ToList();
+                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Sign" || p.Name == "Summera").ToList();
             }
             this.ViewData.Add("TableItems", properties);
             //this.ViewData.Add("Statuses", GetStatuses());
@@ -427,10 +427,10 @@ namespace TietoCRM.Controllers.Contracts
 	                            <div class='page-numbers'>
      	                            Sida <span class='page'></span> av <span class='topage'></span>
                                     </div>";
-            if (user.Use_logo)
-                content += @"<div class='footer-logo'>
-                            <img src='../../Content/img/tieto-logo.png' alt='tieto-logo' />
-                        </div>";
+            //if (user.Use_logo)
+            //    content += @"<div class='footer-logo'>
+            //                <img src='../../Content/img/tieto-logo.png' alt='tieto-logo' />
+            //            </div>";
             content += @"</div>
                     </body>
                     </html>

@@ -16,7 +16,7 @@
             return false;
     }
 }
-@if (ViewBag.CustomerContract.Is(ContractType.MainContract))
+@*@if (ViewBag.CustomerContract.Is(ContractType.MainContract))
 {
     String contractTitle = ViewBag.ContractTemplate.Title1;
     if (String.IsNullOrEmpty(contractTitle))
@@ -39,7 +39,7 @@ else
     {
         <h5 id="template-Page_head" class="area-newline">@Html.Raw(ViewBag.ContractText.Page_head)</h5>
     }
-}
+}*@
 <table>
     <tr>
         <td class="crm-table-title">Kund</td>

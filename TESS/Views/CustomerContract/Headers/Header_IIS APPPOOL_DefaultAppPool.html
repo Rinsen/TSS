@@ -85,7 +85,7 @@
   width: 10%;
 }
 .crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info td {
-  text-align: left;
+  text-align: right;
 }
 .crm-pdf div.crm-pdf-head table#crm-pdf-head-contract-info td span {
   padding-left: 1em;
@@ -97,6 +97,10 @@
   width: 110px;
   float: right;
   margin-top: -5px;
+}
+.crm-pdf td.crm-contract-title {
+  font-weight: bold;
+  font-size: 15pt;
 }
 .crm-pdf div.crm-pdf-header-section {
   margin-top: 1em;
@@ -500,7 +504,7 @@
 }
 .crm-pdf div#crm-pdf-signing-section table td.crm-empty-signing-field span.signing-line {
   border-bottom: 1px solid black;
-  width: 80%;
+  width: 95%;
   display: block;
   margin-bottom: 0.5em;
 }
@@ -529,20 +533,110 @@
   font-size: 8pt;
 }
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(2) {
-  width: 8%;
+  width: 2%;
   text-align: center;
   font-weight: bold;
   font-size: 8pt;
 }
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(3) {
   text-align: right;
-  width: 13%;
+  width: 19%;
   font-weight: bold;
   font-size: 8pt;
 }
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(4) {
   text-align: right;
   width: 13%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+  background-color: #d7d7d7;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(1) {
+  width: 72%;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_1-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+  background-color: #d7d7d7;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(1) {
+  width: 66%;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(3) {
+  text-align: right;
+  width: 13%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2 table td:nth-child(4) {
+  text-align: right;
+  width: 13%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table {
+  page-break-before: auto;
+  margin-top: 1em;
+  width: 100%;
+  background-color: #d7d7d7;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(1) {
+  width: 72%;
+  text-align: left;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  font-weight: bold;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subheader_2-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
   font-weight: bold;
   font-size: 8pt;
 }
@@ -553,7 +647,7 @@
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(1) {
   width: 66%;
   text-align: left;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
   font-weight: bold;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(2) {
@@ -565,13 +659,13 @@
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(4) {
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 9.5pt;
 }
 .crm-pdf div.crm-pdf-subrows_2 table {
   page-break-before: auto;
@@ -608,6 +702,41 @@
   vertical-align: text-top;
   font-size: 10pt;
 }
+.crm-pdf div.crm-pdf-subrows_2-rubkr table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(1) {
+  padding-left: 0.5em;
+  width: 8%;
+  text-align: left;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(2) {
+  width: 16%;
+  text-align: left;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(3) {
+  width: 56%;
+  text-align: left;
+  font-size: 10pt;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_2-rubkr table td:nth-child(5) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
 .crm-pdf div.crm-pdf-subrows_3 table {
   page-break-before: auto;
   width: 100%;
@@ -615,7 +744,7 @@
 .crm-pdf div.crm-pdf-subrows_3 table td:nth-child(1) {
   width: 66%;
   text-align: left;
-  font-size: 10.5pt;
+  font-size: 10pt;
   font-weight: normal;
 }
 .crm-pdf div.crm-pdf-subrows_3 table td:nth-child(2) {
@@ -627,13 +756,40 @@
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subrows_3 table td:nth-child(4) {
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 10.5pt;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(1) {
+  width: 72%;
+  text-align: left;
+  font-size: 10pt;
+  font-weight: normal;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(2) {
+  width: 8%;
+  text-align: center;
+  vertical-align: text-top;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subrows_3-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table {
   page-break-before: auto;
@@ -659,6 +815,33 @@
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(4) {
   text-align: right;
   width: 13%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table {
+  page-break-before: auto;
+  width: 100%;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(1) {
+  width: 40%;
+  text-align: left;
+  font-size: 8pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(2) {
+  width: 40%;
+  text-align: right;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(3) {
+  text-align: right;
+  width: 10%;
+  vertical-align: text-top;
+  font-size: 10pt;
+}
+.crm-pdf div.crm-pdf-subsum_1-rubkr table td:nth-child(4) {
+  text-align: right;
+  width: 10%;
   vertical-align: text-top;
   font-size: 10pt;
 }
@@ -735,7 +918,7 @@ td.RewrittenRewritten {
             font-size: 17px !important;
         }
         .crm-pdf{
-            margin: 0 1.4cm 0 2.1cm !important;
+            margin: 0 1.4cm 0 1.1cm !important;
             padding-top: 1.6cm;
         }
         #crm-pdf-todays-date{
@@ -749,22 +932,22 @@ td.RewrittenRewritten {
 <div class='crm-pdf-head'>
     <table id="crm-pdf-head-table">
         <tr>
-            <td style="width: 37%">
+            <td class="crm-contract-title" style="width: 60%; text-align: left">
+                Till&#228;ggsavtal
+            </td>
+            <td style="width: 40%; text-align: right">
                 <table id="crm-pdf-head-contract-info">
                         <tr>
-                            <td class="crm-table-title" >Avtalsbeteckning:</td>
+                            <td class="crm-table-title" style="font-weight: bold">Huvudavtal:</td>
                             <td>CSV 2006-10-06 02</td>
                         </tr>
-                                                        </table>
+                                            <tr>
+                            <td class="crm-table-title" style="font-weight: bold">Avtalsbeteckning:</td>
+                            <td>EDU MST 2017-03-03 01</td>
+                        </tr>
+                                    </table>
             </td>
-            <td class="crm-contract-title" style="text-align:center">
-                <span><strong>Huvudavtal</strong></span>
-            </td>
-            <td style="text-align:right">
-                <span id="crm-pdf-tieto-logo-com">
-                    <img id ="tieto-logo" src="D:\Projekt\Workspaces\GITHUB\TSS\TESS\Content\img\tieto-logo-com.png" alt=""  />
-                </span>
-            </td>
+            
         </tr>
     </table>
 </div>

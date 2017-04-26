@@ -50,6 +50,7 @@ namespace TietoCRM.Controllers
             this.ViewData.Add("InsertUrl", "/CustomerOffer/Insert/");
             this.ViewData.Add("DeleteUrl", "/CustomerOffer/Delete/");
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
+            this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_offert);
             this.ViewData["title"] = "Customer Offer";
 
             String on;
@@ -99,6 +100,7 @@ namespace TietoCRM.Controllers
             columnNames.Add("Offer_status");
             columnNames.Add("Contact_person");
             columnNames.Add("Area");
+            columnNames.Add("Summera");
             columnNames.Add("Hashtags");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
@@ -491,6 +493,7 @@ namespace TietoCRM.Controllers
                         Offer_status = co.Offer_status,
                         Contact_person = co.Contact_person,
                         Area = co.Area,
+                        Summera = co.Summera,
                         Hashtags = co.HashtagsAsString()
                     };
                     customers.Add(v);

@@ -41,49 +41,49 @@
 
     <table id="crm-pdf-head-table">
         <tr>
-            <td style="width: 37%">
+            <td class="crm-contract-title" style="width: 60%; text-align: left">
+                @ViewBag.CustomerContract.Contract_type
+            </td>
+            <td style="width: 40%; text-align: right">
                 <table id="crm-pdf-head-contract-info">
                     @if (ViewBag.CustomerContract.Is(ContractType.MainContract))
                     {
                         <tr>
-                            <td class="crm-table-title" >Avtalsbeteckning:</td>
+                            <td class="crm-table-title" style="font-weight: bold">Avtalsbeteckning:</td>
                             <td>@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }
                     else
                     {
                         <tr>
-                            <td class="crm-table-title">Huvudavtal:</td>
+                            <td class="crm-table-title" style="font-weight: bold">Huvudavtal:</td>
                             <td>@ViewBag.CustomerContract.Main_contract_id</td>
                         </tr>
                     }
                     @if (ViewBag.CustomerContract.Is(ContractType.SupplementaryContract))
                     {
                         <tr>
-                            <td class="crm-table-title">Avtalsbeteckning:</td>
+                            <td class="crm-table-title" style="font-weight: bold">Avtalsbeteckning:</td>
                             <td>@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }
                     @if (ViewBag.CustomerContract.Is(ContractType.ServiceContract))
                     {
                         <tr>
-                            <td class="crm-table-title">Avtalsbeteckning:</td>
+                            <td class="crm-table-title" style="font-weight: bold">Avtalsbeteckning:</td>
                             <td>@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }
                 </table>
             </td>
-            <td class="crm-contract-title" style="text-align:center">
-                <span><strong>@ViewBag.CustomerContract.Contract_type</strong></span>
-            </td>
-            <td style="text-align:right">
+            @*<td style="text-align:right">
                 @if (ViewBag.Representative.Use_logo)
                 {
                 <span id="crm-pdf-tieto-logo-com">
                     <img id ="tieto-logo" src="@GetWorkingUrl(Url.Content("~/Content/img/tieto-logo-com.png"))" alt=""  />
                 </span>
                 }
-            </td>
+            </td>*@
         </tr>
     </table>
 @if (IsPdf())

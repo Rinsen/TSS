@@ -59,6 +59,9 @@ namespace TietoCRM.Models
         private String document_foot;
         public String Document_foot { get { return document_foot; } set { document_foot = value; } }
 
+        private int summera;
+        public int Summera { get { return summera; } set { summera = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

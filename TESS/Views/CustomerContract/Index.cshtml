@@ -394,7 +394,7 @@
             $("#observation-date").val("");
             $("#term_of_notice-text").val("");
             $("#option_date-date").val("");
-            $("#summera-text").val("@Html.Raw(ViewBag.Summera.ToString().ToLower())");
+            $("#summera").prop("checked", (@ViewBag.Summera == 1 ? true : false));
             $("#valid_through-date").prop("disabled",true);
             $("#expire-date").prop("disabled",true);
             $("#observation-date").prop("disabled",true);
@@ -414,7 +414,7 @@
             $("#observation-date").val("");
             $("#term_of_notice-text").val("");
             $("#option_date-date").val("");
-            $("#summera-text").val("@Html.Raw(ViewBag.Summera.ToString().ToLower())");
+            $("#summera").prop("checked", (@ViewBag.Summera == 1 ? true : false));
             $("#valid_through-date").prop("disabled",false);
             $("#expire-date").prop("disabled",false);
             $("#observation-date").prop("disabled",false);
@@ -435,7 +435,7 @@
             $("#term_of_notice-text").val("3");
             $("#observation-date").val($.datepicker.formatDate('yy-mm-dd',myDate3m));
             $("#option_date-date").val("");
-            $("#summera-text").val("@Html.Raw(ViewBag.Summera.ToString().ToLower())");
+            $("#summera").prop("checked", (@ViewBag.Summera == 1 ? true : false));
             $("#valid_through-date").prop("disabled",false);
             $("#expire-date").prop("disabled",false);
             $("#observation-date").prop("disabled",false);
