@@ -339,7 +339,7 @@ Main contract and Educational Options
         </div>
     <div class="large-divider"></div>
         @{
-            decimal OptionMaintenanceTotal = 0;
+            decimal EducationalPortalTotal = 0;
         }
         @foreach (dynamic article in ViewBag.EducationalOptions)
         {
@@ -367,7 +367,7 @@ Main contract and Educational Options
                 Maintenance = Maintenance.Replace(" kr", "");
             }
             // Calculate total sums
-            OptionMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+            EducationalPortalTotal += Convert.ToDecimal(article.Maintenance);
             view_Module module = new view_Module();
             module.Select("Article_number = " + article.Article_number);
 
@@ -387,7 +387,15 @@ Main contract and Educational Options
         }
         @{
             // Format currency for total sums
-            string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", OptionMaintenanceTotal).Replace(".", " ");
+            string EducationalPortalTotalFormated;
+            if ((EducationalPortalTotal % 1) == 0)
+            {
+                EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+            }
+            else
+            {
+                EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
+            }
             if (!krEveryRow)
             {
                 EducationalPortalTotalFormated = EducationalPortalTotalFormated.Replace(" kr", "");

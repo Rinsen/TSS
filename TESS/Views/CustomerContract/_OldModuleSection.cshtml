@@ -1,9 +1,19 @@
 ﻿@{
     Layout = null;
-    
+
     // CultureInfo for swedish currency print out 
     CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
     bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
+    bool toBeSummerized = (ViewBag.CustomerContract.Summera == 1);
+    bool krEveryRow = (ViewBag.Representative.Kr_every_row == 1 ? true : false);
+    string krRow = (krEveryRow ? " kr" : "");
+    string krRub = (krEveryRow ? "" : " kr");
+    string rubEng = (krEveryRow ? "Engångsavgift" : "Engångs- avgift kr");
+    string subh1 = (krEveryRow ? "crm-pdf-subheader_1" : "crm-pdf-subheader_1-rubkr");
+    string subh2 = (krEveryRow ? "crm-pdf-subheader_2" : "crm-pdf-subheader_2-rubkr");
+    string subr2 = (krEveryRow ? "crm-pdf-subrows_2" : "crm-pdf-subrows_2-rubkr");
+    string subr3 = (krEveryRow ? "crm-pdf-subrows_3" : "crm-pdf-subrows_3-rubkr");
+    string subs1 = (krEveryRow ? "crm-pdf-subsum_1" : "crm-pdf-subsum_1-rubkr");
 }
 @using TietoCRM.Models;
 @using System.Globalization;
@@ -38,13 +48,13 @@
         if (previousPriceType != article.Price_type)
         {
             previousPriceType = article.Price_type;
-            <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+            <div class="@subh1" id="crm-pdf-module-rows-title">
                 <table>
                     <tr>
                         <td>Produkter</td>
                         <td></td>
-                        <td>Engångsbelopp</td>
-                        <td>@article.Price_type</td>
+                        <td>@rubEng</td>
+                        <td>@article.Price_type @krRub</td>
                     </tr>
                 </table>
             </div>
@@ -58,7 +68,18 @@
         String Maintenance = "";
         if (article.Maintenance != 0)
         {
-            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            if ((article.Maintenance % 1) == 0)
+            {
+                Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            }
+            else
+            {
+                Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            }
+        }
+        if (!krEveryRow)
+        {
+            Maintenance = Maintenance.Replace(" kr", "");
         }
         if (previousSystem != article.System)
         {
@@ -70,7 +91,7 @@
                 </table>
             </div>
         }
-        <div class="crm-pdf-subrows_2">
+        <div class="@subr2">
             <table>
                 <tr>
                     <td>@article.Classification</td>
@@ -85,11 +106,24 @@
     }
     @{
         // Format currency for total sums
-        string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
-        string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
+        String ProductMaintenanceTotalFormated;
+        if ((ProductMaintenanceTotal % 1) == 0)
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+        }
+        else
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
+        }
+        if (!krEveryRow)
+        {
+            ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
+        }
     }
+    @if (toBeSummerized)
+    {
     <span class="large-divider"></span>
-    <div class="crm-pdf-subsum_1">
+    <div class="@subs1">
         <table>
             <tr>
                 <td></td>
@@ -99,6 +133,7 @@
             </tr>
         </table>
     </div>
+    }
 </div>
 }
 
@@ -111,7 +146,7 @@
  --><div class="crm-pdf-50 price-headings">
         <table>
             <tr>
-                <td class="pull-right">Person / år</td>
+                <td class="pull-right">Person / år @krRub</td>
             </tr>
         </table>
     </div>
@@ -128,7 +163,18 @@
         String License = "";
         if (article.License != 0)
         {
-            License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+            if ((article.License % 1) == 0)
+            {
+                License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+            }
+            else
+            {
+                License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+            }
+        }
+        if (!krEveryRow)
+        {
+            License = License.Replace(" kr", "");
         }
 
         <div class="crm-pdf-educational-portal-row">
@@ -153,8 +199,22 @@
     }
     @{
         // Format currency for total sums
-        string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
+        string EducationalPortalTotalFormated;
+        if ((EducationalPortalTotal % 1) == 0)
+        {
+            EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+        }
+        else
+        {
+            EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
+        }
+        if (!krEveryRow)
+        {
+            EducationalPortalTotalFormated = EducationalPortalTotalFormated.Replace(" kr", "");
+        }
     }
+    @if (toBeSummerized)
+    {
     <span class="large-divider"></span>
     <div class="crm-pdf-educational-portal-row-sum">
         <div class="crm-pdf-70">
@@ -169,6 +229,7 @@
             </table>
         </div>
     </div>
+    }
 </div>
 }
 
@@ -181,7 +242,6 @@
 {
 <div id="crm-pdf-module-rows" class="">
     @{
-        decimal ProductLicenseTotal = 0;
         decimal ProductMaintenanceTotal = 0;
 
         String previousSystem = "";
@@ -192,27 +252,37 @@
         if (previousPriceType != article.Price_type)
         {
             previousPriceType = article.Price_type;
-            <div class="crm-pdf-subheader_1" id="crm-pdf-module-rows-title">
+            <div class="@subh1" id="crm-pdf-module-rows-title">
                 <table>
                     <tr>
                         <td>Produkter</td>
                         <td></td>
-                        <td>Engångsbelopp</td>
-                        <td>@article.Price_type</td>
+                        <td>@rubEng</td>
+                        <td>@article.Price_type @krRub</td>
                     </tr>
                 </table>
             </div>
             <div class="large-divider"></div>
         }
         // Calculate total sums
-        ProductLicenseTotal += Convert.ToDecimal(article.License);
         ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
 
         // Format currency
         String Maintenance = "";
         if (article.Maintenance != 0)
         {
-            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            if ((article.Maintenance % 1) == 0)
+            {
+                Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            }
+            else
+            {
+                Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            }
+        }
+        if (!krEveryRow)
+        {
+            Maintenance = Maintenance.Replace(" kr", "");
         }
         if (previousSystem != article.System)
         {
@@ -224,7 +294,7 @@
             </table>
         </div>
         }
-        <div class="crm-pdf-subrows_2">
+        <div class="@subr2">
             <table>
                 <tr>
                     <td>@article.Classification</td>
@@ -238,12 +308,25 @@
         previousSystem = article.System;
     }
     @{
-    // Format currency for total sums
-    string ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
-    string ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
+        // Format currency for total sums
+        String ProductMaintenanceTotalFormated;
+        if ((ProductMaintenanceTotal % 1) == 0)
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+        }
+        else
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
+        }
+        if (!krEveryRow)
+        {
+            ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
+        }
     }
+    @if (toBeSummerized)
+    {
     <span class="large-divider"></span>
-    <div class="crm-pdf-subsum_1">
+    <div class="@subs1">
         <table>
             <tr>
                 <td></td>
@@ -253,6 +336,7 @@
             </tr>
         </table>
     </div>
+    }
 </div>
 }
 
@@ -267,7 +351,7 @@
         <div class="crm-pdf-50 price-headings">
             <table>
                 <tr>
-                    <td class="pull-right">Person / år</td>
+                    <td class="pull-right">Person / år @krRub</td>
                 </tr>
             </table>
         </div>
@@ -287,7 +371,18 @@
             String License = "";
             if (article.License != 0)
             {
-                License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+                if ((article.License % 1) == 0)
+                {
+                    License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+                }
+                else
+                {
+                    License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+                }
+            }
+            if (!krEveryRow)
+            {
+                License = License.Replace(" kr", "");
             }
             <div class="crm-pdf-educational-portal-row">
                 <div class="crm-pdf-70">
@@ -312,10 +407,24 @@
             </div>
         }
         @{
-        // Format currency for total sums
-        string EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
+            // Format currency for total sums
+            string EducationalPortalTotalFormated;
+            if ((EducationalPortalTotal % 1) == 0)
+            {
+                EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
+            }
+            else
+            {
+                EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
+            }
+            if (!krEveryRow)
+            {
+                EducationalPortalTotalFormated = EducationalPortalTotalFormated.Replace(" kr", "");
+            }
         }
-        <span class="large-divider"></span>
+         @if (toBeSummerized)
+         {
+       <span class="large-divider"></span>
         <div class="crm-pdf-educational-portal-row-sum">
             <div class="crm-pdf-70">
                 <span class="pull-right">Totalsumma: </span>
@@ -331,5 +440,6 @@
                 </table>
             </div>
         </div>
+         }
     </div>
 }
