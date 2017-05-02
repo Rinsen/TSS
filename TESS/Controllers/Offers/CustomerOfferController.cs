@@ -361,17 +361,15 @@ namespace TietoCRM.Controllers
             String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
             String content = System.IO.File.ReadAllText(headerTxtPath);
             FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
-            content += @"<body>
-                        <div class='header'>
-                            <div id='date' class='date'>" + DateTime.Now.ToString("yyy-MM-dd") +"</div>";
+            content += @"<div class='header'>
+                            <div id='date' class='date' style='font-size: 16px; font-weight:bold'>" + ViewBag.CustomerOffer.Offer_created.ToString("yyy-MM-dd") +"</div>";
             if (user.Use_logo)
             {
                 content += @"<div class='logo'>
-                            <img src='../../Content/img/tieto-logo-com.png' />
-                            </div> ";
+                            <img src='../../Content/img/tieto-logo-mn.png' />
+                            </div><br> ";
             }
             content += @"</div>
-                        </body>
                         </html>
                     ";
             StreamWriter writer = new StreamWriter(fs);

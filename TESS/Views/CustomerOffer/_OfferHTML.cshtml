@@ -50,13 +50,13 @@
     @if (!IsPdf())
     {
         <div class="crm-pdf-head">
-            <span id="crm-pdf-todays-date">@currentDate</span>
+            <p><span id="crm-pdf-todays-date">@ViewBag.CustomerOffer.Offer_created.ToString("yyyy-MM-dd")</span></p>
             @if(ViewBag.UseLogo)
             {
-            <span id="crm-pdf-tieto-logo-com">
-                <img src="@GetWorkingUrl("../Content/img/tieto-logo-com.png")" alt=""/>
+            <p><span id="crm-pdf-tieto-logo-com">
+                <img src="@GetWorkingUrl("../Content/img/tieto-logo-mn.png")" alt=""/>
 
-            </span>
+            </span></p><br>
             }
         </div>
     }
@@ -64,26 +64,26 @@
         <table>
             <tr>
                 <td id="crm-pdf-offer-info">
-                    <p><strong>@ViewBag.CustomerOffer.Customer</strong></p>
-                    <p id="Contact_person_name">@ViewBag.CustomerOffer.Contact_person</p>
+                    <div><strong>@ViewBag.CustomerOffer.Customer</strong></div>
+                    <div id="Contact_person_name">@ViewBag.CustomerOffer.Contact_person</div>
                     <a href="mailto:@ViewBag.CustomerContact.Email" id="Contact_person_email">@ViewBag.CustomerContact.Email</a>
                 </td>
                 <td id="crm-pdf-tieto-info">
-                    <p>Tieto Sweden Healthcare & Welfare AB</p>
-                    <p>@ViewBag.Representative.Address</p>
-                    <p>@ViewBag.Representative.City</p>
+                    <div>Tieto Sweden Healthcare & Welfare AB</div>
+                    <div>@ViewBag.Representative.Address</div>
+                    <div>@ViewBag.Representative.City</div>
                 </td>
             </tr>
         </table>
         <span class="small-divider pull-right"></span>
-        <span class="clearfix"></span>
+        @*<span class="clearfix"></span>*@
         <table>
             <tr>
                 <td id="crm-pdf-valid-info"><span>Giltig t.o.m <span id="Offer_valid">@offerValid</span></span></td>
                 <td id="crm-pdf-representative-info">
-                    <p><strong>@ViewBag.Representative.Name</strong></p>
-                    <p>@ViewBag.Representative.Telephone</p>
-                    <p>@ViewBag.Representative.Mobile</p>
+                    <div><strong>@ViewBag.Representative.Name</strong></div>
+                    <a href="mailto:@ViewBag.Representative.Email" id="Representative_email">@ViewBag.Representative.Email</a>
+                    <div>@ViewBag.Representative.Mobile</div>
                 </td>
             </tr>
         </table>

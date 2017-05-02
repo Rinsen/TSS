@@ -24,7 +24,7 @@
 .crm-pdf .small-divider {
   width: 20%;
   border-bottom: 1px solid black;
-  margin: 2em 0;
+  margin: 1em 0;
   display: block;
 }
 .crm-pdf .large-divider {
@@ -56,7 +56,8 @@
   border: none;
 }
 .crm-pdf div.crm-pdf-head span#crm-pdf-todays-date {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: bold;
   float: left;
 }
 .crm-pdf div.crm-pdf-head span#crm-pdf-tieto-logo-com {

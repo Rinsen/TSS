@@ -39,7 +39,7 @@
                             foreach (System.Reflection.PropertyInfo pi in ViewBag.Properties)
                             {
 
-                                if (count == 0 || count == 7)
+                                if (count == 0 || count == 8)
                                 {
                                     @Html.Raw("<td valign=\"top\">")
                                 }
@@ -176,7 +176,7 @@
                                     </div>
                                 }
 
-                                if (count == 6 || count == ViewBag.Properties.Length - 1)
+                                if (count == 7 || count == ViewBag.Properties.Length - 1)
                                 {
                                     @Html.Raw("</td>")
                                 }
@@ -336,6 +336,9 @@
                 },
                 "Area": {
                     required: true,
+                },
+                "Email": {
+                    maxlength: 50,
                 },
 
             },
@@ -574,7 +577,7 @@
 
                
 
-                if (i < 16) {
+                if (i < 17) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
 

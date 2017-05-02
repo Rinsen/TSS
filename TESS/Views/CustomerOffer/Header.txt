@@ -12,12 +12,12 @@
   }
   .header{
     padding: 1em 0;
-    margin: 0 1.4cm 0 2.1cm !important;
+    margin: 0 1.4cm 0 1.1cm !important;
     padding-top: 1.6cm;
   }
   .date{
     float: left;
-    font-size: 12px !important;
+    font-size: 16px !important;
   }
   .logo{
     width: 110px;

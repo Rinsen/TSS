@@ -396,6 +396,7 @@
     <Content Include="Content\img\Signatures\RJS.png" />
     <Content Include="Content\img\Signatures\SLT.png" />
     <Content Include="Content\img\tieto-logo-com.png" />
+    <Content Include="Content\img\tieto-logo-mn.png" />
     <Content Include="Content\img\tieto-logo.png" />
     <Content Include="Content\img\Tieto_logo_blue.jpg" />
     <Content Include="Content\jquery-ui-timepicker-addon.css" />

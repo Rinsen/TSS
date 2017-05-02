@@ -58,6 +58,10 @@ namespace TietoCRM.Models
         private int kr_every_row;
         public int Kr_every_row { get { return kr_every_row; } set { kr_every_row = value; } }
 
+        private String email;
+        public String Email { get { return email; } set { email = value; } }
+
+
         public view_User() : base("User")
 		{
 			//ctr

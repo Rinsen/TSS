@@ -110,7 +110,7 @@
         table.contract-supervision-table td:nth-child(7){
             width: 7em;
         }
-       div.crm-pdf-subheader_1 table {
+       /*div.crm-pdf-subheader_1 table {
            page-break-before: auto;
            margin-top: 1em;
            width: 100%;
@@ -228,7 +228,7 @@
                text-align: right;
                width: 16%;
                vertical-align: text-top;
-           }
+           }*/
 
     </style>
     <style>
@@ -241,17 +241,17 @@
                 OfferCssInclude.Append("\n\n");
                 OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/OfferPdf.css")));
             }
-            else 
+            else
             {
                 OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/OfferPdf.css")));
-           }
-           
-            OfferCssInclude.Append("\n\n");
-            OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/bootstrap.table.css")));
+                OfferCssInclude.Append("\n\n");
+                OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/ExpPdfStyle.css")));
+             }
+
+             OfferCssInclude.Append("\n\n");
+             OfferCssInclude.Append(File.ReadAllText(Server.MapPath("~/Content/bootstrap.table.css")));
             @Html.Raw(OfferCssInclude)
         }
-
-
     </style>
     <style>
 
@@ -259,7 +259,10 @@
   font-size: 18pt;
   font-weight: bold;
 }
-
+.crm-pdf div.crm-pdf-head crm-pdf-todays-date {
+  font-size: 18pt;
+  font-weight: bold;
+}
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(1),
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(2),
 .crm-pdf div.crm-pdf-subheader_1 table td:nth-child(3),

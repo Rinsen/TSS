@@ -55,10 +55,15 @@ namespace TietoCRM.Controllers
 
             // Store all unique Customer name in a set
             HashSet<String> SystemNames = new HashSet<String>();
+            String oldSystem = "";
+
             foreach (view_CustomerProductRow row in ProductReportRows)
             {
-                if(row.Status == "Giltigt")
+                if(row.Status == "Giltigt" && row.System != oldSystem)
+                {
                     SystemNames.Add(row.SortNo + "#" + row.System);
+                    oldSystem = row.System;
+                }
             }
             List<String> OrderedSystemNames = SystemNames.ToList();
 
@@ -68,6 +73,7 @@ namespace TietoCRM.Controllers
             String sortKey = Request["prop"];
 
             ViewData.Add("CustomerProductRows", (new SortedByColumnCollection(ProductReportRows.ToList<SQLBaseClass>(), sortDir, sortKey)).Collection);
+            ViewData.Add("CustomerProductRows_MN", (ProductReportRows.Where(p => p.Status == "Giltigt").OrderBy(p => p.System).ThenBy(p => p.Classification).ThenBy(p => p.Module).ToList<SQLBaseClass>()));
             ViewData.Add("SystemNames", OrderedSystemNames);
             ViewData.Add("Properties", typeof(view_CustomerProductRow).GetProperties());
             List<String> ignoredPropertiesExtended = ignoredProperties.ToList();
