@@ -143,8 +143,9 @@ namespace TietoCRM.Controllers
         public String Customer()
         {
             String customer = Request.Form["customer"];
+            String area = System.Web.HttpContext.Current.GetUser().Area;
 
-            List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(customer, null);
+            List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(customer, null, area);
 
             ProductReportRows.OrderBy(m => m.System);
 

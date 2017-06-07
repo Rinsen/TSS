@@ -158,7 +158,7 @@ namespace TietoCRM.Models
         /// <param name="customer">the customer that has the contract</param>
         /// <param name="contractId">The id of the contract.</param>
         /// <returns>A list of product rows.</returns>
-        public static List<view_CustomerProductRow> getAllCustomerProductRows(String customer, String contractId = null)
+        public static List<view_CustomerProductRow> getAllCustomerProductRows(String customer, String contractId = null, String area = null)
         {
           
 
@@ -168,27 +168,47 @@ namespace TietoCRM.Models
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
-               
+
                 // Default query
+                //command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, ";
+                //command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
+                //command.CommandText += databasePrefix + "CustomerProductRow  WHERE " + "Customer = @customer And Discount_type = 0 Order By SortNo, Classification, Module";
+
                 command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, ";
                 command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
-                command.CommandText += databasePrefix + "CustomerProductRow  WHERE " + "Customer = @customer And Discount_type = 0 Order By SortNo, Classification, Module";
-                
-                // If contract id is specified
-                if(contractId != null)
+                command.CommandText += databasePrefix + "CustomerProductRow  WHERE " + "Customer = @customer And Discount_type = 0 ";
+                if (contractId != null)
                 {
-                    command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, ";
-                    command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
-                    command.CommandText += databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer AND Contract_id = @contract_id And Discount_type = 0 Order By SortNo, Classification, Module";
-                    command.Prepare();
+                    command.CommandText += "And Contract_id = @contract_id ";
+                }
+                if (area != null)
+                {
+                    command.CommandText += "And Area = @area ";
+                }
+                command.CommandText += "Order By SortNo, Classification, Module";
+
+                // If contract id is specified
+                //if (contractId != null)
+                //{
+                //    command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, ";
+                //    command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
+                //    command.CommandText += databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer AND Contract_id = @contract_id And Discount_type = 0 Order By SortNo, Classification, Module";
+                //    command.Prepare();
+                //    command.Parameters.AddWithValue("@contract_id", contractId);
+                //}
+                //else
+                //{
+                command.Prepare();
+                //}
+                command.Parameters.AddWithValue("@customer", customer);
+                if (contractId != null)
+                {
                     command.Parameters.AddWithValue("@contract_id", contractId);
                 }
-                else
+                if (area != null)
                 {
-                    command.Prepare();
+                    command.Parameters.AddWithValue("@area", area);
                 }
-                command.Parameters.AddWithValue("@customer", customer);
-
 
                 command.ExecuteNonQuery();
 
