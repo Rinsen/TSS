@@ -29,6 +29,20 @@
   background-color: #62b3e5;
   border-color: #62b3e5;
 }
+.btn-default small.text-muted,
+.btn-default:focus small.text-muted,
+.btn-default:active small.text-muted,
+.dropdown-toggle.btn-default small.text-muted,
+.btn-default.active small.text-muted,
+.btn-default:hover small.text-muted,
+.open > .dropdown-toggle.btn-default small.text-muted,
+.dropdown-menu > .active > a small.text-muted,
+.dropdown-menu > .active > a:focus small.text-muted,
+.dropdown-menu > .active > a:hover small.text-muted,
+.dropdown-menu > li > a:focus small.text-muted,
+.dropdown-menu > li > a:hover small.text-muted {
+  color: white;
+}
 .btn-default.active.focus,
 .btn-default.active:focus,
 .btn-default.active:hover,
@@ -1296,4 +1310,17 @@ a.tooltips > span:after {
 }
 .dataTable tr.selected {
   background-color: lightblue;
+}
+/* --------- Module Report ----------*/
+
+.bootstrap-select > button > span {
+  color: white;
+  font-weight: bold;
+}
+.bootstrap-select > button > span > small.text-muted {
+  color: white;
+  font-weight: normal;
+}
+.bootstrap-select a:hover {
+  color: white !important;
 }
