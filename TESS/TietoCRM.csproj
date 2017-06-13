@@ -174,6 +174,7 @@
     <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FeatureMappingController.cs" />
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
     <Compile Include="Controllers\List Management\CustomerContactController.cs" />
     <Compile Include="Controllers\List Management\CustomerController.cs" />
@@ -211,6 +212,7 @@
     </Compile>
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\EmailSender.cs" />
+    <Compile Include="Models\FeatureServiceProxy.cs" />
     <Compile Include="Models\HashtagDocument.cs" />
     <Compile Include="Models\Interfaces\IViewCollection.cs" />
     <Compile Include="Models\SelectOptions.cs" />
@@ -255,12 +257,17 @@
     <Compile Include="Models\SQLBaseClass.cs" />
     <Compile Include="Models\view_Tariff.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\Contracts\CustomerContractController.cs" />
     <Compile Include="Service References\FeatureService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\Contracts\CustomerContractController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-select.css" />
@@ -518,6 +525,10 @@
     <None Include="Properties\PublishProfiles\TESSWeb.pubxml" />
     <Content Include="Scripts\bootstrap-select.js.map" />
     <None Include="Properties\PublishProfiles\TSS2017.pubxml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\ContractModals\Articles.js" />
@@ -673,33 +684,14 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\tree.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Scripts\ContractModals\ContractFromOffer.js" />
+    <None Include="Service References\FeatureService\ReadService.disco" />
     <None Include="Service References\FeatureService\configuration91.svcinfo" />
     <None Include="Service References\FeatureService\configuration.svcinfo" />
-    <None Include="Service References\FeatureService\ReadService1.wsdl" />
-    <None Include="Service References\FeatureService\ReadService6.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService61.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService62.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService63.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService64.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService65.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Service References\FeatureService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Content Include="Scripts\ContractModals\ContractFromOffer.js" />
-    <None Include="Service References\FeatureService\ReadService1.disco" />
     <Content Include="Views\CustomerContract\Footer.html" />
     <Content Include="Views\CustomerContract\Header.cshtml" />
     <Content Include="Views\CustomerOffer\Footer.html" />
@@ -722,30 +714,6 @@
     <Content Include="Views\CustomerProductReport\Index.cshtml" />
     <Content Include="Views\CustomerProductReport\Pdf.cshtml" />
     <Content Include="Views\Features\Index.cshtml" />
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Applications.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Client.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Features.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Logg.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.MyVersion.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Product.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Script.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.User.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
     <Content Include="Views\CustomerContact\Index.cshtml" />
     <Content Include="Views\CustomerOffer\Index.cshtml" />
     <Content Include="Views\CustomerOffer\ViewPdf.cshtml" />
@@ -817,6 +785,50 @@
     <Content Include="Views\SelectOption\Index.cshtml" />
     <Content Include="Views\ModuleDiscount\Index.cshtml" />
     <Content Include="Views\TopCustomersReport\Pdf.cshtml" />
+    <Content Include="Views\FeatureMapping\Index.cshtml" />
+    <None Include="Service References\FeatureService\ReadService.wsdl" />
+    <None Include="Service References\FeatureService\ReadService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Applications.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Client.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Features.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Logg.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.MyVersion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Product.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Script.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.User.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -840,9 +852,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\FeatureService\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -872,6 +881,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\FeatureService\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

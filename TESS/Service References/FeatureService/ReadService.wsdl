@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ReadService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" />
+      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
+      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IFeatures_GetFeatures_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFeatures" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetFeatures_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFeaturesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetFeature_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFeature" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetFeature_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFeatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetCheckedFeatures_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCheckedFeatures" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetCheckedFeatures_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCheckedFeaturesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetScriptFeatures_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetScriptFeatures" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetScriptFeatures_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetScriptFeaturesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetClientsFeatures_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientsFeatures" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetClientsFeatures_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientsFeaturesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCustomers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCustomers" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCustomers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCustomersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_CopyClient_InputMessage">
+    <wsdl:part name="parameters" element="tns:CopyClient" />
+  </wsdl:message>
+  <wsdl:message name="IClient_CopyClient_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CopyClientResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_LatestUpdated_InputMessage">
+    <wsdl:part name="parameters" element="tns:LatestUpdated" />
+  </wsdl:message>
+  <wsdl:message name="IClient_LatestUpdated_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LatestUpdatedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCiceronClients_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCiceronClients" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCiceronClients_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCiceronClientsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetClientApplications_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientApplications" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetClientApplications_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientApplicationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetAdditions_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdditions" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetAdditions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAdditionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_SetLicenseNr_InputMessage">
+    <wsdl:part name="parameters" element="tns:SetLicenseNr" />
+  </wsdl:message>
+  <wsdl:message name="IClient_SetLicenseNr_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SetLicenseNrResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_LicenseNrExist_InputMessage">
+    <wsdl:part name="parameters" element="tns:LicenseNrExist" />
+  </wsdl:message>
+  <wsdl:message name="IClient_LicenseNrExist_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LicenseNrExistResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetClientsWithFeatures_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientsWithFeatures" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetClientsWithFeatures_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientsWithFeaturesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_UpdateClient_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateClient" />
+  </wsdl:message>
+  <wsdl:message name="IClient_UpdateClient_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateClientResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_InsertClient_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertClient" />
+  </wsdl:message>
+  <wsdl:message name="IClient_InsertClient_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertClientResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProduct_GetProducts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProducts" />
+  </wsdl:message>
+  <wsdl:message name="IProduct_GetProducts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProductsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IProduct_GetClientSystems_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientSystems" />
+  </wsdl:message>
+  <wsdl:message name="IProduct_GetClientSystems_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientSystemsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_SaveChanges_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveChanges" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_SaveChanges_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveChangesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_MaintenanceChanges_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaintenanceChanges" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_MaintenanceChanges_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaintenanceChangesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_NewFeature_InputMessage">
+    <wsdl:part name="parameters" element="tns:NewFeature" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_NewFeature_OutputMessage">
+    <wsdl:part name="parameters" element="tns:NewFeatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_DeleteFeature_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteFeature" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_DeleteFeature_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteFeatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_EditFeature_InputMessage">
+    <wsdl:part name="parameters" element="tns:EditFeature" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_EditFeature_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EditFeatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_UpdateParentId_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateParentId" />
+  </wsdl:message>
+  <wsdl:message name="IWriter_UpdateParentId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateParentIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IScript_GetScripts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetScripts" />
+  </wsdl:message>
+  <wsdl:message name="IScript_GetScripts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetScriptsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IScript_WriteNewScripts_InputMessage">
+    <wsdl:part name="parameters" element="tns:WriteNewScripts" />
+  </wsdl:message>
+  <wsdl:message name="IScript_WriteNewScripts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WriteNewScriptsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IScript_GetWarningMessage_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetWarningMessage" />
+  </wsdl:message>
+  <wsdl:message name="IScript_GetWarningMessage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetWarningMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IScript_GetLicenseText_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetLicenseText" />
+  </wsdl:message>
+  <wsdl:message name="IScript_GetLicenseText_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetLicenseTextResponse" />
+  </wsdl:message>
+  <wsdl:message name="IApplications_GetApplications_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetApplications" />
+  </wsdl:message>
+  <wsdl:message name="IApplications_GetApplications_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetApplicationsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_GetVersions_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersions" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_GetVersions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_GetDefaultVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDefaultVersion" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_GetDefaultVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDefaultVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_UpdateDefaultVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateDefaultVersion" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_UpdateDefaultVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateDefaultVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_NewVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:NewVersion" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_NewVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:NewVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IUser_GetUsersList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUsersList" />
+  </wsdl:message>
+  <wsdl:message name="IUser_GetUsersList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUsersListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IUser_GetUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetUser" />
+  </wsdl:message>
+  <wsdl:message name="IUser_GetUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IUser_ChangePassword_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangePassword" />
+  </wsdl:message>
+  <wsdl:message name="IUser_ChangePassword_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangePasswordResponse" />
+  </wsdl:message>
+  <wsdl:message name="IUser_NewUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:NewUser" />
+  </wsdl:message>
+  <wsdl:message name="IUser_NewUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:NewUserResponse" />
+  </wsdl:message>
+  <wsdl:message name="IUser_ChangePrivileges_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangePrivileges" />
+  </wsdl:message>
+  <wsdl:message name="IUser_ChangePrivileges_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangePrivilegesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILogg_GetEvents_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetEvents" />
+  </wsdl:message>
+  <wsdl:message name="ILogg_GetEvents_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetEventsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ILicense_WriteLicenses_InputMessage">
+    <wsdl:part name="parameters" element="tns:WriteLicenses" />
+  </wsdl:message>
+  <wsdl:message name="ILicense_WriteLicenses_OutputMessage">
+    <wsdl:part name="parameters" element="tns:WriteLicensesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IFeatures">
+    <wsdl:operation name="GetFeatures">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetFeatures" message="tns:IFeatures_GetFeatures_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFeatures/GetFeaturesResponse" message="tns:IFeatures_GetFeatures_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFeature">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetFeature" message="tns:IFeatures_GetFeature_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFeatures/GetFeatureResponse" message="tns:IFeatures_GetFeature_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCheckedFeatures">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetCheckedFeatures" message="tns:IFeatures_GetCheckedFeatures_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFeatures/GetCheckedFeaturesResponse" message="tns:IFeatures_GetCheckedFeatures_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetScriptFeatures">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetScriptFeatures" message="tns:IFeatures_GetScriptFeatures_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFeatures/GetScriptFeaturesResponse" message="tns:IFeatures_GetScriptFeatures_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetClientsFeatures">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetClientsFeatures" message="tns:IFeatures_GetClientsFeatures_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFeatures/GetClientsFeaturesResponse" message="tns:IFeatures_GetClientsFeatures_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IClient">
+    <wsdl:operation name="GetCustomers">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetCustomers" message="tns:IClient_GetCustomers_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetCustomersResponse" message="tns:IClient_GetCustomers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CopyClient">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/CopyClient" message="tns:IClient_CopyClient_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/CopyClientResponse" message="tns:IClient_CopyClient_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="LatestUpdated">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/LatestUpdated" message="tns:IClient_LatestUpdated_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/LatestUpdatedResponse" message="tns:IClient_LatestUpdated_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCiceronClients">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetCiceronClients" message="tns:IClient_GetCiceronClients_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetCiceronClientsResponse" message="tns:IClient_GetCiceronClients_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetClientApplications">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetClientApplications" message="tns:IClient_GetClientApplications_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetClientApplicationsResponse" message="tns:IClient_GetClientApplications_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAdditions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetAdditions" message="tns:IClient_GetAdditions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetAdditionsResponse" message="tns:IClient_GetAdditions_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SetLicenseNr">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/SetLicenseNr" message="tns:IClient_SetLicenseNr_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/SetLicenseNrResponse" message="tns:IClient_SetLicenseNr_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="LicenseNrExist">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/LicenseNrExist" message="tns:IClient_LicenseNrExist_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/LicenseNrExistResponse" message="tns:IClient_LicenseNrExist_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetClientsWithFeatures">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetClientsWithFeatures" message="tns:IClient_GetClientsWithFeatures_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetClientsWithFeaturesResponse" message="tns:IClient_GetClientsWithFeatures_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateClient">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/UpdateClient" message="tns:IClient_UpdateClient_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/UpdateClientResponse" message="tns:IClient_UpdateClient_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertClient">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/InsertClient" message="tns:IClient_InsertClient_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/InsertClientResponse" message="tns:IClient_InsertClient_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IProduct">
+    <wsdl:operation name="GetProducts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProduct/GetProducts" message="tns:IProduct_GetProducts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProduct/GetProductsResponse" message="tns:IProduct_GetProducts_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetClientSystems">
+      <wsdl:input wsaw:Action="http://tempuri.org/IProduct/GetClientSystems" message="tns:IProduct_GetClientSystems_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IProduct/GetClientSystemsResponse" message="tns:IProduct_GetClientSystems_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IWriter">
+    <wsdl:operation name="SaveChanges">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWriter/SaveChanges" message="tns:IWriter_SaveChanges_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWriter/SaveChangesResponse" message="tns:IWriter_SaveChanges_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaintenanceChanges">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWriter/MaintenanceChanges" message="tns:IWriter_MaintenanceChanges_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWriter/MaintenanceChangesResponse" message="tns:IWriter_MaintenanceChanges_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="NewFeature">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWriter/NewFeature" message="tns:IWriter_NewFeature_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWriter/NewFeatureResponse" message="tns:IWriter_NewFeature_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteFeature">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWriter/DeleteFeature" message="tns:IWriter_DeleteFeature_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWriter/DeleteFeatureResponse" message="tns:IWriter_DeleteFeature_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EditFeature">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWriter/EditFeature" message="tns:IWriter_EditFeature_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWriter/EditFeatureResponse" message="tns:IWriter_EditFeature_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateParentId">
+      <wsdl:input wsaw:Action="http://tempuri.org/IWriter/UpdateParentId" message="tns:IWriter_UpdateParentId_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IWriter/UpdateParentIdResponse" message="tns:IWriter_UpdateParentId_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IScript">
+    <wsdl:operation name="GetScripts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IScript/GetScripts" message="tns:IScript_GetScripts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IScript/GetScriptsResponse" message="tns:IScript_GetScripts_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="WriteNewScripts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IScript/WriteNewScripts" message="tns:IScript_WriteNewScripts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IScript/WriteNewScriptsResponse" message="tns:IScript_WriteNewScripts_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetWarningMessage">
+      <wsdl:input wsaw:Action="http://tempuri.org/IScript/GetWarningMessage" message="tns:IScript_GetWarningMessage_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IScript/GetWarningMessageResponse" message="tns:IScript_GetWarningMessage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLicenseText">
+      <wsdl:input wsaw:Action="http://tempuri.org/IScript/GetLicenseText" message="tns:IScript_GetLicenseText_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IScript/GetLicenseTextResponse" message="tns:IScript_GetLicenseText_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IApplications">
+    <wsdl:operation name="GetApplications">
+      <wsdl:input wsaw:Action="http://tempuri.org/IApplications/GetApplications" message="tns:IApplications_GetApplications_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IApplications/GetApplicationsResponse" message="tns:IApplications_GetApplications_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IVersion">
+    <wsdl:operation name="GetVersions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IVersion/GetVersions" message="tns:IVersion_GetVersions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IVersion/GetVersionsResponse" message="tns:IVersion_GetVersions_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDefaultVersion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IVersion/GetDefaultVersion" message="tns:IVersion_GetDefaultVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IVersion/GetDefaultVersionResponse" message="tns:IVersion_GetDefaultVersion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDefaultVersion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IVersion/UpdateDefaultVersion" message="tns:IVersion_UpdateDefaultVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IVersion/UpdateDefaultVersionResponse" message="tns:IVersion_UpdateDefaultVersion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="NewVersion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IVersion/NewVersion" message="tns:IVersion_NewVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IVersion/NewVersionResponse" message="tns:IVersion_NewVersion_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IUser">
+    <wsdl:operation name="GetUsersList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUser/GetUsersList" message="tns:IUser_GetUsersList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUser/GetUsersListResponse" message="tns:IUser_GetUsersList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUser/GetUser" message="tns:IUser_GetUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUser/GetUserResponse" message="tns:IUser_GetUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangePassword">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUser/ChangePassword" message="tns:IUser_ChangePassword_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUser/ChangePasswordResponse" message="tns:IUser_ChangePassword_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="NewUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUser/NewUser" message="tns:IUser_NewUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUser/NewUserResponse" message="tns:IUser_NewUser_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangePrivileges">
+      <wsdl:input wsaw:Action="http://tempuri.org/IUser/ChangePrivileges" message="tns:IUser_ChangePrivileges_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IUser/ChangePrivilegesResponse" message="tns:IUser_ChangePrivileges_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ILogg">
+    <wsdl:operation name="GetEvents">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILogg/GetEvents" message="tns:ILogg_GetEvents_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILogg/GetEventsResponse" message="tns:ILogg_GetEvents_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ILicense">
+    <wsdl:operation name="WriteLicenses">
+      <wsdl:input wsaw:Action="http://tempuri.org/ILicense/WriteLicenses" message="tns:ILicense_WriteLicenses_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ILicense/WriteLicensesResponse" message="tns:ILicense_WriteLicenses_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IFeatures" type="tns:IFeatures">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetFeatures">
+      <soap:operation soapAction="http://tempuri.org/IFeatures/GetFeatures" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFeature">
+      <soap:operation soapAction="http://tempuri.org/IFeatures/GetFeature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCheckedFeatures">
+      <soap:operation soapAction="http://tempuri.org/IFeatures/GetCheckedFeatures" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetScriptFeatures">
+      <soap:operation soapAction="http://tempuri.org/IFeatures/GetScriptFeatures" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClientsFeatures">
+      <soap:operation soapAction="http://tempuri.org/IFeatures/GetClientsFeatures" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IClient" type="tns:IClient">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetCustomers">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetCustomers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CopyClient">
+      <soap:operation soapAction="http://tempuri.org/IClient/CopyClient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LatestUpdated">
+      <soap:operation soapAction="http://tempuri.org/IClient/LatestUpdated" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCiceronClients">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetCiceronClients" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClientApplications">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetClientApplications" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAdditions">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetAdditions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetLicenseNr">
+      <soap:operation soapAction="http://tempuri.org/IClient/SetLicenseNr" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LicenseNrExist">
+      <soap:operation soapAction="http://tempuri.org/IClient/LicenseNrExist" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClientsWithFeatures">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetClientsWithFeatures" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateClient">
+      <soap:operation soapAction="http://tempuri.org/IClient/UpdateClient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertClient">
+      <soap:operation soapAction="http://tempuri.org/IClient/InsertClient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IProduct" type="tns:IProduct">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetProducts">
+      <soap:operation soapAction="http://tempuri.org/IProduct/GetProducts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClientSystems">
+      <soap:operation soapAction="http://tempuri.org/IProduct/GetClientSystems" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IWriter" type="tns:IWriter">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SaveChanges">
+      <soap:operation soapAction="http://tempuri.org/IWriter/SaveChanges" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaintenanceChanges">
+      <soap:operation soapAction="http://tempuri.org/IWriter/MaintenanceChanges" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="NewFeature">
+      <soap:operation soapAction="http://tempuri.org/IWriter/NewFeature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteFeature">
+      <soap:operation soapAction="http://tempuri.org/IWriter/DeleteFeature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EditFeature">
+      <soap:operation soapAction="http://tempuri.org/IWriter/EditFeature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateParentId">
+      <soap:operation soapAction="http://tempuri.org/IWriter/UpdateParentId" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IScript" type="tns:IScript">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetScripts">
+      <soap:operation soapAction="http://tempuri.org/IScript/GetScripts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="WriteNewScripts">
+      <soap:operation soapAction="http://tempuri.org/IScript/WriteNewScripts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetWarningMessage">
+      <soap:operation soapAction="http://tempuri.org/IScript/GetWarningMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLicenseText">
+      <soap:operation soapAction="http://tempuri.org/IScript/GetLicenseText" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IApplications" type="tns:IApplications">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetApplications">
+      <soap:operation soapAction="http://tempuri.org/IApplications/GetApplications" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IVersion" type="tns:IVersion">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetVersions">
+      <soap:operation soapAction="http://tempuri.org/IVersion/GetVersions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDefaultVersion">
+      <soap:operation soapAction="http://tempuri.org/IVersion/GetDefaultVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateDefaultVersion">
+      <soap:operation soapAction="http://tempuri.org/IVersion/UpdateDefaultVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="NewVersion">
+      <soap:operation soapAction="http://tempuri.org/IVersion/NewVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IUser" type="tns:IUser">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetUsersList">
+      <soap:operation soapAction="http://tempuri.org/IUser/GetUsersList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUser">
+      <soap:operation soapAction="http://tempuri.org/IUser/GetUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangePassword">
+      <soap:operation soapAction="http://tempuri.org/IUser/ChangePassword" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="NewUser">
+      <soap:operation soapAction="http://tempuri.org/IUser/NewUser" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangePrivileges">
+      <soap:operation soapAction="http://tempuri.org/IUser/ChangePrivileges" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_ILogg" type="tns:ILogg">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetEvents">
+      <soap:operation soapAction="http://tempuri.org/ILogg/GetEvents" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_ILicense" type="tns:ILicense">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="WriteLicenses">
+      <soap:operation soapAction="http://tempuri.org/ILicense/WriteLicenses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ReadService">
+    <wsdl:port name="BasicHttpBinding_IFeatures" binding="tns:BasicHttpBinding_IFeatures">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IClient" binding="tns:BasicHttpBinding_IClient">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IProduct" binding="tns:BasicHttpBinding_IProduct">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IWriter" binding="tns:BasicHttpBinding_IWriter">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IScript" binding="tns:BasicHttpBinding_IScript">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IApplications" binding="tns:BasicHttpBinding_IApplications">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IVersion" binding="tns:BasicHttpBinding_IVersion">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IUser" binding="tns:BasicHttpBinding_IUser">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_ILogg" binding="tns:BasicHttpBinding_ILogg">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_ILicense" binding="tns:BasicHttpBinding_ILicense">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

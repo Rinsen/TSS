@@ -1,0 +1,82 @@
+﻿@{
+   
+}
+
+<row>
+    <div class="col-md-12">
+        <form method="get" target="_blank" class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-module">Modules:</label>
+                <select name="module" id="crm-select-module" class="form-control selectpicker" data-live-search="true" data-show-subtext="true">
+                    @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
+                    {
+                        <option value="@Module.Article_number">@Module.Article_number - @Module.Module</option>
+                    }
+                </select>
+            </div>
+            
+        </form>
+
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="feature-mapping-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="Feature_id" data-sortable="true">Feature ID</th>
+                    <th data-field="Feature" data-sortable="true">Feature</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script>
+    var serverPrefix = "@Url.Content("~/")";
+    @{String DataObject = "\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Feature_id" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Feature" + "\"  },\r\n";}
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(module)
+    {
+        $('#feature-mapping-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bFilter": true,
+            "bPaginate": false,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": serverPrefix + "FeatureMapping/MappingData/",
+                "type": "POST",
+                "data": {
+                    "module": module,
+                }
+            },
+            "defaultContent": "",
+            "order": [[0, "asc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+
+    $('document').ready(function () {
+
+        $('.selectpicker').selectpicker();
+
+        $moduleContainer = $("#crm-select-module");
+
+        updateDataTable($moduleContainer.val());
+
+        $moduleContainer.change(function () {
+            if(this.value != "")
+                updateDataTable(this.value)
+        });
+
+    });
+
+    </script>
+
+
+
+</row>

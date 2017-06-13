@@ -40,7 +40,7 @@ namespace TietoCRM.Models
                 switch (searchType)
                 {
                     case 0:
-                        if (item.children.ToList<FeatureService.Features>().Count != 0)
+                        if (item.Children.ToList<FeatureService.Features>().Count != 0)
                         {
                             foundFeatures.Add(item);
                         }
@@ -50,17 +50,17 @@ namespace TietoCRM.Models
                         }
                         break;
                     case 1:
-                        if (item.children.ToList<FeatureService.Features>().Count != 0)
+                        if (item.Children.ToList<FeatureService.Features>().Count != 0)
                         {
                             foundFeatures.Add(item);
                         }
-                        else if (item.ID.ToString().StartsWith(filter, true, null))
+                        else if (item.Id.ToString().StartsWith(filter, true, null))
                         {
                             foundFeatures.Add(item);
                         }
                         break;
                     case 2:
-                        if (item.children.ToList<FeatureService.Features>().Count != 0)
+                        if (item.Children.ToList<FeatureService.Features>().Count != 0)
                         {
                             foundFeatures.Add(item);
                         }
@@ -81,17 +81,17 @@ namespace TietoCRM.Models
         private FeatureObservableCollection<FeatureService.Features> SearchChildren(int searchType, FeatureService.Features root, string filter, FeatureObservableCollection<FeatureService.Features> allFeatures)
         {
             FeatureObservableCollection<FeatureService.Features> foundFeatures = new FeatureObservableCollection<FeatureService.Features>();
-            FeatureObservableCollection<FeatureService.Features> children = new FeatureObservableCollection<FeatureService.Features>();
-            children = Cloner<FeatureObservableCollection<FeatureService.Features>>.DeepClone(root.children);
-            root.children.ToList<FeatureService.Features>().Clear();
-            foreach (FeatureService.Features item in children)
+            FeatureObservableCollection<FeatureService.Features> Children = new FeatureObservableCollection<FeatureService.Features>();
+            Children = Cloner<FeatureObservableCollection<FeatureService.Features>>.DeepClone(root.Children);
+            root.Children.ToList<FeatureService.Features>().Clear();
+            foreach (FeatureService.Features item in Children)
             {
 
                 this.SearchChildren(searchType, item, filter, allFeatures);
                 switch (searchType)
                 {
                     case 0:
-                        if (item.children.ToList<FeatureService.Features>().Count != 0)
+                        if (item.Children.ToList<FeatureService.Features>().Count != 0)
                         {
                             foundFeatures.Add(item);
                         }
@@ -101,17 +101,17 @@ namespace TietoCRM.Models
                         }
                         break;
                     case 1:
-                        if (item.children.ToList<FeatureService.Features>().Count != 0)
+                        if (item.Children.ToList<FeatureService.Features>().Count != 0)
                         {
                             foundFeatures.Add(item);
                         }
-                        else if (item.ID.ToString().StartsWith(filter, true, null))
+                        else if (item.Id.ToString().StartsWith(filter, true, null))
                         {
                             foundFeatures.Add(item);
                         }
                         break;
                     case 2:
-                        if (item.children.ToList<FeatureService.Features>().Count != 0)
+                        if (item.Children.ToList<FeatureService.Features>().Count != 0)
                         {
                             foundFeatures.Add(item);
                         }
@@ -126,7 +126,7 @@ namespace TietoCRM.Models
 
 
             }
-            root.children = foundFeatures.ToArray<FeatureService.Features>();
+            root.Children = foundFeatures.ToArray<FeatureService.Features>();
             return foundFeatures;
         }
 
@@ -149,11 +149,11 @@ namespace TietoCRM.Models
             foreach (FeatureService.Features item in allFeatures)
             {
                 this.scriptChildrenFinder(IDS, item, allFeatures);
-                if (item.children.ToList<FeatureService.Features>().Count != 0)
+                if (item.Children.ToList<FeatureService.Features>().Count != 0)
                 {
                     foundFeatures.Add(item);
                 }
-                else if (IDS.Contains(item.ID))
+                else if (IDS.Contains(item.Id))
                 {
                     foundFeatures.Add(item);
                 }
@@ -165,24 +165,24 @@ namespace TietoCRM.Models
         private FeatureObservableCollection<FeatureService.Features> scriptChildrenFinder(ObservableCollection<int> IDS, FeatureService.Features root, FeatureObservableCollection<FeatureService.Features> tree)
         {
             FeatureObservableCollection<FeatureService.Features> foundFeatures = new FeatureObservableCollection<FeatureService.Features>();
-            FeatureObservableCollection<FeatureService.Features> children = new FeatureObservableCollection<FeatureService.Features>();
-            children = Cloner<FeatureObservableCollection<FeatureService.Features>>.DeepClone(root.children);
-            root.children.ToList<FeatureService.Features>().Clear();
-            foreach (FeatureService.Features item in children)
+            FeatureObservableCollection<FeatureService.Features> Children = new FeatureObservableCollection<FeatureService.Features>();
+            Children = Cloner<FeatureObservableCollection<FeatureService.Features>>.DeepClone(root.Children);
+            root.Children.ToList<FeatureService.Features>().Clear();
+            foreach (FeatureService.Features item in Children)
             {
 
                 this.scriptChildrenFinder(IDS, item, tree);
-                if (item.children.ToList<FeatureService.Features>().Count != 0)
+                if (item.Children.ToList<FeatureService.Features>().Count != 0)
                 {
                     foundFeatures.Add(item);
                 }
-                else if (IDS.Contains(item.ID))
+                else if (IDS.Contains(item.Id))
                 {
                     foundFeatures.Add(item);
                 }
             }
 
-            root.children = foundFeatures.ToArray<FeatureService.Features>();
+            root.Children = foundFeatures.ToArray<FeatureService.Features>();
             return foundFeatures;
         }
 
@@ -201,14 +201,14 @@ namespace TietoCRM.Models
             }
             foreach (FeatureService.Features feature in features)
             {
-                if (expandedIDs.Contains(feature.ID))
+                if (expandedIDs.Contains(feature.Id))
                 {
                    
 
                     feature.IsExpanded = true;
-                    if (feature.children.Length > 0 )
+                    if (feature.Children.Length > 0 )
                     {
-                        this.SetExpanded(expandedIDs, new FeatureObservableCollection<FeatureService.Features>(feature.children));
+                        this.SetExpanded(expandedIDs, new FeatureObservableCollection<FeatureService.Features>(feature.Children));
                     }
                 }
 

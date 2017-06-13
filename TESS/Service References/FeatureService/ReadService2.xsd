@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
+  <xs:complexType name="ArrayOfFeatures">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Features" nillable="true" type="tns:Features" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFeatures" nillable="true" type="tns:ArrayOfFeatures" />
+  <xs:complexType name="Features">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ApplicationId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ArticleNumber" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="Children" nillable="true" type="tns:ArrayOfFeatures" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Information" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsChecked" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsExpanded" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsSelected" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Level" type="xs:int" />
+      <xs:element minOccurs="0" name="ParentId" type="xs:int" />
+      <xs:element minOccurs="0" name="ProdId" type="xs:int" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/FeatureService.Model" minOccurs="0" name="Scripts" nillable="true" type="q1:ArrayOfScript" />
+      <xs:element minOccurs="0" name="Text" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Features" nillable="true" type="tns:Features" />
+  <xs:complexType name="ArrayOfClient">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Client" nillable="true" type="tns:Client" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfClient" nillable="true" type="tns:ArrayOfClient" />
+  <xs:complexType name="Client">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Address" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Asukas" type="xs:int" />
+      <xs:element minOccurs="0" name="BoU" type="xs:int" />
+      <xs:element minOccurs="0" name="City" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ClientCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ClientId" type="xs:int" />
+      <xs:element minOccurs="0" name="CustomerName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FTB" type="xs:int" />
+      <xs:element minOccurs="0" name="IFO" type="xs:int" />
+      <xs:element minOccurs="0" name="KIR" type="xs:int" />
+      <xs:element minOccurs="0" name="LicenseNr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MunicipalityCode" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Notes" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PhoneNumber" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PostalCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcPlan" type="xs:int" />
+      <xs:element minOccurs="0" name="REX" type="xs:int" />
+      <xs:element minOccurs="0" name="ShortName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sign" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Update" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="VoO" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Client" nillable="true" type="tns:Client" />
+  <xs:complexType name="ArrayOfApplications">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Applications" nillable="true" type="tns:Applications" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfApplications" nillable="true" type="tns:ArrayOfApplications" />
+  <xs:complexType name="Applications">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AppDescription" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ApplicationId" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Applications" nillable="true" type="tns:Applications" />
+  <xs:complexType name="Product">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IsSelected" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SelectedIndex" type="xs:int" />
+      <xs:element minOccurs="0" name="ShortName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StartUpVersion" nillable="true" type="tns:MyVersion" />
+      <xs:element minOccurs="0" name="Versions" nillable="true" type="tns:ArrayOfMyVersion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Product" nillable="true" type="tns:Product" />
+  <xs:complexType name="MyVersion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="ProdId" type="xs:int" />
+      <xs:element minOccurs="0" name="VersionName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MyVersion" nillable="true" type="tns:MyVersion" />
+  <xs:complexType name="ArrayOfMyVersion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MyVersion" nillable="true" type="tns:MyVersion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMyVersion" nillable="true" type="tns:ArrayOfMyVersion" />
+  <xs:complexType name="ArrayOfProduct">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Product" nillable="true" type="tns:Product" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProduct" nillable="true" type="tns:ArrayOfProduct" />
+  <xs:complexType name="ArrayOfUser">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="User" nillable="true" type="tns:User" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfUser" nillable="true" type="tns:ArrayOfUser" />
+  <xs:complexType name="User">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="HasAdminPrivilege" type="xs:boolean" />
+      <xs:element minOccurs="0" name="HasEditPrivilege" type="xs:boolean" />
+      <xs:element minOccurs="0" name="HasReadPrivilege" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="User" nillable="true" type="tns:User" />
+  <xs:complexType name="ArrayOfLogg">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Logg" nillable="true" type="tns:Logg" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfLogg" nillable="true" type="tns:ArrayOfLogg" />
+  <xs:complexType name="Logg">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ChangedEvent" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Time" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Logg" nillable="true" type="tns:Logg" />
+</xs:schema>
