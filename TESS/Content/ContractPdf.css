@@ -640,7 +640,6 @@
   width: 66%;
   text-align: left;
   font-size: 9.5pt;
-  font-weight: bold;
 }
 .crm-pdf div.crm-pdf-subrows_1 table td:nth-child(2) {
   width: 8%;
@@ -789,28 +788,29 @@
   page-break-before: auto;
   width: 100%;
 }
+.crm-pdf div.crm-pdf-subsum_1 table tr {
+  font-size: 10pt;
+}
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(1) {
   width: 40%;
   text-align: left;
-  font-size: 8pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(2) {
   width: 34%;
   text-align: right;
   vertical-align: text-top;
-  font-size: 9pt;
 }
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(3) {
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 9pt;
+  font-weight: bold;
 }
 .crm-pdf div.crm-pdf-subsum_1 table td:nth-child(4) {
   text-align: right;
   width: 13%;
   vertical-align: text-top;
-  font-size: 9pt;
+  font-weight: bold;
 }
 .crm-pdf div.crm-pdf-subsum_1-rubkr table {
   page-break-before: auto;
