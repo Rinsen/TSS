@@ -1,17 +1,29 @@
 ﻿@{
     Layout = "~/Views/Shared/_ReportLayout.cshtml";
+    bool showDesc = false;
+    if (Request.Params["showDesc"] != null) {
+        if(Request.Params["showDesc"] == "1"){
+            showDesc = true;
+        }
+    }
 }
 
 <div class="crm-print-block">
+    @if (showDesc){
+        <h2>@ViewBag.Module.Module - @ViewBag.Module.Description</h2>
+    }
+    else{
+        <h2>@ViewBag.Module.Module</h2>
+    }
     <table class="table table-striped table-bordered contract-supervision-table">
         <th>Customer</th>
         <th>Contract id</th>
         <th>Representative</th>
         <th>Classification</th>
         @foreach (Dictionary<String, object> contract in ViewBag.Customermodules)
-        {
+        { 
             <tr class="">
-                @foreach(KeyValuePair<String, object> dic in contract)
+                @foreach (KeyValuePair<String, object> dic in contract)
                 {
                     <td>@dic.Value</td>
                 }
