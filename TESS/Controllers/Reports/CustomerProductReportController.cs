@@ -51,7 +51,9 @@ namespace TietoCRM.Controllers
 
         public ActionResult Pdf()
         {
-            List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null);
+            String area = System.Web.HttpContext.Current.GetUser().Area;
+
+            List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null, area);
 
             // Store all unique Customer name in a set
             HashSet<String> SystemNames = new HashSet<String>();
