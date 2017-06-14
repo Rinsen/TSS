@@ -243,6 +243,7 @@
     <Compile Include="Models\view_Information.cs" />
     <Compile Include="Models\view_Module.cs" />
     <Compile Include="Models\view_ModuleDiscount.cs" />
+    <Compile Include="Models\view_ModuleFeature.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
     <Compile Include="Models\view_Reminder.cs" />
     <Compile Include="Models\view_Sector.cs" />
