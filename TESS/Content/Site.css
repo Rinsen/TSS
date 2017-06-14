@@ -1,3 +1,22 @@
+.tss-base.bg {
+  background-color: #0065a0;
+}
+.tss-base.text {
+  color: #0065a0;
+}
+.tss-dark.bg {
+  background-color: #62b3e5;
+  color: white;
+}
+.tss-dark.text {
+  color: #62b3e5;
+}
+.tss-light.bg {
+  background-color: #bee2f8;
+}
+.tss-light.text {
+  color: #bee2f8;
+}
 .navbar-default {
   background-color: #0065a0;
 }
@@ -1325,4 +1344,25 @@ a.tooltips > span:after {
 }
 .bootstrap-select a:hover {
   color: white !important;
+}
+/* --------- Feature Mapping -----------*/
+
+#mappingModal ol.breadcrumb {
+  padding: 0;
+  margin: 2px 0 4px;
+  list-style: none;
+  background-color: inherit;
+  font-size: 8pt;
+}
+#mappingModal .item-wrapper.list-group {
+  height: 50vh;
+}
+#mappingModal .list-group {
+  overflow: hidden;
+  margin-bottom: 0;
+  width: 98%;
+}
+#mappingModal .list.list-group {
+  overflow-y: auto;
+  height: 90%;
 }

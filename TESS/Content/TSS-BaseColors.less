@@ -3,6 +3,31 @@
 @light-blue: #BEE2F8;
 @base-gray: #5E5F5F;
 @green-color: #00B057;
+.tss-base {
+    &.bg {
+        background-color: @base-color;
+    }
+    &.text {
+        color:  @base-color;
+    }
+}
+.tss-dark {
+    &.bg {
+        background-color: @dark-blue;
+        color: white;
+    }
+    &.text {
+        color:  @dark-blue;
+    }
+}
+.tss-light {
+    &.bg {
+        background-color: @light-blue;
+    }
+    &.text {
+        color:  @light-blue;
+    }
+}
 .navbar-default{
     background-color: @base-color;
 }

@@ -1,22 +1,21 @@
-﻿@{
-   
-}
-
+﻿@using TietoCRM.FeatureService;
 <row>
     <div class="col-md-12">
         <form method="get" target="_blank" class="form-inline">
             <div class="form-group">
-                <label for="crm-select-module">Modules:</label>
-                <select name="module" id="crm-select-module" class="form-control selectpicker" data-live-search="true" data-show-subtext="true">
+                <label for="crm-select-module">Articles:</label>
+                <select name="module" id="crm-select-module" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
-                        <option value="@Module.Article_number">@Module.Article_number - @Module.Module</option>
+                        <option data-subtext="@Module.Description" data-name="@Module.Module" value="@Module.Article_number">@Module.Article_number - @Module.Module</option>
                     }
                 </select>
             </div>
-            
+            <div class="form-group">
+                <button id="map-articles-btn" style="margin-top: 1.7em" class="btn btn-default" type="button">Map Articles</button>
+            </div>
         </form>
-
+        
     </div>
     <div class="col-md-12">
         <table draggable="true" id="feature-mapping-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
@@ -28,6 +27,95 @@
             </thead>
         </table>
     </div>
+
+
+
+
+    <div class="modal fade bs-example-modal-lg" id="mappingModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+               
+                <p class="modal-title">
+                    <span>Mapping for:</span>
+                    <span style="color: #0065A0 !important">
+                        <strong id="selected-article-title"></strong>
+                        <span id="selected-article-description"></span>
+                    </span>
+                </p>
+            </div>
+            <div id="module-modal" class="modal-body">
+                <p>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="product-list">Systems:</label>
+                        </div>
+                        <div class="form-group">
+                            <select class=" selectpicker" id="product-list" data-live-search="true">
+                                @foreach (Product product in ViewBag.Products)
+                                {
+                                    <option value="@product.Id">@product.ShortName</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </p>
+               <div class="row" >
+                   <div class="col-sm-6" >
+                        <div class="panel panel-default ">
+                            <div class="panel-heading tss-dark bg">
+                                <h3 class="panel-title">Available Features</h3>
+                            </div>
+                            <div class="panel-body" >
+                                <div id="available-features" class="list-group item-wrapper">
+                                    <p class="row">
+                                        <form class="form-inline">
+                                            <div class="form-group">
+                                                <input class="search form-control input-sm" placeholder="Search..." />
+                                                <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
+                                                    Search
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </p>
+                                    <div class="list list-group" style="overflow-y: auto">
+                                        <div>List is empty..</div>
+                                    </div>
+
+                                </div>     
+                            </div>
+                        </div>
+                        <p>Click on a Feature above to map it to an Article</p>
+                   </div>
+                   <div class="col-sm-6" >
+                       <div class="panel panel-default ">
+                           <div class="panel-heading tss-dark bg">
+                               <h3 class="panel-title">Mapped Features</h3>
+                           </div>
+                           <div class="panel-body">
+                               <div id="mapped-features" class="list-group item-wrapper">
+                               </div>
+                           </div>
+                       </div>
+                       <p>Click on a Feature above to remove mapping</p>
+                   </div>
+               </div>               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-module-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
     <script>
     var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
@@ -65,16 +153,74 @@
         $('.selectpicker').selectpicker();
 
         $moduleContainer = $("#crm-select-module");
-
+        
         updateDataTable($moduleContainer.val());
 
         $moduleContainer.change(function () {
-            if(this.value != "")
+            if (this.value != "") {
                 updateDataTable(this.value)
+            }  
         });
 
+        $productList = $('#product-list');
+
+        $productList.change(function () {   
+            getFeatureList(this.value);
+        })
+        
+
+        $("#map-articles-btn").bind('click', function () {
+           
+           // $productList.selectpicker('refresh');
+
+            var $selectedElement = $moduleContainer.find('option:selected');
+            var $selectedArticleDesc = $('#selected-article-description');
+            $('#selected-article-title').html($selectedElement.data('name'));
+
+            var subtext = $selectedElement.data('subtext');
+            if (subtext.length > 0) {
+                $selectedArticleDesc.html(" - " + subtext);
+            } else {
+                $selectedArticleDesc.html("");
+            }
+            
+            $("#mappingModal").appendTo("body").modal().draggable();
+        });
+        var searchTimeout;
+        var getFeatureList = function (productID) {
+            $.ajax({
+                "url": serverPrefix + "FeatureMapping/GetFeaturesList/",
+                "type": "POST",
+                "data": {
+                    "productID": productID,
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    data.options.push("Relation");
+                    var options = {
+                        valueNames: data.options,
+                        item: `<a href="#" class="list-group-item">
+                                    <div style="display:block" class="Relation"></div>
+                                    <strong style="width: 45px; display: inline-block;" class ="Id"></strong>
+                                    <strong class ="Text">Listan är tom</strong>
+                                    <span class="Information text-muted"></span>
+                                </a>`
+                    }
+                    var FeatureList = new List("available-features", options);
+                    FeatureList.clear();
+                    FeatureList.add(data.values);
+                }
+            })
+        }
+       
+        $productList.trigger('change');
     });
 
+    </script>
+    <script src="~/Scripts/List.min.js"></script>
+    <script>
+
+       
     </script>
 
 

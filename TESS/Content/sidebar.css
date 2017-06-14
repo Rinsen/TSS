@@ -6,6 +6,25 @@
 
 /* Toggle Styles */
 
+.tss-base.bg {
+  background-color: #0065a0;
+}
+.tss-base.text {
+  color: #0065a0;
+}
+.tss-dark.bg {
+  background-color: #62b3e5;
+  color: white;
+}
+.tss-dark.text {
+  color: #62b3e5;
+}
+.tss-light.bg {
+  background-color: #bee2f8;
+}
+.tss-light.text {
+  color: #bee2f8;
+}
 .navbar-default {
   background-color: #0065a0;
 }

@@ -679,6 +679,7 @@
     <Content Include="Scripts\js-cookie\js.cookie.js" />
     <Content Include="Scripts\less-1.5.1.js" />
     <Content Include="Scripts\less-1.5.1.min.js" />
+    <Content Include="Scripts\List.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
