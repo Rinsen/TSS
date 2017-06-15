@@ -23,6 +23,7 @@
                 <tr>
                     <th data-field="Feature_id" data-sortable="true">Feature ID</th>
                     <th data-field="Feature" data-sortable="true">Feature</th>
+                    <th data-field="Information" data-sortable="true">Information</th>
                 </tr>
             </thead>
         </table>
@@ -123,8 +124,9 @@
     @{String DataObject = "\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Feature_id" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Feature" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Information" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function(module)
+    var updateDataTable = function(article_number)
     {
         $('#feature-mapping-table').DataTable({
             "destroy": true,
@@ -136,7 +138,7 @@
                 "url": serverPrefix + "FeatureMapping/MappingData/",
                 "type": "POST",
                 "data": {
-                    "module": module,
+                    "article_number": article_number,
                 }
             },
             "defaultContent": "",
@@ -156,18 +158,18 @@
         $('.selectpicker').selectpicker();
 
         $moduleContainer = $("#crm-select-module");
-        
+
         updateDataTable($moduleContainer.val());
 
         $moduleContainer.change(function () {
             if (this.value != "") {
                 updateDataTable(this.value)
-            }  
+            }
         });
 
         $productList = $('#product-list');
 
-        $productList.change(function () {   
+        $productList.change(function () {
             getFeatureList(this.value);
         })
         
@@ -196,7 +198,7 @@
             []
         );
 
-        
+
 
         addToMappedList = function (itemElement) {
             var $item = $(itemElement);

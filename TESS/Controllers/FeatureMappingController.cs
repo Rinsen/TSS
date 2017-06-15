@@ -30,12 +30,26 @@ namespace TietoCRM.Controllers
 
         public String MappingData()
         {
-            String articleNumber = Request.Form["module"];
-            var test = new Dictionary<String, String>(){
-                {"Feature_id", "5" },
-                {"Feature", "test" },
-            };
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(new List<Dictionary<String, String>>(){ test }) + "}";
+            int article_number = -1;
+            if(int.TryParse(Request.Form["article_number"], out article_number))
+            {
+                List<FeatureService.Features> Mapped_Features = view_ModuleFeature.getAllFeatures(article_number);
+                List<Dictionary<String, Object>> Return_List = new List<Dictionary<String, Object>>();
+                foreach (FeatureService.Features feature in Mapped_Features)
+                {
+                    Return_List.Add(new Dictionary<String, Object>(){
+                        {"Feature_id", feature.Id },
+                        {"Feature", feature.Text},
+                        {"Information", feature.Information}
+                    });
+                }
+                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(Return_List) + "}";
+            }
+            else
+            {
+                return "{\"error\", \"Missing article_number parameter or feature_list parameter\"}";
+            }
+
         }
 
         public JsonResult GetFeatures()
