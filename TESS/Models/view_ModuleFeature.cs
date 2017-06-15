@@ -13,7 +13,7 @@ namespace TietoCRM.Models
         public int _ID { get { return _id; } set { _id = value; } }
 
         private int article_number;
-        public int Article_Number { get { return article_number; } set { article_number= value; } }
+        public int Article_number { get { return article_number; } set { article_number= value; } }
 
         private int feature_id;
         public int Feature_Id { get { return feature_id; } set { feature_id = value; } }

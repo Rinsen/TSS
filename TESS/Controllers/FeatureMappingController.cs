@@ -99,6 +99,44 @@ namespace TietoCRM.Controllers
                 });
             }
         }
+        /* 1. Verifiera innehållet
+         * 2. parsa listan till en List<int> med featureids
+         * 3. skapa nya view_featuremapping för varje id
+         * 4. inserta till databas
+         * 5. returnera hur det gick
+         */
+        public JsonResult Map(){
+
+            int article_number = -1;
+            if (int.TryParse(Request.Form["article_number"], out article_number) && Request.Form["feature_list"] != null)
+            {
+                List<int> maplist = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["article_number"]);
+                var map = new view_ModuleFeature();
+                map.Delete("article_number = " + article_number);   // first delete all the mappings
+                foreach (int id in maplist)                         // insert new mappings
+                {
+                    map.Feature_Id = id;
+                    map.Article_number = article_number; 
+                    map.Insert();
+                }
+
+                return Json(new Dictionary<String, String>()
+                {
+                    {
+                        "success", "Featues successfully mapped to" + article_number
+                    }
+                });
+            }
+            else
+            {
+                Response.StatusCode = 400;
+                return Json(new Dictionary<String, String>() {
+                    {
+                        "error", "Missing article_number parameter or feature_list parameter"
+                    }
+                });
+            }
+        }
 
         List<FeatureService.Features> GetAllFeatureChildren(List<FeatureService.Features> features)
         {
