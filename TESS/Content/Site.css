@@ -1362,6 +1362,9 @@ a.tooltips > span:after {
   margin-bottom: 0;
   width: 98%;
 }
+#mappingModal .list-group .list-group-item {
+  padding-top: 5px;
+}
 #mappingModal .list.list-group {
   overflow-y: auto;
   height: 90%;
@@ -1374,5 +1377,6 @@ a.tooltips > span:after {
   margin-right: 5px;
 }
 #mappingModal .is-searching-container div img {
-  height: 40px;
+  height: 35px;
+  vertical-align: middle;
 }
