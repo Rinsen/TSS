@@ -99,31 +99,79 @@ namespace TietoCRM.Controllers
                 });
             }
         }
+
+        public JsonResult GetMappedFeaturesList()
+        {
+            int article_number = -1;
+            if (int.TryParse(Request.Form["article_number"], out article_number))
+            {
+                List<Dictionary<String, object>> values = new List<Dictionary<string, object>>();
+                List<String> options = new List<string>()
+                {
+                    "Id",
+                    "Text",
+                    "Information"
+                };
+                List<FeatureService.Features> mappedFeatures = view_ModuleFeature.getAllFeatures(article_number);
+
+
+                foreach (FeatureService.Features feature in mappedFeatures)
+                {
+                    Dictionary<String, object> value = new Dictionary<string, object>();
+                    foreach (String option in options)
+                    {
+                        value.Add(option, feature.GetType().GetProperty(option).GetValue(feature, null));
+                    }
+                    value.Add("Relation", CreateBreadcrumb(new List<string>()));
+                    values.Add(value);
+                }
+                return Json(new Dictionary<String, object>() {
+                    {
+                        "options", options
+                    },
+                    {
+                        "values", values
+                    }
+                });
+            }
+            else
+            {
+                Response.StatusCode = 400;
+                return Json(new Dictionary<String, String>() {
+                    {
+                        "error", "Missing article_number parameter"
+                    }
+                });
+            }
+        }
         /* 1. Verifiera innehållet
          * 2. parsa listan till en List<int> med featureids
          * 3. skapa nya view_featuremapping för varje id
          * 4. inserta till databas
          * 5. returnera hur det gick
          */
+         [HttpPost]
         public JsonResult Map(){
 
             int article_number = -1;
             if (int.TryParse(Request.Form["article_number"], out article_number) && Request.Form["feature_list"] != null)
             {
-                List<int> maplist = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["article_number"]);
-                var map = new view_ModuleFeature();
-                map.Delete("article_number = " + article_number);   // first delete all the mappings
-                foreach (int id in maplist)                         // insert new mappings
+                List<int> maplist = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["feature_list"]).ToList();
+                view_ModuleFeature moduleFeature = new view_ModuleFeature();
+                // First delete all the mappings
+                moduleFeature.Delete("article_number = " + article_number);
+                // Insert new mappings   
+                foreach (int id in maplist)                         
                 {
-                    map.Feature_Id = id;
-                    map.Article_number = article_number; 
-                    map.Insert();
+                    moduleFeature.Feature_Id = id;
+                    moduleFeature.Article_number = article_number; 
+                    moduleFeature.Insert();
                 }
 
                 return Json(new Dictionary<String, String>()
                 {
                     {
-                        "success", "Featues successfully mapped to" + article_number
+                        "success", "Features successfully mapped to " + article_number
                     }
                 });
             }

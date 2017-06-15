@@ -29,8 +29,6 @@
     </div>
 
 
-
-
     <div class="modal fade bs-example-modal-lg" id="mappingModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -108,7 +106,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="save-module-changes" class="btn btn-primary">Save changes</button>
+                <button type="button" id="save-moudle-mapping" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -174,28 +172,10 @@
         })
         
 
-        $("#map-articles-btn").bind('click', function () {
-           
-           // $productList.selectpicker('refresh');
-
-            var $selectedElement = $moduleContainer.find('option:selected');
-            var $selectedArticleDesc = $('#selected-article-description');
-            $('#selected-article-title').html($selectedElement.data('name'));
-
-            var subtext = $selectedElement.data('subtext');
-            if (subtext.length > 0) {
-                $selectedArticleDesc.html(" - " + subtext);
-            } else {
-                $selectedArticleDesc.html("");
-            }
-            
-            $("#mappingModal").appendTo("body").modal().draggable();
-        });
-
         // Feature mapping etc
         var searchTimeout;
         var FeatureList;
-
+        var selectedArticleNumber;
         
 
         var MappedFeaturesList = new List("mapped-features",
@@ -276,6 +256,34 @@
                 }
             })
         }
+        var getMappedFeatureList = function (article_number) {
+            $.ajax({
+                "url": serverPrefix + "FeatureMapping/GetMappedFeaturesList/",
+                "type": "POST",
+                "data": {
+                    "article_number": article_number,
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    data.options.push("Relation");
+                    var options = {
+                        valueNames: data.options,
+                        item: `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
+                                    <div style="display:block" class="Relation"></div>
+                                    <strong style="width: 45px; display: inline-block;" class ="Id"></strong>
+                                    <strong class ="Text"></strong>
+                                    <span class="Information text-muted"></span>
+                                </a>`
+                    }
+                    MappedFeaturesList = new List("mapped-features", options);
+                    MappedFeaturesList.clear();
+                    MappedFeaturesList.add(data.values);
+                    data.values.forEach(function (item) {
+                        FeatureList.remove('Id', item.Id);
+                    });
+                }
+            })
+        }
 
         var old_search_data = "";
         $('#available-features-search').bind('keyup', function () {
@@ -297,6 +305,55 @@
             old_search_data = search_data;
         });
         $productList.trigger('change');
+
+        // Modal bindings
+        $("#map-articles-btn").bind('click', function () {
+
+            // $productList.selectpicker('refresh');
+
+            var $selectedElement = $moduleContainer.find('option:selected');
+            var $selectedArticleDesc = $('#selected-article-description');
+            selectedArticleNumber = $selectedElement.val();
+
+            $('#selected-article-title').html($selectedElement.data('name'));
+
+            var subtext = $selectedElement.data('subtext');
+            if (subtext.length > 0) {
+                $selectedArticleDesc.html(" - " + subtext);
+            } else {
+                $selectedArticleDesc.html("");
+            }
+
+            $("#mappingModal").appendTo("body").modal().draggable();
+            getMappedFeatureList(selectedArticleNumber);
+        });
+
+        $("#save-moudle-mapping").bind('click', function () {
+            var mappedFeauters = MappedFeaturesList.items;
+            var mappedFeautersLen = mappedFeauters.length;
+            var featureList = [];
+            for (var i = 0; i < mappedFeautersLen; i++) {
+                var feature = mappedFeauters[i];
+                featureList.push(Number(feature._values.Id));
+            }
+            $.ajax({
+                "url": serverPrefix + "FeatureMapping/Map/",
+                "type": "POST",
+                "data": {
+                    "article_number": selectedArticleNumber,
+                    "feature_list": JSON.stringify(featureList)
+                },
+                "dataType": "text",
+                "success": function (data) {
+                    console.log(data);
+                    triggerAlert("Successfully updated", "success");
+                    $("#mappingModal").modal("toggle");
+                }
+            })
+            console.log(featureList);
+        });
+
+
     });
 
     </script>
