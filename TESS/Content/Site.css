@@ -1366,3 +1366,13 @@ a.tooltips > span:after {
   overflow-y: auto;
   height: 90%;
 }
+#mappingModal .is-searching-container {
+  display: inline-block;
+}
+#mappingModal .is-searching-container div {
+  display: none;
+  margin-right: 5px;
+}
+#mappingModal .is-searching-container div img {
+  height: 40px;
+}

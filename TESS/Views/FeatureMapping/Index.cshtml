@@ -46,7 +46,7 @@
                 </p>
             </div>
             <div id="module-modal" class="modal-body">
-                <p>
+                <div>
                     <form class="form-inline">
                         <div class="form-group">
                             <label for="product-list">Systems:</label>
@@ -59,8 +59,19 @@
                                 }
                             </select>
                         </div>
+                        <div class="form-group pull-right">
+                            <div class="is-searching-container">
+                                <div class="is-searching">
+                                    <img src="/Content/img/crm-loading.gif" />
+                                </div>
+                            </div>
+                            <input id="available-features-search" class="search form-control input-sm" placeholder="Search..." />
+                            <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
+                                Search
+                            </button>
+                        </div>
                     </form>
-                </p>
+                </div>  
                <div class="row" >
                    <div class="col-sm-6" >
                         <div class="panel panel-default ">
@@ -69,16 +80,7 @@
                             </div>
                             <div class="panel-body" >
                                 <div id="available-features" class="list-group item-wrapper">
-                                    <p class="row">
-                                        <form class="form-inline">
-                                            <div class="form-group">
-                                                <input class="search form-control input-sm" placeholder="Search..." />
-                                                <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
-                                                    Search
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </p>
+                                    
                                     <div class="list list-group" style="overflow-y: auto">
                                         <div>List is empty..</div>
                                     </div>
@@ -95,6 +97,8 @@
                            </div>
                            <div class="panel-body">
                                <div id="mapped-features" class="list-group item-wrapper">
+                                   <div class="list list-group" style="overflow-y: auto">
+                                   </div>
                                </div>
                            </div>
                        </div>
@@ -147,7 +151,8 @@
         });
 
     }
-
+    var addToMappedList;
+    var removeFromMappedList;
     $('document').ready(function () {
 
         $('.selectpicker').selectpicker();
@@ -186,7 +191,63 @@
             
             $("#mappingModal").appendTo("body").modal().draggable();
         });
+
+        // Feature mapping etc
         var searchTimeout;
+        var FeatureList;
+
+        
+
+        var MappedFeaturesList = new List("mapped-features",
+            {
+                valueNames: [
+                    "Id",
+                    "Text",
+                    "Information",
+                    "Relation"
+                ],
+                item:   `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
+                            <div style="display:block" class="Relation"></div>
+                            <strong style="width: 45px; display: inline-block;" class ="Id"></strong>
+                            <strong class ="Text"></strong>
+                            <span class="Information text-muted"></span>
+                        </a>`
+            },
+            []
+        );
+
+        
+
+        addToMappedList = function (itemElement) {
+            var $item = $(itemElement);
+            var id = $item.find('.Id').html();
+            MappedFeaturesList.add({
+                "Id": $item.find('.Id').html(),
+                "Text": $item.find('.Text').html(),
+                "Information": $item.find('.Information').html(),
+                "Relation": $item.find('.Relation').html(),
+            });
+            FeatureList.remove("Id", id);
+            FeatureList.sort("Id", {
+                order: 'asc'
+            });
+        }
+        removeFromMappedList = function (itemElement) {
+            var $item = $(itemElement);
+            var id = $item.find('.Id').html();
+            FeatureList.add({
+                "Id": id,
+                "Text": $item.find('.Text').html(),
+                "Information": $item.find('.Information').html(),
+                "Relation": $item.find('.Relation').html(),
+            })
+            MappedFeaturesList.remove("Id", id);
+            FeatureList.sort("Id", {
+                order: 'asc'
+            });
+        }
+        var $isSearching = $('.is-searching');
+
         var getFeatureList = function (productID) {
             $.ajax({
                 "url": serverPrefix + "FeatureMapping/GetFeaturesList/",
@@ -199,20 +260,42 @@
                     data.options.push("Relation");
                     var options = {
                         valueNames: data.options,
-                        item: `<a href="#" class="list-group-item">
+                        item: `<a href="#" onclick="addToMappedList(this)" class="list-group-item">
                                     <div style="display:block" class="Relation"></div>
                                     <strong style="width: 45px; display: inline-block;" class ="Id"></strong>
-                                    <strong class ="Text">Listan är tom</strong>
+                                    <strong class ="Text"></strong>
                                     <span class="Information text-muted"></span>
                                 </a>`
                     }
-                    var FeatureList = new List("available-features", options);
+                    FeatureList = new List("available-features", options);
                     FeatureList.clear();
                     FeatureList.add(data.values);
+                    MappedFeaturesList.items.forEach(function (item) {
+                        FeatureList.remove('Id', item.Id);
+                    });
                 }
             })
         }
-       
+
+        var old_search_data = "";
+        $('#available-features-search').bind('keyup', function () {
+            var search_data = this.value;
+            if (search_data != old_search_data) {
+                $isSearching.show();
+
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    FeatureList.search(search_data);
+                    $isSearching.hide();
+                }, 300);
+            }
+
+            // Hide after 20 sec if searching failed
+            setTimeout(function () {
+                $isSearching.hide();
+            }, 20000);
+            old_search_data = search_data;
+        });
         $productList.trigger('change');
     });
 

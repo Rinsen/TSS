@@ -1069,6 +1069,7 @@ a.tooltips > span:after {
 }
 
 /* --------- Feature Mapping -----------*/
+
 #mappingModal {
     ol.breadcrumb{
         padding: 0;
@@ -1084,9 +1085,23 @@ a.tooltips > span:after {
         overflow: hidden;
         margin-bottom: 0;
         width: 98%;
+        .list-group-item {
+            padding-top: 5px;
+        }
     }
     .list.list-group{
         overflow-y: auto;
         height: 90%;
+    }
+    .is-searching-container{
+       display:inline-block;
+       div {
+            display: none;
+            margin-right: 5px;
+            img {
+                height: 35px;
+                vertical-align: middle;
+            }
+        }
     }
 }
