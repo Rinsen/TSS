@@ -1,13 +1,22 @@
 ﻿@using TietoCRM.FeatureService;
 <row>
     <div class="col-md-12">
-        <form method="get" target="_blank" class="form-inline">
-            <div class="form-group">
+        <form method="get" id="systemselect" target="_blank" class="form-inline">
+            <div class="form-group select-system-container">
+                <label for="crm-select-system">System:</label>
+                <select name="module" id="crm-select-system" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
+                    @foreach (var SelectOption in ViewBag.Systems)
+                    {
+                        <option value="@SelectOption.Value">@SelectOption.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group select-module-container">
                 <label for="crm-select-module">Articles:</label>
-                <select name="module" id="crm-select-module" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
+                <select name="module" id="crm-select-article" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
-                        <option data-subtext="@Module.Description" data-name="@Module.Module" value="@Module.Article_number">@Module.Article_number - @Module.Module</option>
+                        <option data-subtext="@Module.Description" data-name="@Module.Module" value="@Module.Article_number">@Module.Article_number &ensp; @Module.Module</option>
                     }
                 </select>
             </div>
@@ -18,17 +27,17 @@
 
     </div>
     <div class="col-md-12">
-        <table draggable="true" id="feature-mapping-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+        <table draggable="true" id="article-mapping-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
             <thead>
                 <tr>
-                    <th data-field="Feature_id" data-sortable="true">Feature ID</th>
-                    <th data-field="Feature" data-sortable="true">Feature</th>
-                    <th data-field="Information" data-sortable="true">Information</th>
+                    <th data-field="Article_number" data-sortable="true">Article number</th>
+                    <th data-field="Module" data-sortable="true">Name</th>
+                    <th data-field="System" data-sortable="true">System</th>
+                    <th data-field="Classification" data-sortable="true">Classification</th>
                 </tr>
             </thead>
         </table>
     </div>
-
 
     <div class="modal fade bs-example-modal-lg" id="mappingModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
         <div class="modal-dialog" role="document">
@@ -54,10 +63,10 @@
                                         <label for="product-list">Systems:</label>
                                     </div>
                                     <div class="form-group">
-                                        <select class=" selectpicker" id="product-list" data-live-search="true">
-                                            @foreach (Product product in ViewBag.Products)
+                                        <select class="selectpicker" id="system-list" data-live-search="true">
+                                            @foreach (var SelectOption in ViewBag.Systems)
                                             {
-                                                <option value="@product.Id">@product.ShortName</option>
+                                                <option value="@SelectOption.Value">@SelectOption.Text</option>
                                             }
                                         </select>
                                     </div>
@@ -67,7 +76,7 @@
                                                 <img src="/Content/img/crm-loading.gif" />
                                             </div>
                                         </div>
-                                        <input id="available-features-search" class="search form-control input-sm" placeholder="Search..." />
+                                        <input id="available-articles-search" class="search form-control input-sm" placeholder="Search..." />
                                         <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
                                             Search
                                         </button>
@@ -76,40 +85,39 @@
                             </div>
                             <div class="panel panel-default ">
                                 <div class="panel-heading tss-dark bg">
-                                    <h3 class="panel-title">Available Features</h3>
+                                    <h3 class="panel-title">Available Articles</h3>
                                 </div>
                                 <div class="panel-body">
-                                    <div id="available-features" class="list-group item-wrapper">
+                                    <div id="available-articles" class="list-group item-wrapper">
 
                                         <div class="list list-group" style="overflow-y: auto">
                                             <div>List is empty..</div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-                            <p>Click on a Feature above to map it to an Article</p>
+                            <p>Click on an Article above to map it to an Article</p>
                         </div>
                         <div class="col-sm-6">
                             <div class="module-header-container"></div>
                             <div class="panel panel-default ">
                                 <div class="panel-heading tss-dark bg">
-                                    <h3 class="panel-title">Mapped Features</h3>
+                                    <h3 class="panel-title">Mapped Article</h3>
                                 </div>
                                 <div class="panel-body">
-                                    <div id="mapped-features" class="list-group item-wrapper">
+                                    <div id="mapped-article" class="list-group item-wrapper">
                                         <div class="list list-group" style="overflow-y: auto">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <p>Click on a Feature above to remove mapping</p>
+                            <p>Click on a Article above to remove mapping</p>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" id="save-moudle-mapping" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="save-module-mapping" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
@@ -117,20 +125,17 @@
 
 
 
-
-
-
-
     <script>
     var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
-    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Feature_id" + "\"  },\r\n";}
-    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Feature" + "\"  },\r\n";}
-    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Information" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Article_number" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Module" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "System" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(article_number)
     {
-        $('#feature-mapping-table').DataTable({
+        $('#article-mapping-table').DataTable({
             "destroy": true,
             "processing": true,
             "bFilter": true,
@@ -159,74 +164,74 @@
 
         $('.selectpicker').selectpicker();
 
-        $moduleContainer = $("#crm-select-module");
+        // System Selectpicker
+        $systemContainer = $("#crm-select-system");
+        $systemContainer.change(function () {
+            getModulesBySystem(this.value);
+            console.log("rätt");
+        });
 
-        updateDataTable($moduleContainer.val());
-
+        // Article Selectpicker
+        $moduleContainer = $("#crm-select-article");
         $moduleContainer.change(function () {
             if (this.value != "") {
                 updateDataTable(this.value)
             }
         });
+        updateDataTable($moduleContainer.val());
 
-        $productList = $('#product-list');
+        
+        // Modal System Selectpicker
+        $modalSystemSelect = $('#system-list');
+        var modalSystemSelectValue = $modalSystemSelect.val();
+        $modalSystemSelect.change(function () {
+            modalSystemSelectValue = this.value;
+            updateClassificationSelect(this.value);
+        });
 
-        $productList.change(function () {
-            getFeatureList(this.value);
-        })
 
 
         // Feature mapping etc
         var searchTimeout;
-        var FeatureList;
+        var ArticleList;
         var selectedArticleNumber;
 
-
-        var MappedFeaturesList = new List("mapped-features",
+        var MappedArticleList = new List("mapped-articles",
             {
                 valueNames: [
-                    "Id",
-                    "Text",
-                    "Information",
-                    "Relation"
+                    "Article_number",
+                    "Module"
                 ],
                 item:   `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
-                            <div style="display:block" class="Relation"></div>
-                            <strong style="width: 45px; display: inline-block;" class ="Id"></strong>
-                            <strong class ="Text"></strong>
-                            <span class="Information text-muted"></span>
+                            <strong style="width: 45px; display: inline-block;" class ="Article_number"></strong>
+                            <strong class ="Module"></strong>
                         </a>`
             },
             []
         );
 
-
-
         addToMappedList = function (itemElement) {
             var $item = $(itemElement);
-            var id = $item.find('.Id').html();
-            MappedFeaturesList.add({
-                "Id": $item.find('.Id').html(),
-                "Text": $item.find('.Text').html(),
-                "Information": $item.find('.Information').html(),
-                "Relation": $item.find('.Relation').html(),
+            var id = $item.find('.Article_number').html();
+            MappedArticleList.add({
+                "Article_number": $item.find('.Article_number').html(),
+                "Module": $item.find('.Module').html()
             });
-            FeatureList.remove("Id", id);
-            FeatureList.sort("Id", {
+            ArticleList.remove("Article_number", id);
+            ArticleList.sort("Article_number", {
                 order: 'asc'
             });
         }
+
         removeFromMappedList = function (itemElement) {
             var $item = $(itemElement);
-            var id = $item.find('.Id').html();
-            FeatureList.add({
-                "Id": id,
-                "Text": $item.find('.Text').html(),
-                "Information": $item.find('.Information').html(),
-                "Relation": $item.find('.Relation').html(),
+            var id = $item.find('.Article_number').html();
+            ArticleList.add({
+                "Article_number": id,
+                "Module": $item.find('.Module').html(),
             })
-            MappedFeaturesList.remove("Id", id);
-            FeatureList.sort("Id", {
+            MappedArticleList.remove("Article_number", id);
+            ArticleList.sort("Article_number", {
                 order: 'asc'
             });
         }
@@ -234,63 +239,58 @@
 
         var getFeatureList = function (productID) {
             $.ajax({
-                "url": serverPrefix + "FeatureMapping/GetFeaturesList/",
+                "url": serverPrefix + "ModuleMapping/GetModulesList/",
                 "type": "POST",
                 "data": {
-                    "productID": productID,
+                    "system": system,
+                    "classification": classification,
                 },
                 "dataType": "json",
                 "success": function (data) {
-                    data.options.push("Relation");
                     var options = {
                         valueNames: data.options,
                         item: `<a href="#" onclick="addToMappedList(this)" class="list-group-item">
-                                    <div style="display:block" class="Relation"></div>
-                                    <strong style="width: 45px; display: inline-block;" class ="Id"></strong>
-                                    <strong class ="Text"></strong>
-                                    <span class="Information text-muted"></span>
+                                    <strong style="width: 45px; display: inline-block;" class="Article_number"></strong>
+                                    <strong class ="Module"></strong>
                                 </a>`
                     }
-                    FeatureList = new List("available-features", options);
-                    FeatureList.clear();
-                    FeatureList.add(data.values);
-                    MappedFeaturesList.items.forEach(function (item) {
-                        FeatureList.remove('Id', item.Id);
+                    ArticleList = new List("available-articles", options);
+                    ArticleList.clear();
+                    ArticleList.add(data.values);
+                    MappedArticleList.items.forEach(function (item) {
+                        ArticleList.remove('Article_number', item.Article_number);
                     });
                 }
             })
         }
-        var getMappedFeatureList = function (article_number) {
+        var getMappedArticleList = function (parent_article_number) {
             $.ajax({
-                "url": serverPrefix + "FeatureMapping/GetMappedFeaturesList/",
+                "url": serverPrefix + "ModuleMapping/GetMappedModulesList/",
                 "type": "POST",
                 "data": {
-                    "article_number": article_number,
+                    "parent_article_number": parent_article_number,
                 },
                 "dataType": "json",
                 "success": function (data) {
-                    data.options.push("Relation");
                     var options = {
                         valueNames: data.options,
                         item: `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
-                                    <div style="display:block" class="Relation"></div>
-                                    <strong style="width: 45px; display: inline-block;" class ="Id"></strong>
-                                    <strong class ="Text"></strong>
-                                    <span class="Information text-muted"></span>
+                                    <strong style="width: 45px; display: inline-block;" class="Article_number"></strong>
+                                    <strong class="Module"></strong>
                                 </a>`
                     }
-                    MappedFeaturesList = new List("mapped-features", options);
-                    MappedFeaturesList.clear();
-                    MappedFeaturesList.add(data.values);
+                    MappedArticleList = new List("mapped-articles", options);
+                    MappedArticleList.clear();
+                    MappedArticleList.add(data.values);
                     data.values.forEach(function (item) {
-                        FeatureList.remove('Id', item.Id);
+                        ArticleList.remove('Article_number', item.Article_number);
                     });
                 }
             })
         }
 
         var old_search_data = "";
-        $('#available-features-search').bind('keyup', function () {
+        $('#available-articles-search').bind('keyup', function () {
             var search_data = this.value;
             if (search_data != old_search_data) {
                 $isSearching.show();
@@ -315,7 +315,7 @@
 
             // $productList.selectpicker('refresh');
 
-            var $selectedElement = $moduleContainer.find('option:selected');
+            var $selectedElement = $articleContainer.find('option:selected');
             var $selectedArticleDesc = $('#selected-article-description');
             selectedArticleNumber = $selectedElement.val();
 
@@ -333,7 +333,7 @@
             getMappedFeatureList(selectedArticleNumber);
         });
 
-        $("#save-moudle-mapping").bind('click', function () {
+        $("#save-module-mapping").bind('click', function () {
             var mappedFeauters = MappedFeaturesList.items;
             var mappedFeautersLen = mappedFeauters.length;
             var featureList = [];
@@ -359,6 +359,40 @@
             console.log(featureList);
         });
 
+        var getModulesBySystem = function (system) {
+            $.ajax({
+                "url": serverPrefix + "FeatureMapping/GetModulesBySystem/",
+                "type": "POST",
+                "data": {
+                    "system": system
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    console.log(data);
+                    updateModuleList(data);
+                }
+            })
+        }
+
+        var updateModuleList = function (list) {
+            var listlen = list.length;
+            var module;
+            $moduleContainer.empty();
+            var description;
+            for (var i = 0; i < listlen; i++) {
+                module = list[i];
+                if (module.Description != null) {
+                    description = module.Description;
+                }
+                else {
+                    description = "";
+                }
+
+                $moduleContainer.append('<option data-subtext="' + description + '" data-name="' + module.Module + '" value="' + module.Article_number + '">' + module.Article_number + '&ensp;' + module.Module + '</option>');
+            }
+            $moduleContainer.selectpicker("refresh");
+            $moduleContainer.trigger("change");
+        }
 
     });
 
@@ -367,7 +401,5 @@
     <script>
 
     </script>
-
-
 
 </row>
