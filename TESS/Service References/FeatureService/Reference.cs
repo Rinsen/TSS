@@ -50,6 +50,9 @@ namespace TietoCRM.FeatureService {
         private int LevelField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private TietoCRM.FeatureService.Features ParentField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int ParentIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -60,6 +63,9 @@ namespace TietoCRM.FeatureService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TextField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] WarningsField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -189,6 +195,19 @@ namespace TietoCRM.FeatureService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public TietoCRM.FeatureService.Features Parent {
+            get {
+                return this.ParentField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ParentField, value) != true)) {
+                    this.ParentField = value;
+                    this.RaisePropertyChanged("Parent");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public int ParentId {
             get {
                 return this.ParentIdField;
@@ -236,6 +255,19 @@ namespace TietoCRM.FeatureService {
                 if ((object.ReferenceEquals(this.TextField, value) != true)) {
                     this.TextField = value;
                     this.RaisePropertyChanged("Text");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] Warnings {
+            get {
+                return this.WarningsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.WarningsField, value) != true)) {
+                    this.WarningsField = value;
+                    this.RaisePropertyChanged("Warnings");
                 }
             }
         }
@@ -404,12 +436,6 @@ namespace TietoCRM.FeatureService {
         private string AddressField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int AsukasField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int BoUField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string CityField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -419,16 +445,10 @@ namespace TietoCRM.FeatureService {
         private int ClientIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private TietoCRM.FeatureService.Contact[] ContactsField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string CustomerNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int FTBField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IFOField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int KIRField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string LicenseNrField;
@@ -449,10 +469,7 @@ namespace TietoCRM.FeatureService {
         private string PostalCodeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int ProcPlanField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int REXField;
+        private TietoCRM.FeatureService.Product[] ProductsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ShortNameField;
@@ -462,9 +479,6 @@ namespace TietoCRM.FeatureService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.DateTime UpdateField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int VoOField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -485,32 +499,6 @@ namespace TietoCRM.FeatureService {
                 if ((object.ReferenceEquals(this.AddressField, value) != true)) {
                     this.AddressField = value;
                     this.RaisePropertyChanged("Address");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Asukas {
-            get {
-                return this.AsukasField;
-            }
-            set {
-                if ((this.AsukasField.Equals(value) != true)) {
-                    this.AsukasField = value;
-                    this.RaisePropertyChanged("Asukas");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int BoU {
-            get {
-                return this.BoUField;
-            }
-            set {
-                if ((this.BoUField.Equals(value) != true)) {
-                    this.BoUField = value;
-                    this.RaisePropertyChanged("BoU");
                 }
             }
         }
@@ -555,6 +543,19 @@ namespace TietoCRM.FeatureService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public TietoCRM.FeatureService.Contact[] Contacts {
+            get {
+                return this.ContactsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ContactsField, value) != true)) {
+                    this.ContactsField = value;
+                    this.RaisePropertyChanged("Contacts");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string CustomerName {
             get {
                 return this.CustomerNameField;
@@ -563,45 +564,6 @@ namespace TietoCRM.FeatureService {
                 if ((object.ReferenceEquals(this.CustomerNameField, value) != true)) {
                     this.CustomerNameField = value;
                     this.RaisePropertyChanged("CustomerName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int FTB {
-            get {
-                return this.FTBField;
-            }
-            set {
-                if ((this.FTBField.Equals(value) != true)) {
-                    this.FTBField = value;
-                    this.RaisePropertyChanged("FTB");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int IFO {
-            get {
-                return this.IFOField;
-            }
-            set {
-                if ((this.IFOField.Equals(value) != true)) {
-                    this.IFOField = value;
-                    this.RaisePropertyChanged("IFO");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int KIR {
-            get {
-                return this.KIRField;
-            }
-            set {
-                if ((this.KIRField.Equals(value) != true)) {
-                    this.KIRField = value;
-                    this.RaisePropertyChanged("KIR");
                 }
             }
         }
@@ -685,27 +647,14 @@ namespace TietoCRM.FeatureService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int ProcPlan {
+        public TietoCRM.FeatureService.Product[] Products {
             get {
-                return this.ProcPlanField;
+                return this.ProductsField;
             }
             set {
-                if ((this.ProcPlanField.Equals(value) != true)) {
-                    this.ProcPlanField = value;
-                    this.RaisePropertyChanged("ProcPlan");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int REX {
-            get {
-                return this.REXField;
-            }
-            set {
-                if ((this.REXField.Equals(value) != true)) {
-                    this.REXField = value;
-                    this.RaisePropertyChanged("REX");
+                if ((object.ReferenceEquals(this.ProductsField, value) != true)) {
+                    this.ProductsField = value;
+                    this.RaisePropertyChanged("Products");
                 }
             }
         }
@@ -749,19 +698,6 @@ namespace TietoCRM.FeatureService {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int VoO {
-            get {
-                return this.VoOField;
-            }
-            set {
-                if ((this.VoOField.Equals(value) != true)) {
-                    this.VoOField = value;
-                    this.RaisePropertyChanged("VoO");
-                }
-            }
-        }
-        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -774,18 +710,81 @@ namespace TietoCRM.FeatureService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Applications", Namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Contact", Namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts")]
     [System.SerializableAttribute()]
-    public partial class Applications : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    public partial class Contact : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string AppDescriptionField;
+        private string AddressField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ApplicationIdField;
+        private int BOUField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private TietoCRM.FeatureService.BouValues BouValuesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ClientField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ContactIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EmailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int FTBField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IFOField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private TietoCRM.FeatureService.IfoValues IfoValuesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ManagementField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string OtherField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int PROCPLANField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PhoneNrField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PostalCodeAndCityField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int REXField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int SBOUField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int SIFOField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int SVOOField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SignField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string UpdateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int VOOField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private TietoCRM.FeatureService.VooValues VooValuesField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -798,27 +797,300 @@ namespace TietoCRM.FeatureService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string AppDescription {
+        public string Address {
             get {
-                return this.AppDescriptionField;
+                return this.AddressField;
             }
             set {
-                if ((object.ReferenceEquals(this.AppDescriptionField, value) != true)) {
-                    this.AppDescriptionField = value;
-                    this.RaisePropertyChanged("AppDescription");
+                if ((object.ReferenceEquals(this.AddressField, value) != true)) {
+                    this.AddressField = value;
+                    this.RaisePropertyChanged("Address");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ApplicationId {
+        public int BOU {
             get {
-                return this.ApplicationIdField;
+                return this.BOUField;
             }
             set {
-                if ((object.ReferenceEquals(this.ApplicationIdField, value) != true)) {
-                    this.ApplicationIdField = value;
-                    this.RaisePropertyChanged("ApplicationId");
+                if ((this.BOUField.Equals(value) != true)) {
+                    this.BOUField = value;
+                    this.RaisePropertyChanged("BOU");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public TietoCRM.FeatureService.BouValues BouValues {
+            get {
+                return this.BouValuesField;
+            }
+            set {
+                if ((this.BouValuesField.Equals(value) != true)) {
+                    this.BouValuesField = value;
+                    this.RaisePropertyChanged("BouValues");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Client {
+            get {
+                return this.ClientField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ClientField, value) != true)) {
+                    this.ClientField = value;
+                    this.RaisePropertyChanged("Client");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ContactId {
+            get {
+                return this.ContactIdField;
+            }
+            set {
+                if ((this.ContactIdField.Equals(value) != true)) {
+                    this.ContactIdField = value;
+                    this.RaisePropertyChanged("ContactId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Email {
+            get {
+                return this.EmailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EmailField, value) != true)) {
+                    this.EmailField = value;
+                    this.RaisePropertyChanged("Email");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int FTB {
+            get {
+                return this.FTBField;
+            }
+            set {
+                if ((this.FTBField.Equals(value) != true)) {
+                    this.FTBField = value;
+                    this.RaisePropertyChanged("FTB");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int IFO {
+            get {
+                return this.IFOField;
+            }
+            set {
+                if ((this.IFOField.Equals(value) != true)) {
+                    this.IFOField = value;
+                    this.RaisePropertyChanged("IFO");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public TietoCRM.FeatureService.IfoValues IfoValues {
+            get {
+                return this.IfoValuesField;
+            }
+            set {
+                if ((this.IfoValuesField.Equals(value) != true)) {
+                    this.IfoValuesField = value;
+                    this.RaisePropertyChanged("IfoValues");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Management {
+            get {
+                return this.ManagementField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ManagementField, value) != true)) {
+                    this.ManagementField = value;
+                    this.RaisePropertyChanged("Management");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Other {
+            get {
+                return this.OtherField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.OtherField, value) != true)) {
+                    this.OtherField = value;
+                    this.RaisePropertyChanged("Other");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int PROCPLAN {
+            get {
+                return this.PROCPLANField;
+            }
+            set {
+                if ((this.PROCPLANField.Equals(value) != true)) {
+                    this.PROCPLANField = value;
+                    this.RaisePropertyChanged("PROCPLAN");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PhoneNr {
+            get {
+                return this.PhoneNrField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PhoneNrField, value) != true)) {
+                    this.PhoneNrField = value;
+                    this.RaisePropertyChanged("PhoneNr");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PostalCodeAndCity {
+            get {
+                return this.PostalCodeAndCityField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PostalCodeAndCityField, value) != true)) {
+                    this.PostalCodeAndCityField = value;
+                    this.RaisePropertyChanged("PostalCodeAndCity");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int REX {
+            get {
+                return this.REXField;
+            }
+            set {
+                if ((this.REXField.Equals(value) != true)) {
+                    this.REXField = value;
+                    this.RaisePropertyChanged("REX");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int SBOU {
+            get {
+                return this.SBOUField;
+            }
+            set {
+                if ((this.SBOUField.Equals(value) != true)) {
+                    this.SBOUField = value;
+                    this.RaisePropertyChanged("SBOU");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int SIFO {
+            get {
+                return this.SIFOField;
+            }
+            set {
+                if ((this.SIFOField.Equals(value) != true)) {
+                    this.SIFOField = value;
+                    this.RaisePropertyChanged("SIFO");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int SVOO {
+            get {
+                return this.SVOOField;
+            }
+            set {
+                if ((this.SVOOField.Equals(value) != true)) {
+                    this.SVOOField = value;
+                    this.RaisePropertyChanged("SVOO");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Sign {
+            get {
+                return this.SignField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SignField, value) != true)) {
+                    this.SignField = value;
+                    this.RaisePropertyChanged("Sign");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Update {
+            get {
+                return this.UpdateField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UpdateField, value) != true)) {
+                    this.UpdateField = value;
+                    this.RaisePropertyChanged("Update");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int VOO {
+            get {
+                return this.VOOField;
+            }
+            set {
+                if ((this.VOOField.Equals(value) != true)) {
+                    this.VOOField = value;
+                    this.RaisePropertyChanged("VOO");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public TietoCRM.FeatureService.VooValues VooValues {
+            get {
+                return this.VooValuesField;
+            }
+            set {
+                if ((this.VooValuesField.Equals(value) != true)) {
+                    this.VooValuesField = value;
+                    this.RaisePropertyChanged("VooValues");
                 }
             }
         }
@@ -976,6 +1248,314 @@ namespace TietoCRM.FeatureService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BouValues", Namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts")]
+    [System.SerializableAttribute()]
+    public partial struct BouValues : System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int FSKField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int GRField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int GYField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int INTField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int KULField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int PRAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int VUXField;
+        
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int FSK {
+            get {
+                return this.FSKField;
+            }
+            set {
+                if ((this.FSKField.Equals(value) != true)) {
+                    this.FSKField = value;
+                    this.RaisePropertyChanged("FSK");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int GR {
+            get {
+                return this.GRField;
+            }
+            set {
+                if ((this.GRField.Equals(value) != true)) {
+                    this.GRField = value;
+                    this.RaisePropertyChanged("GR");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int GY {
+            get {
+                return this.GYField;
+            }
+            set {
+                if ((this.GYField.Equals(value) != true)) {
+                    this.GYField = value;
+                    this.RaisePropertyChanged("GY");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int INT {
+            get {
+                return this.INTField;
+            }
+            set {
+                if ((this.INTField.Equals(value) != true)) {
+                    this.INTField = value;
+                    this.RaisePropertyChanged("INT");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int KUL {
+            get {
+                return this.KULField;
+            }
+            set {
+                if ((this.KULField.Equals(value) != true)) {
+                    this.KULField = value;
+                    this.RaisePropertyChanged("KUL");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int PRA {
+            get {
+                return this.PRAField;
+            }
+            set {
+                if ((this.PRAField.Equals(value) != true)) {
+                    this.PRAField = value;
+                    this.RaisePropertyChanged("PRA");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int VUX {
+            get {
+                return this.VUXField;
+            }
+            set {
+                if ((this.VUXField.Equals(value) != true)) {
+                    this.VUXField = value;
+                    this.RaisePropertyChanged("VUX");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="IfoValues", Namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts")]
+    [System.SerializableAttribute()]
+    public partial struct IfoValues : System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int AsukasField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int KIRField;
+        
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Asukas {
+            get {
+                return this.AsukasField;
+            }
+            set {
+                if ((this.AsukasField.Equals(value) != true)) {
+                    this.AsukasField = value;
+                    this.RaisePropertyChanged("Asukas");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int KIR {
+            get {
+                return this.KIRField;
+            }
+            set {
+                if ((this.KIRField.Equals(value) != true)) {
+                    this.KIRField = value;
+                    this.RaisePropertyChanged("KIR");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="VooValues", Namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts")]
+    [System.SerializableAttribute()]
+    public partial struct VooValues : System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int AVGField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int FTJField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int HSLField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int RFTJField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int SOL_LSS_LASSField;
+        
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int AVG {
+            get {
+                return this.AVGField;
+            }
+            set {
+                if ((this.AVGField.Equals(value) != true)) {
+                    this.AVGField = value;
+                    this.RaisePropertyChanged("AVG");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int FTJ {
+            get {
+                return this.FTJField;
+            }
+            set {
+                if ((this.FTJField.Equals(value) != true)) {
+                    this.FTJField = value;
+                    this.RaisePropertyChanged("FTJ");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int HSL {
+            get {
+                return this.HSLField;
+            }
+            set {
+                if ((this.HSLField.Equals(value) != true)) {
+                    this.HSLField = value;
+                    this.RaisePropertyChanged("HSL");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int RFTJ {
+            get {
+                return this.RFTJField;
+            }
+            set {
+                if ((this.RFTJField.Equals(value) != true)) {
+                    this.RFTJField = value;
+                    this.RaisePropertyChanged("RFTJ");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int SOL_LSS_LASS {
+            get {
+                return this.SOL_LSS_LASSField;
+            }
+            set {
+                if ((this.SOL_LSS_LASSField.Equals(value) != true)) {
+                    this.SOL_LSS_LASSField = value;
+                    this.RaisePropertyChanged("SOL_LSS_LASS");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="MyVersion", Namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts")]
     [System.SerializableAttribute()]
     public partial class MyVersion : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -1037,6 +1617,67 @@ namespace TietoCRM.FeatureService {
                 if ((object.ReferenceEquals(this.VersionNameField, value) != true)) {
                     this.VersionNameField = value;
                     this.RaisePropertyChanged("VersionName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Applications", Namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts")]
+    [System.SerializableAttribute()]
+    public partial class Applications : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string AppDescriptionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ApplicationIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string AppDescription {
+            get {
+                return this.AppDescriptionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AppDescriptionField, value) != true)) {
+                    this.AppDescriptionField = value;
+                    this.RaisePropertyChanged("AppDescription");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ApplicationId {
+            get {
+                return this.ApplicationIdField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ApplicationIdField, value) != true)) {
+                    this.ApplicationIdField = value;
+                    this.RaisePropertyChanged("ApplicationId");
                 }
             }
         }
@@ -1247,6 +1888,12 @@ namespace TietoCRM.FeatureService {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFeatures/GetFeatures", ReplyAction="http://tempuri.org/IFeatures/GetFeaturesResponse")]
         System.Threading.Tasks.Task<TietoCRM.FeatureService.Features[]> GetFeaturesAsync(int id);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFeatures/GetFeaturesListFlat", ReplyAction="http://tempuri.org/IFeatures/GetFeaturesListFlatResponse")]
+        TietoCRM.FeatureService.Features[] GetFeaturesListFlat(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFeatures/GetFeaturesListFlat", ReplyAction="http://tempuri.org/IFeatures/GetFeaturesListFlatResponse")]
+        System.Threading.Tasks.Task<TietoCRM.FeatureService.Features[]> GetFeaturesListFlatAsync(int id);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFeatures/GetFeature", ReplyAction="http://tempuri.org/IFeatures/GetFeatureResponse")]
         TietoCRM.FeatureService.Features GetFeature(int id);
         
@@ -1307,6 +1954,14 @@ namespace TietoCRM.FeatureService {
             return base.Channel.GetFeaturesAsync(id);
         }
         
+        public TietoCRM.FeatureService.Features[] GetFeaturesListFlat(int id) {
+            return base.Channel.GetFeaturesListFlat(id);
+        }
+        
+        public System.Threading.Tasks.Task<TietoCRM.FeatureService.Features[]> GetFeaturesListFlatAsync(int id) {
+            return base.Channel.GetFeaturesListFlatAsync(id);
+        }
+        
         public TietoCRM.FeatureService.Features GetFeature(int id) {
             return base.Channel.GetFeature(id);
         }
@@ -1349,6 +2004,18 @@ namespace TietoCRM.FeatureService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/GetCustomers", ReplyAction="http://tempuri.org/IClient/GetCustomersResponse")]
         System.Threading.Tasks.Task<TietoCRM.FeatureService.Client[]> GetCustomersAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/GetCustomersWithProducts", ReplyAction="http://tempuri.org/IClient/GetCustomersWithProductsResponse")]
+        TietoCRM.FeatureService.Client[] GetCustomersWithProducts();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/GetCustomersWithProducts", ReplyAction="http://tempuri.org/IClient/GetCustomersWithProductsResponse")]
+        System.Threading.Tasks.Task<TietoCRM.FeatureService.Client[]> GetCustomersWithProductsAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/GetCustomersWithContacts", ReplyAction="http://tempuri.org/IClient/GetCustomersWithContactsResponse")]
+        TietoCRM.FeatureService.Client[] GetCustomersWithContacts();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/GetCustomersWithContacts", ReplyAction="http://tempuri.org/IClient/GetCustomersWithContactsResponse")]
+        System.Threading.Tasks.Task<TietoCRM.FeatureService.Client[]> GetCustomersWithContactsAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/CopyClient", ReplyAction="http://tempuri.org/IClient/CopyClientResponse")]
         void CopyClient(TietoCRM.FeatureService.Client copyFrom, TietoCRM.FeatureService.Client copyTo, string username);
@@ -1409,6 +2076,12 @@ namespace TietoCRM.FeatureService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/InsertClient", ReplyAction="http://tempuri.org/IClient/InsertClientResponse")]
         System.Threading.Tasks.Task<System.Nullable<bool>> InsertClientAsync(TietoCRM.FeatureService.Client client);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/DeleteClient", ReplyAction="http://tempuri.org/IClient/DeleteClientResponse")]
+        System.Nullable<bool> DeleteClient(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IClient/DeleteClient", ReplyAction="http://tempuri.org/IClient/DeleteClientResponse")]
+        System.Threading.Tasks.Task<System.Nullable<bool>> DeleteClientAsync(int id);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1444,6 +2117,22 @@ namespace TietoCRM.FeatureService {
         
         public System.Threading.Tasks.Task<TietoCRM.FeatureService.Client[]> GetCustomersAsync() {
             return base.Channel.GetCustomersAsync();
+        }
+        
+        public TietoCRM.FeatureService.Client[] GetCustomersWithProducts() {
+            return base.Channel.GetCustomersWithProducts();
+        }
+        
+        public System.Threading.Tasks.Task<TietoCRM.FeatureService.Client[]> GetCustomersWithProductsAsync() {
+            return base.Channel.GetCustomersWithProductsAsync();
+        }
+        
+        public TietoCRM.FeatureService.Client[] GetCustomersWithContacts() {
+            return base.Channel.GetCustomersWithContacts();
+        }
+        
+        public System.Threading.Tasks.Task<TietoCRM.FeatureService.Client[]> GetCustomersWithContactsAsync() {
+            return base.Channel.GetCustomersWithContactsAsync();
         }
         
         public void CopyClient(TietoCRM.FeatureService.Client copyFrom, TietoCRM.FeatureService.Client copyTo, string username) {
@@ -1525,6 +2214,14 @@ namespace TietoCRM.FeatureService {
         public System.Threading.Tasks.Task<System.Nullable<bool>> InsertClientAsync(TietoCRM.FeatureService.Client client) {
             return base.Channel.InsertClientAsync(client);
         }
+        
+        public System.Nullable<bool> DeleteClient(int id) {
+            return base.Channel.DeleteClient(id);
+        }
+        
+        public System.Threading.Tasks.Task<System.Nullable<bool>> DeleteClientAsync(int id) {
+            return base.Channel.DeleteClientAsync(id);
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1538,10 +2235,10 @@ namespace TietoCRM.FeatureService {
         System.Threading.Tasks.Task<TietoCRM.FeatureService.Product[]> GetProductsAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProduct/GetClientSystems", ReplyAction="http://tempuri.org/IProduct/GetClientSystemsResponse")]
-        TietoCRM.FeatureService.Product[] GetClientSystems();
+        System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Product[]> GetClientSystems();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IProduct/GetClientSystems", ReplyAction="http://tempuri.org/IProduct/GetClientSystemsResponse")]
-        System.Threading.Tasks.Task<TietoCRM.FeatureService.Product[]> GetClientSystemsAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Product[]>> GetClientSystemsAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1579,11 +2276,11 @@ namespace TietoCRM.FeatureService {
             return base.Channel.GetProductsAsync();
         }
         
-        public TietoCRM.FeatureService.Product[] GetClientSystems() {
+        public System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Product[]> GetClientSystems() {
             return base.Channel.GetClientSystems();
         }
         
-        public System.Threading.Tasks.Task<TietoCRM.FeatureService.Product[]> GetClientSystemsAsync() {
+        public System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Product[]>> GetClientSystemsAsync() {
             return base.Channel.GetClientSystemsAsync();
         }
     }
@@ -2124,6 +2821,53 @@ namespace TietoCRM.FeatureService {
         
         public System.Threading.Tasks.Task WriteLicensesAsync(string location, string version) {
             return base.Channel.WriteLicensesAsync(location, version);
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="FeatureService.IContact")]
+    public interface IContact {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IContact/GetContacts", ReplyAction="http://tempuri.org/IContact/GetContactsResponse")]
+        System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Contact[]> GetContacts();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IContact/GetContacts", ReplyAction="http://tempuri.org/IContact/GetContactsResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Contact[]>> GetContactsAsync();
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IContactChannel : TietoCRM.FeatureService.IContact, System.ServiceModel.IClientChannel {
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class ContactClient : System.ServiceModel.ClientBase<TietoCRM.FeatureService.IContact>, TietoCRM.FeatureService.IContact {
+        
+        public ContactClient() {
+        }
+        
+        public ContactClient(string endpointConfigurationName) : 
+                base(endpointConfigurationName) {
+        }
+        
+        public ContactClient(string endpointConfigurationName, string remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public ContactClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(endpointConfigurationName, remoteAddress) {
+        }
+        
+        public ContactClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress) {
+        }
+        
+        public System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Contact[]> GetContacts() {
+            return base.Channel.GetContacts();
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.Dictionary<int, TietoCRM.FeatureService.Contact[]>> GetContactsAsync() {
+            return base.Channel.GetContactsAsync();
         }
     }
 }

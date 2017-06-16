@@ -49,40 +49,41 @@
                 <p class="modal-title">
                     <span>Mapping for:</span>
                     <span style="color: #0065A0 !important">
+                        <strong style="color: black" id="selected-article-system"></strong>
                         <strong id="selected-article-title"></strong>
                         <span id="selected-article-description"></span>
                     </span>
                 </p>
             </div>
             <div id="module-modal" class="modal-body">
-                <div>
-                    <form class="form-inline">
-                        <div class="form-group">
-                            <label for="product-list">Systems:</label>
-                        </div>
-                        <div class="form-group">
-                            <select class=" selectpicker" id="product-list" data-live-search="true">
-                                @foreach (Product product in ViewBag.Products)
-                                {
-                                    <option value="@product.Id">@product.ShortName</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group pull-right">
-                            <div class="is-searching-container">
-                                <div class="is-searching">
-                                    <img src="/Content/img/crm-loading.gif" />
-                                </div>
-                            </div>
-                            <input id="available-features-search" class="search form-control input-sm" placeholder="Search..." />
-                            <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
-                                Search
-                            </button>
-                        </div>
-                    </form>
-                </div>  
                <div class="row" >
                    <div class="col-sm-6" >
+                       <div class="module-header-container">
+                           <form class="form-inline">
+                               <div class="form-group">
+                                   <label for="product-list">Systems:</label>
+                               </div>
+                               <div class="form-group">
+                                   <select class=" selectpicker" id="product-list" data-live-search="true">
+                                       @foreach (Product product in ViewBag.Products)
+                                       {
+                                           <option value="@product.Id">@product.ShortName</option>
+                                       }
+                                   </select>
+                               </div>
+                               <div class="form-group pull-right">
+                                   <div class="is-searching-container">
+                                       <div class="is-searching">
+                                           <img src="/Content/img/crm-loading.gif" />
+                                       </div>
+                                   </div>
+                                   <input id="available-features-search" class="search form-control input-sm" placeholder="Search..." />
+                                   <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
+                                       Search
+                                   </button>
+                               </div>
+                           </form>
+                       </div>  
                         <div class="panel panel-default ">
                             <div class="panel-heading tss-dark bg">
                                 <h3 class="panel-title">Available Features</h3>
@@ -100,6 +101,7 @@
                         <p>Click on a Feature above to map it to an Article</p>
                    </div>
                    <div class="col-sm-6" >
+                       <div class="module-header-container"></div>
                        <div class="panel panel-default ">
                            <div class="panel-heading tss-dark bg">
                                <h3 class="panel-title">Mapped Features</h3>
@@ -336,6 +338,7 @@
             selectedArticleNumber = $selectedElement.val();
 
             $('#selected-article-title').html($selectedElement.data('name'));
+            $('#selected-article-system').html($systemContainer.val());
 
             var subtext = $selectedElement.data('subtext');
             if (subtext.length > 0) {
@@ -368,6 +371,7 @@
                     console.log(data);
                     triggerAlert("Successfully updated", "success");
                     $("#mappingModal").modal("toggle");
+                    updateDataTable(selectedArticleNumber);
                 }
             })
             console.log(featureList);
