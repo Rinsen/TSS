@@ -81,18 +81,20 @@ namespace TietoCRM.Controllers
                     "Information"
                 };
                 List<Dictionary<String, object>> values = new List<Dictionary<string, object>>();
-                FeatureService.Features[] features = FeatureServiceProxy.GetFeaturesClient().GetFeatures(productID);
+                FeatureService.Features[] features = FeatureServiceProxy
+                                                    .GetFeaturesClient()
+                                                    .GetFeaturesListFlat(productID)
+                                                    .Where(f => f.Level != 0)
+                                                    .OrderBy(f => f.Id).ToArray();
 
-                List<FeatureService.Features> featuresWithChildren = GetAllFeatureChildren(features.ToList());
-                featuresWithChildren = featuresWithChildren.OrderBy(f => f.Id).ToList();
-                foreach (FeatureService.Features feature in featuresWithChildren)
+                foreach (FeatureService.Features feature in features)
                 {
                     Dictionary<String, object> value = new Dictionary<string, object>();
                     foreach(String option in options)
                     {
                         value.Add(option, feature.GetType().GetProperty(option).GetValue(feature, null));
                     }
-                    value.Add("Relation", CreateBreadcrumb(GetRelationByParentId(new List<string>(), feature.ParentId, featuresWithChildren)));
+                    value.Add("Relation", CreateBreadcrumb(GetRelationByParent(feature)));
                     values.Add(value);
                 }
                 return Json(new Dictionary<String, object>() {
@@ -128,7 +130,6 @@ namespace TietoCRM.Controllers
                 };
                 List<FeatureService.Features> mappedFeatures = view_ModuleFeature.getAllFeatures(article_number);
 
-
                 foreach (FeatureService.Features feature in mappedFeatures)
                 {
                     Dictionary<String, object> value = new Dictionary<string, object>();
@@ -136,7 +137,7 @@ namespace TietoCRM.Controllers
                     {
                         value.Add(option, feature.GetType().GetProperty(option).GetValue(feature, null));
                     }
-                    value.Add("Relation", CreateBreadcrumb(new List<string>()));
+                    value.Add("Relation", CreateBreadcrumb(GetRelationByParent(feature)));
                     values.Add(value);
                 }
                 return Json(new Dictionary<String, object>() {
@@ -158,12 +159,7 @@ namespace TietoCRM.Controllers
                 });
             }
         }
-        /* 1. Verifiera innehållet
-         * 2. parsa listan till en List<int> med featureids
-         * 3. skapa nya view_featuremapping för varje id
-         * 4. inserta till databas
-         * 5. returnera hur det gick
-         */
+      
          [HttpPost]
         public JsonResult Map(){
 
@@ -200,32 +196,26 @@ namespace TietoCRM.Controllers
             }
         }
 
-        List<FeatureService.Features> GetAllFeatureChildren(List<FeatureService.Features> features)
+        /// <summary>
+        /// Creates a list with the names of all relations, in ascending order, for provided Feature
+        /// </summary>
+        /// <param name="feature">Feature to look for parent in</param>
+        /// <param name="relation">list to build the relations recursively</param>
+        /// <returns></returns>
+        List<String> GetRelationByParent(FeatureService.Features feature, List<String> relation = null)
         {
-            List<FeatureService.Features> children = new List<FeatureService.Features>();
-            foreach(FeatureService.Features feature in features)
+            if(relation == null)
             {
-                children.Add(feature);
-                if (feature.Children.Length > 0)
-                {
-                    children = children.Concat(GetAllFeatureChildren(feature.Children.ToList()).ToList()).ToList();
-                }
+                relation = new List<string>();
             }
-            return children;
-        }
-
-        List<String> GetRelationByParentId(List<String> parents, int parentId, List<FeatureService.Features> list)
-        {
-            List<String> returnList = new List<string>();
-            if(parentId == 0)
+            if(feature.Parent == null) // base case: continue until Feature has no Parent
             {
-                return parents;
-            } else
+                return relation;
+            } 
+            else // recursive case: add Parent Name to list and continue until base case is fullfilled
             {
-                FeatureService.Features parent = list.Where(f => f.Id == parentId).First();
-                returnList.Add(parent.Text);
-                returnList = returnList.Concat(parents).ToList();
-                return GetRelationByParentId(returnList, parent.ParentId, list);
+                relation.Insert(0, feature.Parent.Text);
+                return GetRelationByParent(feature.Parent, relation);
             }
         }
 

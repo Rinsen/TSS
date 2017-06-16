@@ -16,6 +16,12 @@
   <wsdl:message name="IFeatures_GetFeatures_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetFeaturesResponse" />
   </wsdl:message>
+  <wsdl:message name="IFeatures_GetFeaturesListFlat_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFeaturesListFlat" />
+  </wsdl:message>
+  <wsdl:message name="IFeatures_GetFeaturesListFlat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFeaturesListFlatResponse" />
+  </wsdl:message>
   <wsdl:message name="IFeatures_GetFeature_InputMessage">
     <wsdl:part name="parameters" element="tns:GetFeature" />
   </wsdl:message>
@@ -45,6 +51,18 @@
   </wsdl:message>
   <wsdl:message name="IClient_GetCustomers_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetCustomersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCustomersWithProducts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCustomersWithProducts" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCustomersWithProducts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCustomersWithProductsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCustomersWithContacts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCustomersWithContacts" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetCustomersWithContacts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCustomersWithContactsResponse" />
   </wsdl:message>
   <wsdl:message name="IClient_CopyClient_InputMessage">
     <wsdl:part name="parameters" element="tns:CopyClient" />
@@ -105,6 +123,12 @@
   </wsdl:message>
   <wsdl:message name="IClient_InsertClient_OutputMessage">
     <wsdl:part name="parameters" element="tns:InsertClientResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClient_DeleteClient_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteClient" />
+  </wsdl:message>
+  <wsdl:message name="IClient_DeleteClient_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteClientResponse" />
   </wsdl:message>
   <wsdl:message name="IProduct_GetProducts_InputMessage">
     <wsdl:part name="parameters" element="tns:GetProducts" />
@@ -250,10 +274,20 @@
   <wsdl:message name="ILicense_WriteLicenses_OutputMessage">
     <wsdl:part name="parameters" element="tns:WriteLicensesResponse" />
   </wsdl:message>
+  <wsdl:message name="IContact_GetContacts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetContacts" />
+  </wsdl:message>
+  <wsdl:message name="IContact_GetContacts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetContactsResponse" />
+  </wsdl:message>
   <wsdl:portType name="IFeatures">
     <wsdl:operation name="GetFeatures">
       <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetFeatures" message="tns:IFeatures_GetFeatures_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFeatures/GetFeaturesResponse" message="tns:IFeatures_GetFeatures_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFeaturesListFlat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetFeaturesListFlat" message="tns:IFeatures_GetFeaturesListFlat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFeatures/GetFeaturesListFlatResponse" message="tns:IFeatures_GetFeaturesListFlat_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetFeature">
       <wsdl:input wsaw:Action="http://tempuri.org/IFeatures/GetFeature" message="tns:IFeatures_GetFeature_InputMessage" />
@@ -276,6 +310,14 @@
     <wsdl:operation name="GetCustomers">
       <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetCustomers" message="tns:IClient_GetCustomers_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetCustomersResponse" message="tns:IClient_GetCustomers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCustomersWithProducts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetCustomersWithProducts" message="tns:IClient_GetCustomersWithProducts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetCustomersWithProductsResponse" message="tns:IClient_GetCustomersWithProducts_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCustomersWithContacts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetCustomersWithContacts" message="tns:IClient_GetCustomersWithContacts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetCustomersWithContactsResponse" message="tns:IClient_GetCustomersWithContacts_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="CopyClient">
       <wsdl:input wsaw:Action="http://tempuri.org/IClient/CopyClient" message="tns:IClient_CopyClient_InputMessage" />
@@ -316,6 +358,10 @@
     <wsdl:operation name="InsertClient">
       <wsdl:input wsaw:Action="http://tempuri.org/IClient/InsertClient" message="tns:IClient_InsertClient_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClient/InsertClientResponse" message="tns:IClient_InsertClient_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteClient">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/DeleteClient" message="tns:IClient_DeleteClient_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/DeleteClientResponse" message="tns:IClient_DeleteClient_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:portType name="IProduct">
@@ -430,10 +476,25 @@
       <wsdl:output wsaw:Action="http://tempuri.org/ILicense/WriteLicensesResponse" message="tns:ILicense_WriteLicenses_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
+  <wsdl:portType name="IContact">
+    <wsdl:operation name="GetContacts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IContact/GetContacts" message="tns:IContact_GetContacts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IContact/GetContactsResponse" message="tns:IContact_GetContacts_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IFeatures" type="tns:IFeatures">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetFeatures">
       <soap:operation soapAction="http://tempuri.org/IFeatures/GetFeatures" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFeaturesListFlat">
+      <soap:operation soapAction="http://tempuri.org/IFeatures/GetFeaturesListFlat" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -482,6 +543,24 @@
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetCustomers">
       <soap:operation soapAction="http://tempuri.org/IClient/GetCustomers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCustomersWithProducts">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetCustomersWithProducts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCustomersWithContacts">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetCustomersWithContacts" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -572,6 +651,15 @@
     </wsdl:operation>
     <wsdl:operation name="InsertClient">
       <soap:operation soapAction="http://tempuri.org/IClient/InsertClient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteClient">
+      <soap:operation soapAction="http://tempuri.org/IClient/DeleteClient" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -820,6 +908,18 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IContact" type="tns:IContact">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetContacts">
+      <soap:operation soapAction="http://tempuri.org/IContact/GetContacts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
   <wsdl:service name="ReadService">
     <wsdl:port name="BasicHttpBinding_IFeatures" binding="tns:BasicHttpBinding_IFeatures">
       <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
@@ -849,6 +949,9 @@
       <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_ILicense" binding="tns:BasicHttpBinding_ILicense">
+      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IContact" binding="tns:BasicHttpBinding_IContact">
       <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
   </wsdl:service>
