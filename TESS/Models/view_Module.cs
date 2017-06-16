@@ -160,5 +160,4 @@ namespace TietoCRM.Models
             return resultList;
         }
     }
-
 }
