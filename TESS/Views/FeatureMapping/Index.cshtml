@@ -1,8 +1,8 @@
 ﻿@using TietoCRM.FeatureService;
 <row>
     <div class="col-md-12">
-        <form method="get" target="_blank" class="form-inline">
-            <div class="form-group">
+        <form method="get" id="systemselect" target="_blank" class="form-inline">
+            <div class="form-group select-system-container">
                 <label for="crm-select-system">System:</label>
                 <select name="module" id="crm-select-system" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
                     @foreach (var SelectOption in ViewBag.Systems)
@@ -11,7 +11,7 @@
                     }
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group select-module-container">
                 <label for="crm-select-module">Articles:</label>
                 <select name="module" id="crm-select-module" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
