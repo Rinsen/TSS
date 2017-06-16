@@ -15,7 +15,7 @@ namespace TietoCRM.Models
         public int _ID { get { return _id; } set { _id = value; } }
 
         private int parent_article_number;
-        public int Parent_prticle_number { get { return parent_article_number; } set { parent_article_number = value; } }
+        public int Parent_article_number { get { return parent_article_number; } set { parent_article_number = value; } }
 
         private int article_number;
         public int Article_number { get { return article_number; } set { article_number = value; } }

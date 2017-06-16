@@ -12,7 +12,7 @@
                 </select>
             </div>
             <div class="form-group select-module-container">
-                <label for="crm-select-module">Articles:</label>
+                <label for="crm-select-moFule">Articles:</label>
                 <select name="module" id="crm-select-module" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
@@ -338,7 +338,7 @@
             selectedArticleNumber = $selectedElement.val();
 
             $('#selected-article-title').html($selectedElement.data('name'));
-            $('#selected-article-system').html($systemContainer.val());
+            $('#selected-article-system').html('<span class="badge tss-dark bg">' + $systemContainer.val() + '</span>');
 
             var subtext = $selectedElement.data('subtext');
             if (subtext.length > 0) {
