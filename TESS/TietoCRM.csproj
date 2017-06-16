@@ -188,6 +188,7 @@
     <Compile Include="Controllers\List Management\SelectOptionController.cs" />
     <Compile Include="Controllers\List Management\TemplateController.cs" />
     <Compile Include="Controllers\List Management\UserController.cs" />
+    <Compile Include="Controllers\ModuleMappingController.cs" />
     <Compile Include="Controllers\Offers\CustomerOfferController.cs" />
     <Compile Include="Controllers\Reports\AppointmentReportController.cs" />
     <Compile Include="Controllers\Reports\CancelledContractsReportController.cs" />
@@ -244,6 +245,7 @@
     <Compile Include="Models\view_Module.cs" />
     <Compile Include="Models\view_ModuleDiscount.cs" />
     <Compile Include="Models\view_ModuleFeature.cs" />
+    <Compile Include="Models\view_ModuleModule.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
     <Compile Include="Models\view_Reminder.cs" />
     <Compile Include="Models\view_Sector.cs" />
@@ -834,6 +836,7 @@
     <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Contact.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Content>
+    <Content Include="Views\ModuleMapping\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
