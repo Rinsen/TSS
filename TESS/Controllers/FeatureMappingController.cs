@@ -23,6 +23,7 @@ namespace TietoCRM.Controllers
 
             ViewData.Add("Modules", modules);
             ViewData.Add("Products", new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts()));
+            ViewData.Add("Systems", GetAllSystemNames(System.Web.HttpContext.Current.GetUser().Area));
             //ViewData.Add("Properties", typeof(view_Module).GetProperties());
             this.ViewData["Title"] = "Feature and Article Mapping";
             return View();
@@ -40,6 +41,7 @@ namespace TietoCRM.Controllers
                     Return_List.Add(new Dictionary<String, Object>(){
                         {"Feature_id", feature.Id },
                         {"Feature", feature.Text},
+                        {"Warnings", feature.Warnings}, 
                         {"Information", feature.Information}
                     });
                 }
@@ -196,6 +198,32 @@ namespace TietoCRM.Controllers
             }
         }
 
+        public JsonResult GetModulesBySystem()
+        {
+            String system = null;
+            
+            if (Request.Form["system"] != null)
+            {
+                system = Request.Form["system"];
+                List<view_Module> modules = view_Module.getAllModules()
+                                            .Where(m => m.System == system)
+                                            .OrderBy(m => m.Article_number)
+                                            .ToList();
+
+
+                return Json(modules);
+            }
+            else
+            {
+                return Json(new Dictionary<String, String>()
+                {
+                    {
+                        "error", "No system"
+                    }
+                });
+            }
+        }
+
         /// <summary>
         /// Creates a list with the names of all relations, in ascending order, for provided Feature
         /// </summary>
@@ -229,6 +257,16 @@ namespace TietoCRM.Controllers
             }
             sb.Append("</ol>");
             return sb.ToString();
+        }
+        List<SelectListItem> GetAllSystemNames(String area)
+        {
+            IEnumerable<view_Sector> allSectors = view_Sector.getAllSectors()
+                 .Where(a => a.Area == area)
+                 .DistinctBy(a => a.System)
+                 .OrderBy(a => a.SortNo);
+            List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();
+
+            return returnList;
         }
     }
 }

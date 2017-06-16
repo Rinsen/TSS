@@ -1342,6 +1342,11 @@ a.tooltips > span:after {
   color: white;
   font-weight: normal;
 }
+.bootstrap-select a {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  max-width: 1000px;
+}
 .bootstrap-select a:hover {
   color: white !important;
 }
@@ -1382,4 +1387,10 @@ a.tooltips > span:after {
 #mappingModal .is-searching-container div img {
   height: 35px;
   vertical-align: middle;
+}
+#systemselect > .form-group.select-system-container {
+  width: 250px;
+}
+#systemselect > .form-group.select-module-container {
+  width: 500px;
 }
