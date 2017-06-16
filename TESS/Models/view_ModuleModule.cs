@@ -70,10 +70,11 @@ namespace TietoCRM.Models
         {
             List<view_Module> moduleList = new List<view_Module>();
             List<view_ModuleModule> moduleModuleList = getAllModuleModules(parent_article_number);
-            view_Module module = new view_Module();
+            
             foreach (view_ModuleModule moduleModule in moduleModuleList)
             {
-                module.Select("article_number = " + parent_article_number);
+                view_Module module = new view_Module();
+                module.Select("article_number = " + moduleModule.Article_number);
                 moduleList.Add(module);
             }
             return moduleList;

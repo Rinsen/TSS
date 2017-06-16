@@ -255,6 +255,8 @@
                     ArticleList = new List("available-articles", options);
                     ArticleList.clear();
                     ArticleList.add(data.values);
+                    ArticleList.remove('Article_number', $articleContainer.selectpicker('val'));
+                    console.log($articleContainer.selectpicker('val'));
                     MappedArticleList.items.forEach(function (item) {
                         ArticleList.remove('Article_number', item.Article_number);
                     });
@@ -295,7 +297,7 @@
 
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(function () {
-                    FeatureList.search(search_data);
+                    ArticleList.search(search_data);
                     $isSearching.hide();
                 }, 300);
             }
@@ -307,7 +309,7 @@
             old_search_data = search_data;
         });
        
-
+        $modalSystemSelect.trigger('change');
 
         // Modal bindings
         $("#map-articles-btn").bind('click', function () {
@@ -316,8 +318,8 @@
 
             var $selectedElement = $articleContainer.find('option:selected');
             var $selectedArticleDesc = $('#selected-article-description');
-            selectedArticleNumber = $selectedElement.val();
-
+            selectedArticleNumber = $articleContainer.val();
+ 
             $('#selected-article-title').html($selectedElement.data('name'));
             $('#selected-article-system').html($systemContainer.val());
 
@@ -327,17 +329,17 @@
             } else {
                 $selectedArticleDesc.html("");
             }
-
+            $modalSystemSelect.trigger('change');
             $("#mappingModal").appendTo("body").modal().draggable();
             getMappedArticleList(selectedArticleNumber);
         });
 
         $("#save-module-mapping").bind('click', function () {
-            var mappedArticlesList = MappedArticlesList.items;
-            var mappedArticlesLen = mappedArticlesList.length;
+            var mappedArticleList = MappedArticleList.items;
+            var mappedArticleLen = mappedArticleList.length;
             var mappedArticles = [];
-            for (var i = 0; i < mappedArticlesLen; i++) {
-                var feature = mappedArticlesList[i];
+            for (var i = 0; i < mappedArticleLen; i++) {
+                var feature = mappedArticleList[i];
                 mappedArticles.push(Number(feature._values.Article_number));
             }
             $.ajax({
@@ -355,7 +357,6 @@
                     updateDataTable(selectedArticleNumber);
                 }
             })
-            console.log(featureList);
         });
 
 
