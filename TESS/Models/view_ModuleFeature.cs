@@ -34,7 +34,7 @@ namespace TietoCRM.Models
                 SqlCommand command = new SqlCommand(query, connection);
                 if (article_number != null)
                 {
-                    query += " WHERE article_number = @article_number ";
+                    query += " WHERE [Article_number] = @article_number ";
                     command = new SqlCommand(query, connection);
                     command.Parameters.Add("@article_number", SqlDbType.Int).Value = article_number;
                     

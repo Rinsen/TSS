@@ -171,7 +171,7 @@ namespace TietoCRM.Controllers
                 List<int> maplist = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["feature_list"]).ToList();
                 view_ModuleFeature moduleFeature = new view_ModuleFeature();
                 // First delete all the mappings
-                moduleFeature.Delete("article_number = " + article_number);
+                moduleFeature.Delete("Article_number = " + article_number);
                 // Insert new mappings   
                 foreach (int id in maplist)                         
                 {
