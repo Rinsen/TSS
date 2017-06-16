@@ -145,15 +145,14 @@ namespace TietoCRM.Controllers
         {
 
             int parent_article_number = -1;
-            int article_number = -1;
-            if (int.TryParse(Request.Form["parent_article_number"], out parent_article_number) && int.TryParse(Request.Form["article_number"], out article_number))
+            if (int.TryParse(Request.Form["parent_article_number"], out parent_article_number) && Request.Form["mapped_articles"] != null)
             {
-                List<int> maplist = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["article_number"]).ToList();
+                List<int> maplist = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["mapped_articles"]).ToList();
                 view_ModuleModule moduleModule = new view_ModuleModule();
                 // First delete all the mappings
                 moduleModule.Delete("parent_article_number = " + parent_article_number);
                 // Insert new mappings   
-                foreach (int id in maplist)
+                foreach (int article_number in maplist)
                 {
                     moduleModule.Parent_article_number = parent_article_number;
                     moduleModule.Article_number = article_number;
