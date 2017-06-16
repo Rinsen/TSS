@@ -58,6 +58,7 @@ namespace TietoCRM.Controllers
 
             if (Request.Form["system"] != null)
             {
+                system = Request.Form["system"];
                 List<String> options = new List<string>()
                 {
                     "Article_number",
@@ -150,7 +151,7 @@ namespace TietoCRM.Controllers
                 List<int> maplist = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["mapped_articles"]).ToList();
                 view_ModuleModule moduleModule = new view_ModuleModule();
                 // First delete all the mappings
-                moduleModule.Delete("parent_article_number = " + parent_article_number);
+                moduleModule.Delete("Parent_article_number = " + parent_article_number);
                 // Insert new mappings   
                 foreach (int article_number in maplist)
                 {

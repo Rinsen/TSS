@@ -35,7 +35,7 @@ namespace TietoCRM.Models
                 SqlCommand command = new SqlCommand(query, connection);
                 if (parent_article_number != null)
                 {
-                    query += " WHERE parent_article_number = @parent_article_number ";
+                    query += " WHERE [Parent_article_number] = @parent_article_number ";
                     command = new SqlCommand(query, connection);
                     command.Parameters.Add("@parent_article_number", SqlDbType.Int).Value = parent_article_number;
 
