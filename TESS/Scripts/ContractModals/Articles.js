@@ -197,6 +197,15 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         var usedCell = "<td></td>";
         if (article.Used == true) {
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
+        } else if (article.HasDependencies) {
+            var depLen = article.Dependencies.length;
+            var depTitle = "Depends on:\n";
+            var depArticle;
+            for (var d = 0; d < depLen; d++) {
+                depArticle = article.Dependencies[d];
+                depTitle += " " + depArticle.Article_number + ": " + depArticle.Module + "\n";
+            }
+            usedCell = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
         }
         var $newButton;
         if (article.System == "Lärportal") {

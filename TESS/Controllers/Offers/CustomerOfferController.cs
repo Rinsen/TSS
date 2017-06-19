@@ -744,6 +744,12 @@ namespace TietoCRM.Controllers
                     {
                         if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
                             kv.Add("Used", true);
+                        List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                        if (dependencies.Count > 0)
+                        {
+                            kv.Add("HasDependencies", true);
+                            kv.Add("Dependencies", dependencies);
+                        }
                     }
                     //Response.Charset = "UTF-8";
                     // this.solve();
@@ -849,6 +855,12 @@ namespace TietoCRM.Controllers
                     {
                         if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
                             kv.Add("Used", true);
+                        List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                        if (dependencies.Count > 0)
+                        {
+                            kv.Add("HasDependencies", true);
+                            kv.Add("Dependencies", dependencies);
+                        }
                     }
                     //Response.Charset = "UTF-8";
                     // this.solve();
