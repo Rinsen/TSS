@@ -16,6 +16,8 @@ using System.Web.Script.Serialization;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
 using System.Data;
+using System.Collections;
+
 namespace TietoCRM.Controllers.Contracts
 {
     public static class Distinct
@@ -131,6 +133,19 @@ namespace TietoCRM.Controllers.Contracts
             else
                 return View();
         }
+
+        public ActionResult ViewShippingListPdf()
+        {
+            this.GenerateThings();
+            this.ViewData["Title"] = "Shipping List";
+
+            ViewAsPdf pdf = new ViewAsPdf("ShippingListPdf");
+            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Shipping List" + "\"";
+            pdf.RotativaOptions.CustomSwitches += " --header-center \"" + Request["contract-id"] +"\"";
+
+            return pdf;
+        }
+
 
         private void GenerateThings()
         {

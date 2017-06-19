@@ -23,7 +23,7 @@ namespace TietoCRM.Controllers
             ViewData.Add("Modules", modules);
             ViewData.Add("Systems", GetAllSystemNames(System.Web.HttpContext.Current.GetUser().Area));
             //ViewData.Add("Properties", typeof(view_Module).GetProperties());
-            this.ViewData["Title"] = "Article Mapping";
+            this.ViewData["Title"] = "Article Dependency";
             return View();
         }
 

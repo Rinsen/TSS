@@ -837,6 +837,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Content>
     <Content Include="Views\ModuleMapping\Index.cshtml" />
+    <Content Include="Views\CustomerContract\ShippingListPdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
