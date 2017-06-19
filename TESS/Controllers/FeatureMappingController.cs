@@ -41,7 +41,7 @@ namespace TietoCRM.Controllers
                     Return_List.Add(new Dictionary<String, Object>(){
                         {"Feature_id", feature.Id },
                         {"Feature", feature.Text},
-                        {"Warnings", feature.Warnings}, 
+                        {"Warnings", String.Join(" ", feature.Warnings)}, 
                         {"Information", feature.Information}
                     });
                 }
@@ -224,6 +224,53 @@ namespace TietoCRM.Controllers
             }
         }
 
+        public JsonResult GetClassificationSelectOptions()
+        {
+            String system = null;
+            if (Request.Form["system"] != null)
+            {
+                system = Request.Form["system"];
+                String area = System.Web.HttpContext.Current.GetUser().Area;
+
+                return Json(GetAllClassificationNames(area, system));
+            }
+            else
+            {
+                return Json(new Dictionary<String, String>()
+                {
+                    {
+                        "error", "No system provided"
+                    }
+                });
+            }
+        }
+
+        public JsonResult GetModulesBySystemAndClassification()
+        {
+            String system = null;
+            String classification = null;
+            if (Request.Form["system"] != null && Request.Form["classification"] != null)
+            {
+                system = Request.Form["system"];
+                classification = Request.Form["classification"];
+                List<view_Module> modules = view_Module.getAllModules()
+                                            .Where(m => m.System == system && m.Classification == classification)
+                                            .OrderBy(m => m.Article_number)
+                                            .ToList();
+
+                return Json(modules);
+            }
+            else
+            {
+                return Json(new Dictionary<String, String>()
+                {
+                    {
+                        "error", "No system or classification provided"
+                    }
+                });
+            }
+        }
+
         /// <summary>
         /// Creates a list with the names of all relations, in ascending order, for provided Feature
         /// </summary>
@@ -258,6 +305,7 @@ namespace TietoCRM.Controllers
             sb.Append("</ol>");
             return sb.ToString();
         }
+
         List<SelectListItem> GetAllSystemNames(String area)
         {
             IEnumerable<view_Sector> allSectors = view_Sector.getAllSectors()
@@ -265,6 +313,17 @@ namespace TietoCRM.Controllers
                  .DistinctBy(a => a.System)
                  .OrderBy(a => a.SortNo);
             List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();
+
+            return returnList;
+        }
+        List<SelectListItem> GetAllClassificationNames(String area, String system)
+        {
+            IEnumerable<view_Sector> allSectors = view_Sector.getAllSectors()
+                 .Where(a => a.Area == area && a.System == system)
+                 .DistinctBy(a => a.Classification)
+                 .OrderBy(a => a.Classification == "-");
+                    
+            List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
 
             return returnList;
         }

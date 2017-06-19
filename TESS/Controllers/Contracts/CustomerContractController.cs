@@ -1550,6 +1550,12 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Removed == false) && ctr != "M")
                         kv.Add("Used", true);
+                    List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                    if(dependencies.Count > 0)
+                    {
+                        kv.Add("HasDependencies", true);
+                        kv.Add("Dependencies", dependencies);
+                    }
                 }
 
                 //Response.Charset = "UTF-8";
@@ -1670,6 +1676,12 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Removed == false) && ctr != "M")
                         kv.Add("Used", true);
+                    List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                    if (dependencies.Count > 0)
+                    {
+                        kv.Add("HasDependencies", true);
+                        kv.Add("Dependencies", dependencies);
+                    }
 
                     //if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Contract_id == contractid && cr.Rewritten == true) && ctr != "M")
                     //    kv.Add("Rewritten", true);

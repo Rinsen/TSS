@@ -11,13 +11,16 @@
                     }
                 </select>
             </div>
+            <div class="form-group select-classification-container">
+                <label for="crm-select-classification">Classification:</label>
+                <select name="module" id="crm-select-classification" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
+                    <option value="-">First select system</option>
+                </select>
+            </div>
             <div class="form-group select-module-container">
                 <label for="crm-select-moFule">Articles:</label>
                 <select name="module" id="crm-select-module" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
-                    @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
-                    {
-                        <option data-subtext="@Module.Description" data-name="@Module.Module" value="@Module.Article_number">@Module.Article_number &ensp; @Module.Module</option>
-                    }
+                   <option value="0">First select system and classification</option>
                 </select>
             </div>
             <div class="form-group">
@@ -180,11 +183,20 @@
             }
         });
 
-        $systemContainer = $("#crm-select-system");
+        // System selectpicker
 
+        $systemContainer = $("#crm-select-system");
         $systemContainer.change(function () {
-            getModulesBySystem(this.value);
-            console.log("rätt");
+            //getModulesBySystem(this.value);
+            getClassificationsBySystem(this.value);
+        });
+        
+        // Classificaton selectpicker
+        $classificationContainer = $("#crm-select-classification");
+        $classificationContainer.change(function () {
+            var system = $systemContainer.selectpicker('val');
+            var classification = this.value;
+            getModulesBySystemAndClassification(system, classification);
         });
 
         $productList = $('#product-list');
@@ -326,7 +338,7 @@
             }, 20000);
             old_search_data = search_data;
         });
-        $productList.trigger('change');
+        
 
         // Modal bindings
         $("#map-articles-btn").bind('click', function () {
@@ -392,6 +404,51 @@
             })
         }
 
+        var getClassificationsBySystem = function (system) {
+            $.ajax({
+                "url": serverPrefix + "FeatureMapping/GetClassificationSelectOptions/",
+                "type": "POST",
+                "data": {
+                    "system": system
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    console.log(data);
+                    updateClassificationList(data);
+                }
+            })
+        }
+
+        var updateClassificationList = function (list) {
+            var listlen = list.length;
+            var classification;
+            $classificationContainer.empty();
+            var description;
+            for (var i = 0; i < listlen; i++) {
+                classification = list[i];
+                
+                $classificationContainer.append($('<option></option>').val(classification.Value).html(classification.Text));
+            }
+            $classificationContainer.selectpicker("refresh");
+            $classificationContainer.trigger("change");
+        }
+
+        var getModulesBySystemAndClassification = function (system, classification) {
+            $.ajax({
+                "url": serverPrefix + "FeatureMapping/GetModulesBySystemAndClassification/",
+                "type": "POST",
+                "data": {
+                    "system": system,
+                    "classification": classification
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    console.log(data);
+                    updateModuleList(data);
+                }
+            })
+        }
+
         var updateModuleList = function (list) {
             var listlen = list.length;
             var module;
@@ -410,8 +467,9 @@
             }
             $moduleContainer.selectpicker("refresh");
             $moduleContainer.trigger("change");
-        }
 
+        }
+        $systemContainer.trigger('change');
     });
 
     </script>
