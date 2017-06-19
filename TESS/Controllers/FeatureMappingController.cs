@@ -41,7 +41,7 @@ namespace TietoCRM.Controllers
                     Return_List.Add(new Dictionary<String, Object>(){
                         {"Feature_id", feature.Id },
                         {"Feature", feature.Text},
-                        {"Warnings", feature.Warnings}, 
+                        {"Warnings", String.Join(" ", feature.Warnings)}, 
                         {"Information", feature.Information}
                     });
                 }
