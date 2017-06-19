@@ -134,6 +134,7 @@ namespace TietoCRM.Controllers.Contracts
                 return View();
         }
 
+
         public ActionResult ViewShippingListPdf()
         {
             this.GenerateThings();

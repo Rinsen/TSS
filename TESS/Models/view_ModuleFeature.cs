@@ -71,6 +71,27 @@ namespace TietoCRM.Models
             return featureList;
         }
 
-
+        /// <summary>
+        /// Creates a list with the names of all relations, in ascending order, for provided Feature
+        /// </summary>
+        /// <param name="feature">Feature to look for parent in</param>
+        /// <param name="relation">list to build the relations recursively</param>
+        /// <returns></returns>
+        public static List<String> GetRelationByParent(FeatureService.Features feature, List<String> relation = null)
+        {
+            if (relation == null)
+            {
+                relation = new List<string>();
+            }
+            if (feature.Parent == null) // base case: continue until Feature has no Parent
+            {
+                return relation;
+            }
+            else // recursive case: add Parent Name to list and continue until base case is fullfilled
+            {
+                relation.Insert(0, feature.Parent.Text);
+                return GetRelationByParent(feature.Parent, relation);
+            }
+        }
     }
 }
