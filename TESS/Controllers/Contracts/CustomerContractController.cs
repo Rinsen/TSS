@@ -140,6 +140,8 @@ namespace TietoCRM.Controllers.Contracts
             this.GenerateThings();
             this.ViewData["Title"] = "Shipping List";
 
+            ViewData["ArticleSystemDictionary"] = ((IList<KeyValuePair<String, List<dynamic>>>) ViewData["ArticleSystemDictionary"]).OrderBy(d => d.Key).ToList();
+
             ViewAsPdf pdf = new ViewAsPdf("ShippingListPdf");
             pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Shipping List" + "\"";
             pdf.RotativaOptions.CustomSwitches += " --header-center \"" + Request["contract-id"] +"\"";
