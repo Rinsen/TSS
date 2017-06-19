@@ -55,11 +55,11 @@ namespace TietoCRM.Controllers
             {
                 if (search && item.IsExpanded)
                 {
-                    htmlString.Append("<li data-feature-id='" + item.Id + "' class='feature-item-expanded' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.Id + "</td><td style='width:120px; text-align:right'>" + item.ArticleNumber + "</td></tr></table></span></a>");
+                    htmlString.Append("<li data-feature-id='" + item.Id + "' class='feature-item-expanded' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.Id + "</td></tr></table></span></a>");
                 }
                 else
                 {
-                    htmlString.Append("<li data-feature-id='" + item.Id + "' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.Id + "</td><td style='width:120px; text-align:right'>" + item.ArticleNumber + "</td></tr></table></span></a>");
+                    htmlString.Append("<li data-feature-id='" + item.Id + "' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.Id + "</td></tr></table></span></a>");
                 }
                
                 if (item.Children != null && item.Children.Length > 0)
@@ -188,9 +188,6 @@ namespace TietoCRM.Controllers
             
             productList = new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts());
             
-           ;
-
-
             foreach (FeatureService.Product item in productList)
             {
                 

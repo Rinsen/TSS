@@ -8,7 +8,7 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label for="product-list">Products:</label>
-                <select class="form-control" id="product-list">
+                <select class="form-control selectpicker" id="product-list" data-live-search="true">
                     @foreach (TietoCRM.FeatureService.Product product in ViewBag.Products)
                     {
 
@@ -21,7 +21,7 @@
         <div class="col-md-4">
             <div class="form-group ">
                 <label for="client-list">Clients:</label>
-                <select class="form-control" id="client-list">
+                <select class="form-control selectpicker" id="client-list" data-live-search="true">
                     @foreach (TietoCRM.FeatureService.Client client in ViewBag.Clients)
                     {
 
@@ -35,9 +35,11 @@
             <form class="form-group">
                 <label for="feature-filter" class="filter-label">Filter:</label>
                 <div class="form-inline">
-                    <div style="display:inline-block">
+                    <div class="form-group">
                         <input type="text" class="form-control" placeholder="Filter features" id="feature-filter">
-                        <select class="form-control" id="filter-mode">
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control selectpicker" id="filter-mode" data-live-search="true">
                             <option value="0">Name</option>
                             <option value="1">ID</option>
                             <option value="2">Article nr</option>
@@ -47,8 +49,9 @@
                             <option value="6">INI-Script</option>
 
                         </select>
-                        <button class="btn btn-primary features-pdf-button" id="generate-pdf-btn">PDF </button>
+                        
                     </div>
+                    @*<button class="btn btn-primary features-pdf-button" id="generate-pdf-btn">PDF </button>*@
                 </div>
                 
             </form>
@@ -65,9 +68,6 @@
                 <tr>
                     <td>
                         <h5 style="float:right">ID</h5>
-                    </td>
-                    <td style="width:120px; text-align:right">
-                        <h5 style="float:right">Article number</h5>
                     </td>
                 </tr>
             </table>
