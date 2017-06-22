@@ -327,5 +327,44 @@ namespace TietoCRM.Controllers
 
             return returnList;
         }
+
+        [HttpGet]
+        public String MigrateFeaturesToFeatureMapping()
+        {
+            try
+            {
+                var features = FeatureServiceProxy.GetFeaturesClient().GetFeaturesListFlat(1);
+                var featuresWithMappedArticles = features.Where(e => e.ArticleNumber != 0).ToList();
+                String returnString = "Migrating... <br>";
+
+                var moduleFeature = new view_ModuleFeature();
+
+                foreach(var feat in featuresWithMappedArticles)
+                {
+                    // only insert if mapping do not already exists
+                    if(moduleFeature.Select("feature_id = " + feat.Id) == false)
+                    {
+                        moduleFeature.Feature_Id = feat.Id;
+                        moduleFeature.Article_number = (feat.ArticleNumber == null ? 0 : (int)feat.ArticleNumber);
+                        moduleFeature.Insert();
+                        returnString += "Inserting mapping for " + feat.Text + "<br><br>"; 
+                    }
+                }
+                String doneMesg = "<br> <span style='color:#0bb730'> Done! </span> <br>";
+                returnString += doneMesg;
+                if (returnString == ("Migrating... <br>" + doneMesg))
+                {
+                    
+                    returnString += "<br> No Features needed to be migrated...";
+                }
+
+                return returnString;
+            } catch (Exception e)
+            {
+                return "Failed..." + e.Message.ToString() + "<br>";
+                throw e;
+            } 
+        }
+
     }
 }
