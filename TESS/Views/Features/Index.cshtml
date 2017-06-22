@@ -102,7 +102,12 @@
                 },
                 success: function (data) {
                     $tree.html(data);
-                    $tree.treed();
+                    if ( $(data).find('ul').children().length > 0 ) {
+                        $tree.treed();
+                    } else {
+                        $tree.html($('<p></p>').html("Kunden saknar installationer under " + $productList.find('option[value="' + prodID + '"]').text()));
+                    }
+                   
                     
                 }
 
