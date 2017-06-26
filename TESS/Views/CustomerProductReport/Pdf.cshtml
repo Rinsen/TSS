@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_ReportLayout.cshtml";
 }
-
+@using TietoCRM.Models;
 @foreach (String pName in ViewBag.SystemNames)
 {
     var rubrik = pName.Split(new char[] { '#' })[1];
@@ -40,7 +40,16 @@
                                 {
                                     if (String.IsNullOrEmpty((String)CPR["Alias"]))
                                     {
-                                        <td>@CPR["Module"]</td>
+                                        <td>
+                                            <strong>@CPR["Module"]</strong>
+                                            @foreach(view_Module module in ViewBag.matchedModules)
+                                            {
+                                                if(module.Article_number.ToString() == CPR["Article_number"].ToString())
+                                                {
+                                                    <div>@module.Description &ensp;</div>
+                                                }
+                                            }
+                                        </td>
                                     }
                                     else
                                     {

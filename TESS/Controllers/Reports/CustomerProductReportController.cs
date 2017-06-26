@@ -56,7 +56,8 @@ namespace TietoCRM.Controllers
             // Store all unique Customer name in a set
             HashSet<String> SystemNames = new HashSet<String>();
             String oldSystem = "";
-
+            List<view_Module> modules = view_Module.getAllModules();
+            List<view_Module> matchedModules = new List<view_Module>();
             foreach (view_CustomerProductRow row in ProductReportRows)
             {
                 if(row.Status == "Giltigt" && row.System != oldSystem)
@@ -64,6 +65,7 @@ namespace TietoCRM.Controllers
                     SystemNames.Add(row.SortNo + "#" + row.System);
                     oldSystem = row.System;
                 }
+                matchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
             }
             List<String> OrderedSystemNames = SystemNames.ToList();
 
@@ -72,10 +74,12 @@ namespace TietoCRM.Controllers
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
+
             ViewData.Add("CustomerProductRows", (new SortedByColumnCollection(ProductReportRows.ToList<SQLBaseClass>(), sortDir, sortKey)).Collection);
             ViewData.Add("CustomerProductRows_MN", (ProductReportRows.Where(p => p.Status == "Giltigt").OrderBy(p => p.System).ThenBy(p => p.Classification).ThenBy(p => p.Module).ToList<SQLBaseClass>()));
             ViewData.Add("SystemNames", OrderedSystemNames);
             ViewData.Add("Properties", typeof(view_CustomerProductRow).GetProperties());
+            ViewData.Add("MatchedModules", matchedModules);
             List<String> ignoredPropertiesExtended = ignoredProperties.ToList();
             ignoredPropertiesExtended.Add("System");
             ViewData.Add("IgnoredPropertiesExtended", ignoredPropertiesExtended);
