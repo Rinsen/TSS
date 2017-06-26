@@ -67,6 +67,7 @@ namespace TietoCRM.Controllers
                 }
                 matchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
             }
+            matchedModules = matchedModules.DistinctBy(m => m.Article_number).ToList();
             List<String> OrderedSystemNames = SystemNames.ToList();
 
             OrderedSystemNames.Sort();
