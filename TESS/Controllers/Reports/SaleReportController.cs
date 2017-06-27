@@ -105,7 +105,7 @@ namespace TietoCRM.Controllers.Reports
                         dict.Add("license", totalLicense);
                         dict.Add("contact_person", offer.Contact_person);
                         dict.Add("customer_type", customer.Customer_type);
-                        if(totalMaintenance > 0 || totalLicense > 0)
+                        //if(totalMaintenance > 0 || totalLicense > 0)
                             rows.Add(dict);
                     }
                 }
