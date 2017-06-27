@@ -51,46 +51,55 @@ namespace TietoCRM.Controllers
 
         public ActionResult Pdf()
         {
-            List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null);
-
-            // Store all unique Customer name in a set
-            HashSet<String> SystemNames = new HashSet<String>();
-            String oldSystem = "";
-            List<view_Module> modules = view_Module.getAllModules();
-            List<view_Module> matchedModules = new List<view_Module>();
-            foreach (view_CustomerProductRow row in ProductReportRows)
+            if(Request["customer"] != "null")
             {
-                if(row.Status == "Giltigt" && row.System != oldSystem)
+                List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null);
+
+                // Store all unique Customer name in a set
+                HashSet<String> SystemNames = new HashSet<String>();
+                String oldSystem = "";
+                List<view_Module> modules = view_Module.getAllModules();
+                List<view_Module> matchedModules = new List<view_Module>();
+                foreach (view_CustomerProductRow row in ProductReportRows)
                 {
-                    SystemNames.Add(row.SortNo + "#" + row.System);
-                    oldSystem = row.System;
+                    if (row.Status == "Giltigt" && row.System != oldSystem)
+                    {
+                        SystemNames.Add(row.SortNo + "#" + row.System);
+                        oldSystem = row.System;
+                    }
+                    matchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
                 }
-                matchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
+                matchedModules = matchedModules.DistinctBy(m => m.Article_number).ToList();
+                List<String> OrderedSystemNames = SystemNames.ToList();
+
+                OrderedSystemNames.Sort();
+
+                String sortDir = Request["sort"];
+                String sortKey = Request["prop"];
+
+
+                ViewData.Add("CustomerProductRows", (new SortedByColumnCollection(ProductReportRows.ToList<SQLBaseClass>(), sortDir, sortKey)).Collection);
+                ViewData.Add("CustomerProductRows_MN", (ProductReportRows.Where(p => p.Status == "Giltigt").OrderBy(p => p.System).ThenBy(p => p.Classification).ThenBy(p => p.Module).ToList<SQLBaseClass>()));
+                ViewData.Add("SystemNames", OrderedSystemNames);
+                ViewData.Add("Properties", typeof(view_CustomerProductRow).GetProperties());
+                ViewData.Add("MatchedModules", matchedModules);
+                List<String> ignoredPropertiesExtended = ignoredProperties.ToList();
+                ignoredPropertiesExtended.Add("System");
+                ViewData.Add("IgnoredPropertiesExtended", ignoredPropertiesExtended);
+                this.ViewData["Title"] = "Customer Product Report";
+
+                ViewAsPdf pdf = new ViewAsPdf("Pdf");
+                pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["customer"] + "\"";
+                pdf.RotativaOptions.CustomSwitches += " --header-center \"Customer Products\"";
+                return pdf;
             }
-            matchedModules = matchedModules.DistinctBy(m => m.Article_number).ToList();
-            List<String> OrderedSystemNames = SystemNames.ToList();
-
-            OrderedSystemNames.Sort();
-
-            String sortDir = Request["sort"];
-            String sortKey = Request["prop"];
-
-
-            ViewData.Add("CustomerProductRows", (new SortedByColumnCollection(ProductReportRows.ToList<SQLBaseClass>(), sortDir, sortKey)).Collection);
-            ViewData.Add("CustomerProductRows_MN", (ProductReportRows.Where(p => p.Status == "Giltigt").OrderBy(p => p.System).ThenBy(p => p.Classification).ThenBy(p => p.Module).ToList<SQLBaseClass>()));
-            ViewData.Add("SystemNames", OrderedSystemNames);
-            ViewData.Add("Properties", typeof(view_CustomerProductRow).GetProperties());
-            ViewData.Add("MatchedModules", matchedModules);
-            List<String> ignoredPropertiesExtended = ignoredProperties.ToList();
-            ignoredPropertiesExtended.Add("System");
-            ViewData.Add("IgnoredPropertiesExtended", ignoredPropertiesExtended);
-            this.ViewData["Title"] = "Customer Product Report";
-
-            ViewAsPdf pdf = new ViewAsPdf("Pdf");
-            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["customer"] + "\"";
-            pdf.RotativaOptions.CustomSwitches += " --header-center \"Customer Products\"";
-
-            return pdf;
+            else
+            {
+                return Content("No customer was chosen");
+            }
+            
+            
+            
         }
 
         public void ExportAsCsv()
