@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" />
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
+  <xs:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" />
+  <xs:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
+  <xs:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
   <xs:element name="GetFeatures">
     <xs:complexType>
       <xs:sequence>
@@ -283,6 +283,18 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="GetClientTypes">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetClientTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetClientTypesResult" nillable="true" type="q20:ArrayOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="GetProducts">
     <xs:complexType>
       <xs:sequence />
@@ -291,7 +303,7 @@
   <xs:element name="GetProductsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetProductsResult" nillable="true" type="q20:ArrayOfProduct" />
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetProductsResult" nillable="true" type="q21:ArrayOfProduct" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -303,16 +315,16 @@
   <xs:element name="GetClientSystemsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q21="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetClientSystemsResult" nillable="true" type="q21:ArrayOfKeyValueOfintArrayOfProductJ6oMiCM0" />
+        <xs:element xmlns:q22="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetClientSystemsResult" nillable="true" type="q22:ArrayOfKeyValueOfintArrayOfProductJ6oMiCM0" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="SaveChanges">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="itemsChecked" nillable="true" type="q22:ArrayOfFeatures" />
-        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="itemsUnchecked" nillable="true" type="q23:ArrayOfFeatures" />
-        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="client" nillable="true" type="q24:Client" />
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="itemsChecked" nillable="true" type="q23:ArrayOfFeatures" />
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="itemsUnchecked" nillable="true" type="q24:ArrayOfFeatures" />
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="client" nillable="true" type="q25:Client" />
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -326,8 +338,8 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="check" type="xs:boolean" />
-        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="hasThis" nillable="true" type="q25:Features" />
-        <xs:element xmlns:q26="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="changeThese" nillable="true" type="q26:ArrayOfKeyValueOfintFeaturesJ6oMiCM0" />
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="hasThis" nillable="true" type="q26:Features" />
+        <xs:element xmlns:q27="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="changeThese" nillable="true" type="q27:ArrayOfKeyValueOfintFeaturesJ6oMiCM0" />
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -360,7 +372,7 @@
   <xs:element name="DeleteFeature">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="feat" nillable="true" type="q27:Features" />
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="feat" nillable="true" type="q28:Features" />
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -390,8 +402,8 @@
   <xs:element name="UpdateParentId">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="newParent" nillable="true" type="q28:Features" />
-        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="oldFeature" nillable="true" type="q29:Features" />
+        <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="newParent" nillable="true" type="q29:Features" />
+        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="oldFeature" nillable="true" type="q30:Features" />
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -413,15 +425,27 @@
   <xs:element name="GetScriptsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/FeatureService.Model" minOccurs="0" name="GetScriptsResult" nillable="true" type="q30:ArrayOfScript" />
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/FeatureService.Model" minOccurs="0" name="GetScriptsResult" nillable="true" type="q31:ArrayOfScript" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllScripts">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllScriptsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/FeatureService.Model" minOccurs="0" name="GetAllScriptsResult" nillable="true" type="q32:ArrayOfScript" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="WriteNewScripts">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/System.Collections.Generic" minOccurs="0" name="addList" nillable="true" type="q31:ArrayOfKeyValuePairOfArrayOfstringint9_SUPjmKX" />
-        <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="feat" nillable="true" type="q32:Features" />
+        <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/System.Collections.Generic" minOccurs="0" name="addList" nillable="true" type="q33:ArrayOfKeyValuePairOfArrayOfstringint9_SUPjmKX" />
+        <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="feat" nillable="true" type="q34:Features" />
         <xs:element minOccurs="0" name="verId" type="xs:int" />
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
       </xs:sequence>
@@ -459,7 +483,7 @@
   <xs:element name="GetLicenseTextResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/FeatureService.Model" minOccurs="0" name="GetLicenseTextResult" nillable="true" type="q33:ArrayOfScript" />
+        <xs:element xmlns:q35="http://schemas.datacontract.org/2004/07/FeatureService.Model" minOccurs="0" name="GetLicenseTextResult" nillable="true" type="q35:ArrayOfScript" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -471,7 +495,7 @@
   <xs:element name="GetApplicationsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetApplicationsResult" nillable="true" type="q34:ArrayOfApplications" />
+        <xs:element xmlns:q36="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetApplicationsResult" nillable="true" type="q36:ArrayOfApplications" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -485,7 +509,19 @@
   <xs:element name="GetVersionsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q35="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetVersionsResult" nillable="true" type="q35:ArrayOfMyVersion" />
+        <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetVersionsResult" nillable="true" type="q37:ArrayOfMyVersion" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllVersions">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllVersionsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetAllVersionsResult" nillable="true" type="q38:ArrayOfMyVersion" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -499,7 +535,7 @@
   <xs:element name="GetDefaultVersionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q36="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetDefaultVersionResult" nillable="true" type="q36:MyVersion" />
+        <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetDefaultVersionResult" nillable="true" type="q39:MyVersion" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -521,7 +557,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" name="verName" nillable="true" type="xs:string" />
-        <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="copyOf" nillable="true" type="q37:MyVersion" />
+        <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="copyOf" nillable="true" type="q40:MyVersion" />
         <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
       </xs:sequence>
     </xs:complexType>
@@ -539,7 +575,7 @@
   <xs:element name="GetUsersListResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetUsersListResult" nillable="true" type="q38:ArrayOfUser" />
+        <xs:element xmlns:q41="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetUsersListResult" nillable="true" type="q41:ArrayOfUser" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -553,7 +589,7 @@
   <xs:element name="GetUserResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetUserResult" nillable="true" type="q39:User" />
+        <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetUserResult" nillable="true" type="q42:User" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -611,7 +647,7 @@
   <xs:element name="GetEventsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetEventsResult" nillable="true" type="q40:ArrayOfLogg" />
+        <xs:element xmlns:q43="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="GetEventsResult" nillable="true" type="q43:ArrayOfLogg" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -636,7 +672,61 @@
   <xs:element name="GetContactsResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q41="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetContactsResult" nillable="true" type="q41:ArrayOfKeyValueOfintArrayOfContactJ6oMiCM0" />
+        <xs:element xmlns:q44="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetContactsResult" nillable="true" type="q44:ArrayOfKeyValueOfintArrayOfContactJ6oMiCM0" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InsertContact">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q45="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="contact" nillable="true" type="q45:Contact" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InsertContactResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="InsertContactResult" nillable="true" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeContact">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" minOccurs="0" name="contact" nillable="true" type="q46:Contact" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeContactResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ChangeContactResult" nillable="true" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteContact">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="id" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteContactResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="DeleteContactResult" nillable="true" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetContactTypes">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetContactTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetContactTypesResult" nillable="true" type="q47:ArrayOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

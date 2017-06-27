@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
+  <xs:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
   <xs:complexType name="ArrayOfFeatures">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Features" nillable="true" type="tns:Features" />
@@ -52,6 +51,8 @@
       <xs:element minOccurs="0" name="Products" nillable="true" type="tns:ArrayOfProduct" />
       <xs:element minOccurs="0" name="ShortName" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Sign" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Status" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Update" type="xs:dateTime" />
     </xs:sequence>
   </xs:complexType>
@@ -65,14 +66,15 @@
   <xs:complexType name="Contact">
     <xs:sequence>
       <xs:element minOccurs="0" name="Address" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Asukas" type="xs:int" />
       <xs:element minOccurs="0" name="BOU" type="xs:int" />
-      <xs:element minOccurs="0" name="BouValues" type="tns:BouValues" />
+      <xs:element minOccurs="0" name="BouValues" nillable="true" type="tns:BouValues" />
       <xs:element minOccurs="0" name="Client" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ContactId" type="xs:int" />
       <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FTB" type="xs:int" />
       <xs:element minOccurs="0" name="IFO" type="xs:int" />
-      <xs:element minOccurs="0" name="IfoValues" type="tns:IfoValues" />
+      <xs:element minOccurs="0" name="KIR" type="xs:int" />
       <xs:element minOccurs="0" name="Management" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Other" nillable="true" type="xs:string" />
@@ -82,20 +84,17 @@
       <xs:element minOccurs="0" name="REX" type="xs:int" />
       <xs:element minOccurs="0" name="SBOU" type="xs:int" />
       <xs:element minOccurs="0" name="SIFO" type="xs:int" />
+      <xs:element minOccurs="0" name="SKIR" type="xs:int" />
       <xs:element minOccurs="0" name="SVOO" type="xs:int" />
       <xs:element minOccurs="0" name="Sign" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Update" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="VOO" type="xs:int" />
-      <xs:element minOccurs="0" name="VooValues" type="tns:VooValues" />
+      <xs:element minOccurs="0" name="VooValues" nillable="true" type="tns:VooValues" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="Contact" nillable="true" type="tns:Contact" />
   <xs:complexType name="BouValues">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
     <xs:sequence>
       <xs:element minOccurs="0" name="FSK" type="xs:int" />
       <xs:element minOccurs="0" name="GR" type="xs:int" />
@@ -107,24 +106,7 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="BouValues" nillable="true" type="tns:BouValues" />
-  <xs:complexType name="IfoValues">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element minOccurs="0" name="Asukas" type="xs:int" />
-      <xs:element minOccurs="0" name="KIR" type="xs:int" />
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="IfoValues" nillable="true" type="tns:IfoValues" />
   <xs:complexType name="VooValues">
-    <xs:annotation>
-      <xs:appinfo>
-        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
-      </xs:appinfo>
-    </xs:annotation>
     <xs:sequence>
       <xs:element minOccurs="0" name="AVG" type="xs:int" />
       <xs:element minOccurs="0" name="FTJ" type="xs:int" />
