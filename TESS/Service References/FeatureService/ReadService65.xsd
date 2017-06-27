@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" />
+  <xs:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" />
   <xs:complexType name="ArrayOfstring">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />

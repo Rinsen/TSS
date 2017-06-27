@@ -2,12 +2,12 @@
 <wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ReadService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
-      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" />
-      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
-      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
+      <xsd:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Contracts" />
+      <xsd:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/FeatureService.Model" />
+      <xsd:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IFeatures_GetFeatures_InputMessage">
@@ -130,6 +130,12 @@
   <wsdl:message name="IClient_DeleteClient_OutputMessage">
     <wsdl:part name="parameters" element="tns:DeleteClientResponse" />
   </wsdl:message>
+  <wsdl:message name="IClient_GetClientTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientTypes" />
+  </wsdl:message>
+  <wsdl:message name="IClient_GetClientTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientTypesResponse" />
+  </wsdl:message>
   <wsdl:message name="IProduct_GetProducts_InputMessage">
     <wsdl:part name="parameters" element="tns:GetProducts" />
   </wsdl:message>
@@ -184,6 +190,12 @@
   <wsdl:message name="IScript_GetScripts_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetScriptsResponse" />
   </wsdl:message>
+  <wsdl:message name="IScript_GetAllScripts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllScripts" />
+  </wsdl:message>
+  <wsdl:message name="IScript_GetAllScripts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllScriptsResponse" />
+  </wsdl:message>
   <wsdl:message name="IScript_WriteNewScripts_InputMessage">
     <wsdl:part name="parameters" element="tns:WriteNewScripts" />
   </wsdl:message>
@@ -213,6 +225,12 @@
   </wsdl:message>
   <wsdl:message name="IVersion_GetVersions_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetVersionsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_GetAllVersions_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllVersions" />
+  </wsdl:message>
+  <wsdl:message name="IVersion_GetAllVersions_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllVersionsResponse" />
   </wsdl:message>
   <wsdl:message name="IVersion_GetDefaultVersion_InputMessage">
     <wsdl:part name="parameters" element="tns:GetDefaultVersion" />
@@ -279,6 +297,30 @@
   </wsdl:message>
   <wsdl:message name="IContact_GetContacts_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetContactsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContact_InsertContact_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertContact" />
+  </wsdl:message>
+  <wsdl:message name="IContact_InsertContact_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertContactResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContact_ChangeContact_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeContact" />
+  </wsdl:message>
+  <wsdl:message name="IContact_ChangeContact_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeContactResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContact_DeleteContact_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteContact" />
+  </wsdl:message>
+  <wsdl:message name="IContact_DeleteContact_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteContactResponse" />
+  </wsdl:message>
+  <wsdl:message name="IContact_GetContactTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetContactTypes" />
+  </wsdl:message>
+  <wsdl:message name="IContact_GetContactTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetContactTypesResponse" />
   </wsdl:message>
   <wsdl:portType name="IFeatures">
     <wsdl:operation name="GetFeatures">
@@ -363,6 +405,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IClient/DeleteClient" message="tns:IClient_DeleteClient_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IClient/DeleteClientResponse" message="tns:IClient_DeleteClient_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetClientTypes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClient/GetClientTypes" message="tns:IClient_GetClientTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClient/GetClientTypesResponse" message="tns:IClient_GetClientTypes_OutputMessage" />
+    </wsdl:operation>
   </wsdl:portType>
   <wsdl:portType name="IProduct">
     <wsdl:operation name="GetProducts">
@@ -405,6 +451,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IScript/GetScripts" message="tns:IScript_GetScripts_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IScript/GetScriptsResponse" message="tns:IScript_GetScripts_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="GetAllScripts">
+      <wsdl:input wsaw:Action="http://tempuri.org/IScript/GetAllScripts" message="tns:IScript_GetAllScripts_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IScript/GetAllScriptsResponse" message="tns:IScript_GetAllScripts_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="WriteNewScripts">
       <wsdl:input wsaw:Action="http://tempuri.org/IScript/WriteNewScripts" message="tns:IScript_WriteNewScripts_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IScript/WriteNewScriptsResponse" message="tns:IScript_WriteNewScripts_OutputMessage" />
@@ -428,6 +478,10 @@
     <wsdl:operation name="GetVersions">
       <wsdl:input wsaw:Action="http://tempuri.org/IVersion/GetVersions" message="tns:IVersion_GetVersions_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IVersion/GetVersionsResponse" message="tns:IVersion_GetVersions_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllVersions">
+      <wsdl:input wsaw:Action="http://tempuri.org/IVersion/GetAllVersions" message="tns:IVersion_GetAllVersions_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IVersion/GetAllVersionsResponse" message="tns:IVersion_GetAllVersions_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="GetDefaultVersion">
       <wsdl:input wsaw:Action="http://tempuri.org/IVersion/GetDefaultVersion" message="tns:IVersion_GetDefaultVersion_InputMessage" />
@@ -480,6 +534,22 @@
     <wsdl:operation name="GetContacts">
       <wsdl:input wsaw:Action="http://tempuri.org/IContact/GetContacts" message="tns:IContact_GetContacts_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IContact/GetContactsResponse" message="tns:IContact_GetContacts_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertContact">
+      <wsdl:input wsaw:Action="http://tempuri.org/IContact/InsertContact" message="tns:IContact_InsertContact_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IContact/InsertContactResponse" message="tns:IContact_InsertContact_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeContact">
+      <wsdl:input wsaw:Action="http://tempuri.org/IContact/ChangeContact" message="tns:IContact_ChangeContact_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IContact/ChangeContactResponse" message="tns:IContact_ChangeContact_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteContact">
+      <wsdl:input wsaw:Action="http://tempuri.org/IContact/DeleteContact" message="tns:IContact_DeleteContact_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IContact/DeleteContactResponse" message="tns:IContact_DeleteContact_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetContactTypes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IContact/GetContactTypes" message="tns:IContact_GetContactTypes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IContact/GetContactTypesResponse" message="tns:IContact_GetContactTypes_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IFeatures" type="tns:IFeatures">
@@ -667,6 +737,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetClientTypes">
+      <soap:operation soapAction="http://tempuri.org/IClient/GetClientTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="BasicHttpBinding_IProduct" type="tns:IProduct">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -757,6 +836,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetAllScripts">
+      <soap:operation soapAction="http://tempuri.org/IScript/GetAllScripts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="WriteNewScripts">
       <soap:operation soapAction="http://tempuri.org/IScript/WriteNewScripts" style="document" />
       <wsdl:input>
@@ -801,6 +889,15 @@
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetVersions">
       <soap:operation soapAction="http://tempuri.org/IVersion/GetVersions" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllVersions">
+      <soap:operation soapAction="http://tempuri.org/IVersion/GetAllVersions" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -919,40 +1016,76 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="InsertContact">
+      <soap:operation soapAction="http://tempuri.org/IContact/InsertContact" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeContact">
+      <soap:operation soapAction="http://tempuri.org/IContact/ChangeContact" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteContact">
+      <soap:operation soapAction="http://tempuri.org/IContact/DeleteContact" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetContactTypes">
+      <soap:operation soapAction="http://tempuri.org/IContact/GetContactTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="ReadService">
     <wsdl:port name="BasicHttpBinding_IFeatures" binding="tns:BasicHttpBinding_IFeatures">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IClient" binding="tns:BasicHttpBinding_IClient">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IProduct" binding="tns:BasicHttpBinding_IProduct">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IWriter" binding="tns:BasicHttpBinding_IWriter">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IScript" binding="tns:BasicHttpBinding_IScript">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IApplications" binding="tns:BasicHttpBinding_IApplications">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IVersion" binding="tns:BasicHttpBinding_IVersion">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IUser" binding="tns:BasicHttpBinding_IUser">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_ILogg" binding="tns:BasicHttpBinding_ILogg">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_ILicense" binding="tns:BasicHttpBinding_ILicense">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
     <wsdl:port name="BasicHttpBinding_IContact" binding="tns:BasicHttpBinding_IContact">
-      <soap:address location="http://tecmainse.tec.pad.tieto.com:1338/ReadService.svc" />
+      <soap:address location="http://tecapp2017.tec.pad.tieto.com:1338/ReadService.svc" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

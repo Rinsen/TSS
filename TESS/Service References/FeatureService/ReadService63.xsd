@@ -13,6 +13,7 @@
       <xs:element minOccurs="0" name="FileType" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ModId" type="xs:int" />
       <xs:element minOccurs="0" name="OriginalFileNr" type="xs:int" />
+      <xs:element minOccurs="0" name="ProdId" type="xs:int" />
       <xs:element minOccurs="0" name="Sort" type="xs:int" />
       <xs:element minOccurs="0" name="VerId" type="xs:int" />
     </xs:sequence>

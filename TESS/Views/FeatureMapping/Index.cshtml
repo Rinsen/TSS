@@ -81,9 +81,9 @@
                                        </div>
                                    </div>
                                    <input id="available-features-search" class="search form-control input-sm" placeholder="Search..." />
-                                   <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
+                                   @*<button type="button" class="sort btn btn-default btn-sm" data-sort="name">
                                        Search
-                                   </button>
+                                   </button>*@
                                </div>
                            </form>
                        </div>  
@@ -287,6 +287,12 @@
                     MappedFeaturesList.items.forEach(function (item) {
                         FeatureList.remove('Id', item.Id);
                     });
+
+                    var search_data = $('#available-features-search').val();
+                    if (search_data != "") {
+                        searchForItem(search_data);
+                    }
+                    
                 }
             })
         }
@@ -323,21 +329,26 @@
         $('#available-features-search').bind('keyup', function () {
             var search_data = this.value;
             if (search_data != old_search_data) {
-                $isSearching.show();
-
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(function () {
-                    FeatureList.search(search_data);
-                    $isSearching.hide();
-                }, 300);
+                searchForItem(search_data);
             }
+        });
 
+        function searchForItem(search_data) {
+           
+            $isSearching.show();
+
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function () {
+                FeatureList.search(search_data);
+                $isSearching.hide();
+            }, 300);
+           
             // Hide after 20 sec if searching failed
             setTimeout(function () {
                 $isSearching.hide();
             }, 20000);
             old_search_data = search_data;
-        });
+        }
         
 
         // Modal bindings

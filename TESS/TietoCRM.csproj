@@ -174,7 +174,7 @@
     <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
-    <Compile Include="Controllers\FeatureMappingController.cs" />
+    <Compile Include="Controllers\Installations\FeatureMappingController.cs" />
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
     <Compile Include="Controllers\List Management\CustomerContactController.cs" />
     <Compile Include="Controllers\List Management\CustomerController.cs" />
@@ -689,13 +689,32 @@
     <Content Include="Scripts\tree.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Scripts\ContractModals\ContractFromOffer.js" />
-    <None Include="Service References\FeatureService\ReadService.disco" />
     <None Include="Service References\FeatureService\configuration91.svcinfo" />
     <None Include="Service References\FeatureService\configuration.svcinfo" />
+    <None Include="Service References\FeatureService\ReadService1.wsdl" />
+    <None Include="Service References\FeatureService\ReadService6.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService61.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService62.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService63.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService64.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\FeatureService\ReadService65.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\FeatureService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Service References\FeatureService\ReadService1.disco" />
     <Content Include="Views\CustomerContract\Footer.html" />
     <Content Include="Views\CustomerContract\Header.cshtml" />
     <Content Include="Views\CustomerOffer\Footer.html" />
@@ -790,25 +809,6 @@
     <Content Include="Views\ModuleDiscount\Index.cshtml" />
     <Content Include="Views\TopCustomersReport\Pdf.cshtml" />
     <Content Include="Views\FeatureMapping\Index.cshtml" />
-    <None Include="Service References\FeatureService\ReadService.wsdl" />
-    <None Include="Service References\FeatureService\ReadService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService4.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FeatureService\ReadService5.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Applications.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Content>
