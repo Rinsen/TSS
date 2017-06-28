@@ -21,20 +21,33 @@
                 <table class="table table-striped table-bordered">
                 <tr>
                     <th style="width: 5%">ID</th>
-                    <th style="width: 30%">Name</th>
-                    <th style="width: 35%">Path</th>
-                    <th style="width: 10%">Classification</th>
+                    <th style="width: 60%">Name</th>
+                    <th style="width: 15%">Classification</th>
                     <th style="width: 20%">Article</th>
                 </tr>
                 @foreach (TietoCRM.FeatureService.Features feature in features)
                 {
-                    <tr class="">
+                    if(article.Discount == 0 && article.Expired == false)
+                    {
+                         <tr class="">
                         <td>@feature.Id</td>
-                        <td>@feature.Text</td>
-                        <td>@String.Join(" / ", view_ModuleFeature.GetRelationByParent(feature))</td>
+                        @*<td>@feature.Text</td>*@
+                        @{
+                            List<String> pathlist = view_ModuleFeature.GetRelationByParent(feature);
+                        }
+                         <td>
+                            @if (pathlist.Count != 0)
+                            {
+                                string path = String.Join(" / ", pathlist) + " / ";
+                                @path
+                            }
+                            <strong>@feature.Text</strong>
+                         </td>
                         <td>@article.Classification</td>
                         <td>@article.Article_number @article.Module</td>
                     </tr>
+                    }
+                   
                 }
                 </table>
             }
@@ -57,10 +70,13 @@
             </tr>
                 @foreach (var moduleWithoutFeatures in missingFeatureModules)
                 {
-                    <tr class="">
-                        <td>@moduleWithoutFeatures.Article_number &ensp; @moduleWithoutFeatures.Module</td>
-                        <td>@moduleWithoutFeatures.Classification</td>
-                    </tr>
+                    if (moduleWithoutFeatures.Discount == 0 && moduleWithoutFeatures.Expired == false)
+                    {
+                        <tr class="">
+                            <td>@moduleWithoutFeatures.Article_number &ensp; @moduleWithoutFeatures.Module</td>
+                            <td>@moduleWithoutFeatures.Classification</td>
+                        </tr>
+                    }
                 }
         </table>
 </div>

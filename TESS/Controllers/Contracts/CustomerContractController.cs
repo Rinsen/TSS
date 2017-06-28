@@ -140,6 +140,7 @@ namespace TietoCRM.Controllers.Contracts
             this.GenerateThings();
             this.ViewData["Title"] = "Shipping List";
 
+
             ViewData["ArticleSystemDictionary"] = ((IList<KeyValuePair<String, List<dynamic>>>) ViewData["ArticleSystemDictionary"]).OrderBy(d => d.Key).ToList();
 
             ViewAsPdf pdf = new ViewAsPdf("ShippingListPdf");
@@ -232,6 +233,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Price_type = sector.Price_type;
                 contractInfo.Fixed_price = contractRow.Fixed_price;
                 contractInfo.Sort_number = sector.SortNo;
+                contractInfo.Expired = module.Expired;
                 if (contractRow.Rewritten == true)
                     ctrResign = true;
 
