@@ -206,7 +206,7 @@
 
         var checkMainReminder = function () {
             $.ajax({
-                "url": "/Home/checkReminder/",
+                "url": serverPrefix + "Home/checkReminder/",
                 "type": "POST",
                 "success": function (data) {
                     if (data == "1") {
@@ -316,7 +316,7 @@
         });
         var loadMainReminders = function () {
             $.ajax({
-                "url": "/Home/GetReminders/",
+                "url": serverPrefix + "Home/GetReminders/",
                 "type": "POST",
                 "success": function (data) {
                     reminders = JSON.parse(data);
@@ -349,7 +349,7 @@
                 $input = $($inputs[i]);
                 var id = $input.attr("data-id");
                 $.ajax({
-                    "url": "/Home/DeactivateReminder/",
+                    "url": serverPrefix + "Home/DeactivateReminder/",
                     "type": "POST",
                     "data": {
                         "id_pk": id

@@ -94,7 +94,7 @@
         var $filterMode = $("#filter-mode");
         var updateTree = function (prodID,clientID) {
             $.ajax({
-                "url": "/Features/Data/",
+                "url":  serverPrefix + "Features/Data/",
                 "type": "POST",
                 "data": {
                     "productID": prodID,
@@ -122,7 +122,7 @@
             }
             
             $.ajax({
-                "url": "/Features/SearchResults/",
+                "url": serverPrefix + "Features/SearchResults/",
                 "type": "POST",
                 "data": {
                     "prodID": prodID,
