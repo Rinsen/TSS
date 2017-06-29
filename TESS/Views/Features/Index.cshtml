@@ -8,11 +8,11 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label for="product-list">Products:</label>
-                <select class="form-control" id="product-list">
+                <select class="form-control selectpicker" id="product-list" data-live-search="true">
                     @foreach (TietoCRM.FeatureService.Product product in ViewBag.Products)
                     {
 
-                            <option value="@product.ID">@product.ShortName</option>
+                            <option value="@product.Id">@product.ShortName</option>
 
                     }
                 </select>
@@ -21,11 +21,11 @@
         <div class="col-md-4">
             <div class="form-group ">
                 <label for="client-list">Clients:</label>
-                <select class="form-control" id="client-list">
+                <select class="form-control selectpicker" id="client-list" data-live-search="true">
                     @foreach (TietoCRM.FeatureService.Client client in ViewBag.Clients)
                     {
 
-                        <option value="@client.clientID">@client.name</option>
+                        <option value="@client.ClientId">@client.Name</option>
 
                     }
                 </select>
@@ -35,9 +35,11 @@
             <form class="form-group">
                 <label for="feature-filter" class="filter-label">Filter:</label>
                 <div class="form-inline">
-                    <div style="display:inline-block">
+                    <div class="form-group">
                         <input type="text" class="form-control" placeholder="Filter features" id="feature-filter">
-                        <select class="form-control" id="filter-mode">
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control selectpicker" id="filter-mode" data-live-search="true">
                             <option value="0">Name</option>
                             <option value="1">ID</option>
                             <option value="2">Article nr</option>
@@ -47,8 +49,9 @@
                             <option value="6">INI-Script</option>
 
                         </select>
-                        <button class="btn btn-primary features-pdf-button" id="generate-pdf-btn">PDF </button>
+                        
                     </div>
+                    @*<button class="btn btn-primary features-pdf-button" id="generate-pdf-btn">PDF </button>*@
                 </div>
                 
             </form>
@@ -65,9 +68,6 @@
                 <tr>
                     <td>
                         <h5 style="float:right">ID</h5>
-                    </td>
-                    <td style="width:120px; text-align:right">
-                        <h5 style="float:right">Article number</h5>
                     </td>
                 </tr>
             </table>
@@ -94,7 +94,7 @@
         var $filterMode = $("#filter-mode");
         var updateTree = function (prodID,clientID) {
             $.ajax({
-                "url": "/Features/Data/",
+                "url":  serverPrefix + "Features/Data/",
                 "type": "POST",
                 "data": {
                     "productID": prodID,
@@ -102,7 +102,12 @@
                 },
                 success: function (data) {
                     $tree.html(data);
-                    $tree.treed();
+                    if ( $(data).find('ul').children().length > 0 ) {
+                        $tree.treed();
+                    } else {
+                        $tree.html($('<p></p>').html("The customer is missing installations for " + $productList.find('option[value="' + prodID + '"]').text()));
+                    }
+                   
                     
                 }
 
@@ -117,7 +122,7 @@
             }
             
             $.ajax({
-                "url": "/Features/SearchResults/",
+                "url": serverPrefix + "Features/SearchResults/",
                 "type": "POST",
                 "data": {
                     "prodID": prodID,

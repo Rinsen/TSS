@@ -7,15 +7,21 @@
         <form method="get" action="~/ModuleReport/Pdf" target="_blank" class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">Modules:</label>
-                <select name="module" id="crm-select-module" class="form-control selectpicker" data-live-search="true">
+                <select name="module" id="crm-select-module" class="form-control selectpicker" data-live-search="true" data-show-subtext="true">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
-                        <option value="@Module.Article_number">@Module.Article_number - @Module.Module</option>
+                        <option value="@Module.Article_number" data-subtext="@Module.Description">@Module.Article_number - @Module.Module</option>
                     }
                 </select>
             </div>
             <button id="fetch-pdf" style="margin-top: 1.7em" class="btn btn-default" type="button">PDF</button>
+            <div class="checkbox" style="margin-top: 1.7em">
+                <label>
+                    <input type="checkbox" id="desc"> Show module description
+                </label>
+            </div>
         </form>
+
     </div>
     <div class="col-md-12">
         <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
@@ -78,14 +84,22 @@
 
         $('#fetch-pdf').click(function () {
             var module = $('#crm-select-module').val();
+            var showDesc = $('#desc').val();
             var $dt = $('.dataTable').DataTable();
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
-
-            window.open(serverPrefix + 'ModuleReport/Pdf?module=' + module + sort, "_blank");
+            if ($('#desc').is(':checked')) {
+                window.open(serverPrefix + 'ModuleReport/Pdf?module=' + module + sort + '&showDesc=1', "_blank");
+            }
+            else {
+                window.open(serverPrefix + 'ModuleReport/Pdf?module=' + module + sort, "_blank");
+            }
         })
 
     });
 
     </script>
+
+    
+    
 </row>

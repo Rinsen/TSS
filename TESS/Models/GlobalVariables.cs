@@ -35,6 +35,7 @@ namespace TietoCRM.Models
         public static void Initializer()
         {
             HttpContext.Current.Application["ApplicationName"] = ConfigurationManager.AppSettings["applicationName"];
+            FeatureServiceProxy.ServiceUri = ConfigurationManager.AppSettings["ServiceUrl"];
         }
 
         public static void checkIfAuthorized(String site)

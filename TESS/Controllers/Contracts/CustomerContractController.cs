@@ -16,6 +16,8 @@ using System.Web.Script.Serialization;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
 using System.Data;
+using System.Collections;
+
 namespace TietoCRM.Controllers.Contracts
 {
     public static class Distinct
@@ -132,6 +134,23 @@ namespace TietoCRM.Controllers.Contracts
                 return View();
         }
 
+
+        public ActionResult ViewShippingListPdf()
+        {
+            this.GenerateThings();
+            this.ViewData["Title"] = "Shipping List";
+
+
+            ViewData["ArticleSystemDictionary"] = ((IList<KeyValuePair<String, List<dynamic>>>) ViewData["ArticleSystemDictionary"]).OrderBy(d => d.Key).ToList();
+
+            ViewAsPdf pdf = new ViewAsPdf("ShippingListPdf");
+            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Shipping List" + "\"";
+            pdf.RotativaOptions.CustomSwitches += " --header-center \"" + Request["contract-id"] +"\"";
+
+            return pdf;
+        }
+
+
         private void GenerateThings()
         {
            // string request = Request["selected-contract"];
@@ -187,6 +206,8 @@ namespace TietoCRM.Controllers.Contracts
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
 
+            SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
+
             foreach (view_ContractRow contractRow in contract._ContractRows)
             {
                 view_Module module = new view_Module();
@@ -212,6 +233,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Price_type = sector.Price_type;
                 contractInfo.Fixed_price = contractRow.Fixed_price;
                 contractInfo.Sort_number = sector.SortNo;
+                contractInfo.Expired = module.Expired;
                 if (contractRow.Rewritten == true)
                     ctrResign = true;
 
@@ -219,8 +241,22 @@ namespace TietoCRM.Controllers.Contracts
                     oldArticles.Add(contractInfo);
                 if (contractRow.Rewritten == true && contractRow.Removed == true)
                     remArticles.Add(contractInfo);
-                if (contractRow.Rewritten == false)
+                if (contractRow.Rewritten == false /* && contractInfo.System != "Lärportal" */)
+                {
                     articles.Add(contractInfo);
+                    if( !articleSystemDic.ContainsKey(contractInfo.System) )
+                    {
+                        articleSystemDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
+                    }
+                    else
+                    {
+                        articleSystemDic[contractInfo.System].Add(contractInfo);
+                    }
+                   
+                }
+                    
+                else if(contractRow.Rewritten == false && contractInfo.System == "Lärportal")
+                    educationPortals.Add(contractInfo);
             }
 
             oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
@@ -246,8 +282,12 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Articles", articles);
             ViewData.Add("RemArticles", remArticles);
 
+            ViewData.Add("ArticleSystemDictionary",  articleSystemDic.OrderBy( d => d.Value.First().Price_type).ToList());
+
+
             List<dynamic> eduOptions = new List<dynamic>();
             List<dynamic> options = new List<dynamic>();
+            SortedList<String, List<dynamic>> optionSystemList = new SortedList<String, List<dynamic>>();
 
             foreach (view_ContractOption option in view_ContractOption.getAllOptions(urlContractId, urlCustomer))
             {
@@ -256,7 +296,7 @@ namespace TietoCRM.Controllers.Contracts
                 dynamic article = new ExpandoObject();
                 article.Article_number = module.Article_number;
                 article.Contract_id = option.Contract_id;
-                article.Article = module.Module;
+                article.Module = module.Module;
                 article.System = module.System;
 
                 view_Sector sector = new view_Sector();
@@ -268,8 +308,18 @@ namespace TietoCRM.Controllers.Contracts
                 article.License = option.License;
                 article.Maintenance = option.Maintenance;
 
-                options.Add(article);
+                //options.Add(article);
+                if (!optionSystemList.ContainsKey(article.System))
+                {
+                    optionSystemList.Add(article.System, new List<dynamic> { article });
+                }
+                else
+                {
+                    optionSystemList[article.System].Add(article);
+                }
             }
+
+            ViewData.Add("OptionSystemList", optionSystemList.OrderBy(d => d.Value.First().Price_type).ToList());
 
             ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article).ToList());
             //ViewData.Add("Options", options.OrderBy(a => a.Price_type).ThenBy(a => a.System).ThenBy(a => a.Classification).ThenBy(a => a.Article_number).ToList());
@@ -1505,6 +1555,12 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Removed == false) && ctr != "M")
                         kv.Add("Used", true);
+                    List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                    if(dependencies.Count > 0)
+                    {
+                        kv.Add("HasDependencies", true);
+                        kv.Add("Dependencies", dependencies);
+                    }
                 }
 
                 //Response.Charset = "UTF-8";
@@ -1529,7 +1585,7 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
                 String queryText = "";
 
-                if (ctr == "M")
+                if (ctr == "Me")
                 {
                     queryText = @"SELECT * FROM qry_GetModulesContractTermination
                                     WHERE Customer = @customer And (Cast(Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(Article_number As Varchar(30)) Else @searchtext End Or
@@ -1625,6 +1681,12 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Removed == false) && ctr != "M")
                         kv.Add("Used", true);
+                    List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                    if (dependencies.Count > 0)
+                    {
+                        kv.Add("HasDependencies", true);
+                        kv.Add("Dependencies", dependencies);
+                    }
 
                     //if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Contract_id == contractid && cr.Rewritten == true) && ctr != "M")
                     //    kv.Add("Rewritten", true);

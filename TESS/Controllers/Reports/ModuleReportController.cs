@@ -1,5 +1,6 @@
 ﻿using Rotativa.MVC;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -22,8 +23,7 @@ namespace TietoCRM.Controllers.Reports
 
             ViewData.Add("Modules", modules);
             //ViewData.Add("Properties", typeof(view_Module).GetProperties());
-
-            this.ViewData["Title"] = "Module Report";
+            this.ViewData["Title"] = "Customer Module Report";
 
             return View();
         }
@@ -35,17 +35,23 @@ namespace TietoCRM.Controllers.Reports
 
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
-
-            ViewData.Add("Customermodules", (new SortedByColumnCollection(list, sortDir, sortKey)).Collection);
+            if(list.Count != 0){
+                ViewData.Add("Customermodules", (new SortedByColumnCollection(list, sortDir, sortKey)).Collection);
+            }
+            else
+            {
+                ViewData.Add("Customermodules", new ArrayList());
+            }
+            
 
             view_Module module = new view_Module();
             module.Select("Article_number=" + aNumb);
 
             this.ViewData["Title"] = module.Module;
-
+            this.ViewData["Module"] = module;
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
-            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Module Report" + "\"";
-            pdf.RotativaOptions.CustomSwitches += " --header-center \""+ module.Module + "\"";
+            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Customer Module Report" + "\"";
+            
 
             return pdf;
 

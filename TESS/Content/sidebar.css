@@ -6,6 +6,25 @@
 
 /* Toggle Styles */
 
+.tss-base.bg {
+  background-color: #0065a0;
+}
+.tss-base.text {
+  color: #0065a0;
+}
+.tss-dark.bg {
+  background-color: #62b3e5;
+  color: white;
+}
+.tss-dark.text {
+  color: #62b3e5;
+}
+.tss-light.bg {
+  background-color: #bee2f8;
+}
+.tss-light.text {
+  color: #bee2f8;
+}
 .navbar-default {
   background-color: #0065a0;
 }
@@ -36,6 +55,20 @@
 .dropdown-menu > li > a:hover {
   background-color: #62b3e5;
   border-color: #62b3e5;
+}
+.btn-default small.text-muted,
+.btn-default:focus small.text-muted,
+.btn-default:active small.text-muted,
+.dropdown-toggle.btn-default small.text-muted,
+.btn-default.active small.text-muted,
+.btn-default:hover small.text-muted,
+.open > .dropdown-toggle.btn-default small.text-muted,
+.dropdown-menu > .active > a small.text-muted,
+.dropdown-menu > .active > a:focus small.text-muted,
+.dropdown-menu > .active > a:hover small.text-muted,
+.dropdown-menu > li > a:focus small.text-muted,
+.dropdown-menu > li > a:hover small.text-muted {
+  color: white;
 }
 .btn-default.active.focus,
 .btn-default.active:focus,

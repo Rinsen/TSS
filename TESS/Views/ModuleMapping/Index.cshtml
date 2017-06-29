@@ -1,0 +1,407 @@
+﻿@using TietoCRM.FeatureService;
+<row>
+    <div class="col-md-12">
+        <form method="get" id="systemselect" target="_blank" class="form-inline">
+            <div class="form-group select-system-container">
+                <label for="crm-select-system">System:</label>
+                <select name="module" id="crm-select-system" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
+                    @foreach (var SelectOption in ViewBag.Systems)
+                    {
+                        <option value="@SelectOption.Value">@SelectOption.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group select-module-container">
+                <label for="crm-select-module">Articles:</label>
+                <select name="module" id="crm-select-article" style='max-width:180px;' class="form-control selectpicker" data-live-search="true" data-show-subtext="false">
+                    @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
+                    {
+                        <option data-subtext="@Module.Description" data-name="@Module.Module" value="@Module.Article_number">@Module.Article_number &ensp; @Module.Module</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <button id="map-articles-btn" style="margin-top: 1.7em" class="btn btn-default" type="button">Map Articles</button>
+            </div>
+        </form>
+
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="article-mapping-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="Article_number" data-sortable="true">Article number</th>
+                    <th data-field="Module" data-sortable="true">Name</th>
+                    <th data-field="System" data-sortable="true">System</th>
+                    <th data-field="Classification" data-sortable="true">Classification</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div class="modal fade bs-example-modal-lg" id="mappingModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                    <p class="modal-title">
+                        <span>Mapping for:</span>
+                        <span style="color: #0065A0 !important">
+                            <strong style="color: black" id="selected-article-system"></strong>
+                            <strong id="selected-article-title"></strong>
+                            <span id="selected-article-description"></span>
+                        </span>
+                    </p>
+                </div>
+                <div id="module-modal" class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="module-header-container">
+                                <form class="form-inline">
+                                    <div class="form-group">
+                                        <label for="product-list">Systems:</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <select class="selectpicker" id="system-list" data-live-search="true">
+                                            @foreach (var SelectOption in ViewBag.Systems)
+                                            {
+                                                <option value="@SelectOption.Value">@SelectOption.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group pull-right">
+                                        <div class="is-searching-container">
+                                            <div class="is-searching">
+                                                <img src="/Content/img/crm-loading.gif" />
+                                            </div>
+                                        </div>
+                                        <input id="available-articles-search" class="search form-control input-sm" placeholder="Search..." />
+                                        <button type="button" class="sort btn btn-default btn-sm" data-sort="name">
+                                            Search
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="panel panel-default ">
+                                <div class="panel-heading tss-dark bg">
+                                    <h3 class="panel-title">Available Articles</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="available-articles" class="list-group item-wrapper">
+
+                                        <div class="list list-group" style="overflow-y: auto">
+                                            <div>List is empty..</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>Click on an Article above to map it to an Article</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="module-header-container"></div>
+                            <div class="panel panel-default ">
+                                <div class="panel-heading tss-dark bg">
+                                    <h3 class="panel-title">Mapped Article</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="mapped-articles" class="list-group item-wrapper">
+                                        <div class="list list-group" style="overflow-y: auto">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>Click on a Article above to remove mapping</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="save-module-mapping" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+    var serverPrefix = "@Url.Content("~/")";
+    @{String DataObject = "\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Article_number" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Module" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "System" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(parent_article_number)
+    {
+        $('#article-mapping-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bFilter": true,
+            "bPaginate": false,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": serverPrefix + "ModuleMapping/MappingData/",
+                "type": "POST",
+                "data": {
+                    "parent_article_number": parent_article_number,
+                }
+            },
+            "defaultContent": "",
+            "order": [[0, "asc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+    var addToMappedList;
+    var removeFromMappedList;
+    $('document').ready(function () {
+
+        $('.selectpicker').selectpicker();
+
+        // System Selectpicker
+        $systemContainer = $("#crm-select-system");
+        $systemContainer.change(function () {
+            getModulesBySystem(this.value);
+            console.log("rätt");
+        });
+
+        // Article Selectpicker
+        $articleContainer = $("#crm-select-article");
+        $articleContainer.change(function () {
+            if (this.value != "") {
+                updateDataTable(this.value)
+            }
+        });
+        updateDataTable($articleContainer.val());
+
+        // Modal System Selectpicker
+        $modalSystemSelect = $('#system-list');
+        var modalSystemSelectValue = $modalSystemSelect.val();
+        $modalSystemSelect.change(function () {
+            modalSystemSelectValue = this.value;
+            getArticleList(this.value);
+        });
+
+
+
+        // Feature mapping etc
+        var searchTimeout;
+        var ArticleList;
+        var selectedArticleNumber;
+
+        var MappedArticleList = new List("mapped-articles",
+            {
+                valueNames: [
+                    "Article_number",
+                    "Module"
+                ],
+                item:   `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
+                            <strong style="width: 45px; display: inline-block;" class ="Article_number"></strong>
+                            <strong class ="Module"></strong>
+                        </a>`
+            },
+            []
+        );
+
+        addToMappedList = function (itemElement) {
+            var $item = $(itemElement);
+            var id = $item.find('.Article_number').html();
+            MappedArticleList.add({
+                "Article_number": $item.find('.Article_number').html(),
+                "Module": $item.find('.Module').html()
+            });
+            ArticleList.remove("Article_number", id);
+            ArticleList.sort("Article_number", {
+                order: 'asc'
+            });
+        }
+
+        removeFromMappedList = function (itemElement) {
+            var $item = $(itemElement);
+            var id = $item.find('.Article_number').html();
+            ArticleList.add({
+                "Article_number": id,
+                "Module": $item.find('.Module').html(),
+            })
+            MappedArticleList.remove("Article_number", id);
+            ArticleList.sort("Article_number", {
+                order: 'asc'
+            });
+        }
+        var $isSearching = $('.is-searching');
+
+        var getArticleList = function (system) {
+            $.ajax({
+                "url": serverPrefix + "ModuleMapping/GetModulesList/",
+                "type": "POST",
+                "data": {
+                    "system": system,
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    var options = {
+                        valueNames: data.options,
+                        item: `<a href="#" onclick="addToMappedList(this)" class="list-group-item">
+                                    <strong style="width: 45px; display: inline-block;" class="Article_number"></strong>
+                                    <strong class ="Module"></strong>
+                                </a>`
+                    }
+                    ArticleList = new List("available-articles", options);
+                    ArticleList.clear();
+                    ArticleList.add(data.values);
+                    ArticleList.remove('Article_number', $articleContainer.selectpicker('val'));
+                    console.log($articleContainer.selectpicker('val'));
+                    MappedArticleList.items.forEach(function (item) {
+                        ArticleList.remove('Article_number', item.Article_number);
+                    });
+                }
+            })
+        }
+        var getMappedArticleList = function (parent_article_number) {
+            $.ajax({
+                "url": serverPrefix + "ModuleMapping/GetMappedModulesList/",
+                "type": "POST",
+                "data": {
+                    "parent_article_number": parent_article_number,
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    var options = {
+                        valueNames: data.options,
+                        item: `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
+                                    <strong style="width: 45px; display: inline-block;" class="Article_number"></strong>
+                                    <strong class="Module"></strong>
+                                </a>`
+                    }
+                    MappedArticleList = new List("mapped-articles", options);
+                    MappedArticleList.clear();
+                    MappedArticleList.add(data.values);
+                    data.values.forEach(function (item) {
+                        ArticleList.remove('Article_number', item.Article_number);
+                    });
+                }
+            })
+        }
+
+        var old_search_data = "";
+        $('#available-articles-search').bind('keyup', function () {
+            var search_data = this.value;
+            if (search_data != old_search_data) {
+                $isSearching.show();
+
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    ArticleList.search(search_data);
+                    $isSearching.hide();
+                }, 300);
+            }
+
+            // Hide after 20 sec if searching failed
+            setTimeout(function () {
+                $isSearching.hide();
+            }, 20000);
+            old_search_data = search_data;
+        });
+       
+        $modalSystemSelect.trigger('change');
+
+        // Modal bindings
+        $("#map-articles-btn").bind('click', function () {
+
+            // $productList.selectpicker('refresh');
+
+            var $selectedElement = $articleContainer.find('option:selected');
+            var $selectedArticleDesc = $('#selected-article-description');
+            selectedArticleNumber = $articleContainer.val();
+ 
+            $('#selected-article-title').html($selectedElement.data('name'));
+            $('#selected-article-system').html($systemContainer.val());
+
+            var subtext = $selectedElement.data('subtext');
+            if (subtext.length > 0) {
+                $selectedArticleDesc.html(" - " + subtext);
+            } else {
+                $selectedArticleDesc.html("");
+            }
+            $modalSystemSelect.trigger('change');
+            $("#mappingModal").appendTo("body").modal().draggable();
+            getMappedArticleList(selectedArticleNumber);
+        });
+
+        $("#save-module-mapping").bind('click', function () {
+            var mappedArticleList = MappedArticleList.items;
+            var mappedArticleLen = mappedArticleList.length;
+            var mappedArticles = [];
+            for (var i = 0; i < mappedArticleLen; i++) {
+                var feature = mappedArticleList[i];
+                mappedArticles.push(Number(feature._values.Article_number));
+            }
+            $.ajax({
+                "url": serverPrefix + "ModuleMapping/Map/",
+                "type": "POST",
+                "data": {
+                    "parent_article_number": selectedArticleNumber,
+                    "mapped_articles": JSON.stringify(mappedArticles)
+                },
+                "dataType": "text",
+                "success": function (data) {
+                    console.log(data);
+                    triggerAlert("Successfully updated", "success");
+                    $("#mappingModal").modal("toggle");
+                    updateDataTable(selectedArticleNumber);
+                }
+            })
+        });
+
+
+
+        var getModulesBySystem = function (system) {
+            $.ajax({
+                "url": serverPrefix + "FeatureMapping/GetModulesBySystem/",
+                "type": "POST",
+                "data": {
+                    "system": system
+                },
+                "dataType": "json",
+                "success": function (data) {
+                    console.log(data);
+                    updateModuleList(data);
+                }
+            })
+        }
+
+        var updateModuleList = function (list) {
+            var listlen = list.length;
+            var module;
+            $articleContainer.empty();
+            var description;
+            for (var i = 0; i < listlen; i++) {
+                module = list[i];
+                if (module.Description != null) {
+                    description = module.Description;
+                }
+                else {
+                    description = "";
+                }
+
+                $articleContainer.append('<option data-subtext="' + description + '" data-name="' + module.Module + '" value="' + module.Article_number + '">' + module.Article_number + '&ensp;' + module.Module + '</option>');
+            }
+            $articleContainer.selectpicker("refresh");
+            $articleContainer.trigger("change");
+        }
+
+    });
+
+    </script>
+    <script src="~/Scripts/List.min.js"></script>
+    <script>
+
+    </script>
+
+</row>
