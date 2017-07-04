@@ -460,7 +460,8 @@ namespace TietoCRM.Controllers.Contracts
 
             // Set title and file names.
             String fileName = (new FileLocationMapping(user, (view_Contract)ViewData["CustomerContract"])).GetFilePath() + ".pdf";
-           
+            fileName = fileName.Replace(",", "");
+
             ViewData["Title"] = fileName;
             Response.Headers["Content-disposition"] = "inline; filename=" + fileName;
                 
