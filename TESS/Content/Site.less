@@ -1051,3 +1051,77 @@ a.tooltips > span:after {
  .dataTable tr.selected{
     background-color:lightblue;
 }
+
+/* --------- Module Report ----------*/
+.bootstrap-select > button > span {
+    color: white;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    max-width: 500px;
+}
+.bootstrap-select > button > span > small.text-muted {
+    color: white;
+    font-weight: normal;
+}
+
+.bootstrap-select a{
+    overflow-x:hidden;
+    text-overflow: ellipsis;
+    max-width: 1000px;
+}
+
+.bootstrap-select a:hover {
+    color: white !important;
+}
+
+/* --------- Feature Mapping -----------*/
+
+#mappingModal {
+    .module-header-container{
+        height: 50px;
+    }
+    ol.breadcrumb{
+        padding: 0;
+        margin: 2px 0 4px;
+        list-style: none;
+        background-color: inherit;
+        font-size: 8pt;
+    }
+    .item-wrapper.list-group {
+        height: 50vh;
+    }
+    .list-group{
+        overflow: hidden;
+        margin-bottom: 0;
+        width: 98%;
+        .list-group-item {
+            padding-top: 5px;
+        }
+    }
+    .list.list-group{
+        overflow-y: auto;
+        height: 100%;
+    }
+    .is-searching-container{
+       display:inline-block;
+       div {
+            display: none;
+            margin-right: 5px;
+            img {
+                height: 35px;
+                vertical-align: middle;
+            }
+        }
+    }
+}
+
+#systemselect > .form-group {
+    &.select-system-container{
+        width: 250px;
+    }
+
+    &.select-module-container{
+        width: 500px;
+    }
+    
+}

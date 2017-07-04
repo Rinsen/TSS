@@ -1,3 +1,22 @@
+.tss-base.bg {
+  background-color: #0065a0;
+}
+.tss-base.text {
+  color: #0065a0;
+}
+.tss-dark.bg {
+  background-color: #62b3e5;
+  color: white;
+}
+.tss-dark.text {
+  color: #62b3e5;
+}
+.tss-light.bg {
+  background-color: #bee2f8;
+}
+.tss-light.text {
+  color: #bee2f8;
+}
 .navbar-default {
   background-color: #0065a0;
 }
@@ -28,6 +47,20 @@
 .dropdown-menu > li > a:hover {
   background-color: #62b3e5;
   border-color: #62b3e5;
+}
+.btn-default small.text-muted,
+.btn-default:focus small.text-muted,
+.btn-default:active small.text-muted,
+.dropdown-toggle.btn-default small.text-muted,
+.btn-default.active small.text-muted,
+.btn-default:hover small.text-muted,
+.open > .dropdown-toggle.btn-default small.text-muted,
+.dropdown-menu > .active > a small.text-muted,
+.dropdown-menu > .active > a:focus small.text-muted,
+.dropdown-menu > .active > a:hover small.text-muted,
+.dropdown-menu > li > a:focus small.text-muted,
+.dropdown-menu > li > a:hover small.text-muted {
+  color: white;
 }
 .btn-default.active.focus,
 .btn-default.active:focus,
@@ -1296,4 +1329,68 @@ a.tooltips > span:after {
 }
 .dataTable tr.selected {
   background-color: lightblue;
+}
+/* --------- Module Report ----------*/
+
+.bootstrap-select > button > span {
+  color: white;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  max-width: 500px;
+}
+.bootstrap-select > button > span > small.text-muted {
+  color: white;
+  font-weight: normal;
+}
+.bootstrap-select a {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  max-width: 1000px;
+}
+.bootstrap-select a:hover {
+  color: white !important;
+}
+/* --------- Feature Mapping -----------*/
+
+#mappingModal .module-header-container {
+  height: 50px;
+}
+#mappingModal ol.breadcrumb {
+  padding: 0;
+  margin: 2px 0 4px;
+  list-style: none;
+  background-color: inherit;
+  font-size: 8pt;
+}
+#mappingModal .item-wrapper.list-group {
+  height: 50vh;
+}
+#mappingModal .list-group {
+  overflow: hidden;
+  margin-bottom: 0;
+  width: 98%;
+}
+#mappingModal .list-group .list-group-item {
+  padding-top: 5px;
+}
+#mappingModal .list.list-group {
+  overflow-y: auto;
+  height: 100%;
+}
+#mappingModal .is-searching-container {
+  display: inline-block;
+}
+#mappingModal .is-searching-container div {
+  display: none;
+  margin-right: 5px;
+}
+#mappingModal .is-searching-container div img {
+  height: 35px;
+  vertical-align: middle;
+}
+#systemselect > .form-group.select-system-container {
+  width: 250px;
+}
+#systemselect > .form-group.select-module-container {
+  width: 500px;
 }

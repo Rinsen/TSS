@@ -1,7 +1,15 @@
 ﻿@{
     Layout = "~/Views/Shared/_ReportLayout.cshtml";
+    bool showDesc = false;
+    if (Request.Params["showDesc"] != null)
+    {
+        if (Request.Params["showDesc"] == "1")
+        {
+            showDesc = true;
+        }
+    }
 }
-
+@using TietoCRM.Models;
 @foreach (String pName in ViewBag.SystemNames)
 {
     var rubrik = pName.Split(new char[] { '#' })[1];
@@ -40,11 +48,36 @@
                                 {
                                     if (String.IsNullOrEmpty((String)CPR["Alias"]))
                                     {
-                                        <td>@CPR["Module"]</td>
+                                        <td>
+                                            <strong>@CPR["Module"]</strong>
+                                                @if (showDesc)
+                                                {
+                                                    foreach (view_Module module in ViewBag.matchedModules)
+                                                    {
+                                                        if (module.Article_number.ToString() == CPR["Article_number"].ToString())
+                                                        {
+                                                            <div>@module.Description &ensp;</div>
+                                                        }
+                                                    }
+                                                }
+                                                
+                                        </td>
                                     }
                                     else
                                     {
-                                        <td>@CPR["Alias"]</td>
+                                        <td>
+                                            <strong>@CPR["Alias"]</strong>
+                                                @if (showDesc)
+                                                {
+                                                    foreach (view_Module module in ViewBag.matchedModules)
+                                                    {
+                                                        if (module.Article_number.ToString() == CPR["Article_number"].ToString())
+                                                        {
+                                                            <div>@module.Description &ensp;</div>
+                                                        }
+                                                    }
+                                                }
+                                        </td>
                                     }
 
                                 }

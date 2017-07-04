@@ -101,7 +101,7 @@ namespace TietoCRM
                     HttpContext.Current.Session.Clear();
                     //HttpContext.Current.Session.Add("__UserRedirectUrl", Request.Url.AbsoluteUri);
                     base.Response.StatusCode = 0x191;
-                    Response.Redirect("/Access/Denied/");
+                    Response.Redirect("~/Access/Denied/");
                     
                 }
             }
@@ -110,7 +110,7 @@ namespace TietoCRM
                 HttpContext.Current.Session.Abandon();
                 HttpContext.Current.Session.Clear();
                 base.Response.StatusCode = 0x191;
-                Response.Redirect("/Access/Login/");
+                Response.Redirect("~/Access/Login/");
             }
         }
         protected void Application_Error(object sender, EventArgs e)
@@ -122,7 +122,7 @@ namespace TietoCRM
             Server.ClearError();
             if (!HttpContext.Current.Items.Contains("__User") && !Request.Url.AbsolutePath.StartsWith("/Access/Denied")
                 && !Request.Url.AbsolutePath.StartsWith("/Access/Login") && HttpContext.Current.Session != null)
-                Response.Redirect("/Error/Index");
+                Response.Redirect("~/Error/Index");
         }
 
 

@@ -18,25 +18,20 @@ namespace TietoCRM.Controllers
         private FeatureObservableCollection<FeatureService.Features> pdfProductTree;
 
         // GET: Features
-        private FeatureService.ClientClient clientReader;
-        private FeatureService.ProductClient productReader;
-        private FeatureService.FeaturesClient featureReader;
+       
         private ObservableCollection<FeatureService.Client> clientList;
         private ObservableCollection<FeatureService.Product> productList;
         private FeatureObservableCollection<FeatureService.Features> featureList;
         private StringBuilder htmlString = new StringBuilder();
+
         public ActionResult Index()
         {
-            
-            clientReader = new FeatureService.ClientClient();
-            clientList = new ObservableCollection<FeatureService.Client>(clientReader.GetCustomers());
+            clientList = new ObservableCollection<FeatureService.Client>(FeatureServiceProxy.GetClientClient().GetCustomers());
             clientList.RemoveAt(0);
             ViewData.Add("Clients", clientList);
-            clientReader.Close();
-            productReader = new FeatureService.ProductClient();
-            productList = new ObservableCollection<FeatureService.Product>(productReader.GetProducts());
+
+            productList = new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts());
             ViewData.Add("Products",productList);
-            productReader.Close();
 
             this.ViewData["Title"] = "Feature";
          //   featureReader = new FeatureService.FeaturesClient();
@@ -60,16 +55,16 @@ namespace TietoCRM.Controllers
             {
                 if (search && item.IsExpanded)
                 {
-                    htmlString.Append("<li data-feature-id='" + item.ID + "' class='feature-item-expanded' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.ID + "</td><td style='width:120px; text-align:right'>" + item.ArticleNumber + "</td></tr></table></span></a>");
+                    htmlString.Append("<li data-feature-id='" + item.Id + "' class='feature-item-expanded' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.Id + "</td></tr></table></span></a>");
                 }
                 else
                 {
-                    htmlString.Append("<li data-feature-id='" + item.ID + "' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.ID + "</td><td style='width:120px; text-align:right'>" + item.ArticleNumber + "</td></tr></table></span></a>");
+                    htmlString.Append("<li data-feature-id='" + item.Id + "' ontouchstart=''><a href='#'>" + item.Text + "<span class='features-id'><table><tr><td>" + item.Id + "</td></tr></table></span></a>");
                 }
                
-                if (item.children != null && item.children.Length > 0)
+                if (item.Children != null && item.Children.Length > 0)
                 {
-                    RecursiveTree(new ObservableCollection<FeatureService.Features>(item.children), search);
+                    RecursiveTree(new ObservableCollection<FeatureService.Features>(item.Children), search);
                 }
 
                 htmlString.Append("</li>");
@@ -85,15 +80,22 @@ namespace TietoCRM.Controllers
             int prodID = int.Parse(Request.Form["productID"]);
             int clientID = int.Parse(Request.Form["clientID"]);
 
-            featureReader = new FeatureService.FeaturesClient();
-            featureList = new FeatureObservableCollection<FeatureService.Features>(featureReader.GetClientsFeatures(prodID, clientID));
+            
+            featureList = new FeatureObservableCollection<FeatureService.Features>(FeatureServiceProxy.GetFeaturesClient().GetClientsFeatures(prodID, clientID));
             //featureList = new ObservableCollection<FeatureService.Features>(featureReader.GetClientsFeatures(prodid,clientid));
             RecursiveTree(featureList);
-           
-            featureReader.Close();
+ 
     
             return htmlString.ToString();
          
+        }
+
+        public JsonResult JsonData()
+        {
+            int featureID = int.Parse(Request.Form["featureID"]);
+
+            var test = FeatureServiceProxy.GetFeaturesClient().GetFeature(featureID);
+            return Json(test);
         }
 
         public String SearchResults()
@@ -106,11 +108,11 @@ namespace TietoCRM.Controllers
             int clientID = int.Parse(Request.Form["clientID"]);
             List<int> expandedIDs = (new JavaScriptSerializer()).Deserialize<List<int>>(Request.Form["expandedIDs"]);
 
-            featureReader = new FeatureService.FeaturesClient();
-            featureList = new FeatureObservableCollection<FeatureService.Features>(featureReader.GetClientsFeatures(prodID, clientID));
+
+            featureList = new FeatureObservableCollection<FeatureService.Features>(FeatureServiceProxy.GetFeaturesClient().GetClientsFeatures(prodID, clientID));
             FeatureObservableCollection<FeatureService.Features> scriptFeatures;
-            featureReader.Close();
-            FeatureService.VersionClient versionReader;
+          
+            
             ObservableCollection<int> scriptIDs;
             FeatureService.MyVersion defaultVersion;
             switch (mode)
@@ -131,49 +133,48 @@ namespace TietoCRM.Controllers
                     RecursiveTree(scriptFeatures, true);
                     break;
                 case 3:
-                    versionReader = new FeatureService.VersionClient();
-                    featureReader = new FeatureService.FeaturesClient();
-                    defaultVersion = versionReader.GetDefaultVersion(prodID);
-                    scriptIDs = new ObservableCollection<int>(featureReader.GetScriptFeatures(filter, prodID, "CSS", defaultVersion.versionName));
+                   
+                    defaultVersion = FeatureServiceProxy.GetVersionClient().GetDefaultVersion(prodID);
+                    scriptIDs = new ObservableCollection<int>(FeatureServiceProxy.GetFeaturesClient().GetScriptFeatures(filter, prodID, "CSS", defaultVersion.VersionName));
                     scriptFeatures = featureList.scriptFinder(scriptIDs, filter);
                     scriptFeatures.SetExpanded(new ObservableCollection<int>(expandedIDs));
                     RecursiveTree(scriptFeatures,true);
-                    versionReader.Close();
-                    featureReader.Close();
+                    
+
                     break;
                 case 4:
-                    versionReader = new FeatureService.VersionClient();
-                    featureReader = new FeatureService.FeaturesClient();
-                    defaultVersion = versionReader.GetDefaultVersion(prodID);
-                    scriptIDs = new ObservableCollection<int>(featureReader.GetScriptFeatures(filter, prodID, "DB", defaultVersion.versionName));
+                    
+                    
+                    defaultVersion = FeatureServiceProxy.GetVersionClient().GetDefaultVersion(prodID);
+                    scriptIDs = new ObservableCollection<int>(FeatureServiceProxy.GetFeaturesClient().GetScriptFeatures(filter, prodID, "DB", defaultVersion.VersionName));
                     scriptFeatures = featureList.scriptFinder(scriptIDs, filter);
                     scriptFeatures.SetExpanded(new ObservableCollection<int>(expandedIDs));
                     RecursiveTree(scriptFeatures,true);
-                    versionReader.Close();
-                    featureReader.Close();
+                    
+                    
                     break;
                 case 5:
-                    versionReader = new FeatureService.VersionClient();
-                    featureReader = new FeatureService.FeaturesClient();
-                    defaultVersion = versionReader.GetDefaultVersion(prodID);
-                    scriptIDs = new ObservableCollection<int>(featureReader.GetScriptFeatures(filter, prodID, "META", defaultVersion.versionName));
+                    
+                    
+                    defaultVersion = FeatureServiceProxy.GetVersionClient().GetDefaultVersion(prodID);
+                    scriptIDs = new ObservableCollection<int>(FeatureServiceProxy.GetFeaturesClient().GetScriptFeatures(filter, prodID, "META", defaultVersion.VersionName));
                     scriptFeatures = featureList.scriptFinder(scriptIDs, filter);
                     scriptFeatures.SetExpanded(new ObservableCollection<int>(expandedIDs));
                     RecursiveTree(scriptFeatures,true);
-                    versionReader.Close();
-                    featureReader.Close();
+                    
+
                     break;
                 case 6:
-                    versionReader = new FeatureService.VersionClient();
-                    featureReader = new FeatureService.FeaturesClient();
-                    defaultVersion = versionReader.GetDefaultVersion(prodID);
-                    scriptIDs = new ObservableCollection<int>(featureReader.GetScriptFeatures(filter, prodID, "INI", defaultVersion.versionName));
+                   
+                    
+                    defaultVersion = FeatureServiceProxy.GetVersionClient().GetDefaultVersion(prodID);
+                    scriptIDs = new ObservableCollection<int>(FeatureServiceProxy.GetFeaturesClient().GetScriptFeatures(filter, prodID, "INI", defaultVersion.VersionName));
                     scriptFeatures = featureList.scriptFinder(scriptIDs, filter);
                     scriptFeatures.SetExpanded(new ObservableCollection<int>(expandedIDs));
                     RecursiveTree(scriptFeatures,true);
                  
-                    versionReader.Close();
-                    featureReader.Close();
+                   
+                    
                     break;
 
             }
@@ -184,17 +185,15 @@ namespace TietoCRM.Controllers
         public ActionResult Pdf()
         {
             int clientId = int.Parse(Request["client-id"]);
-            productReader = new FeatureService.ProductClient();
-            productList = new ObservableCollection<FeatureService.Product>(productReader.GetProducts());
             
-            productReader.Close();
-
-
+            productList = new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts());
+            
             foreach (FeatureService.Product item in productList)
             {
-                featureReader = new FeatureService.FeaturesClient();
-                pdfProductTree = new FeatureObservableCollection<FeatureService.Features>(featureReader.GetClientsFeatures(item.ID, clientId));
-                featureReader.Close();
+                
+                pdfProductTree = new FeatureObservableCollection<FeatureService.Features>(FeatureServiceProxy.GetFeaturesClient()
+                                        .GetClientsFeatures(item.Id, clientId));
+                
                 if (pdfProductTree.Count > 0)
                 {
                     TreeToList(pdfProductTree);
@@ -221,9 +220,9 @@ namespace TietoCRM.Controllers
             foreach (FeatureService.Features item in pdfFeatureTree)
             {
                 FeatureService.Features feat = TietoCRM.Models.Cloner<FeatureService.Features>.DeepClone(item);
-                feat.children = null;
+                feat.Children = null;
                 pdfFeatureList.Add(feat);
-                TreeToList(new ObservableCollection<FeatureService.Features>(item.children));
+                TreeToList(new ObservableCollection<FeatureService.Features>(item.Children));
             }
         }
     }

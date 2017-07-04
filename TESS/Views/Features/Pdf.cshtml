@@ -14,12 +14,12 @@
 
             @foreach (TietoCRM.FeatureService.Features feature in ViewBag.Features)
             {
-                if (feature.ProdID == prod.ID)
+                if (feature.Id == prod.Id)
                 {
                     <tr class="">
 
                         <td>@feature.Text</td>
-                        <td>@feature.ID</td>
+                        <td>@feature.Id</td>
                         <td>@feature.ArticleNumber</td>
 
                     </tr>

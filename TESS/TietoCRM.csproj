@@ -15,7 +15,7 @@
     <AssemblyName>TietoCRM</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication>disabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
@@ -174,6 +174,7 @@
     <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\Installations\FeatureMappingController.cs" />
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
     <Compile Include="Controllers\List Management\CustomerContactController.cs" />
     <Compile Include="Controllers\List Management\CustomerController.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="Controllers\List Management\SelectOptionController.cs" />
     <Compile Include="Controllers\List Management\TemplateController.cs" />
     <Compile Include="Controllers\List Management\UserController.cs" />
+    <Compile Include="Controllers\ModuleMappingController.cs" />
     <Compile Include="Controllers\Offers\CustomerOfferController.cs" />
     <Compile Include="Controllers\Reports\AppointmentReportController.cs" />
     <Compile Include="Controllers\Reports\CancelledContractsReportController.cs" />
@@ -211,6 +213,7 @@
     </Compile>
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\EmailSender.cs" />
+    <Compile Include="Models\FeatureServiceProxy.cs" />
     <Compile Include="Models\HashtagDocument.cs" />
     <Compile Include="Models\Interfaces\IViewCollection.cs" />
     <Compile Include="Models\SelectOptions.cs" />
@@ -241,6 +244,8 @@
     <Compile Include="Models\view_Information.cs" />
     <Compile Include="Models\view_Module.cs" />
     <Compile Include="Models\view_ModuleDiscount.cs" />
+    <Compile Include="Models\view_ModuleFeature.cs" />
+    <Compile Include="Models\view_ModuleModule.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
     <Compile Include="Models\view_Reminder.cs" />
     <Compile Include="Models\view_Sector.cs" />
@@ -255,12 +260,17 @@
     <Compile Include="Models\SQLBaseClass.cs" />
     <Compile Include="Models\view_Tariff.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\Contracts\CustomerContractController.cs" />
     <Compile Include="Service References\FeatureService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\Contracts\CustomerContractController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-select.css" />
@@ -512,11 +522,17 @@
     <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Content\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Content\TSS-BaseColors.less" />
+    <None Include="Properties\PublishProfiles\2017_DEPLOY.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Properties\PublishProfiles\local_local.pubxml" />
     <None Include="Properties\PublishProfiles\TESS.pubxml" />
     <None Include="Properties\PublishProfiles\TESSWeb.pubxml" />
     <Content Include="Scripts\bootstrap-select.js.map" />
+    <None Include="Properties\PublishProfiles\TSS2017.pubxml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\ContractModals\Articles.js" />
@@ -667,11 +683,13 @@
     <Content Include="Scripts\js-cookie\js.cookie.js" />
     <Content Include="Scripts\less-1.5.1.js" />
     <Content Include="Scripts\less-1.5.1.min.js" />
+    <Content Include="Scripts\List.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\tree.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Scripts\ContractModals\ContractFromOffer.js" />
     <None Include="Service References\FeatureService\configuration91.svcinfo" />
     <None Include="Service References\FeatureService\configuration.svcinfo" />
     <None Include="Service References\FeatureService\ReadService1.wsdl" />
@@ -697,7 +715,6 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Content Include="Scripts\ContractModals\ContractFromOffer.js" />
     <None Include="Service References\FeatureService\ReadService1.disco" />
     <Content Include="Views\CustomerContract\Footer.html" />
     <Content Include="Views\CustomerContract\Header.cshtml" />
@@ -721,30 +738,6 @@
     <Content Include="Views\CustomerProductReport\Index.cshtml" />
     <Content Include="Views\CustomerProductReport\Pdf.cshtml" />
     <Content Include="Views\Features\Index.cshtml" />
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Applications.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Client.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Features.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Logg.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.MyVersion.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Product.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Script.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
-    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.User.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
     <Content Include="Views\CustomerContact\Index.cshtml" />
     <Content Include="Views\CustomerOffer\Index.cshtml" />
     <Content Include="Views\CustomerOffer\ViewPdf.cshtml" />
@@ -816,6 +809,36 @@
     <Content Include="Views\SelectOption\Index.cshtml" />
     <Content Include="Views\ModuleDiscount\Index.cshtml" />
     <Content Include="Views\TopCustomersReport\Pdf.cshtml" />
+    <Content Include="Views\FeatureMapping\Index.cshtml" />
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Applications.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Client.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Features.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Logg.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.MyVersion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Product.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Script.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.User.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Service References\FeatureService\TietoCRM.FeatureService.Contact.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Content>
+    <Content Include="Views\ModuleMapping\Index.cshtml" />
+    <Content Include="Views\CustomerContract\ShippingListPdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -839,9 +862,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\FeatureService\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
@@ -872,6 +892,12 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\FeatureService\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -899,7 +925,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/TESS</IISUrl>
+          <IISUrl>http://localhost:61645/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

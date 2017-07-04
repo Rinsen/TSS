@@ -1,0 +1,83 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+    view_Module helpModule;
+}
+@using TietoCRM.Models;
+
+
+
+@foreach (KeyValuePair<String, List<dynamic>> system in ViewBag.ArticleSystemDictionary)
+{
+    List<dynamic> missingFeatureModules = new List<dynamic>();
+    <div class="crm-print-block">
+        <h1>@system.Key</h1>
+        @for (int i = 0; i < system.Value.Count; i++)
+        {
+            var article = system.Value[i];
+
+            List<TietoCRM.FeatureService.Features> features = view_ModuleFeature.getAllFeatures(int.Parse(article.Article_number.ToString()));
+            if (features.Count > 0)
+            {
+                <table class="table table-striped table-bordered">
+                <tr>
+                    <th style="width: 5%">ID</th>
+                    <th style="width: 60%">Name</th>
+                    <th style="width: 15%">Classification</th>
+                    <th style="width: 20%">Article</th>
+                </tr>
+                @foreach (TietoCRM.FeatureService.Features feature in features)
+                {
+                    if(article.Discount == 0 && article.Expired == false)
+                    {
+                         <tr class="">
+                        <td>@feature.Id</td>
+                        @*<td>@feature.Text</td>*@
+                        @{
+                            List<String> pathlist = view_ModuleFeature.GetRelationByParent(feature);
+                        }
+                         <td>
+                            @if (pathlist.Count != 0)
+                            {
+                                string path = String.Join(" / ", pathlist) + " / ";
+                                @path
+                            }
+                            <strong>@feature.Text</strong>
+                         </td>
+                        <td>@article.Classification</td>
+                        <td>@article.Article_number @article.Module</td>
+                    </tr>
+                    }
+                   
+                }
+                </table>
+            }
+            else
+            {
+                missingFeatureModules.Add(article);
+            }
+
+        }
+
+        @{
+            missingFeatureModules = missingFeatureModules.OrderBy(mwf => mwf.Article_number).ToList();
+        }
+
+        <h3>Modules without feature mappings</h3>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th style="width: 50%">Article</th>
+                <th style="width: 50%">Classification</th>
+            </tr>
+                @foreach (var moduleWithoutFeatures in missingFeatureModules)
+                {
+                    if (moduleWithoutFeatures.Discount == 0 && moduleWithoutFeatures.Expired == false)
+                    {
+                        <tr class="">
+                            <td>@moduleWithoutFeatures.Article_number &ensp; @moduleWithoutFeatures.Module</td>
+                            <td>@moduleWithoutFeatures.Classification</td>
+                        </tr>
+                    }
+                }
+        </table>
+</div>
+}

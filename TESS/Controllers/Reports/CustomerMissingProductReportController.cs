@@ -32,39 +32,47 @@ namespace TietoCRM.Controllers
 
         public ActionResult Pdf()
         {
-            String sign = Request["user"];
-
-            view_User user = new view_User();
-            user.Select("Sign=" + sign);
-            List<view_CustomerMissingProductReport> CustomerMissingProducts = view_CustomerMissingProductReport.getCustomerMissingProducts(Request["customer"], user.Area);
-
-            // Store all unique Customer name in a set
-            HashSet<String> SystemNames = new HashSet<String>();
-            foreach (view_CustomerMissingProductReport row in CustomerMissingProducts)
+            if(Request["customer"] != "null")
             {
-                SystemNames.Add(row.SortNo + "#" + row.System);
+                String sign = Request["user"];
+
+                view_User user = new view_User();
+                user.Select("Sign=" + sign);
+                List<view_CustomerMissingProductReport> CustomerMissingProducts = view_CustomerMissingProductReport.getCustomerMissingProducts(Request["customer"], user.Area);
+
+                // Store all unique Customer name in a set
+                HashSet<String> SystemNames = new HashSet<String>();
+                foreach (view_CustomerMissingProductReport row in CustomerMissingProducts)
+                {
+                    SystemNames.Add(row.SortNo + "#" + row.System);
+                }
+                List<String> OrderedSystemNames = SystemNames.ToList();
+
+                OrderedSystemNames.Sort();
+
+                String sortDir = Request["sort"];
+                String sortKey = Request["prop"];
+
+                SortedByColumnCollection scc = new SortedByColumnCollection(CustomerMissingProducts, sortDir, sortKey);
+
+
+                ViewData.Add("CustomerMissingProducts", scc.Collection);
+                ViewData.Add("SystemNames", OrderedSystemNames);
+                ViewData.Add("Properties", typeof(view_CustomerMissingProductReport).GetProperties());
+
+                this.ViewData["Title"] = "Missing Products Report";
+
+                ViewAsPdf pdf = new ViewAsPdf("Pdf");
+                pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["customer"] + "\"";
+                pdf.RotativaOptions.CustomSwitches += " --header-center \"Missing Products\"";
+
+                return pdf;
             }
-            List<String> OrderedSystemNames = SystemNames.ToList();
-
-            OrderedSystemNames.Sort();
-
-            String sortDir = Request["sort"];
-            String sortKey = Request["prop"];
-
-            SortedByColumnCollection scc = new SortedByColumnCollection(CustomerMissingProducts, sortDir, sortKey);
-
+            else
+            {
+                return Content("No customer was chosen");
+            }
             
-            ViewData.Add("CustomerMissingProducts", scc.Collection);
-            ViewData.Add("SystemNames", OrderedSystemNames);
-            ViewData.Add("Properties", typeof(view_CustomerMissingProductReport).GetProperties());
-
-            this.ViewData["Title"] = "Missing Products Report";
-
-            ViewAsPdf pdf = new ViewAsPdf("Pdf");
-            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["customer"] + "\"";
-            pdf.RotativaOptions.CustomSwitches += " --header-center \"Missing Products\"";
-
-            return pdf;
 
 
         }
