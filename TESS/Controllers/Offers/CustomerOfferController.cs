@@ -138,6 +138,8 @@ namespace TietoCRM.Controllers
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
 
+            SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
+
             foreach (view_OfferRow offerRow in co._OfferRows)
             {
                 view_Module module = new view_Module();
@@ -164,9 +166,19 @@ namespace TietoCRM.Controllers
                 offerInfo.Sort_number = sector.SortNo;
 
                 articles.Add(offerInfo);
+                if (!articleSystemDic.ContainsKey(offerInfo.System))
+                {
+                    articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
+                }
+                else
+                {
+                    articleSystemDic[offerInfo.System].Add(offerInfo);
+                }
             }
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
+
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -239,6 +251,8 @@ namespace TietoCRM.Controllers
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
 
+            SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
+
             foreach (view_OfferRow offerRow in co._OfferRows)
             {
                 view_Module module = new view_Module();
@@ -264,10 +278,18 @@ namespace TietoCRM.Controllers
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
                 articles.Add(offerInfo);
+                if (!articleSystemDic.ContainsKey(offerInfo.System))
+                {
+                    articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
+                }
+                else
+                {
+                    articleSystemDic[offerInfo.System].Add(offerInfo);
+                }
             }
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
-
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
 
