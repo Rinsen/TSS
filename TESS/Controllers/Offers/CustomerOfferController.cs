@@ -334,7 +334,7 @@ namespace TietoCRM.Controllers
             string cusomtSwitches = string.Format("--print-media-type --header-spacing 4 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
 
             FileStream ffs = updateFooter(footerPath, user);
-            FileStream hfs = updateHeader(headerPath, user);
+            FileStream hfs = updateHeader(headerPath, user, co);
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.CustomSwitches = cusomtSwitches;
 
@@ -379,13 +379,16 @@ namespace TietoCRM.Controllers
             return fs;
         }
 
-        public FileStream updateHeader(String headerPath, view_User user)
+        public FileStream updateHeader(String headerPath, view_User user, view_CustomerOffer co)
         {
             String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
             String content = System.IO.File.ReadAllText(headerTxtPath);
             FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
             content += @"<div class='header'>
-                            <div id='date' class='date' style='font-size: 16px; font-weight:bold'>" + ViewBag.CustomerOffer.Offer_created.ToString("yyy-MM-dd") +"</div>";
+                            <div id='date' class='date' style='font-family:Arial;font-size: 16px; font-weight:bold'>
+                                <span>" + ViewBag.CustomerOffer.Offer_created.ToString("yyy-MM-dd") + @"</span><br />" +
+             //                   <span style='font-weight:normal;font-size: 12px;'>NR: " + co._Offer_number + @"</span>
+                            "</div>";
             if (user.Use_logo)
             {
                 content += @"<div class='logo'>
