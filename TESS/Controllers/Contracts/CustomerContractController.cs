@@ -55,9 +55,9 @@ namespace TietoCRM.Controllers.Contracts
         {
             GlobalVariables.checkIfAuthorized("CustomerContract");
             if (System.Web.HttpContext.Current.GetUser().User_level > 1)
-                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign).OrderBy(c => c).ToList());
             else
-                this.ViewData.Add("Customers", view_Customer.getCustomerNames());
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames().OrderBy(c => c).ToList());
             this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_kontrakt);
             this.ViewData.Add("ControllerName", "CustomerContract");
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
@@ -460,7 +460,8 @@ namespace TietoCRM.Controllers.Contracts
 
             // Set title and file names.
             String fileName = (new FileLocationMapping(user, (view_Contract)ViewData["CustomerContract"])).GetFilePath() + ".pdf";
-           
+            fileName = fileName.Replace(",", "");
+
             ViewData["Title"] = fileName;
             Response.Headers["Content-disposition"] = "inline; filename=" + fileName;
                 

@@ -138,6 +138,8 @@ namespace TietoCRM.Controllers
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
 
+            SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
+
             foreach (view_OfferRow offerRow in co._OfferRows)
             {
                 view_Module module = new view_Module();
@@ -164,9 +166,19 @@ namespace TietoCRM.Controllers
                 offerInfo.Sort_number = sector.SortNo;
 
                 articles.Add(offerInfo);
+                if (!articleSystemDic.ContainsKey(offerInfo.System))
+                {
+                    articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
+                }
+                else
+                {
+                    articleSystemDic[offerInfo.System].Add(offerInfo);
+                }
             }
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
+
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -239,6 +251,8 @@ namespace TietoCRM.Controllers
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
 
+            SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
+
             foreach (view_OfferRow offerRow in co._OfferRows)
             {
                 view_Module module = new view_Module();
@@ -264,10 +278,18 @@ namespace TietoCRM.Controllers
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
                 articles.Add(offerInfo);
+                if (!articleSystemDic.ContainsKey(offerInfo.System))
+                {
+                    articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
+                }
+                else
+                {
+                    articleSystemDic[offerInfo.System].Add(offerInfo);
+                }
             }
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
-
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
 
@@ -312,7 +334,7 @@ namespace TietoCRM.Controllers
             string cusomtSwitches = string.Format("--print-media-type --header-spacing 4 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
 
             FileStream ffs = updateFooter(footerPath, user);
-            FileStream hfs = updateHeader(headerPath, user);
+            FileStream hfs = updateHeader(headerPath, user, co);
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.CustomSwitches = cusomtSwitches;
 
@@ -321,6 +343,7 @@ namespace TietoCRM.Controllers
             // Set title and file names.
             //String fileName = customer.Customer + " " + request + ".pdf";
             String fileName = (new FileLocationMapping(user, co)).GetFilePath() + ".pdf";
+            fileName = fileName.Replace(",", "");
 
             ViewData["Title"] = fileName;
             Response.Headers["Content-disposition"] = "inline; filename=" + fileName;
@@ -356,13 +379,16 @@ namespace TietoCRM.Controllers
             return fs;
         }
 
-        public FileStream updateHeader(String headerPath, view_User user)
+        public FileStream updateHeader(String headerPath, view_User user, view_CustomerOffer co)
         {
             String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
             String content = System.IO.File.ReadAllText(headerTxtPath);
             FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
             content += @"<div class='header'>
-                            <div id='date' class='date' style='font-size: 16px; font-weight:bold'>" + ViewBag.CustomerOffer.Offer_created.ToString("yyy-MM-dd") +"</div>";
+                            <div id='date' class='date' style='font-family:Arial;font-size: 16px; font-weight:bold'>
+                                <span>" + ViewBag.CustomerOffer.Offer_created.ToString("yyy-MM-dd") + @"</span><br />" +
+             //                   <span style='font-weight:normal;font-size: 12px;'>NR: " + co._Offer_number + @"</span>
+                            "</div>";
             if (user.Use_logo)
             {
                 content += @"<div class='logo'>

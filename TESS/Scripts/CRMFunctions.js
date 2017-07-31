@@ -394,7 +394,7 @@ CRMSessionData.prototype.updateSessionData = function () {
 
 
 CRMSessionData.prototype.getCurrentSiteName = function () {
-    return window.location.pathname.split('/')[1];
+    return window.location.pathname.split('/')[2];
 }
 
 CRMSessionData.prototype.getCurrentSite = function () {

@@ -1,6 +1,282 @@
 ﻿@{
     Layout = null;
+}
 
+@using TietoCRM.Models;
+@using System.Globalization;
+
+<div id="crm-pdf-offer-head">
+    <p><strong id="Document_head">@Html.Raw(@ViewBag.CustomerOffer.Document_head)</strong></p>
+    <div id="Page_head">@Html.Raw(@ViewBag.CustomerOffer.Page_head)</div>
+</div>
+
+@PrintListContent(ViewBag.ArticleSystemDictionary, "Produkter")
+
+
+@PrintConsultantServices(ViewBag.CustomerOffer._ConsultantRows, "Tjänster")
+
+<!-- Help printing functinos -->
+
+@helper PrintListContent(List<KeyValuePair<String, List<dynamic>>> list, String title)
+{
+    // CultureInfo for swedish currency print out 
+    CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+    
+    bool toBeSummerized = (ViewBag.CustomerOffer.Summera == 1);
+    bool krEveryRow = (ViewBag.Representative.Kr_every_row == 1 ? true : false);
+    string krRow = (krEveryRow ? " kr" : "");
+    string krRub = (krEveryRow ? "" : " kr");
+    string rubEng = (krEveryRow ? "Engångsavgift" : "Engångs- avgift kr");
+    string subh1 = (krEveryRow ? "crm-pdf-subheader_1" : "crm-pdf-subheader_1-rubkr");
+    string subh2 = (krEveryRow ? "crm-pdf-subheader_2" : "crm-pdf-subheader_2-rubkr");
+    string subr2 = (krEveryRow ? "crm-pdf-subrows_2" : "crm-pdf-subrows_2-rubkr");
+    string subr3 = (krEveryRow ? "crm-pdf-subrows_3" : "crm-pdf-subrows_3-rubkr");
+    string subs1 = (krEveryRow ? "crm-pdf-subsum_1" : "crm-pdf-subsum_1-rubkr");
+
+
+    if (list.Count > 0)
+    {
+        decimal discountsMP = 0;
+        decimal discountsLP = 0;
+        decimal discountsLM = 0;
+        decimal discountsMM = 0;
+        decimal ProductLicenseTotal = 0;
+        decimal ProductMaintenanceTotal = 0;
+        bool uhManFinns = false;
+        bool summera = true;
+
+   
+        int systemCount = 0;
+
+        String previousPriceType = "";
+        String currentPriceType = "";
+
+
+        bool canShowTitle = true;
+        bool hasDiscounts = false;
+
+
+        <div id="crm-pdf-offer-rows" class="">
+       
+        @foreach (KeyValuePair<String, List<dynamic>> system in list)
+        {
+            // Get next Price_type
+            String nextPriceType = "";
+            int nextIndex = systemCount + 1;
+            if (nextIndex < list.Count)
+            {
+                nextPriceType = list[nextIndex].Value[0].Price_type;
+            }
+
+            for (int i = 0; i < system.Value.Count; i++)
+            {
+                var article = system.Value[i];
+                currentPriceType = article.Price_type;
+                if (i == 0)
+                {
+                    <div class="@subh1" id="crm-pdf-module-rows-title">
+                        <table>
+                            <tr>
+                                <td>
+                                    @if(canShowTitle)
+                                    {
+                                        canShowTitle = false;
+                                        <span style="font-size: 10pt; font-weight: bold">@title</span>
+                                    }
+                                </td>
+                                <td></td>
+                                @if (currentPriceType != previousPriceType)
+                                {   // Print Price_type only if it differs from previous
+                                    <td>@rubEng</td>
+                                    <td>@article.Price_type @krRub</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                }
+
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="large-divider"></div>
+                }
+
+                String License = "";
+                String Maintenance = "";
+                // Format currency
+                if(((IDictionary<String, object>)article).ContainsKey("Discount")) // Handle Discounts
+                {
+                    hasDiscounts = true;
+                    if (article.Discount != 1 || article.Discount_type == 0)
+                    {
+                        if ((article.License % 1) == 0)
+                        {
+                            License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+                        }
+                        else
+                        {
+                            License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+                        }
+
+                        if ((article.Maintenance % 1) == 0)
+                        {
+                            Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+                        }
+                        else
+                        {
+                            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+                        }
+                        if (article.Discount == 1)
+                        {
+                            discountsLM += article.License;
+                            discountsMM += article.Maintenance;
+                        }
+                        else
+                        {
+                            ProductLicenseTotal += Convert.ToDecimal(article.License);
+                            if (summera == true)
+                            {
+                                ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+                            }
+                        }
+                        if (!krEveryRow)
+                        {
+                            License = License.Replace(" kr", "");
+                            Maintenance = Maintenance.Replace(" kr", "");
+                        }
+
+                    }
+                    else
+                    {
+                        discountsLP += article.License;
+                        discountsMP += article.Maintenance;
+                        License = (int)article.License + "%";
+                        Maintenance = (int)article.Maintenance + "%";
+                    }
+                }
+                else
+                {
+                    if ((article.License % 1) == 0)
+                    {
+                        License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+                    }
+                    else
+                    {
+                        License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+                    }
+
+                    if ((article.Maintenance % 1) == 0)
+                    {
+                        Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+                    }
+                    else
+                    {
+                        Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+                    }
+                    if (!krEveryRow)
+                    {
+                        License = License.Replace(" kr", "");
+                        Maintenance = Maintenance.Replace(" kr", "");
+                    }
+                    ProductLicenseTotal += article.License;
+                    ProductMaintenanceTotal += article.Maintenance;
+                }
+
+                // Print System header for article groups
+                if ( i == 0 )
+                {
+                    <div class="crm-pdf-subrows_1">
+                        <table>
+                            <tr>
+                                <td>@article.System</td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+                <div class="@subr2">
+                    <table>
+                        <tr>
+                            <td>@article.Article_number</td>
+                            <td>@article.Classification</td>
+                            <td>@article.Module</td>
+                            <td>@License</td>
+                            <td>@Maintenance</td>
+                        </tr>
+                    </table>
+                </div>
+
+                previousPriceType = article.Price_type;
+            }
+            if(hasDiscounts)
+            {
+                if (discountsMP < -100)
+                {
+                    discountsMP = -100;
+                }
+                if (discountsLP < -100)
+                {
+                    discountsLP = -100;
+                }
+
+                ProductLicenseTotal += discountsLM;
+                ProductMaintenanceTotal += discountsMM;
+            }
+
+
+            // Format currency for total sums
+            String ProductLicenseTotalFormated;
+            String ProductMaintenanceTotalFormated;
+            if ((ProductLicenseTotal % 1) == 0)
+            {
+                ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
+            }
+            else
+            {
+                ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
+            }
+            if ((ProductMaintenanceTotal % 1) == 0)
+            {
+                ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
+            }
+            else
+            {
+                ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
+            }
+            if (!krEveryRow)
+            {
+                ProductLicenseTotalFormated = ProductLicenseTotalFormated.Replace(" kr", "");
+                ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
+            }
+
+            // Show summerization if next Price_type differs from current and summerization is enabled.
+            if (nextPriceType != currentPriceType && toBeSummerized)
+            {
+                <span class="large-divider"></span>
+                <div class="@subs1">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td>Summa</td>
+                            <td>@ProductLicenseTotalFormated</td>
+                            <td>@ProductMaintenanceTotalFormated</td>
+                        </tr>
+                    </table>
+                </div>
+                ProductLicenseTotal = 0;
+                ProductMaintenanceTotal = 0;
+            }
+            systemCount++;
+        }
+       
+    </div>
+    }
+}
+
+
+
+@helper PrintConsultantServices(List<view_ConsultantRow> consultantRows, String title)
+{
     // CultureInfo for swedish currency print out 
     CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
     bool toBeSummerized = (ViewBag.CustomerOffer.Summera == 1);
@@ -13,257 +289,20 @@
     string subr2 = (krEveryRow ? "crm-pdf-subrows_2" : "crm-pdf-subrows_2-rubkr");
     string subr3 = (krEveryRow ? "crm-pdf-subrows_3" : "crm-pdf-subrows_3-rubkr");
     string subs1 = (krEveryRow ? "crm-pdf-subsum_1" : "crm-pdf-subsum_1-rubkr");
-}
-@using TietoCRM.Models;
-@using System.Globalization;
 
-<div id="crm-pdf-offer-head">
-    <p><strong id="Document_head">@Html.Raw(@ViewBag.CustomerOffer.Document_head)</strong></p>
-    <div id="Page_head" >@Html.Raw(@ViewBag.CustomerOffer.Page_head)</div>
-</div>
-@if(ViewBag.Articles.Count > 0)
-{
-<div id="crm-pdf-offer-rows" class="">
-    
-    @{
-        decimal discountsMP = 0;
-        decimal discountsLP = 0;
-        decimal ProductLicenseTotal = 0;
-        decimal ProductMaintenanceTotal = 0;
-
-        String previousSystem = "";
-        String previousPriceType = "";
-    }
-    @foreach (dynamic article in ViewBag.Articles)
+    if (consultantRows.Count > 0)
     {
-        if(article.Discount == 1 && article.Discount_type == 1)
-        {
-            discountsLP += article.License;
-            discountsMP += article.Maintenance;
-        }
-
-        if (previousPriceType != article.Price_type)
-        {
-            previousPriceType = article.Price_type;
-            <div class="@subh1" id="crm-pdf-module-rows-title">
-                <table>
-                    <tr>
-                        <td>Produkter</td>
-                        <td></td>
-                        <td>@rubEng</td>
-                        <td>@article.Price_type @krRub</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="large-divider"></div>
-        }
-        // Calculate total sums
-        String License;
-        String Maintenance;
-        // Format currency
-        if (article.Discount != 1 || article.Discount_type == 0)
-        {
-            if ((article.License % 1) == 0)
-            {
-                License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
-            }
-            else
-            {
-                License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-            }
-
-            if ((article.Maintenance % 1) == 0)
-            {
-                Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
-            }
-            else
-            {
-                Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-            }
-            ProductLicenseTotal += Convert.ToDecimal(article.License);
-            if(article.Price_type == "Underhåll / Månad")
-            {
-                ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
-            }
-            if (!krEveryRow)
-            {
-                License = License.Replace(" kr", "");
-                Maintenance = Maintenance.Replace(" kr", "");
-            }
-        }
-        else
-        {
-            License = (int)article.License + "%";
-            Maintenance = (int)article.Maintenance + "%";
-        }
-        if (previousSystem != article.System)
-        {
-            <div class="crm-pdf-subrows_1">
-                <table>
-                    <tr>
-                        <td>@article.System</td>
-                    </tr>
-                </table>
-            </div>
-        }
-        <div class="@subr2">
+        decimal ServicesTotal = 0;
+        @*-------------------------------------
+        Konsulttjänster
+        -------------------------------------*@
+        <div id="crm-pdf-service-rows">
+        <div class="@subh2">
             <table>
                 <tr>
-                    <td>@article.Article_number</td>
-                    <td>@article.Classification</td>
-                    <td>@article.Module</td>
-                    <td>@License</td>
-                    <td>@Maintenance</td>
-                </tr>
-            </table>
-        </div>
-        previousSystem = article.System;
-    }
-    @{
-        if (discountsLP < -100)
-        {
-            discountsLP = -100;
-        }
-        if (discountsMP < -100)
-        {
-            discountsMP = -100;
-        }
-        // Format currency for total sum
-        string ProductLicenseTotalFormated;
-        string ProductMaintenanceTotalFormated ;
-        if ((ProductLicenseTotal % 1) == 0)
-        {
-            ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
-        }
-        else
-        {
-            ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
-        }
-        if ((ProductMaintenanceTotal % 1) == 0)
-        {
-            ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
-        }
-        else
-        {
-            ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
-        }
-        if (!krEveryRow)
-        {
-            ProductLicenseTotalFormated = ProductLicenseTotalFormated.Replace(" kr", "");
-            ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
-        }
-    }
-    @if (toBeSummerized)
-    {
-    <span class="large-divider"></span>
-    <div class="@subs1">
-        <table>
-            <tr>
-                <td></td>
-                <td>Summa Produkter:</td>
-                <td>@ProductLicenseTotalFormated</td>
-                <td>@ProductMaintenanceTotalFormated</td>
-            </tr>
-        </table>
-    </div>
-    }
-</div>
-}
-@if(ViewBag.EducationPortals.Count > 0)
-{
-<div id="crm-pdf-educational-portal-rows">
-    <div class="@subh1" id="crm-pdf-educational-portal-rows-title">
-        <table>
-            <tr>
-                <td>Lärportal</td>
-                <td></td>
-                <td></td>
-                <td>Person/år @krRub</td>
-            </tr>
-        </table>
-    </div>
-    <div class="large-divider"></div>
-    @{
-        decimal EducationalPortalTotal = 0;
-    }
-    @foreach (dynamic article in ViewBag.EducationPortals)
-    {
-        String Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-        // Calculate total sums
-        EducationalPortalTotal += Convert.ToDecimal(article.Maintenance);
-        if ((article.Maintenance % 1) == 0)
-        {
-            Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
-        }
-        else
-        {
-            Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-        }
-        if (!krEveryRow)
-        {
-            Maintenance = Maintenance.Replace(" kr", "");
-        }
-        //view_Module module = new view_Module();
-        //module.Select("Article_number = " + article.Article_number);
-
-        // Format currency
-
-        String License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-        <div class="@subr2">
-            <table>
-                <tr>
-                    <td>@article.Article_number</td>
-                    <td style="padding-left:0em">@article.Classification</td>
-                    <td>@article.Module</td>
-                    <td></td>
-                    <td>@Maintenance</td>
-                </tr>
-            </table>
-        </div>
-    }
-    @{
-        // Format currency for total sums
-        string EducationalPortalTotalFormated;
-        if ((EducationalPortalTotal % 1) == 0)
-        {
-            EducationalPortalTotalFormated = string.Format(se, "{0:C0}", EducationalPortalTotal).Replace(".", " ");
-        }
-        else
-        {
-            EducationalPortalTotalFormated = string.Format(se, "{0:C2}", EducationalPortalTotal).Replace(".", " ");
-        }
-        if (!krEveryRow)
-        {
-            EducationalPortalTotalFormated = EducationalPortalTotalFormated.Replace(" kr", "");
-        }
-    }
-    @if (toBeSummerized)
-    {
-    <span class="large-divider"></span>
-    <div class="crm-pdf-subsum_1">
-        <table>
-            <tr>
-                <td></td>
-                <td>Summa Lärportal:</td>
-                <td></td>
-                <td>@EducationalPortalTotalFormated</td>
-            </tr>
-        </table>
-    </div>
-    }
-</div>
-}
-       
-@if(ViewBag.CustomerOffer._ConsultantRows.Count > 0)
-{
-@*-------------------------------------
-Konsulttjänster
--------------------------------------*@
-    <div id="crm-pdf-service-rows">
-        <div class="@subh1">
-            <table>
-                <tr>
-                    <td>Tjänster</td>
+                    <td>
+                        <span style="font-size: 10pt; font-weight: bold">@title</span>
+                    </td>
                     <td>Antal</td>
                     <td>Àpris @krRub</td>
                     <td>Summa @krRub</td>
@@ -271,27 +310,25 @@ Konsulttjänster
             </table>
         </div>
         <div class="large-divider"></div>
-        @{
-
-    decimal ServicesTotal = 0;
-        }
-        @foreach (view_ConsultantRow cr in ViewBag.CustomerOffer._ConsultantRows)
+   
+        @foreach (view_ConsultantRow cr in consultantRows)
         {
-            // Featch Service from DB
+            // Fetch Service from DB
             view_Service Service = new view_Service();
             Service.Select("Code = " + cr.Code);
             if (!String.IsNullOrEmpty(cr.Alias))
             {
                 Service.Description = cr.Alias;
             }
+
             // Calculate total sums
             ServicesTotal += Convert.ToDecimal(cr.Total_price);
 
 
             // Format currency
             decimal? totPrice = cr.Amount != 0 ? (cr.Total_price / cr.Amount) : 0;
-            string Price;
-            string TotalPrice;
+            String Price;
+            String TotalPrice;
             if ((totPrice % 1) == 0)
             {
                 Price = string.Format(se, "{0:C0}", totPrice).Replace(".", " ");
@@ -313,7 +350,7 @@ Konsulttjänster
                 Price = Price.Replace(" kr", "");
                 TotalPrice = TotalPrice.Replace(" kr", "");
             }
-           <div class="@subr3">
+            <div class="@subr3">
                 <table>
                     <tr>
                         <td>@Service.Description</td>
@@ -326,33 +363,34 @@ Konsulttjänster
         }
         @{
             // Format currency for total sums
-            string ServicesTotalFormated;
+            String ServicesTotalFormated;
             if ((ServicesTotal % 1) == 0)
             {
-                ServicesTotalFormated = string.Format(se, "{0:C0}", ServicesTotal).Replace(".", " ");
+            ServicesTotalFormated = string.Format(se, "{0:C0}", ServicesTotal).Replace(".", " ");
             }
             else
             {
-                ServicesTotalFormated = string.Format(se, "{0:C2}", ServicesTotal).Replace(".", " ");
+            ServicesTotalFormated = string.Format(se, "{0:C2}", ServicesTotal).Replace(".", " ");
             }
             if (!krEveryRow)
             {
-                ServicesTotalFormated = ServicesTotalFormated.Replace(" kr", "");
+            ServicesTotalFormated = ServicesTotalFormated.Replace(" kr", "");
             }
         }
-    @if (toBeSummerized)
-    {
-        <span class="large-divider"></span>
-        <div class="@subs1">
-            <table>
-                <tr>
-                    <td></td>
-                    <td>Summa Tjänster: </td>
-                    <td></td>
-                    <td>@ServicesTotalFormated</td>
-                </tr>
-            </table>
+        @if (toBeSummerized)
+        {
+            <span class="large-divider"></span>
+            <div class="@subs1">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td>Summa: </td>
+                        <td></td>
+                        <td>@ServicesTotalFormated</td>
+                    </tr>
+                </table>
+            </div>
+        }
         </div>
     }
-    </div>
- }
+}
