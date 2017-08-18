@@ -110,6 +110,10 @@ namespace TietoCRM.Models
         public static List<view_Appointment> getAllAppointments(String customer)
         {
             List<view_Appointment> list = new List<view_Appointment>();
+            if(customer == null || customer == "")
+            {
+                return list;
+            }
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
             {
