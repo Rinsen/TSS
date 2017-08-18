@@ -455,7 +455,7 @@
         newOffer.Offer_valid =  $("#valid4").val();
         newOffer.Offer_status =  $("#offerStatus4").val();
         newOffer.Title =  $("#offerTitle4").val();
-        newOffer.Summera =  $("#summera").val();
+        newOffer.Summera = $("#summera").val() === "on" ? 1 : 0;
         
         $.ajax({
             "url": serverPrefix + "CustomerOffer/Insert/",
