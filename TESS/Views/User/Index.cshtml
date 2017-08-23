@@ -220,7 +220,12 @@
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
                 if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
-                    user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");
+                    if ($currInput.prop("name") == "Use_logo") {
+                        user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "true" : "false");
+                    }
+                    else {
+                        user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");
+                    }
                 }
                 else {
                     user[$currInput.attr("name")] = $currInput.val();
@@ -258,7 +263,12 @@
                 var $currInput = $($formInputs[i]);
                 if ($currInput.attr("name") != undefined) {
                     if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
-                        user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "true" : "false");
+                        if ($currInput.prop("name") == "Use_logo") {
+                            user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "true" : "false");
+                        }
+                        else {
+                            user[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");
+                        }
                     }
                     else {
                         user[$currInput.attr("name")] = $currInput.val();

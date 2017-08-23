@@ -958,7 +958,7 @@ namespace TietoCRM.Controllers.Contracts
 
                     List<Dictionary<String, object>> modulePrices = view_Module.getModuleWithCorrectPrice(module.System, contract.Customer, module.Classification);
 
-                    Dictionary<String, object> modulePrice = modulePrices.First(m => module.Article_number == Convert.ToSingle(m["Article_number"]));
+                    Dictionary<String, object> modulePrice = modulePrices.FirstOrDefault(m => module.Article_number == Convert.ToSingle(m["Article_number"]));
 
                     view_ContractRow cRow = new view_ContractRow();
                     cRow.Article_number = Convert.ToInt32(module.Article_number);
