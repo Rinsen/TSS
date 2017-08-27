@@ -956,9 +956,9 @@ namespace TietoCRM.Controllers.Contracts
                     view_Module module = new view_Module();
                     module.Select("Article_number =  " + article["Article_number"]);
 
-                    List<Dictionary<String, object>> modulePrices = view_Module.getModuleWithCorrectPrice(module.System, contract.Customer, module.Classification);
-
-                    Dictionary<String, object> modulePrice = modulePrices.FirstOrDefault(m => module.Article_number == Convert.ToSingle(m["Article_number"]));
+                    //Nedanstående 2 rader borttagna, då jag inte kan se att de används. Bara genererar en massa onödiga läsningar mot databasen /Mats N 2014-08-25 
+                    //List<Dictionary<String, object>> modulePrices = view_Module.getModuleWithCorrectPrice(module.System, contract.Customer, module.Classification);
+                    //Dictionary<String, object> modulePrice = modulePrices.FirstOrDefault(m => module.Article_number == Convert.ToSingle(m["Article_number"]));
 
                     view_ContractRow cRow = new view_ContractRow();
                     cRow.Article_number = Convert.ToInt32(module.Article_number);

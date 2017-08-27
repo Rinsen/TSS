@@ -111,15 +111,17 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance 
+                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, 
+                                    Case view_Module.Fixed_price When 0 Then view_Tariff.License Else view_Module.Price_category End As License, 
+                                    Case view_Module.Fixed_price When 0 Then view_Tariff.Maintenance Else 0 End As Maintenance 
                                     FROM view_Module                                                                                       
-                                    JOIN view_Tariff                                                                                       
+                                    LEFT JOIN view_Tariff                                                                                       
                                     on view_Module.Price_category = view_Tariff.Price_category
-                                    WHERE System = @System AND Classification = @classification 
                                     AND Inhabitant_level = (
                                         Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                         where Customer = @customer
                                     )
+                                    WHERE System = @System AND Classification = @classification 
                                     order by Article_number asc";
 
                 // Default query
