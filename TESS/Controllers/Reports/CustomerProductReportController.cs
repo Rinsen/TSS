@@ -93,7 +93,7 @@ namespace TietoCRM.Controllers
 
                 ViewAsPdf pdf = new ViewAsPdf("Pdf");
                 pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["customer"] + "\"";
-                pdf.RotativaOptions.CustomSwitches += " --header-center \"Customer Products\"";
+                pdf.RotativaOptions.CustomSwitches += " --header-center \"Kundens produkter\"";
                 return pdf;
             }
             else

@@ -113,7 +113,7 @@ namespace TietoCRM.Controllers.Contracts
         {
             GlobalVariables.checkIfAuthorized("CustomerContract");
             this.GenerateThings();
-
+            
             string contractRequest = Request["contract-section"];
             if (!String.IsNullOrEmpty(contractRequest))
             {
@@ -436,6 +436,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Prolog", this.GetProlog(urlCustomer, urlContractId));
             ViewData.Add("Epilog", this.GetEpilog(urlCustomer, urlContractId));
             ViewData.Add("ModuleText", this.GetModuleText(urlCustomer, urlContractId));
+            ViewBag.Area = System.Web.HttpContext.Current.GetUser().Area;
 
         }
 

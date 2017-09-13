@@ -17,14 +17,14 @@ namespace TietoCRM.Models
         private int article_number;
         public int Article_number { get { return article_number; } set { article_number = value; } }
 
+        private String classification;
+        public String Classification { get { return classification; } set { classification = value; } }
+
         private String module;
         public String Module { get { return module; } set { module = value; } }
 
         private String system;
         public String System { get { return system; } set { system = value; } }
-
-        private String classification;
-        public String Classification { get { return classification; } set { classification = value; } }
 
         private String contract_id;
         public String Contract_id { get { return contract_id; } set { contract_id = value; } }
@@ -70,7 +70,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = @"SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias
+                String query = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias
                                 FROM " + databasePrefix + "CustomerProductRow Where Discount_type = 0";
 
                 SqlCommand command = new SqlCommand(query, connection);
@@ -117,7 +117,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM " + databasePrefix + "CustomerProductRow WHERE " + "Sign = @sign And Discount_type = 0";
+                command.CommandText = "SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM " + databasePrefix + "CustomerProductRow WHERE " + "Sign = @sign And Discount_type = 0";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@sign", sign);
@@ -174,7 +174,7 @@ namespace TietoCRM.Models
                 //command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
                 //command.CommandText += databasePrefix + "CustomerProductRow  WHERE " + "Customer = @customer And Discount_type = 0 Order By SortNo, Classification, Module";
 
-                command.CommandText = "SELECT Customer, Article_number, Module,System, Classification, Contract_id, Sign, Valid_through, ";
+                command.CommandText = "SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, ";
                 command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
                 command.CommandText += databasePrefix + "CustomerProductRow  WHERE " + "Customer = @customer And Discount_type = 0 ";
                 if (contractId != null)

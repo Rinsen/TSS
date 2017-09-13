@@ -21,7 +21,14 @@
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 if (!ViewBag.IgnoredPropertiesExtended.Contains(PropertyInfo.Name))
                 {
-                    <th>@PropertyName</th>
+                    var newPropertyName = "";
+                    if (PropertyInfo.Name == "Valid_through") { newPropertyName = "Giltig till"; }
+                    if (PropertyInfo.Name == "Article_number") { newPropertyName = "Artikelnr"; }
+                    if (PropertyInfo.Name == "Module") { newPropertyName = "Modul"; }
+                    if (PropertyInfo.Name == "Classification") { newPropertyName = "Indelning"; }
+                    if (PropertyInfo.Name == "Contract_id") { newPropertyName = "Kontraktsnr"; }
+
+                    <th>@newPropertyName</th>
                 }
             }
             @foreach (Dictionary<String, object> CPR in ViewBag.CustomerProductRows)
@@ -56,7 +63,7 @@
                                                     {
                                                         if (module.Article_number.ToString() == CPR["Article_number"].ToString())
                                                         {
-                                                            <div>@module.Description &ensp;</div>
+                                                            <div>@module.Description</div>
                                                         }
                                                     }
                                                 }
@@ -73,7 +80,7 @@
                                                     {
                                                         if (module.Article_number.ToString() == CPR["Article_number"].ToString())
                                                         {
-                                                            <div>@module.Description &ensp;</div>
+                                                            <div>@module.Description</div>
                                                         }
                                                     }
                                                 }

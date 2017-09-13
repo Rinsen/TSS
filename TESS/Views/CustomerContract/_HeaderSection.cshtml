@@ -16,30 +16,13 @@
             return false;
     }
 }
-@*@if (ViewBag.CustomerContract.Is(ContractType.MainContract))
+@if (!ViewBag.CustomerContract.Is(ContractType.MainContract) && ViewBag.Area == "IFO")
 {
-    String contractTitle = ViewBag.ContractTemplate.Title1;
-    if (String.IsNullOrEmpty(contractTitle))
-    {
-        <h3 id="main-top-title-text">Avtalsrubrik saknas</h3>
-    }
-    else
-    {
-        <h3 id="main-top-title-text" class="area-newline">@Html.Raw(contractTitle)</h3>
-    }
-}
-else
-{
-    <h4 id="template-Title">@ViewBag.ContractText.Title</h4>
-    if (containsHtml(ViewBag.ContractText.Page_head))
+    if (!String.IsNullOrEmpty(ViewBag.ContractText.Page_head))
     {
         <div id="template-Page_head">@Html.Raw(ViewBag.ContractText.Page_head)</div>
     }
-    else
-    {
-        <h5 id="template-Page_head" class="area-newline">@Html.Raw(ViewBag.ContractText.Page_head)</h5>
-    }
-}*@
+}
 <table>
     <tr>
         <td class="crm-table-title">Kund</td>
