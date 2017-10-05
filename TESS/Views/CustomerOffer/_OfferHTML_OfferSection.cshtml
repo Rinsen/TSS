@@ -198,8 +198,8 @@
                     <table>
                         <tr>
                             <td>@article.Article_number</td>
-                            <td>@article.Classification</td>
-                            <td>@article.Module</td>
+                            <td>@article.Classification.Replace("amp;", "")</td>
+                            <td>@article.Module.Replace("amp;", "")</td>
                             <td>@License</td>
                             <td>@Maintenance</td>
                         </tr>
@@ -353,7 +353,7 @@
             <div class="@subr3">
                 <table>
                     <tr>
-                        <td>@Service.Description</td>
+                        <td>@Service.Description.Replace("amp;", "")</td>
                         <td>@cr.Amount</td>
                         <td>@Price</td>
                         <td>@TotalPrice</td>

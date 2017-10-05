@@ -269,7 +269,10 @@
                     for (var j = 0; j < tdLen; j++) {
                         var $currTD = $($selectedTds[j]);
                         if ($currTD.data("property") == $currInput.attr("name")) {
-                            $currInput.val($currTD.html());
+                            //var parser = new DOMParser;
+                            //var dom = parser.parseFromString('<!doctype html><body>' + encodedStr, 'text/html');
+                            //var decodedString = dom.body.textContent;
+                            $currInput.val($currTD.html().replace('amp;', ''));
                         }
                     }
                 }
