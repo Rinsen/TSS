@@ -2,12 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using System.Web.Http;
 using TietoCRM.Extensions;
 using TietoCRM.Models;
+using System.Configuration;
+using System.IO;
+using ClosedXML.Excel;
+using System.Net.Http;
+using System.Runtime.Caching;
+
+
 
 namespace TietoCRM.Controllers.Reports
 {
@@ -52,7 +62,6 @@ namespace TietoCRM.Controllers.Reports
 
             return pdf;
 
-
         }
 
         public String User()
@@ -77,7 +86,7 @@ namespace TietoCRM.Controllers.Reports
             {
                 foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
                 {
-                    if (offer.Offer_status == "Öppen" && user.IfSameArea(offer.Area))
+                    if (offer.Offer_status == "Öppen")
                     {
                         Dictionary<String, object> dict = new Dictionary<String, object>();
                         decimal? totalMaintenance = 0;
@@ -111,6 +120,61 @@ namespace TietoCRM.Controllers.Reports
                 }
             }
             return rows;
+        }
+
+        public string SaleReportExportExcel()
+        {
+            DataTable dt = view_CustomerOffer.ExportCustomerOffersToExcel(Request["user"]);
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                HttpResponseMessage res = new HttpResponseMessage();
+
+                wb.Worksheets.Add(dt);
+                wb.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                wb.Style.Font.Bold = true;
+                byte[] ms = new byte[] { };
+
+                using (MemoryStream MyMemoryStream = new MemoryStream())
+                {
+                    wb.SaveAs(MyMemoryStream);
+                    MyMemoryStream.Position = 0;
+                    ms = ReadFully(MyMemoryStream);
+                }
+                String gd = Guid.NewGuid().ToString();
+                CacheItemPolicy policy = new CacheItemPolicy();
+                policy.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(30.0);
+                ObjectCache cache = MemoryCache.Default;
+                CacheItem fs = new CacheItem(gd, ms);
+                cache.Set(fs, policy);
+
+                return gd;               
+            }
+        }
+        private static byte[] ReadFully(Stream input)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
+   
+        private void releaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch
+            {
+                obj = null;
+            }
+            finally
+            {
+                GC.Collect();
+            }
         }
     }
 }

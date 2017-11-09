@@ -15,6 +15,12 @@ namespace TietoCRM
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "ExcelExport",
+                url: "ExportExcel/{gid}",
+                defaults: new { controller = "ExportExcel", action = "CacheGet" }
+            );
+
+            routes.MapRoute(
                 name: "",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
@@ -25,6 +31,7 @@ namespace TietoCRM
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
         }
     }
 }

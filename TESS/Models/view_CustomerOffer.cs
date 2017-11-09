@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace TietoCRM.Models
 {
     public class view_CustomerOffer : HashtagDocument
     {
         private int offer_number;
-        public int _Offer_number { get { return offer_number; } set { offer_number = value; base._ID = value;} }
+        public int _Offer_number { get { return offer_number; } set { offer_number = value; base._ID = value; } }
 
         private String customer;
         public String Customer { get { return customer; } set { customer = value; } }
@@ -18,7 +19,7 @@ namespace TietoCRM.Models
         public String Area { get { return area; } set { area = value; } }
 
         private String contact_person;
-        public String Contact_person { get { return contact_person; } set { contact_person = value; }}
+        public String Contact_person { get { return contact_person; } set { contact_person = value; } }
         public void SetContactPerson(String person)
         {
             foreach (view_CustomerOffer customerOffer in getAllCustomerOffers(this.Customer))
@@ -97,7 +98,7 @@ namespace TietoCRM.Models
         public override bool Select(string condition)
         {
             bool r = base.Select(condition);
-            if(r)
+            if (r)
             {
                 this._OfferRows = view_OfferRow.getAllOfferRows(Convert.ToString(this._Offer_number), this.Area);
                 this._ConsultantRows = view_ConsultantRow.getAllConsultantRow(Convert.ToString(this._Offer_number));
@@ -155,7 +156,7 @@ namespace TietoCRM.Models
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    
+
                     while (reader.Read())
                     {
                         if (reader.HasRows)
@@ -229,6 +230,58 @@ namespace TietoCRM.Models
                             t._OfferRows = oRows.Where(c => c.Offer_number == t._Offer_number).ToList();
                             list.Add(t);
                         }
+                    }
+                }
+            }
+            return list;
+        }
+        public static DataTable ExportCustomerOffersToExcel(string user)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                DataTable dt = new DataTable();
+                string query = "";
+
+                if (user == "alla")
+                {
+                    query = "SELECT * FROM qry_CustomerOffer_Excel Order By 1";
+                }
+                else
+                {
+                    query = "SELECT * FROM qry_CustomerOffer_Excel Where Representatives like '%" + user + "%' Order By 1";
+                }
+                dt.TableName = user;
+
+                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                da.Fill(dt);
+
+                return dt;
+            }
+        }
+        public static List<String> GetCustomerOffers(string user)
+        {
+            List<String> list = new List<String>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                String condition = "";
+                if (user != null)
+                    condition = "WHERE Representative like @representive";
+
+                string query = "SELECT * FROM qry_CustomerOffer_Excel " + condition;
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+                if (user != null)
+                    command.Parameters.AddWithValue("@representive", "%" + user + "%");
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        list.Add(reader.GetInt32(0).ToString());
                     }
                 }
             }

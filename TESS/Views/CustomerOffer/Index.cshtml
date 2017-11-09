@@ -348,7 +348,7 @@
                         }
                         <div class="col-sm-10">
                             <div class="checkbox">
-                                <input id="summera" data-id="summera" name="Summera" type="checkbox" @SummeraChecked />
+                                <input id="summera" name="Summera" type="checkbox" @SummeraChecked />
                             </div>
                         </div>
                     </div>
@@ -455,7 +455,7 @@
         newOffer.Offer_valid =  $("#valid4").val();
         newOffer.Offer_status =  $("#offerStatus4").val();
         newOffer.Title =  $("#offerTitle4").val();
-        newOffer.Summera = $("#summera").val() === "on" ? 1 : 0;
+        newOffer.Summera = $("#summera").prop("checked") ? 1 : 0;
         
         $.ajax({
             "url": serverPrefix + "CustomerOffer/Insert/",
