@@ -21,23 +21,6 @@
 <!-- Print Consultant Services -->
 @PrintConsultantServices(ViewBag.CustomerContract._ContractConsultantRows, "Tjänster")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- Help printing functinos -->
 
 @helper PrintListContent(List<KeyValuePair<String, List<dynamic>>> list, String title)
@@ -85,6 +68,7 @@
         {
             // Get next Price_type
             String nextPriceType = "";
+            hasDiscounts = false;
             int nextIndex = systemCount + 1;
             if (nextIndex < list.Count)
             {
@@ -244,6 +228,8 @@
 
                 ProductLicenseTotal += discountsLM;
                 ProductMaintenanceTotal += discountsMM;
+                discountsLM = 0;
+                discountsMM = 0;
             }
 
 
