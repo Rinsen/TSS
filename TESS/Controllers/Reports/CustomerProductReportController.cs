@@ -27,7 +27,8 @@ namespace TietoCRM.Controllers
             "SortNo",
             "Discount_type",
             "Status",
-            "Alias"
+            "Alias",
+            "Expired"
         };
 
         // GET: CustomerProductReport
@@ -160,6 +161,7 @@ namespace TietoCRM.Controllers
         public String Customer()
         {
             String customer = Request.Form["customer"];
+            String withoutExpired = Request.Form["withoutExpired"];
             String area = System.Web.HttpContext.Current.GetUser().Area;
 
             List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(customer, null, area);
@@ -170,7 +172,7 @@ namespace TietoCRM.Controllers
             List<Dictionary<String,String>> rows = new List<Dictionary<String,String>>();
             foreach(view_CustomerProductRow cpr in ProductReportRows)
             {
-                if (cpr.Status == "Giltigt")
+                if ((cpr.Status == "Giltigt") && (withoutExpired == "false" || (withoutExpired == "true" && !cpr.Expired)))
                 {
                     Dictionary<String, String> dic = new Dictionary<String, String>();
                     foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())

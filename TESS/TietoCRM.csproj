@@ -237,6 +237,7 @@
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\EmailSender.cs" />
     <Compile Include="Models\ExportSentOffersToExcel.cs" />
+    <Compile Include="Models\Extensions\Extensions.cs" />
     <Compile Include="Models\FeatureServiceProxy.cs" />
     <Compile Include="Models\HashtagDocument.cs" />
     <Compile Include="Models\Interfaces\IViewCollection.cs" />

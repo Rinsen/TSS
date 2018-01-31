@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
+using TietoCRM.Extensions;
 
 namespace TietoCRM.Models
 {
@@ -56,10 +55,14 @@ public class view_ContractRow : SQLBaseClass
         private String alias;
         public String Alias { get { return alias; } set { alias = value; } }
 
+        private static int ASort { get; set; }
+        //private int ASort;
+        private static string OrderBy { get; set; }
+
         public view_ContractRow() : base("ContractRow")
 		{
-			//ctr
-		}
+            //ctr
+        }
 
         public override bool Equals(System.Object obj)
         {
@@ -92,15 +95,15 @@ public class view_ContractRow : SQLBaseClass
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
+       
             {
                 connection.Open();
-
 
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
-                                        FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer Order By Alias";
+                                        FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@contractID", contractID);
@@ -108,7 +111,6 @@ public class view_ContractRow : SQLBaseClass
 
 
                 command.ExecuteNonQuery();
-
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -151,7 +153,7 @@ public class view_ContractRow : SQLBaseClass
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
                                         CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
-                                        FROM " + databasePrefix + "ContractRow Order By Alias";
+                                        FROM " + databasePrefix + "ContractRow Order By " + GetOrderBy();
 
                 command.Prepare();
 
@@ -200,7 +202,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer Order By Alias";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -245,7 +247,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE " + "Customer = @customer Order By Alias";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE " + "Customer = @customer Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -290,7 +292,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber Order By Alias";
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@articleNumber", articleNumber);
@@ -353,7 +355,7 @@ public class view_ContractRow : SQLBaseClass
                     view_Contract.Customer=view_ContractRow.Customer and 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                     view_Contract.Valid_from >= @startDate AND
-                    view_Contract.Valid_from <= @stopDate Order By Alias";
+                    view_Contract.Valid_from <= @stopDate Order By " + GetOrderBy();
                 //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
                 //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
 
@@ -384,6 +386,14 @@ public class view_ContractRow : SQLBaseClass
                 }
                 return list;
             }
+        }
+    private static string GetOrderBy()
+        {
+            ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
+            if (ASort == 1) return "Alias";
+            if (ASort == 2) return "Classification, Alias";
+            if (ASort == 3) return "Classification, Article_number";
+            return "Alias";
         }
     }
 }

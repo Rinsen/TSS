@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using TietoCRM.Extensions;
 
 namespace TietoCRM.Models
 {
@@ -34,6 +35,10 @@ namespace TietoCRM.Models
 
         private String area;
         public String Area { get { return area; } set { area = value; } }
+
+        private static int ASort { get; set; }
+        //private int ASort;
+        private static string OrderBy { get; set; }
 
         public view_OfferRow()
             : base("OfferRow")
@@ -87,7 +92,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias , Area FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area Order By Alias";
+                                        ,Alias , Area FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -137,7 +142,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias , Area FROM " + databasePrefix + "OfferRow Order By Alias";
+                                        ,Alias , Area FROM " + databasePrefix + "OfferRow Order By " + GetOrderBy();
 
                 command.Prepare();
 
@@ -167,6 +172,14 @@ namespace TietoCRM.Models
 
             }
             return list;
+        }
+        private static string GetOrderBy()
+        {
+            ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
+            if (ASort == 1) return "Alias";
+            if (ASort == 2) return "Classification, Alias";
+            if (ASort == 3) return "Classification, Article_number";
+            return "Alias";
         }
     }
 

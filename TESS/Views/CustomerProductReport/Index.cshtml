@@ -31,10 +31,16 @@
                 </select>
             </div>
             <button id="fetch-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
-            <div class="checkbox" style="margin-top: 1.7em">
-                <label>
-                    <input type="checkbox" id="desc"> Show module description
-                </label>
+            <div class="form-group">
+                <div class="checkbox" style="margin-top: 1.7em">
+                    <label>
+                        <input type="checkbox" id="desc"> Show module description
+                    <br>
+                    @*</label>
+                    <label>*@
+                        <input type="checkbox" id="expired"> Hide Expired modules
+                    </label>
+                </div>
             </div>
             <button style="margin-top: 1.7em; margin-left: 10px;" title="Export as CSV" class="btn btn-default" type="button" id="export-button">Export</button>
         </form>
@@ -80,6 +86,7 @@
                 "type": "POST",
                 "data": {
                     "customer": customer,
+                    "withoutExpired": $('#expired').is(':checked')
                 }
             },
             "defaultContent": "",
@@ -138,6 +145,10 @@
         $customerContainer.change(function () {
             updateDataTable(this.value)
         });
+        $('#expired').click(function () {
+            updateDataTable($customerContainer.val())
+        });
+
         $('#fetch-pdf').click(function () {
             var customer = $customerContainer.val();
             var user = $userContainer.val();

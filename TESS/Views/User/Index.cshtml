@@ -51,6 +51,7 @@
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                         <div class="col-sm-10">
                                             <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                                <option value="">Nothing Selected</option>
                                                 <option value="1">Supervisor</option>
                                                 <option value="2">Salesperson</option>
                                                 <option value="3">Product owner</option>
@@ -166,9 +167,22 @@
                                         </div>
                                     </div>
                                 }
-                                else
+                                else if (pi.Name == "AvtalSortera")
                                 {
                                     <div class="form-group">
+                                        <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">Sortering avtal</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                                <option value="1">Artikelnamn</option>
+                                                <option value="2">Classification, Artikelnamn</option>
+                                                <option value="3">Classification, Artikel-nr</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                            <div class="form-group">
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                         <div class="col-sm-10">
                                             <input class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
@@ -298,6 +312,7 @@
     }
 
     $(document).ready(function () {
+        var $avtalSortera = $("#avtalsortera");
         $("#save-user-changes").click(function () {
             if ($("#user-modal form").valid()) {
                 uploadToServer();
@@ -315,10 +330,10 @@
                     required: true,
                     maxlength: 50,
                 },
-                "Default_system": {
-                    required: true,
-                    maxlength: 3,
-                },
+                //"Default_system": {
+                //    required: true,
+                //    maxlength: 3,
+                //},
                 "Windows_user": {
                     required: true,
                     maxlength: 50,
@@ -342,6 +357,7 @@
                     maxlength: 15,
                 },
                 "User_level": {
+                    required: true,
                     maxlength: 15,
                 },
                 "Area": {
@@ -587,7 +603,7 @@
 
                
 
-                if (i < 17) {
+                if (i < 18) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
 

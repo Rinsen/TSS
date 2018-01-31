@@ -60,6 +60,10 @@ namespace TietoCRM.Models
 
         private String email;
         public String Email { get { return email; } set { email = value; } }
+   
+        private int avtalSortera;
+        public int AvtalSortera { get { return kr_every_row; } set { kr_every_row = value; } }
+
 
 
         public view_User() : base("User")

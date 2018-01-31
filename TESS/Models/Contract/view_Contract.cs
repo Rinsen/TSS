@@ -137,7 +137,7 @@ namespace TietoCRM.Models
         /// </summary>
         /// <param name="customer">The customer to get contracts from</param>
         /// <returns>A list of strings with customer names</returns>
-        public static List<view_Contract> GetContracts(String customer)
+        public static List<view_Contract> GetContracts(String customer, bool noRows = false)
         {
             List<view_Contract> list = new List<view_Contract>();
 
@@ -174,9 +174,12 @@ namespace TietoCRM.Models
                                 t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                 i++;
                             }
-                            t._ContractRows = view_ContractRow.GetAllContractRows(t.Contract_id, t.Customer);
-                            t._ContractConsultantRows = view_ContractConsultantRow.GetAllContractConsultantRow(t.Contract_id, t.Customer);
-                            t._ContractOptions = view_ContractOption.getAllOptions(t.Contract_id, t.Customer);
+                            if (noRows == false)
+                            {
+                                t._ContractRows = view_ContractRow.GetAllContractRows(t.Contract_id, t.Customer);
+                                t._ContractConsultantRows = view_ContractConsultantRow.GetAllContractConsultantRow(t.Contract_id, t.Customer);
+                                t._ContractOptions = view_ContractOption.getAllOptions(t.Contract_id, t.Customer);
+                            }
                             t.GetHashtags();
                             list.Add(t);
                         }
@@ -248,7 +251,7 @@ namespace TietoCRM.Models
         /// Gets all contracts.
         /// </summary>
         /// <returns>List of contracts.</returns>
-        public static List<view_Contract> GetContracts()
+        public static List<view_Contract> GetContracts(bool noRows = false)
         {
             List<view_Contract> list = new List<view_Contract>();
 
@@ -285,9 +288,12 @@ namespace TietoCRM.Models
                                 t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                 i++;
                             }
-                            t._ContractRows = cRows.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
-                            t._ContractConsultantRows = ccRows.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
-                            t._ContractOptions = cOptions.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
+                            if (noRows == false)
+                            {
+                                t._ContractRows = cRows.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
+                                t._ContractConsultantRows = ccRows.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
+                                t._ContractOptions = cOptions.Where(o => o.Contract_id == t.Contract_id && o.Customer == t.Customer).ToList();
+                            }
                             t.GetHashtags();
                             list.Add(t);
                         }
