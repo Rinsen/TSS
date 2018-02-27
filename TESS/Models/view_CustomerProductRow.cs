@@ -164,7 +164,7 @@ namespace TietoCRM.Models
         /// <param name="customer">the customer that has the contract</param>
         /// <param name="contractId">The id of the contract.</param>
         /// <returns>A list of product rows.</returns>
-        public static List<view_CustomerProductRow> getAllCustomerProductRows(String customer, String contractId = null, String area = null)
+        public static List<view_CustomerProductRow> getAllCustomerProductRows(String customer, String contractId = null, String area = null, bool withExpired = true)
         {
           
 
@@ -180,9 +180,18 @@ namespace TietoCRM.Models
                 //command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
                 //command.CommandText += databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer And Discount_type = 0 Order By SortNo, Classification, Module";
 
-                command.CommandText = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
+                if (withExpired)
+                {
+                    command.CommandText = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
                                         Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
                                         FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer And Discount_type = 0 ";
+                }
+                else
+                {
+                    command.CommandText = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
+                                        Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
+                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer And Discount_type = 0 And Expired = 0 ";
+                }
                 if (contractId != null)
                 {
                     command.CommandText += "And Contract_id = @contract_id ";

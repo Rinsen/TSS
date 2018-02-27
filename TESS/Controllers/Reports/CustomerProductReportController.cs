@@ -56,12 +56,14 @@ namespace TietoCRM.Controllers
             {
 
             String area = System.Web.HttpContext.Current.GetUser().Area;
+            bool withExpired = Request["expired"] == "Ja" ? true : false;
 
-            List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null, area);
+                List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null, area, withExpired);
 
                 // Store all unique Customer name in a set
                 HashSet<String> SystemNames = new HashSet<String>();
                 String oldSystem = "";
+
                 List<view_Module> modules = view_Module.getAllModules();
                 List<view_Module> matchedModules = new List<view_Module>();
                 foreach (view_CustomerProductRow row in ProductReportRows)
