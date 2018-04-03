@@ -932,9 +932,9 @@ namespace TietoCRM.Controllers
                     else
                     {
                         if (dict.Keys.Contains("License"))
-                            License = Decimal.Parse(dict["License"].ToString().Replace(",", ".").Replace("%", ""));
+                            License = Decimal.Parse(dict["License"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
                         //License = Decimal.Parse(0.ToString().Replace(".", ",").Replace("%", ""));
-                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
+                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
                     }
 
                     String Alias = dict["Alias"].ToString();

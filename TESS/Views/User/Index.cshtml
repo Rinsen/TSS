@@ -173,6 +173,7 @@
                                         <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">Sortering avtal</label>
                                         <div class="col-sm-10">
                                             <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name" placeholder="@pName">
+                                                <option value="">Nothing Selected</option>
                                                 <option value="1">Artikelnamn</option>
                                                 <option value="2">Classification, Artikelnamn</option>
                                                 <option value="3">Classification, Artikel-nr</option>
@@ -365,6 +366,9 @@
                 },
                 "Email": {
                     maxlength: 50,
+                },
+                "AvtalSortera": {
+                    required: true,
                 },
 
             },
