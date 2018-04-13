@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Web;
+using TietoCRM.UD_Exceptions;
 
 namespace TietoCRM.Models
 {
@@ -112,6 +113,16 @@ namespace TietoCRM.Models
             }
             return reps;
         }
+        public List<string> getLoadedRepresentatives()
+        {
+            List<string> list = new List<string>();
+
+            foreach (String rep in this._Representatives)
+            {
+                list.Add(rep);
+            }
+            return list;
+        }
 
         public view_Customer() : base("Customer")
         {
@@ -198,6 +209,19 @@ namespace TietoCRM.Models
 
         public override void Delete(string condition)
         {
+            int pFrom = condition.IndexOf("'",0) + 1;
+            int pTo = condition.IndexOf("'", pFrom);
+
+            if (view_CustomerOffer.CustomerOfferExists(condition.Substring(pFrom, pTo - pFrom)))
+            {
+                throw new CustomerException("Offer(s) exists for customer and can therefore not be deleted.");
+            }
+
+            if (view_Contract.CustomerContractExists(condition.Substring(pFrom, pTo - pFrom)))
+            {
+                throw new CustomerException("Contract(s) exists for customer and can therefore not be deleted.");
+            }
+
             if (this._Representatives.Count > 0)
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))

@@ -360,6 +360,44 @@ namespace TietoCRM.Models
             }
             return list;
         }
+        /// <summary>
+        /// Check if any kind of contract exists for a specific customer
+        /// </summary>
+        /// <param name="customer">The customer to get contracts from</param>
+        /// <returns>A list of strings with customer names</returns>
+        public static bool CustomerContractExists(String customer)
+        {
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = "SELECT [ID] FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
     }
 
 }

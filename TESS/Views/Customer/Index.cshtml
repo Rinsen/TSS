@@ -383,6 +383,7 @@
             var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
             $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
             $selRowContainer.append("<div id='crm-edit-customer' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
+            $selRowContainer.append("<div id='crm-delete-customer' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
             $selRowContainer.append('<div id="crm-export-ical" class="crm-table-btn" \
             onclick="location.href=\'@Url.Action("ExportAsCsv", "Customer", null, Request.Url.Scheme)\';">\
             <button type="button" class="btn btn-default">Export</button></div>');
@@ -597,6 +598,65 @@
             $formValidation.resetForm();
             addCustomerHandler(this);
         });
+
+        $("#crm-delete-customer").click(function () {
+            if (selectedId != null) {
+                bootbox.confirm({
+                    className: "crm-delete-confirm",
+                    title: 'Do you want to delete?',
+                    message: "Are you sure you want to delete this Customer?",
+                    buttons: {
+                        'cancel': {
+                            label: 'Cancel',
+                            className: 'btn-default'
+                        },
+                        'confirm': {
+                            label: 'Delete',
+                            className: 'btn-danger pull-right'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            deleteCustomer();
+                        }
+                    }
+                });
+            }
+            else
+                triggerAlert("You have to select a row to delete.", "info");
+        });
+
+        //Start - Delete function
+        var deleteCustomer = function()
+        {
+            var $row = $(".selected");
+            //var templateNumber = $row.find("td[data-property='Template_number']").html();
+            var sign = $("#crm-select-user").val();
+            var ID = selectedId;
+
+            $.ajax({
+                "url": serverPrefix + "Customer/Delete/",
+                "type": "POST",
+                "data": {
+                    "ID": ID
+                },
+                "success": function (data) {
+                    if (data == "1") {
+                        //StateCookie.updateSite(null, customerData.Customer);
+                        updateTable(handleStates);
+                        //addButonListeners();
+                        triggerAlert("Succesfully deleted.", "success");
+                        drawButtons();
+                        addButonListeners();
+                    }
+                    else {
+                        triggerAlert(data, "warning");
+                    }
+                }
+            });
+        }
+        //End - Delete function
+
     }
 
     updateTable(handleStates);

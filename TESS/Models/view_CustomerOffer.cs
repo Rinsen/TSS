@@ -63,6 +63,9 @@ namespace TietoCRM.Models
         private int summera;
         public int Summera { get { return summera; } set { summera = value; } }
 
+        private String our_sign;
+        public String Our_sign { get { return our_sign; } set { our_sign = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -135,7 +138,7 @@ namespace TietoCRM.Models
         /// </summary>
         /// <param name="customer">The customer name</param>
         /// <returns>A list of offers.</returns>
-        public static List<view_CustomerOffer> getAllCustomerOffers(String customer)
+        public static List<view_CustomerOffer> getAllCustomerOffers(String customer, String our_sign = "*")
         {
             List<view_CustomerOffer> list = new List<view_CustomerOffer>();
 
@@ -146,11 +149,38 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT *, CAST(SSMA_TimeStamp AS BIGINT) AS ads FROM " + databasePrefix + "CustomerOffer WHERE " + "Customer = @customer";
+                if (customer != "*" && our_sign != "*")
+                {
+                    command.CommandText = "SELECT *, CAST(SSMA_TimeStamp AS BIGINT) AS ads FROM " + databasePrefix + "CustomerOffer WHERE Customer = @customer and Our_Sign = @our_sign";
+                }
+
+                if (customer == "*" && our_sign != "*")
+                {
+                    command.CommandText = "SELECT *, CAST(SSMA_TimeStamp AS BIGINT) AS ads FROM " + databasePrefix + "CustomerOffer WHERE Our_Sign = @our_sign";
+                }
+
+                if (customer != "*" && our_sign == "*")
+                {
+                    command.CommandText = "SELECT *, CAST(SSMA_TimeStamp AS BIGINT) AS ads FROM " + databasePrefix + "CustomerOffer WHERE Customer = @customer";
+                }
 
                 command.Prepare();
-                command.Parameters.AddWithValue("@customer", customer);
 
+                if (customer != "*" && our_sign != "*")
+                {
+                    command.Parameters.AddWithValue("@customer", customer);
+                    command.Parameters.AddWithValue("@our_sign", our_sign);
+                }
+
+                if (customer == "*" && our_sign != "*")
+                {
+                    command.Parameters.AddWithValue("@our_sign", our_sign);
+                }
+
+                if (customer != "*" && our_sign == "*")
+                {
+                    command.Parameters.AddWithValue("@customer", customer);
+                }
 
                 command.ExecuteNonQuery();
 
@@ -185,6 +215,44 @@ namespace TietoCRM.Models
 
             }
             return list;
+        }
+
+        public static bool CustomerOfferExists(String customer)
+        {
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = "SELECT Customer FROM " + databasePrefix + "CustomerOffer WHERE " + "Customer = @customer";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+
+
+            }
         }
 
         public static List<view_CustomerOffer> getAllCustomerOffers()

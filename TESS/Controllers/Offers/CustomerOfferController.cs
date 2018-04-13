@@ -37,7 +37,7 @@ namespace TietoCRM.Controllers
         // GET: CustomerOffer
         public ActionResult Index()
         {
-
+            //string customer = "";
             GlobalVariables.checkIfAuthorized("CustomerOffer");
             this.ViewData.Add("User_level", System.Web.HttpContext.Current.GetUser().User_level);
             if(System.Web.HttpContext.Current.GetUser().User_level > 1)
@@ -52,6 +52,8 @@ namespace TietoCRM.Controllers
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
             this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_offert);
             this.ViewData["title"] = "Customer Offer";
+            ViewData.Add("Users", view_User.getAllUsers());
+            ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Windows_user);
 
             String on;
             if (ViewBag.Customers.Count <= 0)
@@ -69,6 +71,7 @@ namespace TietoCRM.Controllers
                 }
                 ViewData["Appointments"] = vA;
                 ViewData.Add("Customer", on);
+                //customer = on;
             }
             else
             {
@@ -80,6 +83,7 @@ namespace TietoCRM.Controllers
                 }
                 ViewData["Appointments"] = vA;
                 ViewData.Add("Customer", Request["customer"]);
+
             }
 
             if (Request["selected-offer"] != null && Request["selected-offer"] != "" && Request["selected-offer"] != "undefined")
@@ -101,6 +105,7 @@ namespace TietoCRM.Controllers
             columnNames.Add("Contact_person");
             columnNames.Add("Area");
             columnNames.Add("Summera");
+            columnNames.Add("Our_Sign");
             columnNames.Add("Hashtags");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
@@ -215,9 +220,12 @@ namespace TietoCRM.Controllers
                 else
                     user = System.Web.HttpContext.Current.GetUser();
             }
-            ViewData.Add("Representative", user);
 
-            ViewData.Add("UseLogo", user.Use_logo);
+            view_User repr = new view_User();
+            repr.Select("Sign = '" + co.Our_sign + "'");
+            ViewData.Add("Representative", repr);
+
+            ViewData.Add("UseLogo", repr.Use_logo);
 
             this.ViewData["Title"] = "Customer Offer";
 
@@ -325,7 +333,10 @@ namespace TietoCRM.Controllers
                 else
                     user = System.Web.HttpContext.Current.GetUser();
             }
-            ViewData.Add("Representative", user);
+            view_User repr = new view_User();
+            repr.Select("Sign = '" + co.Our_sign + "'");
+            ViewData.Add("Representative", repr);
+            //ViewData.Add("Representative", user);
             String footerPath = Server.MapPath("~/Views/Shared/Footer_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
             String footerFilePath = "file:///" + footerPath;
 
@@ -445,6 +456,12 @@ namespace TietoCRM.Controllers
 
             ViewData.Add("ContactPersons", view_CustomerContact.getAllCustomerContacts(customer));
 
+            List<string> l = new List<string>();
+            view_Customer us = new view_Customer();
+            us.Select("Customer = '" + customer + "'");
+            l = us.getLoadedRepresentatives();
+            ViewData.Add("Repr", l);
+
             ViewData.Add("CustomerOfferJSON", (new JavaScriptSerializer()).Serialize(co));
 
             List<view_TextTemplate> tts = view_TextTemplate.getTextTemplatesType("Offert", sign);
@@ -476,10 +493,18 @@ namespace TietoCRM.Controllers
         public String CustomerOfferJsonData()
         {
             String customer = Request.Form["customer"];
+            String representative = Request.Form["representative"];
+            view_User user = new view_User();
+            if (representative == "undefined" || representative == "*")
+            {
+                user.Select("Sign = '" + System.Web.HttpContext.Current.GetUser() + "'");
+            }
+            else
+            {
+                user.Select("Sign = '" + representative + "'");
+            }
 
-            view_User user = System.Web.HttpContext.Current.GetUser();
-
-                List<String> customerNames = view_Customer.getCustomerNames(user.Sign);
+            List<String> customerNames = view_Customer.getCustomerNames(user.Sign);
             if (customer == "" || customer == null)
             {
                 if (customerNames.Count <= 0)
@@ -488,40 +513,59 @@ namespace TietoCRM.Controllers
                     customer = customerNames[0];
             }
             List<view_CustomerOffer> customerOffers;
-            if (customer != "*")
-                customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
-            else
-                customerOffers = view_CustomerOffer.getAllCustomerOffers();
+            customerOffers = view_CustomerOffer.getAllCustomerOffers(customer, representative);
+
+            //if (customer != "*")
+            //    if (representative == "*")
+            //    {
+            //        customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
+            //    }
+            //    else
+            //    {
+            //        customerOffers = view_CustomerOffer.getAllCustomerOffers(customer,representative);
+            //    }
+            //else
+            //{
+            //    if (representative == "*")
+            //    {
+            //        customerOffers = view_CustomerOffer.getAllCustomerOffers();
+            //    }
+            //    else
+            //    {
+
+            //    }
+            //}
             List<dynamic> customers = new List<dynamic>();
-            List<view_Customer> vCustomers = new List<view_Customer>();
+            //List<view_Customer> vCustomers = new List<view_Customer>();
 
             foreach (view_CustomerOffer co in customerOffers)
             {
-                view_Customer vCustomer;
-                if (vCustomers.Any(c => c.Customer == co.Customer))
-                    vCustomer = vCustomers.Find(c => c.Customer == co.Customer);
-                else
-                {
-                    vCustomer = new view_Customer("Customer='" + co.Customer + "'");
-                    vCustomers.Add(vCustomer);
-                }
+                //view_Customer vCustomer;
+                //if (vCustomers.Any(c => c.Customer == co.Customer))
+                //    vCustomer = vCustomers.Find(c => c.Customer == co.Customer);
+                //else
+                //{
+                //    vCustomer = new view_Customer("Customer='" + co.Customer + "'");
+                //    vCustomers.Add(vCustomer);
+                //}
 
-                if (user.IfSameArea(co.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
+                //if (user.IfSameArea(co.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
+                //{
+                var v = new
                 {
-                    var v = new
-                    {
-                        Offer_number = co._Offer_number,
-                        Title = co.Title,
-                        Offer_created = co.Offer_created,
-                        Offer_valid = co.Offer_valid,
-                        Offer_status = co.Offer_status,
-                        Contact_person = co.Contact_person,
-                        Area = co.Area,
-                        Summera = co.Summera,
-                        Hashtags = co.HashtagsAsString()
-                    };
-                    customers.Add(v);
-                }
+                    Offer_number = co._Offer_number,
+                    Title = co.Title,
+                    Offer_created = co.Offer_created,
+                    Offer_valid = co.Offer_valid,
+                    Offer_status = co.Offer_status,
+                    Contact_person = co.Contact_person,
+                    Area = co.Area,
+                    Summera = co.Summera,
+                    Our_Sign = co.Our_sign,
+                    Hashtags = co.HashtagsAsString()
+                };
+                customers.Add(v);
+                //}
             }
 
             //ViewData.Add("viewRemind", checkReminder(customer));
@@ -1104,7 +1148,11 @@ namespace TietoCRM.Controllers
                 }
                 catch (Exception e)
                 {
-                    return "0";
+                    return "Failed to add new offer. Something wrong when deserializing";
+                }
+                if (a.Our_sign == "")
+                {
+                    return "You have to select 'Our salesman'.";
                 }
                 a.Area = System.Web.HttpContext.Current.GetUser().Area;
                 a.ParseHashtags(Request["hashtags"]);
@@ -1117,7 +1165,7 @@ namespace TietoCRM.Controllers
             }
             catch (Exception e)
             {
-                return "-1";
+                return "Failed to add new offer. Something wrong when saving.";
             }
         }
 
@@ -1168,6 +1216,14 @@ namespace TietoCRM.Controllers
                 contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
             }
 
+            return (new JavaScriptSerializer()).Serialize(l);
+        }
+
+        public String GetRepr()
+        {
+            view_Customer cust = new view_Customer();
+            cust.Select("Customer = '" + Request.Form["customer"] + "'");
+            List<string> l = cust.getLoadedRepresentatives();
             return (new JavaScriptSerializer()).Serialize(l);
         }
 
