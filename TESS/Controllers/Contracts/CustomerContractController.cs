@@ -692,7 +692,7 @@ namespace TietoCRM.Controllers.Contracts
                     contractHead.Buyer = customer.Customer;
                     contractHead.Zip_code = customer.Zip_code;
                     contractHead.Corporate_identity_number = customer.Corporate_identity_number;
-
+                    contractHead.Administration = customer.Administration;
 
                     contractHead.Insert();
                 }
@@ -780,6 +780,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractHead.Contact_person = a.Contact_person;
                 contractHead.Customer_sign = a.Contact_person.Substring(0, Math.Min(a.Contact_person.Length, 50));
                 contractHead.Our_sign = System.Web.HttpContext.Current.GetUser().Name.Substring(0, Math.Min(System.Web.HttpContext.Current.GetUser().Name.Length, 50));
+                contractHead.Administration = customer.Administration;
                 
                 contractHead.Insert();
 

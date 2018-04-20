@@ -48,6 +48,9 @@ namespace TietoCRM.Controllers.Reports
 
         public List<Dictionary<String, object>> GenerateSentContracts()
         {
+            decimal? totalMaintenance = 0;
+            decimal? totalLicense = 0;
+
             List<view_Customer> customers;
             if (System.Web.HttpContext.Current.GetUser().User_level > 1)
                 customers = view_Customer.getAllCustomers(System.Web.HttpContext.Current.GetUser().Sign);
@@ -74,13 +77,18 @@ namespace TietoCRM.Controllers.Reports
                     dict.Add("contract_id", contract.Contract_id);
                     dict.Add("title", contract.Title);
                     dict.Add("contract_type", contract.Contract_type);
+                    totalMaintenance += contract.ContractMaintenanceSum();
                     rows.Add(dict);
                 }
             }
+            ViewData.Add("totalMaintenance", totalMaintenance.ToString());
             return rows;
         }
         public List<Dictionary<String, object>> GenerateSentContracts(String User)
         {
+            decimal? totalMaintenance = 0;
+            decimal? totalLicense = 0;
+
             List<view_Customer> customers;
             if (System.Web.HttpContext.Current.GetUser().User_level > 1)
                 customers = view_Customer.getAllCustomers(System.Web.HttpContext.Current.GetUser().Sign);
@@ -107,9 +115,11 @@ namespace TietoCRM.Controllers.Reports
                     dict.Add("contract_id", contract.Contract_id);
                     dict.Add("title", contract.Title);
                     dict.Add("contract_type", contract.Contract_type);
+                    totalMaintenance += contract.ContractMaintenanceSum();
                     rows.Add(dict);
                 }
             }
+            ViewData.Add("totalMaintenance", totalMaintenance.ToString());
             return rows;
         }
     }

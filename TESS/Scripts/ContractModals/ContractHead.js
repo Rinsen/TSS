@@ -19,6 +19,7 @@
             head["Customer"] = $("#customer3").val();
             head["Customer_sign"] = $("#customer_sign3").val();
             head["Our_sign"] = $("#our_sign3").val();
+            head["Administration"] = $("#administration3").val();
 
             $.ajax({
                 "url": serverPrefix + "CustomerContract/SaveContractHead/",
@@ -78,6 +79,9 @@
             },
             "Contact_person": {
                 required: true,
+                maxlength: 100
+            },
+            "Administration": {
                 maxlength: 100
             },
             "Buyer": {
@@ -140,6 +144,7 @@ var loadData = function () {
                             $("#city3").val(contractHead.City);
                             $("#customer_sign3").val(contractHead.Customer_sign);
                             $("#our_sign3").val(contractHead.Our_sign);
+                            $("#administration3").val(contractHead.Administration);
 
                             $("#contact-person3").empty();
                             for (var i = 0; i < contactPersons.length; i++) {

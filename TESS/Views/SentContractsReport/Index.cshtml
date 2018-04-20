@@ -23,6 +23,10 @@
             </thead>
         </table>
     </div>
+    <div class="col-md-12 form-inline">
+        <label style="float:right; margin-right:5%;">Total License: <span class="text" id="total-license"> 0 kr</span></label>
+        <label style="float:right; margin-right:5%;">Total Maintenance: <span class="text" id="total-maintenance"> @ViewBag.totalMaintenance kr</span></label>
+    </div>
     <script>
     var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
@@ -78,5 +82,5 @@
         })
     });
 
-    </script>
+        </script>
 </row>

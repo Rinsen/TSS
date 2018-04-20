@@ -398,6 +398,20 @@ namespace TietoCRM.Models
                 }
             }
         }
+        public decimal? ContractMaintenanceSum()
+        {
+            decimal? mainSum = 0;
+
+            foreach(view_ContractRow r in this._contractRows)
+            {
+                mainSum += r.Maintenance;
+            }
+            foreach (view_ContractConsultantRow r in this._contractConsultantRows)
+            {
+                mainSum += r.Total_price;
+            }
+            return mainSum;
+        }
     }
 
 }

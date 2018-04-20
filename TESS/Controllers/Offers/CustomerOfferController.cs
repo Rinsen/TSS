@@ -53,7 +53,16 @@ namespace TietoCRM.Controllers
             this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_offert);
             this.ViewData["title"] = "Customer Offer";
             ViewData.Add("Users", view_User.getAllUsers());
-            ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Windows_user);
+
+            if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sig"] == "")
+            {
+                ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
+            }
+            else
+            {
+                ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
+            }
+
 
             String on;
             if (ViewBag.Customers.Count <= 0)

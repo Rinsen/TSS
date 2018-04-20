@@ -24,6 +24,9 @@ namespace TietoCRM.Models
         private String customer_type;
         public String Customer_type { get { return customer_type; } set { customer_type = value; } }
 
+        private String administration;
+        public String Administration { get { return administration; } set { administration = value; } }
+
         private String address;
         public String Address { get { return address; } set { address = value; } }
 

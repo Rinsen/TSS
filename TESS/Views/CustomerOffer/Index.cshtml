@@ -1231,9 +1231,7 @@
                 loadNewRepresentativeData();
                 $("#newRowModal").appendTo("body").modal("show").draggable();
             });
-
             drawButtonsExtension($selRowContainer, "bottom");
-
     }
 
     $(document).ready(function () {
@@ -1372,10 +1370,12 @@
 
         });
         $customerSelect = $("#crm-select-customer");
+        $currentUserSelect = $("#crm-select-user");
         //@Html.Raw(@ViewBag.OfferNumber)
         $customerSelect.val("@Html.Raw(@ViewBag.OfferNumber)");
+        $currentUserSelect.val("@Html.Raw(@ViewBag.CurrentUser)");
         $(".selectpicker").selectpicker("refresh");
-        updateDataTable("@Html.Raw(@ViewBag.OfferNumber)", function(){
+        updateDataTable("@Html.Raw(@ViewBag.OfferNumber)","@Html.Raw(@ViewBag.CurrentUser)" , function(){
             drawButtons();
             if($customerSelect.val() == "")
                 $("#crm-add-row").unbind("click");
