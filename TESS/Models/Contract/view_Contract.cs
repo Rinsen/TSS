@@ -406,6 +406,22 @@ namespace TietoCRM.Models
             {
                 mainSum += r.Maintenance;
             }
+            return mainSum;
+        }
+        public decimal? ContractLicenseSum()
+        {
+            decimal? mainSum = 0;
+
+            foreach (view_ContractRow r in this._contractRows)
+            {
+                mainSum += r.License;
+            }
+            return mainSum;
+        }
+        public decimal? ContractServiceSum()
+        {
+            decimal? mainSum = 0;
+
             foreach (view_ContractConsultantRow r in this._contractConsultantRows)
             {
                 mainSum += r.Total_price;

@@ -29,123 +29,141 @@
 
 
 <div class="modal fade bs-example-modal-lg" id="moduleModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog contact-modal" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Edit Module</h4>
             </div>
             <div id="module-modal" class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label for="article-number2" class="col-sm-2 control-label">Article number</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Article_number" id="article-number2">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="module2" class="col-sm-2 control-label">Module</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Module" id="module2">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="description2" class="col-sm-2 control-label style="width: 200px;">Description</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Description" id="description2">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="price-category2" class="col-sm-2 control-label">Price category</label>
-                        <div class="col-sm-10" id="price-category-container">
-                            @Html.Raw(select)
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="area2" class="col-sm-2 control-label">Area</label>
-                        <div class="col-sm-10">
-                            @if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
-                            {
-                                <input type="text" name="Area" id="area2" class="form-control" value="@HttpContext.Current.GetUser().Area" disabled />
-                            }
-                            else
-                            {
-                                <select class="form-control selectpicker" name="Area" id="area2" >
-                                    @foreach (var SelectOption in (new SelectOptions<view_Sector>()).GetOptions("Area").Where(a => a.Value != "*").ToList())
+                <div class="row">
+                    <form class="form-horizontal">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="article-number2" class="col-sm-2 control-label">Article number</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" name="Article_number" id="article-number2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="module2" class="col-sm-2 control-label">Module</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" name="Module" id="module2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description2" class="col-sm-2 control-label style="width: 200px;">Description</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" name="Description" id="description2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="price-category2" class="col-sm-2 control-label">Price category</label>
+                                <div class="col-sm-9" id="price-category-container">
+                                    @Html.Raw(select)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="area2" class="col-sm-2 control-label">Area</label>
+                                <div class="col-sm-9">
+                                    @if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
                                     {
-                                        <option value="@SelectOption.Value">@SelectOption.Text</option>
+                                        <input type="text" name="Area" id="area2" class="form-control" value="@HttpContext.Current.GetUser().Area" disabled />
                                     }
-                                </select>
-                            }
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="system2" class="col-sm-2 control-label">System</label>
-                        <div class="col-sm-10">
-                            <select class="form-control selectpicker" name="System" id="system2"></select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="classification2" class="col-sm-2 control-label">Classification</label>
-                        <div class="col-sm-10">
-                            <select class="form-control selectpicker" name="Classification" id="classification2"></select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <div class="radio">
-                                <label for="none2">
-                                    <input id="none2" data-id="none" checked name="none" type="radio" />
-                                    From price category
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="fixed-price2">
-                                    <input id="fixed-price2" data-id="fixed-price2" name="Fixed_price" type="radio" />
-                                    Fixed price
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="discount2">
-                                    <input id="discount2" data-id="discount2" name="Discount" type="radio" />
-                                    Discount
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="expired2">
-                                    <input id="expired2" data-id="expired2" name="Expired" type="checkbox" />
-                                    Expired
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="multiple2">
-                                    <input id="multiple2" data-id="multiple2" name="Multiple_type" type="checkbox" />
-                                    Multiple select
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="discount-type2" class="col-sm-2 control-label">Discount type</label>
-                        <div class="col-sm-10">
-                            <select class="form-control selectpicker" disabled name="Discount_type" id="discount-type2">
-                                @{
-                                    TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module> selectOptions = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>();
-                                    foreach(TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>.SelectOption so in selectOptions.GetOptions("Discount_type"))
+                                    else
                                     {
-                                        <option value="@so.Value">@so.Text</option>
+                                        <select class="form-control selectpicker" name="Area" id="area2">
+                                            @foreach (var SelectOption in (new SelectOptions<view_Sector>()).GetOptions("Area").Where(a => a.Value != "*").ToList())
+                                            {
+                                                <option value="@SelectOption.Value">@SelectOption.Text</option>
+                                            }
+                                        </select>
                                     }
-                                  }
-                            </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="system2" class="col-sm-2 control-label">System</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control selectpicker" name="System" id="system2"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="classification2" class="col-sm-2 control-label">Classification</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control selectpicker" name="Classification" id="classification2"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-9">
+                                    <div class="radio">
+                                        <label for="none2">
+                                            <input id="none2" data-id="none" checked name="none" type="radio" />
+                                            From price category
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label for="fixed-price2">
+                                            <input id="fixed-price2" data-id="fixed-price2" name="Fixed_price" type="radio" />
+                                            Fixed price
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label for="discount2">
+                                            <input id="discount2" data-id="discount2" name="Discount" type="radio" />
+                                            Discount
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label for="expired2">
+                                            <input id="expired2" data-id="expired2" name="Expired" type="checkbox" />
+                                            Expired
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label for="multiple2">
+                                            <input id="multiple2" data-id="multiple2" name="Multiple_type" type="checkbox" />
+                                            Multiple select
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="notes2" class="col-sm-2 control-label">Comment</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" name="Comment" id="notes2" rows="6"></textarea>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="discount-type2" class="col-sm-2 control-label">Discount type</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control selectpicker" disabled name="Discount_type" id="discount-type2">
+                                        @{
+                                            TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module> selectOptions = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>();
+                                            foreach (TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>.SelectOption so in selectOptions.GetOptions("Discount_type"))
+                                            {
+                                                <option value="@so.Value">@so.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="notes2" class="col-sm-2 control-label">Comment</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Comment" id="notes2" rows="6"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="offer_description2" class="col-sm-2 control-label">Offer Description</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="6"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="contract_description2" class="col-sm-2 control-label">Contract Description</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="6"></textarea>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

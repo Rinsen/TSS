@@ -24,8 +24,10 @@
         </table>
     </div>
     <div class="col-md-12 form-inline">
+        <label style="float:right; margin-right:5%;">Grand Total: <span class="text" id="grand-total"> 0 kr</span></label>
         <label style="float:right; margin-right:5%;">Total License: <span class="text" id="total-license"> 0 kr</span></label>
-        <label style="float:right; margin-right:5%;">Total Maintenance: <span class="text" id="total-maintenance"> @ViewBag.totalMaintenance kr</span></label>
+        <label style="float:right; margin-right:5%;">Total Maintenance: <span class="text" id="total-maintenance"> 0 kr</span></label>
+        <label style="float:right; margin-right:5%;">Total Service: <span class="text" id="total-service"> 0 kr</span></label>
     </div>
     <script>
     var serverPrefix = "@Url.Content("~/")";
@@ -49,7 +51,30 @@
             "ajax": {
                 "url": serverPrefix + "SentContractsReport/SentContracts/",
                 "type": "POST",
+                "dataSrc": function (json) {
 
+                    var totalM = 0.0;
+                    var totalL = 0.0;
+                    var totalS = 0.0;
+                    var totalG = 0.0;
+                    for (var i = 0; i < Object.keys(json['data']).length; i++) {
+                        var m = json['data'][i]['totalMaintenance'];
+                        totalM += m;
+
+                        var l = json['data'][i]['totalLicense'];
+                        totalL += l;
+
+                        var s = json['data'][i]['totalService'];
+                        totalS += s;
+                    }
+                    totalG = totalS + totalL + totalM;
+                    $("#total-maintenance").text(formatCurrency(String(totalM)));
+                    $("#total-license").text(formatCurrency(String(totalL)));
+                    $("#total-service").text(formatCurrency(String(totalS)));
+                    $("#grand-total").text(formatCurrency(String(totalG)));
+
+                    return json.data;
+                }
             },
             "defaultContent": "",
             "order": [[0, "asc"]],

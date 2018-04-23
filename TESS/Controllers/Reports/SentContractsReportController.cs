@@ -77,6 +77,9 @@ namespace TietoCRM.Controllers.Reports
                     dict.Add("contract_id", contract.Contract_id);
                     dict.Add("title", contract.Title);
                     dict.Add("contract_type", contract.Contract_type);
+                    dict.Add("totalMaintenance", contract.ContractMaintenanceSum());
+                    dict.Add("totalLicense", contract.ContractLicenseSum());
+                    dict.Add("totalService", contract.ContractServiceSum());
                     totalMaintenance += contract.ContractMaintenanceSum();
                     rows.Add(dict);
                 }
@@ -115,6 +118,9 @@ namespace TietoCRM.Controllers.Reports
                     dict.Add("contract_id", contract.Contract_id);
                     dict.Add("title", contract.Title);
                     dict.Add("contract_type", contract.Contract_type);
+                    dict.Add("totalMaintenance", contract.ContractMaintenanceSum());
+                    dict.Add("totalLicense", contract.ContractLicenseSum());
+                    dict.Add("totalService", contract.ContractServiceSum());
                     totalMaintenance += contract.ContractMaintenanceSum();
                     rows.Add(dict);
                 }

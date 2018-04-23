@@ -9,7 +9,7 @@
                         <option value="*">All</option>
                         @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
                         {
-                            if (ViewBag.CurrentUser == User.Windows_user)
+                            if (ViewBag.CurrentUser == User.Sign)
                             {
                                 <option selected value="@User.Sign">@User.Name</option>
                             }

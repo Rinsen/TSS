@@ -1,55 +1,73 @@
 ﻿@using TietoCRM.Extensions;
-<form>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label for="crm-select-customer">Customer:</label>
-            <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
-                <option value="*">All</option>
-                @{bool first = true;}
-                @foreach (String Customer in ViewBag.Customers)
-                {
-                    if (first)
-                    {
-                        <option selected value="@Customer">@Customer</option>
-                        first = false;
-                    }
-                    else
-                    {
-                        <option value="@Customer">@Customer</option>
-                    }
-                }
-            </select>
-            <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-            <div id='crm-edit-contact' class='crm-table-btn'>
-                <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
-            </div>
-            <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+@using TietoCRM.Models;
+<row>
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="crm-select-user">Our Salesman:</label>
+                    <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
+                        <option value="*">All</option>
+                        @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
+                        {
+                            if (ViewBag.CurrentUser == User.Sign)
+                            {
+                                <option selected value="@User.Sign">@User.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@User.Sign">@User.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="crm-select-customer">Customer:</label>
+                    <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
+                        <option value="*">All</option>
+                        @{bool first = true;}
+                        @foreach (String Customer in ViewBag.Customers)
+                        {
+                            if (first)
+                            {
+                                <option selected value="@Customer">@Customer</option>
+                                first = false;
+                            }
+                            else
+                            {
+                                <option value="@Customer">@Customer</option>
+                            }
+                        }
+                    </select>
+                </div>
+                    <button type='button' style="margin-top: 1.7em;" class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
+                    <div id='crm-edit-contact' class='crm-table-btn'>
+                        <button type='button' style="margin-top: 1.7em;" class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+                    </div>
+                    <button type='button' style="margin-top: 1.7em; display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            </form>
         </div>
-    </div>
-    <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
-        <thead>
-            <tr>
-                <th data-field="#" data-sortable="false">#</th>
-                @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
+</row>
+<table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            <th data-field="#" data-sortable="false">#</th>
+            @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
+            {
+                if (!property.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(property.Name))
                 {
-                    if (!property.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(property.Name))
-                    {
-                        String PropertyName = property.Name.Replace("_", " ");
-                        <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
-                    }
-                    else if (property.Name == "_HashtagList")
-                    {
-                        String PropertyName = property.Name.Replace("_", " ");
-                        <th class="hidden" data-field="@property.Name" data-sortable="true">@PropertyName</th>
-                    }
+                    String PropertyName = property.Name.Replace("_", " ");
+                    <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
                 }
-            </tr>
-        </thead>
-    </table>
-    <div class="bottom-wrapper" style="margin-top:30px; margin-bottom:30px">
-
-    </div>
-</form>
+                else if (property.Name == "_HashtagList")
+                {
+                    String PropertyName = property.Name.Replace("_", " ");
+                    <th class="hidden" data-field="@property.Name" data-sortable="true">@PropertyName</th>
+                }
+            }
+        </tr>
+    </thead>
+</table>
+@*<div class="bottom-wrapper" style="margin-top:30px; margin-bottom:30px">*@
 
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog reminders-modal" role="document">
@@ -172,7 +190,7 @@
                         </tr>
                     </thead>
                     <tbody class="appointment-body">
-                        @{ 
+                        @{
                             List<TietoCRM.Models.view_Appointment> appointments = ViewBag.Appointments;
                             TietoCRM.Models.view_Appointment appt = null;
                             if (appointments.Count > 0)
@@ -183,13 +201,13 @@
                         }
                         @foreach (TietoCRM.Models.view_Appointment app in appointments)
                         {
-                        <tr>
-                            <td class='appointment-date'>@app.Date.ToString("yyyy-MM-dd HH:mm")</td>
-                            <td class='appointment-event-type'>@app.Event_type</td>
-                            <td class='appointment-title'>@app.Title</td>
-                            <td class='appointment-text'>@app.Text</td>
-                            <td class='appointment-contact-person'>@app.Contact_person</td>
-                        </tr>
+                            <tr>
+                                <td class='appointment-date'>@app.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td class='appointment-event-type'>@app.Event_type</td>
+                                <td class='appointment-title'>@app.Title</td>
+                                <td class='appointment-text'>@app.Text</td>
+                                <td class='appointment-contact-person'>@app.Contact_person</td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -254,7 +272,7 @@
                                         {
                                             @Html.Raw("<td valign=\"top\">")
                                         }
-                                            
+
 
 
                                         <div class="form-group">
@@ -350,7 +368,7 @@
                             }
                         </tr>
                     </table>
-                    
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -525,12 +543,14 @@
     });
 
     var $customerSelect = $("#crm-select-customer");
+    var $userelect = $("#crm-select-user");
     var loadMainContracts = function() {
         $.ajax({
             "url": "@Url.Content("~/CustomerContract/GetMainContracts/")",
             "type": "POST",
             "data": {
-                "customer": $customerSelect.val()
+                "customer": $customerSelect.val(),
+                "our_sign": $userSelect.val()
             },
             "success": function(data){
                 console.log(data);
@@ -545,7 +565,7 @@
                         $select.append($("<option></option>").attr("value", mainID).html(mainID));
                     }
                 } else {
-                   $select.append($("<option></option>").attr("value", "ignore").html("No \"Giltiga\" Main Contracts found."));
+                    $select.append($("<option></option>").attr("value", "ignore").html("No \"Giltiga\" Main Contracts found."));
                 }
 
                 $select.selectpicker('refresh');
@@ -668,29 +688,29 @@
             newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
             newContract["Area"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Area)";
 
-                $.ajax({
-                    "url": "@Url.Content("~/CustomerContract/Insert/")",
-                    "type": "POST",
-                    "data": {
-                        "json": JSON.stringify(newContract),
-                        "hashtags": hashtags
-                    },
-                    "success": function(data){
-                        if(data != "0" && data != "-1"){
-                            updateDataTable($("#crm-select-customer").val());
-                            triggerAlert("Successfully added new contract.", "success");
-                            $("#newRowModal").modal("toggle");
+            $.ajax({
+                "url": "@Url.Content("~/CustomerContract/Insert/")",
+                "type": "POST",
+                "data": {
+                    "json": JSON.stringify(newContract),
+                    "hashtags": hashtags
+                },
+                "success": function(data){
+                    if(data != "0" && data != "-1"){
+                        updateDataTable($("#crm-select-customer").val(),$("#crm-select-user").val());
+                        triggerAlert("Successfully added new contract.", "success");
+                        $("#newRowModal").modal("toggle");
 
-                            window.history.pushState(null,null,["Index?contract-id=" + data + "&customer=" + newContract.Customer ]);
+                        window.history.pushState(null,null,["Index?contract-id=" + data + "&customer=" + newContract.Customer ]);
 
-                            window.location = "ViewPdf?contract-id=" + data + "&customer=" + newContract.Customer;
+                        window.location = "ViewPdf?contract-id=" + data + "&customer=" + newContract.Customer;
 
-                        }
-                        else {
-                            triggerAlert("Failed to add new contract.", "warning");
-                        }
                     }
-                });
+                    else {
+                        triggerAlert("Failed to add new contract.", "warning");
+                    }
+                }
+            });
         }
     });
 </script>
@@ -801,7 +821,7 @@
                     "id_pk": id
                 },
                 "success": function(data){
-                
+
                 }
             });
         }
@@ -888,7 +908,7 @@
                 "success": function(data){
                     if(data > 0)
                     {
-                        updateDataTable($("#crm-select-customer").val());
+                        updateDataTable($("#crm-select-customer").val(),$("#crm-select-user").val());
                         selectedId = null;
                         triggerAlert("Successfully updated contact.", "success");
                         $("#contactModal").modal("toggle");
@@ -938,8 +958,8 @@
                         triggerAlert("Failed to add contact.", "warning");
                     }
                 }
-        });
-    }
+            });
+        }
     }
 </script>
 
@@ -947,184 +967,184 @@
     Script for main page
 -->
 <script>
-        var selectedId;
-        var onSuccess = function(data, textStatus, jqxhr, $row){
-            if(data > 0)
-            {
-                $@{@ViewBag.ControllerName}Table.row( $row )
-                .remove()
-                .draw();
-                $(document).trigger("clear-alerts");
-                $(document).trigger("add-alerts", [
-                  {
-                      'message': 'Row successfully deleted!',
-                      'priority': 'success'
-                  }
-                ]);
-            }
+    var selectedId;
+    var onSuccess = function(data, textStatus, jqxhr, $row){
+        if(data > 0)
+        {
+            $@{@ViewBag.ControllerName}Table.row( $row )
+            .remove()
+            .draw();
+            $(document).trigger("clear-alerts");
+            $(document).trigger("add-alerts", [
+              {
+                  'message': 'Row successfully deleted!',
+                  'priority': 'success'
+              }
+            ]);
         }
+    }
     var openModal = function(){
         $("#appointmentModal").appendTo("body").modal("show").draggable();
     }
     var selectedContract = {};
-        var selectRow = function(element){
-            var $td = $(element);
-            var $row = $(element).parent();
-            var $table = $("#CustomerContract-table");
+    var selectRow = function(element){
+        var $td = $(element);
+        var $row = $(element).parent();
+        var $table = $("#CustomerContract-table");
 
-            $td.find("input").prop("checked", true);
-            selectedCustomer = $row.find("td[data-data='Customer']").html();
-            selectedId = $td.find("input").val();
-            if(selectedId !== null)
-                generateSelectedContract($row);
-            StateCookie.updateSite(null, selectedId);
-            $table.find("tr.selected").removeClass("selected");
-            $row.addClass("selected");
+        $td.find("input").prop("checked", true);
+        selectedCustomer = $row.find("td[data-data='Customer']").html();
+        selectedId = $td.find("input").val();
+        if(selectedId !== null)
+            generateSelectedContract($row);
+        StateCookie.updateSite(null, selectedId);
+        $table.find("tr.selected").removeClass("selected");
+        $row.addClass("selected");
 
-            var $selRowContainer = $("#CustomerContract-table_wrapper").find(".row").first().find(".col-sm-6").first();
-            $button = $selRowContainer.find("#crm-delete-contract");
-            if(selectedContract.Status == "Makulerat" && $button.length == 0){
-                $("<div id='crm-delete-contract' class='crm-table-btn'><button type='button' class='btn btn-danger'>Remove</button></div>").insertBefore('#crm-help-info');
-                $selRowContainer.find("#crm-delete-contract").bind("click", function(){
-                    bootbox.dialog({
-                        title: 'Do you want to delete this contract?',
-                        message: "You are about to delete the selected contract",
-                        buttons: {
-                            'yes': {
-                                label: 'Yes',
-                                className: 'btn-danger pull-right',
-                                callback: function () {
-                                    $.ajax({
-                                        "url": serverPrefix + "CustomerContract/DeleteContract/",
-                                        "type": "POST",
-                                        "data": {
-                                            "id": selectedContract.Contract_id
-                                        },
-                                        "success": function(data){
-                                            if(data > 0)
-                                            {
-                                                updateDataTable($("#crm-select-customer").val());
-                                                //checkReminder($("#crm-select-customer").val());
-                                                selectedId = null;
-                                                triggerAlert("Successfully deleted contract.", "success");
-                                            }
-                                            else
-                                            {
-                                                triggerAlert("Failed to delete contract.", "warning");
-                                            }
+        var $selRowContainer = $("#CustomerContract-table_wrapper").find(".row").first().find(".col-sm-6").first();
+        $button = $selRowContainer.find("#crm-delete-contract");
+        if(selectedContract.Status == "Makulerat" && $button.length == 0){
+            $("<div id='crm-delete-contract' class='crm-table-btn'><button type='button' class='btn btn-danger'>Remove</button></div>").insertBefore('#crm-help-info');
+            $selRowContainer.find("#crm-delete-contract").bind("click", function(){
+                bootbox.dialog({
+                    title: 'Do you want to delete this contract?',
+                    message: "You are about to delete the selected contract",
+                    buttons: {
+                        'yes': {
+                            label: 'Yes',
+                            className: 'btn-danger pull-right',
+                            callback: function () {
+                                $.ajax({
+                                    "url": serverPrefix + "CustomerContract/DeleteContract/",
+                                    "type": "POST",
+                                    "data": {
+                                        "id": selectedContract.Contract_id
+                                    },
+                                    "success": function(data){
+                                        if(data > 0)
+                                        {
+                                            updateDataTable($("#crm-select-customer").val(),$("#crm-select-user").val());
+                                            //checkReminder($("#crm-select-customer").val());
+                                            selectedId = null;
+                                            triggerAlert("Successfully deleted contract.", "success");
                                         }
-                                    });
-                                }
-                            },
-                            'no': {
-                                label: 'No',
-                                className: 'pull-right',
+                                        else
+                                        {
+                                            triggerAlert("Failed to delete contract.", "warning");
+                                        }
+                                    }
+                                });
                             }
                         },
-                    });
+                        'no': {
+                            label: 'No',
+                            className: 'pull-right',
+                        }
+                    },
                 });
-            }
-            else if($button.length != 0 && selectedContract.Status != "Makulerat"){
-                $selRowContainer.find("#crm-delete-contract").remove();
-            }
-        }
-
-        var handleStates = function () {
-            var stateSearch = StateCookie.getCurrentSite().search;
-            var $searchBox = $("#CustomerContract-table_filter").find(":input");
-
-            if (stateSearch !== undefined) {
-                $searchBox.val(String(stateSearch));
-                $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
-            }
-
-            var waitBeforeSave;
-            $searchBox.bind('keyup', function () {
-                clearTimeout(waitBeforeSave);
-                waitBeforeSave = setTimeout(function(){
-                    console.log("running keydown");
-                    StateCookie.updateSite($searchBox.val());
-                }, 500)
             });
         }
-
-        var generateSelectedContract = function($selectedRow){
-            selectedContract.Contract_id = $selectedRow.find("td:nth-child(2)").html();
-            selectedContract.Customer = $selectedRow.find("td:nth-child(3)").html();
-            selectedContract.Title = $selectedRow.find("td:nth-child(4)").html();
-            selectedContract.Contract_type = $selectedRow.find('td:nth-child(5)').html();
-            selectedContract.Term_of_notice = $selectedRow.find('td:nth-child(6)').html();
-            selectedContract.Extension = $selectedRow.find('td:nth-child(7)').html();
-            selectedContract.Status = $selectedRow.find('td:nth-child(8)').html();
-            selectedContract.CRM_id = $selectedRow.find('td:nth-child(9)').html();
-            selectedContract.Valid_from = $selectedRow.find('td:nth-child(10)').html();
-            selectedContract.Valid_through = $selectedRow.find('td:nth-child(11)').html();
-            selectedContract.Main_contract_id = $selectedRow.find('td:nth-child(12)').html();
-            selectedContract.Expire = $selectedRow.find('td:nth-child(13)').html();
-            selectedContract.Observation = $selectedRow.find('td:nth-child(14)').html();
-            selectedContract.Note = $selectedRow.find('td:nth-child(15)').html();
-            selectedContract.Contact_person = $selectedRow.find('td:nth-child(16)').html();
-            selectedContract.Area = $selectedRow.find('td:nth-child(17)').html();
+        else if($button.length != 0 && selectedContract.Status != "Makulerat"){
+            $selRowContainer.find("#crm-delete-contract").remove();
         }
-        var uniqueRowNumber = 0;
-        var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    }
 
-            var i = 0, j = 0;
-            var insertValue;
-            var StateSelId = StateCookie.getCurrentSite().selectedId;
-            for (var name in aData) {
+    var handleStates = function () {
+        var stateSearch = StateCookie.getCurrentSite().search;
+        var $searchBox = $("#CustomerContract-table_filter").find(":input");
 
-                var $td;
+        if (stateSearch !== undefined) {
+            $searchBox.val(String(stateSearch));
+            $searchBox.trigger($.Event("keyup", { keyCode: 13 }));
+        }
 
-                if(i == 0)
-                {
-                    $td = $('td:eq(' + i + ')', nRow);
+        var waitBeforeSave;
+        $searchBox.bind('keyup', function () {
+            clearTimeout(waitBeforeSave);
+            waitBeforeSave = setTimeout(function(){
+                console.log("running keydown");
+                StateCookie.updateSite($searchBox.val());
+            }, 500)
+        });
+    }
 
-                    $td.parent().click(function () {
+    var generateSelectedContract = function($selectedRow){
+        selectedContract.Contract_id = $selectedRow.find("td:nth-child(2)").html();
+        selectedContract.Customer = $selectedRow.find("td:nth-child(3)").html();
+        selectedContract.Title = $selectedRow.find("td:nth-child(4)").html();
+        selectedContract.Contract_type = $selectedRow.find('td:nth-child(5)').html();
+        selectedContract.Term_of_notice = $selectedRow.find('td:nth-child(6)').html();
+        selectedContract.Extension = $selectedRow.find('td:nth-child(7)').html();
+        selectedContract.Status = $selectedRow.find('td:nth-child(8)').html();
+        selectedContract.CRM_id = $selectedRow.find('td:nth-child(9)').html();
+        selectedContract.Valid_from = $selectedRow.find('td:nth-child(10)').html();
+        selectedContract.Valid_through = $selectedRow.find('td:nth-child(11)').html();
+        selectedContract.Main_contract_id = $selectedRow.find('td:nth-child(12)').html();
+        selectedContract.Expire = $selectedRow.find('td:nth-child(13)').html();
+        selectedContract.Observation = $selectedRow.find('td:nth-child(14)').html();
+        selectedContract.Note = $selectedRow.find('td:nth-child(15)').html();
+        selectedContract.Contact_person = $selectedRow.find('td:nth-child(16)').html();
+        selectedContract.Area = $selectedRow.find('td:nth-child(17)').html();
+    }
+    var uniqueRowNumber = 0;
+    var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                        selectRow(this.firstChild);
+        var i = 0, j = 0;
+        var insertValue;
+        var StateSelId = StateCookie.getCurrentSite().selectedId;
+        for (var name in aData) {
 
-                    });
+            var $td;
 
-                    $td.parent().dblclick(function(){
-                        $input = $("#CustomerContract-table_filter").find(":input");
-                        val = $input.val();
-                        window.history.pushState(null,null,["ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val]);
+            if(i == 0)
+            {
+                $td = $('td:eq(' + i + ')', nRow);
 
-                        window.location = "ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val;
-                    });
+                $td.parent().click(function () {
 
-                    var object = {Contract_id: aData["Contract_id"], Customer: aData["Customer"]}
-                    $td.html("<input type='radio' value='" + aData["Contract_id"] + "' name='selected-contract' onClick=''/>");
-                    if ($td.find("input").val() == StateSelId) {
-                        selectRow($td);
-                    }
-                    else if ($td.parent().hasClass("selected") && $td.find("input").val() != selectedId) {
-                        $td.parent().removeClass("selected");
-                    }
-                    i++;
+                    selectRow(this.firstChild);
 
+                });
+
+                $td.parent().dblclick(function(){
+                    $input = $("#CustomerContract-table_filter").find(":input");
+                    val = $input.val();
+                    window.history.pushState(null,null,["ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val]);
+
+                    window.location = "ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val;
+                });
+
+                var object = {Contract_id: aData["Contract_id"], Customer: aData["Customer"]}
+                $td.html("<input type='radio' value='" + aData["Contract_id"] + "' name='selected-contract' onClick=''/>");
+                if ($td.find("input").val() == StateSelId) {
+                    selectRow($td);
                 }
-                if (i >= 1) {
-                    $td = $('td:eq(' + i + ')', nRow);
-                    if(name == "_HashtagList"){
-                        $td.attr("data-rep", JSON.stringify(aData[name]));
-                        $td.hide();
-                    }
-                    else{
-                        $td.attr("data-type", "select");
-                        $td.attr("data-data", name);
-                    }
-                    // deleteRowFunction($td, dataObj);
+                else if ($td.parent().hasClass("selected") && $td.find("input").val() != selectedId) {
+                    $td.parent().removeClass("selected");
                 }
-
-
                 i++;
-            }
-        }
 
-        @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
-        @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+            }
+            if (i >= 1) {
+                $td = $('td:eq(' + i + ')', nRow);
+                if(name == "_HashtagList"){
+                    $td.attr("data-rep", JSON.stringify(aData[name]));
+                    $td.hide();
+                }
+                else{
+                    $td.attr("data-type", "select");
+                    $td.attr("data-data", name);
+                }
+                // deleteRowFunction($td, dataObj);
+            }
+
+
+            i++;
+        }
+    }
+
+    @{String DataObject = "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
 
             if ((!PropertyInfo.Name.StartsWith("_") || PropertyInfo.Name == "_HashtagList") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name))
@@ -1132,45 +1152,46 @@
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
             }
-            
+
         }
 
-        @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-        var updateDataTable = function(customer, onSuccess)
-        {
-            console.log(customer);
-            $('#@ViewBag.ControllerName-table').DataTable({
-                "destroy": true,
-                "processing": true,
-                //"ajax": "/CustomerProductReport/CustomerData/",
-                "ajax": {
-                    "url": "@Url.Content("~/CustomerContract/CustomerContractJsonData/")",
-                    "type": "POST",
-                    "data": {
-                        "customer": customer
-                    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(customer, user, onSuccess)
+    {
+        console.log(customer);
+        $('#@ViewBag.ControllerName-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": "@Url.Content("~/CustomerContract/CustomerContractJsonData/")",
+                "type": "POST",
+                "data": {
+                    "customer": customer,
+                    "our_sign": user
+    }
+            },
+            "initComplete": function(settings, json) {
+                drawButtons();
+                if(typeof onSuccess != "undefined")
+                    onSuccess();
+                handleStates();
+            },
+            "defaultContent": "",
+            "bPaginate": false,
+            "bInfo" : false,
+            //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
+            "order": [[7, "desc"]],
+            //[14, "desc"],
+            "columns": [@Html.Raw(DataObject)
+            ],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
                 },
-                "initComplete": function(settings, json) {
-                    drawButtons();
-                    if(typeof onSuccess != "undefined")
-                        onSuccess();
-                    handleStates();
-                },
-                "defaultContent": "",
-                "bPaginate": false,
-                "bInfo" : false,
-                //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
-                "order": [[7, "desc"]],
-                //[14, "desc"],
-                "columns": [@Html.Raw(DataObject)
-                ],
-                "columnDefs": [
-                    {
-                        "data": null,
-                        "defaultContent": "",
-                        "targets": 0
-                    },
-                    @*{
+                @*{
                         "width": "210px",
                         "targets": 1
                     },
@@ -1198,100 +1219,108 @@
                         "width": "17%",
                         "targets": 12
                     },*@
-                ],
-                "scrollY": ($("#page-content-wrapper").height() - 170),
-                "scrollX": true,
-                "fnRowCallback": drawCallBack
-            });
-            checkReminder(customer);
-            var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
-            //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
-            //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
-            //$('#crm-save-btn').on('click', save);
-        }
+            ],
+            "scrollY": ($("#page-content-wrapper").height() - 170),
+            "scrollX": true,
+            "fnRowCallback": drawCallBack
+        });
+        checkReminder(customer);
+        var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
+        //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
+        //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
+        //$('#crm-save-btn').on('click', save);
+    }
 
-        var loadCustomer = function()
-        {
-            var $formInputs = $("#newRowModal form").find(":input");
-            var frmInpLen = $formInputs.length;
-            for (var i = 0; i < frmInpLen; i++) {
-                var $currInput = $($formInputs[i]);
-                if($currInput.attr("type") == "date"){
+    var loadCustomer = function()
+    {
+        var $formInputs = $("#newRowModal form").find(":input");
+        var frmInpLen = $formInputs.length;
+        for (var i = 0; i < frmInpLen; i++) {
+            var $currInput = $($formInputs[i]);
+            if($currInput.attr("type") == "date"){
 
-                    var today = new Date();
-                    if($currInput.attr("name") == "Valid_through"){
-                        today.setYear(today.getFullYear() + 3);
-                    }
-                    $currInput.val($.datepicker.formatDate('yy-mm-dd', today));
-
+                var today = new Date();
+                if($currInput.attr("name") == "Valid_through"){
+                    today.setYear(today.getFullYear() + 3);
                 }
-                else if($currInput.attr("name") == "Term_of_notice"){
-                    $currInput.val("3");
-                }
+                $currInput.val($.datepicker.formatDate('yy-mm-dd', today));
+
+            }
+            else if($currInput.attr("name") == "Term_of_notice"){
+                $currInput.val("3");
+            }
 
             else {
-                    $currInput.val("");
+                $currInput.val("");
             }
         }
 
-            $customer = $("#customer-text");
-            $customer.attr("readonly",true);
-            $customer.val($("#crm-select-customer").val());
-        }
+        $customer = $("#customer-text");
+        $customer.attr("readonly",true);
+        $customer.val($("#crm-select-customer").val());
+    }
 
     //Här ritas Create resp. Preview-knapparna i index-bilden. Samt vad som händer när man trycker på knapparna.
-        function drawButtons()
-        {
-            var $selRowContainer = $("#CustomerContract-table_wrapper").find(".row").first().find(".col-sm-6").first();
+    function drawButtons()
+    {
+        var $selRowContainer = $("#CustomerContract-table_wrapper").find(".row").first().find(".col-sm-6").first();
 
-            $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
-            $selRowContainer.append("<div id='crm-edit-contract' class='crm-table-btn'><button type='button' class='btn btn-default'>Preview</button></div>");
+        $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
+        $selRowContainer.append("<div id='crm-edit-contract' class='crm-table-btn'><button type='button' class='btn btn-default'>Preview</button></div>");
 
-            $("#crm-edit-contract").bind("click", function(){
-                //get selected item and add so the url is correct.
-                if(typeof selectedId == "undefined" || selectedId == null)
-                    triggerAlert("Select an item to preview", "info");
-                else
-                {   
-                    contract = selectedId;
-                    //console.log(contract.Contract_id);
-                    
-                    $input = $("#CustomerContract-table_filter").find(":input");
-                    val = $input.val();
-                    cval = $customerSelect.val();
-                    if(cval == "*")
-                        cval = selectedContract.Customer;
-                    window.history.pushState(null,null,["Index?contract-id=" + contract + "&customer=" + cval + "&search=" + val ]);
-                    window.location = "ViewPdf?contract-id=" + contract + "&customer=" + cval + "&search=" + val;
-                }
+        $("#crm-edit-contract").bind("click", function(){
+            //get selected item and add so the url is correct.
+            if(typeof selectedId == "undefined" || selectedId == null)
+                triggerAlert("Select an item to preview", "info");
+            else
+            {
+                contract = selectedId;
+                //console.log(contract.Contract_id);
 
-            });
-            $("#crm-add-row").bind("click", function(){
-                if($('#crm-select-customer').val() != "*"){
-                    console.log("asd");
-                    loadNewContactData();
-                    loadCustomer();
-                    //loadMainContracts();
-                    console.log(1);
-                    setDefaultValues();
-                    $("#newRowModal").appendTo("body").modal("show").draggable();
-                } else {
-                    triggerAlert("You will have to select a valid customer first", "info")
-                }
-            });
+                $input = $("#CustomerContract-table_filter").find(":input");
+                val = $input.val();
+                cval = $customerSelect.val();
+                uval = $userSelect.val();
+                if(cval == "*")
+                    cval = selectedContract.Customer;
+                window.history.pushState(null,null,["Index?contract-id=" + contract + "&customer=" + cval + "&search=" + val ]);
+                window.location = "ViewPdf?contract-id=" + contract + "&customer=" + cval + "&our_sign=" + uval + "&search=" + val;
+            }
 
-            drawButtonsExtension($selRowContainer, "bottom");
-        }
+        });
+        $("#crm-add-row").bind("click", function(){
+            if($('#crm-select-customer').val() != "*"){
+                console.log("asd");
+                loadNewContactData();
+                loadCustomer();
+                //loadMainContracts();
+                console.log(1);
+                setDefaultValues();
+                $("#newRowModal").appendTo("body").modal("show").draggable();
+            } else {
+                triggerAlert("You will have to select a valid customer first", "info")
+            }
+        });
+
+        drawButtonsExtension($selRowContainer, "bottom");
+    }
     $(document).ready(function () {
 
-        $('.selectpicker').val('@Request["customer"]');
-        $('.selectpicker').selectpicker('refresh');
+        //$('.selectpicker').val('@Request["customer"]');
+        //$('.selectpicker').selectpicker('refresh');
 
         $customerSelect = $("#crm-select-customer");
+        $userSelect = $("#crm-select-user");
         $customerSelect.change(function () {
             selectedId = null;
             loadAppointments();
-            updateDataTable(this.value);
+            updateDataTable(this.value, $("#crm-select-user").val());
+        });
+
+        $userSelect.change(function () {
+            selectedId = null;
+            loadAppointments();
+            updateDataTable($("#crm-select-customer").val(), this.value);
         });
 
 
@@ -1308,7 +1337,7 @@
                     date: true,
                 },
                 "Extension": {
-                    digits: true          
+                    digits: true
                 },
                 "Expire": {
                     date: true
@@ -1324,16 +1353,16 @@
                 },
                 "Main_contract_id": {
                     required: {
-                            depends:function() {
-                                if($("#contract_type-select").val() == "Tilläggsavtal") {
-                                    return true;
-                                }
-                                else {
-                                    return false;
-                                }
+                        depends:function() {
+                            if($("#contract_type-select").val() == "Tilläggsavtal") {
+                                return true;
+                            }
+                            else {
+                                return false;
                             }
                         }
-                    
+                    }
+
                 }
             },
             errorElement: "span",
@@ -1426,8 +1455,10 @@
 
 
         $customerSelect.val("@Html.Raw(ViewBag.Customer)");
+        @*$userSelect.val("@Html.Raw(ViewBag.User)");*@
+        $(".selectpicker").selectpicker();
         $(".selectpicker").selectpicker("refresh");
-        updateDataTable("@Html.Raw(ViewBag.Customer)", function(){
+        updateDataTable("@Html.Raw(ViewBag.Customer)", "@Html.Raw(ViewBag.CurrentUser)", function(){
             if($customerSelect.val() == "")
             {
                 $("#crm-add-row").unbind("click");

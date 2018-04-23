@@ -54,7 +54,7 @@ namespace TietoCRM.Controllers
             this.ViewData["title"] = "Customer Offer";
             ViewData.Add("Users", view_User.getAllUsers());
 
-            if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sig"] == "")
+            if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
             {
                 ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
             }
@@ -62,7 +62,6 @@ namespace TietoCRM.Controllers
             {
                 ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
             }
-
 
             String on;
             if (ViewBag.Customers.Count <= 0)

@@ -104,7 +104,7 @@
                 </ul>
             </div>
             <!--<button type="button" class="btn btn-success navbar-btn">Save</button>-->
-            <button type="button" onclick="window.location = '@Url.Content("~/CustomerContract/Index?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]) + "&search=" + Url.Encode(Request["search"]))';" class="btn btn-default navbar-btn">Back</button>
+            <button type="button" onclick="window.location = '@Url.Content("~/CustomerContract/Index?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]) + "&our_sign=" + Url.Encode(Request["our_sign"]) + "&search=" + Url.Encode(Request["search"]))';" class="btn btn-default navbar-btn">Back</button>
             <span style="margin-left: 1em"></span>
             <a class="btn btn-primary navbar-btn" href="@Url.Content("~/CustomerContract/Pdf?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))" target="_blank">PDF</a>
             <a class="btn btn-primary navbar-btn" href="@Url.Content("~/CustomerContract/ViewShippingListPdf?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))" target="_blank">Shipping List</a>

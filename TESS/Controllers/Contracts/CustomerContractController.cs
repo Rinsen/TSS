@@ -58,6 +58,7 @@ namespace TietoCRM.Controllers.Contracts
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign).OrderBy(c => c).ToList());
             else
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames().OrderBy(c => c).ToList());
+            ViewData.Add("Users", view_User.getAllUsers());
             this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_kontrakt);
             this.ViewData.Add("ControllerName", "CustomerContract");
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
@@ -72,6 +73,16 @@ namespace TietoCRM.Controllers.Contracts
                 view_Contract contract = new view_Contract("Contract_id = " + id);
                 on = contract.Customer;
             }
+
+            if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
+            {
+                ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
+            }
+            else
+            {
+                ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
+            }
+
 
             this.ViewData.Add("OfferNumber", on);
 
@@ -156,6 +167,7 @@ namespace TietoCRM.Controllers.Contracts
            // string request = Request["selected-contract"];
             String urlCustomer = Request["customer"];
             String urlContractId = Request["contract-id"];
+            String urlOurSign = Request["our_sign"];
             bool ctrResign = false;
 
             view_Contract contract = new view_Contract("Contract_id = '" + urlContractId + "' AND Customer = '" + urlCustomer + "'");
@@ -358,28 +370,29 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Customer", customer);
 
             view_User user = new view_User();
-            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
-                user = System.Web.HttpContext.Current.GetUser();
-            else
-            {
-                List<view_User> users = new List<view_User>();
-                foreach(String name in customer._Representatives)
-                {
-                    view_User rep = new view_User();
-                    rep.Select("Sign=" + name);
-                    users.Add(rep);
-                }
-                if (users.Count > 0)
-                {
-                    List<view_User> tempUsers = users.Where(u => u.Area == contract.Area).ToList();
-                    if(tempUsers.Count > 0)
-                        user = tempUsers.First();
-                    else
-                        user = System.Web.HttpContext.Current.GetUser();
-                }
-                else
-                    user = System.Web.HttpContext.Current.GetUser();
-            }
+            user.Select("Sign = " + contract.Sign);
+            //if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+            //    user = System.Web.HttpContext.Current.GetUser();
+            //else
+            //{
+            //    List<view_User> users = new List<view_User>();
+            //    foreach(String name in customer._Representatives)
+            //    {
+            //        view_User rep = new view_User();
+            //        rep.Select("Sign=" + name);
+            //        users.Add(rep);
+            //    }
+            //    if (users.Count > 0)
+            //    {
+            //        List<view_User> tempUsers = users.Where(u => u.Area == contract.Area).ToList();
+            //        if(tempUsers.Count > 0)
+            //            user = tempUsers.First();
+            //        else
+            //            user = System.Web.HttpContext.Current.GetUser();
+            //    }
+            //    else
+            //        user = System.Web.HttpContext.Current.GetUser();
+            //}
                 
             ViewData.Add("Representative", user);
 
@@ -595,6 +608,8 @@ namespace TietoCRM.Controllers.Contracts
         public String CustomerContractJsonData()
         {
             String customer = Request.Form["customer"];
+            String our_sign = Request.Form["our_sign"];
+
             if (customer == "" || customer == null)
             {
                 List<String> customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
@@ -603,7 +618,6 @@ namespace TietoCRM.Controllers.Contracts
                 else
                     customer = customerNames[0];
             }
-
 
             List<view_Contract> customerContracts;
             if(customer != "*")
@@ -615,7 +629,7 @@ namespace TietoCRM.Controllers.Contracts
 
             view_User user = System.Web.HttpContext.Current.GetUser();
             List<view_Customer> vCustomers = new List<view_Customer>();
-            foreach (view_Contract contract in customerContracts)
+            foreach (view_Contract contract in customerContracts.Where(c => (c.Sign == our_sign && our_sign != "*") || (c.Sign == c.Sign && our_sign == "*")))
             {
                 view_Customer vCustomer;
                 if (vCustomers.Any(c => c.Customer == contract.Customer))
@@ -1890,9 +1904,20 @@ namespace TietoCRM.Controllers.Contracts
             try
             {
                 String customer = Request.Form["customer"];
+                String our_sign = Request.Form["our_sign"];
                 view_User user = System.Web.HttpContext.Current.GetUser();
-                List<String> mainContracts = view_Contract.GetContracts(customer).Where(c=>c.Is(ContractType.MainContract) && c.Status == "Giltigt" && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
-                
+                List<String> mainContracts = new List<String>();
+                if (our_sign != "*")
+                {
+                    mainContracts = view_Contract.GetContracts(customer).Where(c => c.Is(ContractType.MainContract) && 
+                        c.Status == "Giltigt" && c.Sign == our_sign && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
+                }
+                else
+                {
+                   mainContracts = view_Contract.GetContracts(customer).Where(c => c.Is(ContractType.MainContract) && 
+                        c.Status == "Giltigt" && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
+                }
+
                 return (new JavaScriptSerializer()).Serialize(mainContracts);
             }
             catch
