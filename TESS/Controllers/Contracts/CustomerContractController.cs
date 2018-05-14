@@ -1385,6 +1385,24 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
+
+                view_ContractRow crow = new view_ContractRow();
+                List<dynamic> l = crow.GetContractRowsForModuleInfo(contract.Customer, contract.Contract_id);
+                var moduleInfo = "";
+
+                foreach (var mi in l)
+                {
+                    if (moduleInfo == "")
+                    {
+                        moduleInfo = "<h5><strong>Information produkter</strong></h5>";
+                    }
+                    moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                    moduleInfo += "<p>" + mi.Contract_description + "</p>";
+                }
+
+                view_ContractText ctext = new view_ContractText();
+                ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo);
+
                 return "1";
             }
             catch{
@@ -1511,7 +1529,8 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+                                                M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, M.Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category

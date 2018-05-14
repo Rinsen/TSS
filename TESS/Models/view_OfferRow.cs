@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using TietoCRM.Extensions;
+using System.Dynamic;
 
 namespace TietoCRM.Models
 {
@@ -172,6 +173,45 @@ namespace TietoCRM.Models
 
             }
             return list;
+        }
+        public List<dynamic> GetOfferRowsForModuleInfo(int offerNumber)
+        {
+            List<dynamic> list = new List<dynamic>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+                // Default query
+                command.CommandText = @"SELECT O.Article_number, O.Alias, M.Offer_Description FROM " + databasePrefix + @"OfferRow O 
+                                        Inner Join  " + databasePrefix + @"Module M On M.Article_number = O.Article_number 
+                                        Where IsNull(M.Offer_Description,'') <> '' And O.Offer_number = @offerNumber Order By O.Classification, O.Alias";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@offerNumber", offerNumber);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            dynamic t = new ExpandoObject();
+                            t.Article_number = reader.GetValue(0);
+                            t.Alias = reader.GetValue(1);
+                            t.Offer_description = reader.GetValue(2);
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+
         }
         private static string GetOrderBy()
         {

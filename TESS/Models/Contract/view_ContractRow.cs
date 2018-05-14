@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using TietoCRM.Extensions;
+using System.Dynamic;
 
 namespace TietoCRM.Models
 {
@@ -387,7 +388,47 @@ public class view_ContractRow : SQLBaseClass
                 return list;
             }
         }
-    private static string GetOrderBy()
+        public List<dynamic> GetContractRowsForModuleInfo(string customer, string contract_id)
+        {
+            List<dynamic> list = new List<dynamic>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+                // Default query
+                command.CommandText = @"SELECT C.Article_number, C.Alias, M.Contract_Description FROM " + databasePrefix + @"ContractRow C 
+                                        Inner Join  " + databasePrefix + @"Module M On M.Article_number = C.Article_number 
+                                        Where IsNull(M.Contract_Description,'') <> '' And C.Customer = @customer And C.Contract_id = @contract_id Order By " + GetOrderBy();
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@contract_id", contract_id);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            dynamic t = new ExpandoObject();
+                            t.Article_number = reader.GetValue(0);
+                            t.Alias = reader.GetValue(1);
+                            t.Contract_description = reader.GetValue(2);
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+
+        }
+        private static string GetOrderBy()
         {
             ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
             if (ASort == 1) return "Alias";

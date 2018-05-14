@@ -19,7 +19,14 @@
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 if (@PropertyName != "SSMA timestamp")
                 {
-                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    if (@PropertyName == "Description")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">Important Info</th>
+                    }
+                    else
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    }
                 }
 
             }
@@ -49,12 +56,6 @@
                                 <label for="module2" class="col-sm-2 control-label">Module</label>
                                 <div class="col-sm-9">
                                     <input class="form-control" name="Module" id="module2">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="description2" class="col-sm-2 control-label style="width: 200px;">Description</label>
-                                <div class="col-sm-9">
-                                    <input class="form-control" name="Description" id="description2">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -144,21 +145,27 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="description2" class="col-sm-2 control-label">Important Info</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Description" id="description2" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="notes2" class="col-sm-2 control-label">Comment</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Comment" id="notes2" rows="6"></textarea>
+                                    <textarea class="form-control" name="Comment" id="notes2" rows="5"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="offer_description2" class="col-sm-2 control-label">Offer Description</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="6"></textarea>
+                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="5"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="contract_description2" class="col-sm-2 control-label">Contract Description</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="6"></textarea>
+                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="5"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +276,24 @@
     $(document).ready(function () {
         var uniqueRowNumber = 0;
         var $delBtns;
+        var editModalChanged = 0;
 
+        $( '#moduleModal').change(function() {
+            editModalChanged = 1;
+        });
+
+        window.onbeforeunload = confirmExit;
+
+        function confirmExit() {
+            if (editModalChanged == 1) {
+                return "Ändringar ej sparade. Vill du lämna sidan ändå?";
+            }
+        }
+        
+        $('#moduleModal').on('hide.bs.modal', function () {
+            editModalChanged = 0;
+        })
+        
         $('#discount2').change(function() {
             handleDiscountCheck(this);
         });
@@ -366,6 +390,7 @@
             wrapper: "a",  // a wrapper around the error message
             errorPlacement: handleErrorPlacement
         });
+        editModalChanged = 0;
     });
 
     var drawButtons = function(){
@@ -575,7 +600,7 @@
                 j++;
             }
 
-            if (i >= 1 && j < 14) {
+            if (i >= 1 && j < 16) {
                 $td = $('td:eq(' + j + ')', nRow);
                 $td.attr("data-property", name);
                 $td.html(aData[name]);
@@ -585,7 +610,7 @@
             i++;
         }
 
-
+        editModalChanged = 0;
     }
 
 </script>

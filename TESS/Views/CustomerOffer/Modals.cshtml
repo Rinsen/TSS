@@ -40,6 +40,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="module-info-text" class="col-sm-2 control-label">Module info</label>
+            <div class="col-sm-10">
+                <textarea id="module-info-text" name="Module_info" class="form-control" rows="3">@ViewBag.CustomerOffer.Module_info</textarea>
+            </div>
+        </div>
+        <div class="form-group">
             <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
             <div class="col-sm-10">
                 <textarea id="document-foot-text" name="Document_foot" class="form-control" rows="3">@ViewBag.CustomerOffer.Document_foot</textarea>
@@ -111,6 +117,7 @@
             console.log("Spara");
             var tinyMCEInputs = [
                 "Page_head",
+                "Module_info",
                 "Page_foot",
                 "Document_foot",
             ];
@@ -172,6 +179,11 @@
     });
     tinymce.init({
         selector: "#page-head-text",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars
+    });
+    tinymce.init({
+        selector: "#module-info-text",
         plugins: tinyDefaultPlugins,
         toolbar: tinyDefaultToolbars
     });
@@ -589,13 +601,23 @@ else if (Request["modal"] == "articles")
             if(article.Used == true)
             {
                 usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
-            } else if (article.HasDependencies) {
-                var depLen = article.Dependencies.length;
-                var depTitle = "Depends on:\n";
-                var depArticle;
-                for (var d = 0; d < depLen; d++) {
-                    depArticle = article.Dependencies[d];
-                    depTitle += " " + depArticle.Article_number + ": " + depArticle.Module + "\n";
+            } else if (article.HasDependencies || article.Description.length > 0) {
+                var depTitle = "";
+                if (article.HasDependencies) {
+                    var depLen = article.Dependencies.length;
+                    depTitle = "Depends on:\n";
+                    var depArticle;
+                    for (var d = 0; d < depLen; d++) {
+                        depArticle = article.Dependencies[d];
+                        depTitle += " " + depArticle.Article_number + ": " + depArticle.Module + "\n";
+                    }
+                }
+                if (article.Description.length > 0) {
+                    if  (depTitle.length > 0) {
+                        depTitle += "\n";
+                    }
+                    depTitle += "Important info:\n";
+                    depTitle += article.Description;
                 }
                 usedCell = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
             }

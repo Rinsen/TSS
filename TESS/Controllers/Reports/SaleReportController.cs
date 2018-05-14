@@ -86,7 +86,7 @@ namespace TietoCRM.Controllers.Reports
             {
                 foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
                 {
-                    if (offer.Offer_status == "Öppen")
+                    if (offer.Offer_status == "Öppen" && offer.Our_sign == sign)
                     {
                         Dictionary<String, object> dict = new Dictionary<String, object>();
                         decimal? totalMaintenance = 0;

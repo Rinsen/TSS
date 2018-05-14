@@ -1071,6 +1071,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="module-info-text" class="col-sm-2 control-label">Module Info</label>
+                        <div class="col-sm-10">
+                            <textarea id="module-info-text" name="Module_info" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
                         <div class="col-sm-10">
                             <textarea id="document-foot-text" name="Document_foot" class="form-control" rows="3"></textarea>
@@ -1323,10 +1329,16 @@
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars
         });
+        tinymce.init({
+            selector: "#module-info-text",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars
+        });
         tinyMCE.execCommand('mceAddControl', false, 'page-head-text');
         tinyMCE.execCommand('mceAddControl', false, 'deluhtitle');
         tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
         tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
+        tinyMCE.execCommand('mceAddControl', false, 'module-info-text');
     });
     $('#templatesModal').bind('hidden.bs.modal', function () {
         tinyMCE.remove();

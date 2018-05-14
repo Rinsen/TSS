@@ -35,6 +35,7 @@
             text["Page_head"] = tinymce.get('page-head-text').getContent();
             //text["Document_foot"] = $("#document-foot-text").val();
             text["Document_foot"] = tinymce.get('document-foot-text').getContent();
+            text["Module_info"] = tinymce.get('module-info-text').getContent();
             text["Document_foot_title"] = $("#bodytitle").val(),
             text["Delivery_maint_title"] = tinymce.get("deluhtitle").getContent(),
             //text["Delivery_maint_text"] = $("#deluhtext").val()
@@ -172,6 +173,7 @@ var loadTextData = function (templateID) {
                 $("#title-text").val(template.Title);
                 $("#page-head-text").val(template.Page_head);
                 $("#document-foot-text").val(template.Document_foot);
+                $("#module-info-text").val(template.Module_info);
                 $("#bodytitle").val(template.Document_foot_title);
                 $("#deluhtitle").val(template.Delivery_maint_title);
                 $("#deluhtext").val(template.Delivery_maint_text);
