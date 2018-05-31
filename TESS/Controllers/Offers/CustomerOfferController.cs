@@ -58,11 +58,14 @@ namespace TietoCRM.Controllers
             if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
             {
                 ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
+                ViewData.Add("CurrentName", System.Web.HttpContext.Current.GetUser().Name);
                 ViewData.Add("showModalReminder", true);
             }
             else
             {
+                view_User us = new view_User();
                 ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
+                ViewData.Add("CurrentName", us.GetName(Request.QueryString["our_sign"]));
                 ViewData.Add("showModalReminder", false);
             }
 

@@ -119,7 +119,30 @@ namespace TietoCRM.Models
         {
             return area != null && this.Area != null && area.ToLower() == this.Area.ToLower() || this.Area == "*";
         } 
+        public string GetName(string sign)
+        {
+            string name = "";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
 
+                String query = "SELECT Name FROM " + databasePrefix + "User Where sign = @sign";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@sign", sign);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        name = reader.GetValue(0).ToString();
+                    }
+                }
+            }
+            return name;
+        }
     }
 
 }

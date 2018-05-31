@@ -86,7 +86,7 @@ namespace TietoCRM.Controllers.Reports
             {
                 foreach (view_CustomerOffer offer in view_CustomerOffer.getAllCustomerOffers(customer.Customer))
                 {
-                    if (offer.Offer_status == "Öppen" && offer.Our_sign == sign)
+                    if (offer.Offer_status == "Öppen" && (offer.Our_sign == sign || sign == "alla"))
                     {
                         Dictionary<String, object> dict = new Dictionary<String, object>();
                         decimal? totalMaintenance = 0;
@@ -113,7 +113,7 @@ namespace TietoCRM.Controllers.Reports
                         dict.Add("maintenance", totalMaintenance);
                         dict.Add("license", totalLicense);
                         dict.Add("contact_person", offer.Contact_person);
-                        dict.Add("customer_type", customer.Customer_type);
+                        dict.Add("our_sign", offer.Our_sign);
                         //if(totalMaintenance > 0 || totalLicense > 0)
                             rows.Add(dict);
                     }

@@ -44,6 +44,9 @@
                     <button type='button'  style="margin-top: 1.7em;" class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
                 </div>
                 <button type='button' style="display:none; margin-top: 1.7em;" class='btn btn-warning form-control' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+                <div class="form-group">
+                    <input hidden name="CurrentUser" id="current_user" value="@ViewBag.CurrentUser">
+                </div>            
             </form>
         </div>
     </row>
@@ -464,10 +467,17 @@
                 if(currentPerson.length > 0){
                     for(var i = 0; i < currentSign.length; i++)
                     {
-                        $select.append($("<option></option>").attr("innerText", currentSign[i]).html(currentSign[i]));
+                        if (currentSign[i] == $("#current_user").val()) 
+                        {
+                            $select.append($("<option> selected </option>").attr("innerText", currentSign[i]).html(currentSign[i]));
+                        }
+                        else 
+                        {
+                            $select.append($("<option></option>").attr("innerText", currentSign[i]).html(currentSign[i]));
+                        }
                     }
                 }                 
-                $select.append("<option selected value=''>No one selected</option>");
+                //$select.append("<option selected value=''>No one selected</option>");
                 $select.selectpicker('refresh');
             }
         });
