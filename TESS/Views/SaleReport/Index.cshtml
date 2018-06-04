@@ -126,26 +126,27 @@
 
         $('#export-excel').click(function () {
             var user = $userContainer.val();
-            $.ajax({
-                "url": serverPrefix + "SaleReport/SaleReportExportExcel/",
-                "type": "POST",
-                "data": {
-                    "user": $userContainer.val()
-                },
-                "success": function (data) {
-                    if (data != "") {
-                        //var url = serverPrefix + "SaleReport/ExportExcel/";
-                        var url = serverPrefix + "ExportExcel/" + data;
-                        window.location.href = url;
-                    }
-                    else {
-                        triggerAlert("Something went wrong when trying to export to excel", "warning");
-                    }
-                },
-                "error": function () {
-                        triggerAlert("Something went wrong when saving the Excel file", "warning");
-                }
-            });
+            window.open(serverPrefix + "SaleReport/ExportExcel?user=" + user, "_parent").focus();
+            //$.ajax({
+            //    "url": serverPrefix + "SaleReport/SaleReportExportExcel/",
+            //    "type": "POST",
+            //    "data": {
+            //        "user": $userContainer.val()
+            //    },
+            //    "success": function (data) {
+            //        if (data != "") {
+            //            //var url = serverPrefix + "SaleReport/ExportExcel/";
+            //            var url = serverPrefix + "ExportExcel/" + data;
+            //            window.location.href = url;
+            //        }
+            //        else {
+            //            triggerAlert("Something went wrong when trying to export to excel", "warning");
+            //        }
+            //    },
+            //    "error": function () {
+            //            triggerAlert("Something went wrong when saving the Excel file", "warning");
+            //    }
+            //});
         })
 
     });

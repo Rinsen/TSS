@@ -14,11 +14,11 @@ namespace TietoCRM
 
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapRoute(
-                name: "ExcelExport",
-                url: "ExportExcel/{gid}",
-                defaults: new { controller = "ExportExcel", action = "CacheGet" }
-            );
+            //routes.MapRoute(
+            //    name: "ExcelExport",
+            //    url: "ExportExcel/{gid}",
+            //    defaults: new { controller = "ExportExcel", action = "CacheGet" }
+            //);
 
             routes.MapRoute(
                 name: "",

@@ -203,5 +203,13 @@ namespace TietoCRM.Controllers
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";
         }
+        public string ExportExcel()
+        {
+            bool withExpired = Request["expired"] == "Ja" ? true : false;
+            System.Data.DataTable dt = view_CustomerProductRow.ExportCustomerProductsToExcel(Request["customer"], null, null, withExpired);
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+            return ex.Export(dt, "CustomerProducts.xlsx");
+
+        }
     }
 }

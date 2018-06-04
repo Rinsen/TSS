@@ -122,59 +122,63 @@ namespace TietoCRM.Controllers.Reports
             return rows;
         }
 
-        public string SaleReportExportExcel()
+        public string ExportExcel()
         {
             DataTable dt = view_CustomerOffer.ExportCustomerOffersToExcel(Request["user"]);
-
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                HttpResponseMessage res = new HttpResponseMessage();
-
-                wb.Worksheets.Add(dt);
-                wb.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                wb.Style.Font.Bold = true;
-                byte[] ms = new byte[] { };
-
-                using (MemoryStream MyMemoryStream = new MemoryStream())
-                {
-                    wb.SaveAs(MyMemoryStream);
-                    MyMemoryStream.Position = 0;
-                    ms = ReadFully(MyMemoryStream);
-                }
-                String gd = Guid.NewGuid().ToString();
-                CacheItemPolicy policy = new CacheItemPolicy();
-                policy.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(30.0);
-                ObjectCache cache = MemoryCache.Default;
-                CacheItem fs = new CacheItem(gd, ms);
-                cache.Set(fs, policy);
-
-                return gd;               
-            }
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+            return ex.Export(dt, "SentOffers.xlsx");
+            
         }
-        private static byte[] ReadFully(Stream input)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                input.CopyTo(ms);
-                return ms.ToArray();
-            }
-        }
+
+        //    using (XLWorkbook wb = new XLWorkbook())
+        //    {
+        //        HttpResponseMessage res = new HttpResponseMessage();
+
+        //        wb.Worksheets.Add(dt);
+        //        wb.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        //        wb.Style.Font.Bold = true;
+        //        byte[] ms = new byte[] { };
+
+        //        using (MemoryStream MyMemoryStream = new MemoryStream())
+        //        {
+        //            wb.SaveAs(MyMemoryStream);
+        //            MyMemoryStream.Position = 0;
+        //            ms = ReadFully(MyMemoryStream);
+        //        }
+        //        String gd = Guid.NewGuid().ToString();
+        //        CacheItemPolicy policy = new CacheItemPolicy();
+        //        policy.AbsoluteExpiration = DateTimeOffset.Now.AddSeconds(30.0);
+        //        ObjectCache cache = MemoryCache.Default;
+        //        CacheItem fs = new CacheItem(gd, ms);
+        //        cache.Set(fs, policy);
+
+        //        return gd;               
+        //    }
+        //}
+        //private static byte[] ReadFully(Stream input)
+        //{
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+        //        input.CopyTo(ms);
+        //        return ms.ToArray();
+        //    }
+        //}
    
-        private void releaseObject(object obj)
-        {
-            try
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
-                obj = null;
-            }
-            catch
-            {
-                obj = null;
-            }
-            finally
-            {
-                GC.Collect();
-            }
-        }
+        //private void releaseObject(object obj)
+        //{
+        //    try
+        //    {
+        //        System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+        //        obj = null;
+        //    }
+        //    catch
+        //    {
+        //        obj = null;
+        //    }
+        //    finally
+        //    {
+        //        GC.Collect();
+        //    }
+        //}
     }
 }

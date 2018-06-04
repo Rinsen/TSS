@@ -97,5 +97,30 @@ namespace TietoCRM.Models
             return list;
         }
 
+        public static DataTable ExportCustomerMissingProductsToExcel(string customer, string area)
+        {
+            DataTable dt = new DataTable(customer.Replace(" ", "_"));
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+
+                String query = "stp_MissingProducts";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.CommandType = CommandType.StoredProcedure;
+                command.Prepare();
+                command.Parameters.AddWithValue("@pCustomer", customer);
+                command.Parameters.AddWithValue("@pArea", area);
+
+                connection.Open();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    dt.Load(reader);
+                }
+                connection.Close();
+            }
+            return dt;
+        }
     }
 }
