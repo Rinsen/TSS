@@ -58,13 +58,15 @@ namespace TietoCRM.Models
         private int kr_every_row;
         public int Kr_every_row { get { return kr_every_row; } set { kr_every_row = value; } }
 
+        private int reminder_Prompt;
+        public int Reminder_Prompt { get { return reminder_Prompt; } set { reminder_Prompt = value; } }
+
         private String email;
         public String Email { get { return email; } set { email = value; } }
    
         private int avtalSortera;
-        public int AvtalSortera { get { return kr_every_row; } set { kr_every_row = value; } }
-
-
+        public int AvtalSortera { get { return avtalSortera; } set { avtalSortera = value; } }
+   
 
         public view_User() : base("User")
 		{

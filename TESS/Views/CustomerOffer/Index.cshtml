@@ -537,7 +537,6 @@
             "success": function(data){
                 if(data > 0){
                     updateDataTable($("#crm-select-customer").val(), $("#crm-select-user").val());
-                    //checkReminder($("#crm-select-customer").val());
                     drawButtons();
                     triggerAlert("Successfully added new offer.", "success");
                     $("#newRowModal").modal("toggle");
@@ -855,7 +854,6 @@
                         if(data > 0)
                         {
                             updateDataTable($("#crm-select-customer").val(), $("#crm-select-user").val());
-                            //checkReminder($("#crm-select-customer").val());
                             drawButtons();
                             selectedId = null;
                             triggerAlert("Successfully updated contact.", "success");
@@ -934,7 +932,6 @@
                                         if(data > 0)
                                         {
                                             updateDataTable($("#crm-select-customer").val(), $("#crm-select-user").val());
-                                            //checkReminder($("#crm-select-customer").val());
                                             drawButtons();
                                             selectedId = null;
                                             triggerAlert("Successfully deleted offer.", "success");
@@ -1151,7 +1148,6 @@
                     if(typeof onSuccess != "undefined" && isFunction)
                         onSuccess();
                     updateDataTable($customerSelect.val(), $("#crm-select-user").val());
-                    //checkReminder($customerSelect.val());
                     drawButtons();
                     $(document).trigger("clear-alerts");
                     $(document).trigger("add-alerts", [
@@ -1262,13 +1258,12 @@
                 loadNewRepresentativeData();
                 $("#newRowModal").appendTo("body").modal("show").draggable();
             });
-            checkReminder(this.value, true);
+            checkReminder(this.value, "@Html.Raw(ViewBag.showModalReminder)" == "True");
         });
 
         $("#crm-select-user").change(function () {
             selectedId = null;
             updateDataTable($("#crm-select-customer").val(), this.value);
-            //checkReminder(this.value);
             drawButtons();
             $("#crm-add-row").click(function(){
                 loadNewContactData();
@@ -1400,9 +1395,9 @@
             $input = $("#CustomerOffer-table_filter").find(":input");
        });
 
-        if ("@Html.Raw(ViewBag.showModalReminder)" == "True") {
-            checkReminder($customerSelect.val(), true);
-        }
+        @*if ("@Html.Raw(ViewBag.showModalReminder)" == "True") {*@
+            checkReminder($customerSelect.val(), "@Html.Raw(ViewBag.showModalReminder)" == "True");
+        //}
 
     });
 </script>

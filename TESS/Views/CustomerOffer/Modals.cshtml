@@ -237,6 +237,7 @@ else if (Request["modal"] == "articles")
                                 <tr>
                                     <th></th>
                                     <th title="Exists in previous contract">#</th>
+                                    <th title="Dependencies">#</th>
                                     <th>Art. nr</th>
                                     <th>Module</th>
                                     <th>License</th>
@@ -595,13 +596,15 @@ else if (Request["modal"] == "articles")
         for(var i = 0; i < aaLen; i++) {
             var article = availableArticles[i];
             var usedCell = "<td></td>";
+            var depCell = "<td></td>";
             var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
             var artClass = article.System + " / " + article.Classification;
             console.log(artClass);
             if(article.Used == true)
             {
                 usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
-            } else if (article.HasDependencies || article.Description.length > 0) {
+            }
+            if (article.HasDependencies || article.Description.length > 0) {
                 var depTitle = "";
                 if (article.HasDependencies) {
                     var depLen = article.Dependencies.length;
@@ -619,14 +622,14 @@ else if (Request["modal"] == "articles")
                     depTitle += "Important info:\n";
                     depTitle += article.Description;
                 }
-                usedCell = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
+                depCell = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
             }
             var $newButton;
             if(article.System == "Lärportal"){
                 if(!hasFixedRows)
                 {
                     $tr = $availableList.parent().find("table").find("tbody").find("tr");
-                    $tr.html("<th></th><th>Art. nr</th><th>Module</th><th>Price category</th>");
+                    $tr.html("<th></th><th></th><th>Art. nr</th><th>Module</th><th>Price category</th>");
                     hasFixedRows = true;
                 }
                 $newButton = $("<button onclick='moveItem(event, this)'                                             \
@@ -640,7 +643,7 @@ else if (Request["modal"] == "articles")
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
-                                            + usedCell +                                                            
+                                            + usedCell + depCell +                                                          
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title='" + artComm + "'>" + article.Module + "</td>                                         \
                                             <td class='maintenance' style='float: right; width:auto;'>" + formatCurrency(article.Price_category) + "</td>\
@@ -652,7 +655,7 @@ else if (Request["modal"] == "articles")
                 if(!hasFixedRows)
                 {
                     $tr = $availableList.parent().find("table").find("tbody").find("tr");
-                    $tr.html("<th></th><th>Art. nr</th><th>Module</th><th>License</th><th>Maintenance</th>");
+                    $tr.html("<th></th><th></th><th>Art. nr</th><th>Module</th><th>License</th><th>Maintenance</th>");
                     hasFixedRows = true;
                 }
                 var button = "";
@@ -668,7 +671,7 @@ else if (Request["modal"] == "articles")
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
-                                            + usedCell +                                                            
+                                            + usedCell + depCell +                                                           
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             ";
@@ -819,6 +822,8 @@ else if (Request["modal"] == "articles")
         if($button.attr("data-selected") == "false") { 
             $newButton = $button.clone();
             // Fix to exclude the "used" checkmark on selected items.
+            $($newButton).find("td").get(0).remove();
+            // Fix to exclude the "dep" cell on selected items.
             $($newButton).find("td").get(0).remove();
             if($button.attr("data-multiple-select") != "1"){
                 $button.prop("disabled", true);

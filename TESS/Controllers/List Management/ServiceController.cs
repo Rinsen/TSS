@@ -89,5 +89,20 @@ namespace TietoCRM.Controllers.List_Management
                 return "-1";
             }
         }
+        public String DeleteService()
+        {
+            try
+            {
+                string code = Request.Form["code"];
+                view_Service a = new view_Service();
+                //a.Select("Article_number = " + value);
+                a.Delete("Code = " + code);
+            }
+            catch (Exception e)
+            {
+                return "-1";
+            }
+            return "1";
+        }
     }
 }

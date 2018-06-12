@@ -680,21 +680,26 @@ table#articles-search-table td:first-child th:nth-of-type(1) {
 table#articles-table td:first-child th:nth-of-type(2),
 table.crm-items-table td:first-child th:nth-of-type(2),
 table#articles-search-table td:first-child th:nth-of-type(2) {
-  width: 10%;
+  width: 5%;
 }
 table#articles-table td:first-child th:nth-of-type(3),
 table.crm-items-table td:first-child th:nth-of-type(3),
 table#articles-search-table td:first-child th:nth-of-type(3) {
-  width: 32%;
+  width: 5%;
 }
 table#articles-table td:first-child th:nth-of-type(4),
 table.crm-items-table td:first-child th:nth-of-type(4),
 table#articles-search-table td:first-child th:nth-of-type(4) {
-  width: 15%;
+  width: 32%;
 }
 table#articles-table td:first-child th:nth-of-type(5),
 table.crm-items-table td:first-child th:nth-of-type(5),
 table#articles-search-table td:first-child th:nth-of-type(5) {
+  width: 15%;
+}
+table#articles-table td:first-child th:nth-of-type(6),
+table.crm-items-table td:first-child th:nth-of-type(6),
+table#articles-search-table td:first-child th:nth-of-type(6) {
   width: 10%;
 }
 table#articles-table td:nth-child(2) th:nth-of-type(1),
@@ -804,7 +809,7 @@ table#articles-search-table #available-articles-search th:nth-of-type(2),
 table#articles-table .crm-available-items th:nth-of-type(2),
 table.crm-items-table .crm-available-items th:nth-of-type(2),
 table#articles-search-table .crm-available-items th:nth-of-type(2) {
-  width: 10%;
+  width: 5%;
 }
 table#articles-table #available-articles td:nth-child(3),
 table.crm-items-table #available-articles td:nth-child(3),
@@ -824,7 +829,7 @@ table#articles-search-table #available-articles-search th:nth-of-type(3),
 table#articles-table .crm-available-items th:nth-of-type(3),
 table.crm-items-table .crm-available-items th:nth-of-type(3),
 table#articles-search-table .crm-available-items th:nth-of-type(3) {
-  width: 40%;
+  width: 5%;
 }
 table#articles-table #available-articles td:nth-child(4),
 table.crm-items-table #available-articles td:nth-child(4),
@@ -844,7 +849,7 @@ table#articles-search-table #available-articles-search th:nth-of-type(4),
 table#articles-table .crm-available-items th:nth-of-type(4),
 table.crm-items-table .crm-available-items th:nth-of-type(4),
 table#articles-search-table .crm-available-items th:nth-of-type(4) {
-  width: 15%;
+  width: 40%;
 }
 table#articles-table #available-articles td:nth-child(5),
 table.crm-items-table #available-articles td:nth-child(5),
@@ -864,18 +869,27 @@ table#articles-search-table #available-articles-search th:nth-of-type(5),
 table#articles-table .crm-available-items th:nth-of-type(5),
 table.crm-items-table .crm-available-items th:nth-of-type(5),
 table#articles-search-table .crm-available-items th:nth-of-type(5) {
-  width: 10%;
+  width: 15%;
 }
-table#articles-table #available-articles td:nth-child(4),
-table.crm-items-table #available-articles td:nth-child(4),
-table#articles-search-table #available-articles td:nth-child(4),
-table#articles-table #available-articles-search td:nth-child(4),
-table.crm-items-table #available-articles-search td:nth-child(4),
-table#articles-search-table #available-articles-search td:nth-child(4),
-table#articles-table .crm-available-items td:nth-child(4),
-table.crm-items-table .crm-available-items td:nth-child(4),
-table#articles-search-table .crm-available-items td:nth-child(4) {
-  text-align: left;
+table#articles-table #available-articles td:nth-child(6),
+table.crm-items-table #available-articles td:nth-child(6),
+table#articles-search-table #available-articles td:nth-child(6),
+table#articles-table #available-articles-search td:nth-child(6),
+table.crm-items-table #available-articles-search td:nth-child(6),
+table#articles-search-table #available-articles-search td:nth-child(6),
+table#articles-table .crm-available-items td:nth-child(6),
+table.crm-items-table .crm-available-items td:nth-child(6),
+table#articles-search-table .crm-available-items td:nth-child(6),
+table#articles-table #available-articles th:nth-of-type(6),
+table.crm-items-table #available-articles th:nth-of-type(6),
+table#articles-search-table #available-articles th:nth-of-type(6),
+table#articles-table #available-articles-search th:nth-of-type(6),
+table.crm-items-table #available-articles-search th:nth-of-type(6),
+table#articles-search-table #available-articles-search th:nth-of-type(6),
+table#articles-table .crm-available-items th:nth-of-type(6),
+table.crm-items-table .crm-available-items th:nth-of-type(6),
+table#articles-search-table .crm-available-items th:nth-of-type(6) {
+  width: 10%;
 }
 table#articles-table #available-articles td:nth-child(5),
 table.crm-items-table #available-articles td:nth-child(5),
@@ -886,6 +900,17 @@ table#articles-search-table #available-articles-search td:nth-child(5),
 table#articles-table .crm-available-items td:nth-child(5),
 table.crm-items-table .crm-available-items td:nth-child(5),
 table#articles-search-table .crm-available-items td:nth-child(5) {
+  text-align: left;
+}
+table#articles-table #available-articles td:nth-child(6),
+table.crm-items-table #available-articles td:nth-child(6),
+table#articles-search-table #available-articles td:nth-child(6),
+table#articles-table #available-articles-search td:nth-child(6),
+table.crm-items-table #available-articles-search td:nth-child(6),
+table#articles-search-table #available-articles-search td:nth-child(6),
+table#articles-table .crm-available-items td:nth-child(6),
+table.crm-items-table .crm-available-items td:nth-child(6),
+table#articles-search-table .crm-available-items td:nth-child(6) {
   text-align: right;
 }
 table#articles-table #selected-articles,

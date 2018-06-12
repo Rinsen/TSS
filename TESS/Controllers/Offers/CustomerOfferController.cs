@@ -59,7 +59,7 @@ namespace TietoCRM.Controllers
             {
                 ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
                 ViewData.Add("CurrentName", System.Web.HttpContext.Current.GetUser().Name);
-                ViewData.Add("showModalReminder", true);
+                ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
             }
             else
             {
@@ -1003,20 +1003,7 @@ namespace TietoCRM.Controllers
                 offerRow.Insert();
             }
 
-            view_OfferRow orow = new view_OfferRow();
-            List<dynamic> l = orow.GetOfferRowsForModuleInfo(Offer_number);
-            customerOffer.Module_info = "";
-
-            foreach (var mi in l)
-            {
-                if (customerOffer.Module_info == "")
-                {
-                    customerOffer.Module_info = "<h5><strong>Information produkter</strong></h5>";
-                }
-                customerOffer.Module_info += "<h6><strong>" + mi.Alias + "</strong></h6>";
-                customerOffer.Module_info += "<p>" + mi.Offer_description + "</p>";
-            }
-
+            customerOffer.Module_info = updateDescriptions(Offer_number);
             customerOffer.Update("Offer_number = " + Offer_number.ToString());
 
             return "1";
@@ -1157,7 +1144,7 @@ namespace TietoCRM.Controllers
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
 	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
-                                                    M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, M.Description
+                                                    M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -1297,6 +1284,9 @@ namespace TietoCRM.Controllers
                 consultantRow.Insert();
             }
 
+            customerOffer.Module_info = updateDescriptions(offer);
+            customerOffer.Update("Offer_number = " + offer.ToString());
+
             return "1";
         }
         private String Json_UpdateHeadInformation()
@@ -1348,6 +1338,23 @@ namespace TietoCRM.Controllers
             {
                 return "-1";
             }
+        }
+        private string updateDescriptions(int ofnr)
+        {
+            view_OfferRow orow = new view_OfferRow();
+            List<dynamic> l = orow.GetOfferRowsForModuleInfo(ofnr);
+            string moduleInfo = "";
+
+            foreach (var mi in l)
+            {
+                if (moduleInfo == "")
+                {
+                    moduleInfo = "<h5><strong>Information produkter</strong></h5>";
+                }
+                moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                moduleInfo += "<p>" + mi.Offer_description + "</p>";
+            }
+            return moduleInfo;
         }
     }
 }

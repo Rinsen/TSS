@@ -36,6 +36,18 @@
                             <input class="form-control" id="price-text" name="Price" placeholder="Price">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="offer_description2" class="col-sm-2 control-label">Offer Description</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" name="Offer_description" id="offer_description2" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contract_description2" class="col-sm-2 control-label">Contract Description</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" name="Contract_description" id="contract_description2" rows="5"></textarea>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -282,6 +294,48 @@
                 triggerAlert("You have to select a row to edit first.", "info");
         });
 
+        $selRowContainer.append("<div id='delete-service-button' class='crm-table-btn'><button type='button' class='btn btn-danger'>Delete</button></div>");
+        $("#delete-service-button").bind("click", function () {
+            bootbox.dialog({
+                title: 'Do you want to delete?',
+                className: "crm-delete-confirm",
+                message: "You are about to delete the selected service, are you sure you want to delete it?",
+                buttons: {
+                    'cancel': {
+                        label: 'Cancel',
+                        className: 'btn-default'
+                    },
+                    'yes': {
+                        label: 'Yes',
+                        className: 'btn-danger pull-right',
+                        callback: function () {
+                            $.ajax({
+                                "url": serverPrefix + "Service/DeleteService/",
+                                "type": "POST",
+                                "data": {
+                                    "code": selectedId,
+                                },
+                                "success": function (data) {
+                                    if (data > 0) {
+                                        updateDataTable();
+                                        console.log("success");
+                                        triggerAlert("Successfully deleted row", "success");
+                                    }
+                                    else {
+                                        console.log("failure");
+                                        triggerAlert("Something went wrong when trying to delete this row", "warning");
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    'no': {
+                        label: 'No',
+                        className: 'pull-right',
+                    }
+                },
+            });
+        });
         drawButtonsExtension($selRowContainer);
     }
 
@@ -329,7 +383,7 @@
                     i++;
                 }
 
-                if (i < 4) {
+                if (i < 6) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
                     $td.html(aData[name]);

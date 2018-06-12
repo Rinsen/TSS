@@ -295,6 +295,7 @@
                 }
             }
         }
+        //editModalChanged = 0;
     }
     //End - DrawCallBack function
 
@@ -383,6 +384,7 @@
 
         $("#edit-template-modal-button").click(function () {
             if (selectedId != null) {
+                //editModalChanged = 1;
                 getTemplate();
                 $("#templateModal").appendTo("body").modal("show");
                 $("#save-template-btn").attr("onclick", "save('update');");
@@ -603,8 +605,33 @@
 
     $(document).ready(function () {
 
+        var editModalChanged = 0;
 
+        $('#templateModal').change(function () {
+            editModalChanged = 1;
+        });
 
+        window.onbeforeunload = function() {
+            if (editModalChanged == 1) {
+                return null;
+            }
+            return null
+        }
+
+        //Själva funktionen
+
+        //function confirmExit() {
+        //    if (editModalChanged == 1) {
+        //        return null;
+        //    }
+        //    return null
+        //}
+        
+        //Nollställ variabeln om användaren gjort ett aktivt val att ignorera ändringar
+
+        $('#templateModal').on('hide.bs.modal', function () {
+            editModalChanged = 0;
+        })
 
         $('.selectpicker').selectpicker();
         $("#crm-select-user").change(function () {

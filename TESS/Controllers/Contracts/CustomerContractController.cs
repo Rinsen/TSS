@@ -1386,21 +1386,8 @@ namespace TietoCRM.Controllers.Contracts
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
 
-                view_ContractRow crow = new view_ContractRow();
-                List<dynamic> l = crow.GetContractRowsForModuleInfo(contract.Customer, contract.Contract_id);
-                var moduleInfo = "";
-
-                foreach (var mi in l)
-                {
-                    if (moduleInfo == "")
-                    {
-                        moduleInfo = "<h5><strong>Information produkter</strong></h5>";
-                    }
-                    moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
-                    moduleInfo += "<p>" + mi.Contract_description + "</p>";
-                }
-
                 view_ContractText ctext = new view_ContractText();
+                string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
                 ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo);
 
                 return "1";
@@ -1511,6 +1498,10 @@ namespace TietoCRM.Controllers.Contracts
             contract.Updated = System.DateTime.Now;
             contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
 
+            view_ContractText ctext = new view_ContractText();
+            string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+            ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo);
+
             return "1";
         }
 
@@ -1530,7 +1521,7 @@ namespace TietoCRM.Controllers.Contracts
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
 	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
-                                                M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, M.Description
+                                                M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -2491,6 +2482,23 @@ namespace TietoCRM.Controllers.Contracts
 
             return "1";
 
+        }
+        private string updateDescriptions(string cust, string ctr_id)
+        {
+            view_ContractRow crow = new view_ContractRow();
+            List<dynamic> l = crow.GetContractRowsForModuleInfo(cust, ctr_id);
+            var moduleInfo = "";
+
+            foreach (var mi in l)
+            {
+                if (moduleInfo == "")
+                {
+                    moduleInfo = "<h5><strong>Information produkter</strong></h5>";
+                }
+                moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                moduleInfo += "<p>" + mi.Contract_description + "</p>";
+            }
+            return moduleInfo;
         }
     }
 }
