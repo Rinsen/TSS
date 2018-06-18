@@ -1505,7 +1505,7 @@
         });
 
         $("#resign-modal-button").click(function () {
-            
+
             @{
                 var opt = "";
                 foreach (String ctr in ViewBag.MainCtrResign)
@@ -1643,6 +1643,7 @@
     var aktStatus = "@Html.Raw(ViewBag.CustomerContract.Status)";
     var contractValidFrom = "@Html.Raw(ViewBag.CustomerContract.Valid_from)";
     var ctrResign = "@Html.Raw(ViewBag.CtrResign)";
+    var our_sign = "@ViewBag.CustomerContract.Sign"
 
 </script>
 

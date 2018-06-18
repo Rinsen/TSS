@@ -97,11 +97,6 @@ $(document).ready(function () {
                     "oldStatus": oldStatus
                 },
                 "success": function (data) {
-
-
-
-
-
                     console.log(data);
                     if (data.charAt(0) == '1') {
 
@@ -113,7 +108,7 @@ $(document).ready(function () {
                             location.reload();
                         }
                         else {
-                            window.location = "/CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName;
+                            window.location = serverPrefix + "/CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&our_sign=" + our_sign;
                         }
                         
                         //window.location = "/CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName;
@@ -132,10 +127,6 @@ $(document).ready(function () {
                         console.log("failure");
                         triggerAlert("Something went wrong when trying to update the contract info on the server", "warning");
                     }
-
-
-
-
                 }
             });
         }
