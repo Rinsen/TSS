@@ -1351,7 +1351,7 @@ namespace TietoCRM.Controllers
                 {
                     moduleInfo = "<h5><strong>Information produkter</strong></h5>";
                 }
-                moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + mi.Offer_description + "</p>";
             }
             return moduleInfo;

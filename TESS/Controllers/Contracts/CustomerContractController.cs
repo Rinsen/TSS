@@ -77,10 +77,12 @@ namespace TietoCRM.Controllers.Contracts
             if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
             {
                 ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
+                ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
             }
             else
             {
                 ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
+                ViewData.Add("showModalReminder", false);
             }
 
 
@@ -2495,7 +2497,7 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     moduleInfo = "<h5><strong>Information produkter</strong></h5>";
                 }
-                moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + mi.Contract_description + "</p>";
             }
             return moduleInfo;

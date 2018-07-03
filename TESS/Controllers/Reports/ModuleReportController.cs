@@ -95,5 +95,11 @@ namespace TietoCRM.Controllers.Reports
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(articleNumber)) + "}";
         }
+        public string ExportExcel()
+        {
+            System.Data.DataTable dt = view_ContractRow.ExportValidContractRowsToExcel(Request["module"]);
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+            return ex.Export(dt, "ModuleReport.xlsx");
+        }
     }
 }

@@ -67,16 +67,29 @@ namespace TietoCRM.Models
         /// Gets all modules
         /// </summary>
         /// <returns>A list of modules</returns>
-        public static List<view_Module> getAllModules()
+        public static List<view_Module> getAllModules(bool withoutFormatted = false)
         {
             List<view_Module> list = new List<view_Module>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                String query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
-                query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
-                query += "offer_description, contract_description, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                String query = "";
+
+                if (withoutFormatted == false)
+                {
+                    query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
+                    query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
+                    query += "offer_description, contract_description, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                }
+                else
+                {
+                    query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
+                    query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
+                    query += " Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption,";
+                    query += " Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption,";
+                    query += " CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                }
 
                 SqlCommand command = new SqlCommand(query, connection);
 

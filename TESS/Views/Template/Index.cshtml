@@ -436,8 +436,6 @@
     //Start - Get Templates function - anropas från Edit-knappen.
     var getTemplate = function () {
         var $row = $(".selected");
-        var templateNumber = $row.find("td[data-property='Template_number']").html();
-        //var sign = $("#crm-select-user").val();
         var pk_id = selectedId;
        $.ajax({
             "url": serverPrefix + "Template/SpecificTemplateData/",

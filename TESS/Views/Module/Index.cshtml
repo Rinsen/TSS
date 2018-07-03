@@ -128,8 +128,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="discount-type2" class="col-sm-2 control-label">Discount type</label>
                                 <div class="col-sm-9">
@@ -147,25 +145,27 @@
                             <div class="form-group">
                                 <label for="description2" class="col-sm-2 control-label">Important Info</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Description" id="description2" rows="3"></textarea>
+                                    <textarea class="form-control" name="Description" id="description2" rows="2"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="notes2" class="col-sm-2 control-label">Comment</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Comment" id="notes2" rows="5"></textarea>
+                                    <textarea class="form-control" name="Comment" id="notes2" rows="2"></textarea>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="offer_description2" class="col-sm-2 control-label">Offer Description</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="5"></textarea>
+                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="9"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="contract_description2" class="col-sm-2 control-label">Contract Description</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="5"></textarea>
+                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="9"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -182,8 +182,40 @@
 
 
 <!-- #region Main scripts -->
+<script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
 <script>
     var selectedId = null;
+
+    $(document).on('show.bs.modal', '#moduleModal', function () {
+        tinymce.init({
+            selector: "#offer_description2",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            encoding: 'xml',
+            height : 250,
+            width: 715
+        });
+
+        tinymce.init({
+            selector: "#contract_description2",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            encoding: 'xml',
+            height : 250,
+            width: 715
+        });
+
+        tinyMCE.execCommand('mceAddControl', false, 'offer_description2');
+        tinyMCE.execCommand('mceAddControl', false, 'contract_description2');
+
+        $('.selectpicker').selectpicker('refresh');
+
+    })
+
+    $('#moduleModal').bind('hidden.bs.modal', function () {
+        console.log("close");
+        tinyMCE.remove();
+    });
 
     var selectRow = function (element) {
 
@@ -468,26 +500,30 @@
                         var noneSelected = true;
                         for (var i = 0; i < frmInpLen; i++) {
                             var $currInput = $($formInputs[i]);
-                            for (var j = 0; j < tdLen; j++) {
-                                var $currTD = $($selectedTds[j]);
-                                if($currTD.data("property") == $currInput.attr("name")){
-                                    var name = $currInput.attr("name");
-                                    if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
-                                        if ($currTD.text() == "true" || $currTD.text() == "1") {
-                                            $currInput.prop("checked", true);
-                                            if(name == "Discount" || name == "Fixed_price")
-                                                noneSelected = false;
+                            var name = $currInput.attr("name");
+                            if (name != "Offer_description" && name != "Contract_description") {
+                                for (var j = 0; j < tdLen; j++) {
+                                    var $currTD = $($selectedTds[j]);
+                                    if($currTD.data("property") == $currInput.attr("name")){
+                                        if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
+                                            if ($currTD.text() == "true" || $currTD.text() == "1") {
+                                                $currInput.prop("checked", true);
+                                                if(name == "Discount" || name == "Fixed_price")
+                                                    noneSelected = false;
+                                            }
+                                            else {
+                                                $currInput.prop("checked", false);
+                                            }
                                         }
                                         else {
-                                            $currInput.prop("checked", false);
+                                            $currInput.val($currTD.text());
                                         }
-                                    }
-                                    else {
-                                        $currInput.val($currTD.text());
                                     }
                                 }
                             }
-                        }    
+                        }
+                        getTinyMCE();
+
                         if(noneSelected){
                             $("#none2").prop("checked", true);
                             $("#discount2").prop("checked", false);
@@ -512,6 +548,32 @@
 
         })
     }
+    var getTinyMCE = function () {
+        var $row = $(".selected");
+        var pk_id = selectedId;
+        $.ajax({
+            "url": serverPrefix + "Module/GetTinyMCEData/",
+            "type": "POST",
+            "data": {
+                "artnr": pk_id,
+            },
+            "success": function (data) {
+                if (data.length > 0) {
+                    var textModule = JSON.parse(data);
+                    $("#offer_description2").val(textModule.Offer_description);
+                    $("#contract_description2").val(textModule.Contract_description);
+
+                    for(var i = 0; i < tinyMCE.editors.length; i++)
+                    {
+                        var currentED = tinyMCE.editors[i];
+                        currentED.setContent($('#' + currentED.id).val());
+                    }
+
+                }
+            }
+        });
+    }
+    //End getTinyMCE function
 
     var triggerAlert = function(msg, priorty)
     {
@@ -563,50 +625,47 @@
     //$('#crm-save-btn').on('click', save);
 
     }
-
+    7
+    //Kommer hit för varje post som ska skrivas ut i tabellen
     var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-        var i = 0, j = 0;
+        var i = 0;
 
         var StateSelid = StateCookie.getCurrentSite().selectedId;
         var StateArea = StateCookie.getCurrentSite().area;
         var rowArea = aData["Area"];
 
+        //Skriver ut radiobutten för val av rad.
         for (var name in aData) {
             var $td;
-
-
             if (i == 0) {
 
                 $td = $('td:eq(' + i + ')', nRow);
 
                 $td.parent().click(function () {
-
                     selectRow(this.firstChild);
-
                 });
+
                 $td.addClass("radios");
                 $td.html("<input type='radio' value='" + aData["Article_number"] + "' name='selected-contact' onClick=''/>");
 
                 if( $td.find("input").val() == StateSelid && rowArea == StateArea){
-
                     selectRow($($td));
-
                 }
-                else if( $td.find("input").val() != selectedId){
+                else 
+                if( $td.find("input").val() != selectedId){
                     $td.parent().removeClass("selected");
                 }
                 i++;
-                j++;
             }
 
-            if (i >= 1 && j < 16) {
-                $td = $('td:eq(' + j + ')', nRow);
-                $td.attr("data-property", name);
-                $td.html(aData[name]);
-                j++;
+            if (i >= 1 && i < 16) {
+                if (name != "Offer_description" && name != "Contract_description") {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                }
             }
-
             i++;
         }
 
@@ -698,6 +757,7 @@
     }
 
     var save = function(){
+        tinymce.triggerSave();
         if(typeof $("#save-module-changes").attr("data-Article-number") != "undefined"){
             //Update
             var module = {}
@@ -710,6 +770,9 @@
                 {
                     if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
                         module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                    }
+                    else if($currInput.prop("id") == "offer_description2" || $currInput.prop("id") == "contract_description2"){
+                        module[$currInput.prop("name")] = tinyMCE.get($currInput.prop("id")).getContent()
                     }
                     else {
                         module[$currInput.attr("name")] = $currInput.val();
@@ -734,11 +797,11 @@
                         $("#save-module-changes").removeAttr("data-Article-number");
                         $("#moduleModal").modal("toggle");
                     } else if(data == "2") {
-                        triggerAlert("Failed to insert into database. Does not exist, cannot update.", "info");
+                        triggerAlert("Failed to save changes into database. Does not exist, cannot update.", "info");
                     } else if(data == "-2") {
-                        triggerAlert("Failed to insert into database. Wrong format provided.", "info");
+                        triggerAlert("Failed to save changes into database. Wrong format provided.", "info");
                     } else {
-                        triggerAlert("Failed to insert into database.", "info");
+                        triggerAlert("Failed to save changes into database.", "info");
                     }
 
                 }
@@ -757,6 +820,9 @@
                 {
                     if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
                         module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                    }
+                    else if($currInput.prop("id") == "offer_description2" || $currInput.prop("id") == "contract_description2"){
+                        module[$currInput.prop("name")] = tinyMCE.get($currInput.prop("id")).getContent()
                     }
                     else {
                         module[$currInput.attr("name")] = $currInput.val();
