@@ -1022,7 +1022,8 @@
                                     "url": serverPrefix + "CustomerContract/DeleteContract/",
                                     "type": "POST",
                                     "data": {
-                                        "id": selectedContract.Contract_id
+                                        "id": selectedContract.Contract_id,
+                                        "customer": selectedContract.Customer
                                     },
                                     "success": function(data){
                                         if(data > 0)

@@ -2429,10 +2429,11 @@ namespace TietoCRM.Controllers.Contracts
             try
             {
                 String value = Request.Form["id"];
-                view_Contract co = new view_Contract("Contract_id='" + value + "'");
+                String customer = Request.Form["customer"];
+                view_Contract co = new view_Contract("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
                 //a.Select("Article_number = " + value);
                 if (co.Status == "Makulerat")
-                    co.Delete("Contract_id='" + value + "'");
+                    co.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
                 else
                     return "-1";
             }
