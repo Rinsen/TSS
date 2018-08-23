@@ -419,6 +419,7 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\img\bg2.jpg" />
     <Content Include="Content\img\crm-loading.gif" />
+    <Content Include="Content\img\Signatures\AHB.PNG" />
     <Content Include="Content\img\Signatures\AHD.png" />
     <Content Include="Content\img\Signatures\JAA.png" />
     <Content Include="Content\img\Signatures\CWB.png" />
@@ -428,6 +429,7 @@
     <Content Include="Content\img\Signatures\ESM.png" />
     <Content Include="Content\img\Signatures\JAJ.png" />
     <Content Include="Content\img\Signatures\MLO.png" />
+    <Content Include="Content\img\Signatures\MSR.PNG" />
     <Content Include="Content\img\Signatures\RJS.png" />
     <Content Include="Content\img\Signatures\SLT.png" />
     <Content Include="Content\img\tieto-logo-com.png" />
