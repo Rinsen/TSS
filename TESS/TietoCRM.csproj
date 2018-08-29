@@ -424,6 +424,7 @@
     <Content Include="Content\img\crm-loading.gif" />
     <Content Include="Content\img\Signatures\AHB.PNG" />
     <Content Include="Content\img\Signatures\AHD.png" />
+    <Content Include="Content\img\Signatures\ASG.PNG" />
     <Content Include="Content\img\Signatures\JAA.png" />
     <Content Include="Content\img\Signatures\CWB.png" />
     <Content Include="Content\img\Signatures\LSJ.png" />
