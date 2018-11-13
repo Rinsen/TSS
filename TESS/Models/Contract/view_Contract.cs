@@ -360,6 +360,74 @@ namespace TietoCRM.Models
             }
             return list;
         }
+        /// <summary>
+        /// Check if any kind of contract exists for a specific customer
+        /// </summary>
+        /// <param name="customer">The customer to get contracts from</param>
+        /// <returns>A list of strings with customer names</returns>
+        public static bool CustomerContractExists(String customer)
+        {
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = "SELECT [ID] FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        public decimal? ContractMaintenanceSum()
+        {
+            decimal? mainSum = 0;
+
+            foreach(view_ContractRow r in this._contractRows)
+            {
+                mainSum += r.Maintenance;
+            }
+            return mainSum;
+        }
+        public decimal? ContractLicenseSum()
+        {
+            decimal? mainSum = 0;
+
+            foreach (view_ContractRow r in this._contractRows)
+            {
+                mainSum += r.License;
+            }
+            return mainSum;
+        }
+        public decimal? ContractServiceSum()
+        {
+            decimal? mainSum = 0;
+
+            foreach (view_ContractConsultantRow r in this._contractConsultantRows)
+            {
+                mainSum += r.Total_price;
+            }
+            return mainSum;
+        }
     }
 
 }

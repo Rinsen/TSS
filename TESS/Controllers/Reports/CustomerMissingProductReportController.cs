@@ -128,5 +128,12 @@ namespace TietoCRM.Controllers
 
             return (new JavaScriptSerializer()).Serialize(sortedNames);
         }
+        public string ExportExcel()
+        {
+            System.Data.DataTable dt = view_CustomerMissingProductReport.ExportCustomerMissingProductsToExcel(Request["customer"], System.Web.HttpContext.Current.GetUser().Area);
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+            return ex.Export(dt, "CustomerMissingProducts.xlsx");
+
+        }
     }
 }

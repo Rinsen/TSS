@@ -189,6 +189,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSystem\GetSystemFolder.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="Controllers\Reports\ValidContractsReportController.cs" />
     <Compile Include="Controllers\Reports\WhitespotReportController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
+    <Compile Include="ExportExcel\ExportExcel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -296,6 +298,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="UD_Exceptions\CustomerException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-select.css" />
@@ -421,6 +424,7 @@
     <Content Include="Content\img\crm-loading.gif" />
     <Content Include="Content\img\Signatures\AHB.PNG" />
     <Content Include="Content\img\Signatures\AHD.png" />
+    <Content Include="Content\img\Signatures\ASG.PNG" />
     <Content Include="Content\img\Signatures\JAA.png" />
     <Content Include="Content\img\Signatures\CWB.png" />
     <Content Include="Content\img\Signatures\LSJ.png" />

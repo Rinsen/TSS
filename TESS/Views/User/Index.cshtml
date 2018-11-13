@@ -137,6 +137,19 @@
                                         </div>
                                     </div>
                                 }
+                                else if (pi.Name == "Reminder_Prompt")
+                                {
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="checkbox">
+                                                <label for="@pi.Name.ToLower()">
+                                                    <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Reminder_Prompt" type="checkbox" />
+                                                    Visa Reminder prompt
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                                 else if (pi.Name == "Offer_file_location")
                                 {
                                     <div class="form-group">
@@ -607,7 +620,7 @@
 
                
 
-                if (i < 18) {
+                if (i < 19) {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
 

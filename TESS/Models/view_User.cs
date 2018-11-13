@@ -58,13 +58,15 @@ namespace TietoCRM.Models
         private int kr_every_row;
         public int Kr_every_row { get { return kr_every_row; } set { kr_every_row = value; } }
 
+        private int reminder_Prompt;
+        public int Reminder_Prompt { get { return reminder_Prompt; } set { reminder_Prompt = value; } }
+
         private String email;
         public String Email { get { return email; } set { email = value; } }
    
         private int avtalSortera;
-        public int AvtalSortera { get { return kr_every_row; } set { kr_every_row = value; } }
-
-
+        public int AvtalSortera { get { return avtalSortera; } set { avtalSortera = value; } }
+   
 
         public view_User() : base("User")
 		{
@@ -119,7 +121,30 @@ namespace TietoCRM.Models
         {
             return area != null && this.Area != null && area.ToLower() == this.Area.ToLower() || this.Area == "*";
         } 
+        public string GetName(string sign)
+        {
+            string name = "";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
 
+                String query = "SELECT Name FROM " + databasePrefix + "User Where sign = @sign";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@sign", sign);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        name = reader.GetValue(0).ToString();
+                    }
+                }
+            }
+            return name;
+        }
     }
 
 }

@@ -19,7 +19,14 @@
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 if (@PropertyName != "SSMA timestamp")
                 {
-                    <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    if (@PropertyName == "Description")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">Important Info</th>
+                    }
+                    else
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                    }
                 }
 
             }
@@ -29,123 +36,141 @@
 
 
 <div class="modal fade bs-example-modal-lg" id="moduleModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog contact-modal" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Edit Module</h4>
             </div>
             <div id="module-modal" class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label for="article-number2" class="col-sm-2 control-label">Article number</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Article_number" id="article-number2">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="module2" class="col-sm-2 control-label">Module</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Module" id="module2">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="description2" class="col-sm-2 control-label style="width: 200px;">Description</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" name="Description" id="description2">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="price-category2" class="col-sm-2 control-label">Price category</label>
-                        <div class="col-sm-10" id="price-category-container">
-                            @Html.Raw(select)
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="area2" class="col-sm-2 control-label">Area</label>
-                        <div class="col-sm-10">
-                            @if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
-                            {
-                                <input type="text" name="Area" id="area2" class="form-control" value="@HttpContext.Current.GetUser().Area" disabled />
-                            }
-                            else
-                            {
-                                <select class="form-control selectpicker" name="Area" id="area2" >
-                                    @foreach (var SelectOption in (new SelectOptions<view_Sector>()).GetOptions("Area").Where(a => a.Value != "*").ToList())
+                <div class="row">
+                    <form class="form-horizontal">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="article-number2" class="col-sm-2 control-label">Article number</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" name="Article_number" id="article-number2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="module2" class="col-sm-2 control-label">Module</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" name="Module" id="module2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="price-category2" class="col-sm-2 control-label">Price category</label>
+                                <div class="col-sm-9" id="price-category-container">
+                                    @Html.Raw(select)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="area2" class="col-sm-2 control-label">Area</label>
+                                <div class="col-sm-9">
+                                    @if (GlobalVariables.isAuthorized(GlobalVariables.UserLevel.Salesperson))
                                     {
-                                        <option value="@SelectOption.Value">@SelectOption.Text</option>
+                                        <input type="text" name="Area" id="area2" class="form-control" value="@HttpContext.Current.GetUser().Area" disabled />
                                     }
-                                </select>
-                            }
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="system2" class="col-sm-2 control-label">System</label>
-                        <div class="col-sm-10">
-                            <select class="form-control selectpicker" name="System" id="system2"></select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="classification2" class="col-sm-2 control-label">Classification</label>
-                        <div class="col-sm-10">
-                            <select class="form-control selectpicker" name="Classification" id="classification2"></select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <div class="radio">
-                                <label for="none2">
-                                    <input id="none2" data-id="none" checked name="none" type="radio" />
-                                    From price category
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="fixed-price2">
-                                    <input id="fixed-price2" data-id="fixed-price2" name="Fixed_price" type="radio" />
-                                    Fixed price
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="discount2">
-                                    <input id="discount2" data-id="discount2" name="Discount" type="radio" />
-                                    Discount
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="expired2">
-                                    <input id="expired2" data-id="expired2" name="Expired" type="checkbox" />
-                                    Expired
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <label for="multiple2">
-                                    <input id="multiple2" data-id="multiple2" name="Multiple_type" type="checkbox" />
-                                    Multiple select
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="discount-type2" class="col-sm-2 control-label">Discount type</label>
-                        <div class="col-sm-10">
-                            <select class="form-control selectpicker" disabled name="Discount_type" id="discount-type2">
-                                @{
-                                    TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module> selectOptions = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>();
-                                    foreach(TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>.SelectOption so in selectOptions.GetOptions("Discount_type"))
+                                    else
                                     {
-                                        <option value="@so.Value">@so.Text</option>
+                                        <select class="form-control selectpicker" name="Area" id="area2">
+                                            @foreach (var SelectOption in (new SelectOptions<view_Sector>()).GetOptions("Area").Where(a => a.Value != "*").ToList())
+                                            {
+                                                <option value="@SelectOption.Value">@SelectOption.Text</option>
+                                            }
+                                        </select>
                                     }
-                                  }
-                            </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="system2" class="col-sm-2 control-label">System</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control selectpicker" name="System" id="system2"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="classification2" class="col-sm-2 control-label">Classification</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control selectpicker" name="Classification" id="classification2"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-9">
+                                    <div class="radio">
+                                        <label for="none2">
+                                            <input id="none2" data-id="none" checked name="none" type="radio" />
+                                            From price category
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label for="fixed-price2">
+                                            <input id="fixed-price2" data-id="fixed-price2" name="Fixed_price" type="radio" />
+                                            Fixed price
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label for="discount2">
+                                            <input id="discount2" data-id="discount2" name="Discount" type="radio" />
+                                            Discount
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label for="expired2">
+                                            <input id="expired2" data-id="expired2" name="Expired" type="checkbox" />
+                                            Expired
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label for="multiple2">
+                                            <input id="multiple2" data-id="multiple2" name="Multiple_type" type="checkbox" />
+                                            Multiple select
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="discount-type2" class="col-sm-2 control-label">Discount type</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control selectpicker" disabled name="Discount_type" id="discount-type2">
+                                        @{
+                                            TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module> selectOptions = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>();
+                                            foreach (TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>.SelectOption so in selectOptions.GetOptions("Discount_type"))
+                                            {
+                                                <option value="@so.Value">@so.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description2" class="col-sm-2 control-label">Important Info</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Description" id="description2" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="notes2" class="col-sm-2 control-label">Comment</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Comment" id="notes2" rows="2"></textarea>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="notes2" class="col-sm-2 control-label">Comment</label>
-                        <div class="col-sm-10">
-                            <textarea class="form-control" name="Comment" id="notes2" rows="6"></textarea>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="offer_description2" class="col-sm-2 control-label">Offer Description</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="9"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="contract_description2" class="col-sm-2 control-label">Contract Description</label>
+                                <div class="col-sm-9">
+                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="9"></textarea>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -157,8 +182,38 @@
 
 
 <!-- #region Main scripts -->
+<script type="text/javascript" src="~/Content/tinymce/tinymce.min.js"></script>
 <script>
     var selectedId = null;
+
+    $(document).on('show.bs.modal', '#moduleModal', function () {
+        tinymce.init({
+            selector: "#offer_description2",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            encoding: 'xml',
+            height : 250
+        });
+
+        tinymce.init({
+            selector: "#contract_description2",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            encoding: 'xml',
+            height : 250
+        });
+
+        tinyMCE.execCommand('mceAddControl', false, 'offer_description2');
+        tinyMCE.execCommand('mceAddControl', false, 'contract_description2');
+
+        $('.selectpicker').selectpicker('refresh');
+
+    })
+
+    $('#moduleModal').bind('hidden.bs.modal', function () {
+        console.log("close");
+        tinyMCE.remove();
+    });
 
     var selectRow = function (element) {
 
@@ -251,7 +306,24 @@
     $(document).ready(function () {
         var uniqueRowNumber = 0;
         var $delBtns;
+        var editModalChanged = 0;
 
+        $( '#moduleModal').change(function() {
+            editModalChanged = 1;
+        });
+
+        window.onbeforeunload = confirmExit;
+
+        function confirmExit() {
+            if (editModalChanged == 1) {
+                return "Ändringar ej sparade. Vill du lämna sidan ändå?";
+            }
+        }
+        
+        $('#moduleModal').on('hide.bs.modal', function () {
+            editModalChanged = 0;
+        })
+        
         $('#discount2').change(function() {
             handleDiscountCheck(this);
         });
@@ -348,6 +420,7 @@
             wrapper: "a",  // a wrapper around the error message
             errorPlacement: handleErrorPlacement
         });
+        editModalChanged = 0;
     });
 
     var drawButtons = function(){
@@ -425,26 +498,30 @@
                         var noneSelected = true;
                         for (var i = 0; i < frmInpLen; i++) {
                             var $currInput = $($formInputs[i]);
-                            for (var j = 0; j < tdLen; j++) {
-                                var $currTD = $($selectedTds[j]);
-                                if($currTD.data("property") == $currInput.attr("name")){
-                                    var name = $currInput.attr("name");
-                                    if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
-                                        if ($currTD.text() == "true" || $currTD.text() == "1") {
-                                            $currInput.prop("checked", true);
-                                            if(name == "Discount" || name == "Fixed_price")
-                                                noneSelected = false;
+                            var name = $currInput.attr("name");
+                            if (name != "Offer_description" && name != "Contract_description") {
+                                for (var j = 0; j < tdLen; j++) {
+                                    var $currTD = $($selectedTds[j]);
+                                    if($currTD.data("property") == $currInput.attr("name")){
+                                        if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
+                                            if ($currTD.text() == "true" || $currTD.text() == "1") {
+                                                $currInput.prop("checked", true);
+                                                if(name == "Discount" || name == "Fixed_price")
+                                                    noneSelected = false;
+                                            }
+                                            else {
+                                                $currInput.prop("checked", false);
+                                            }
                                         }
                                         else {
-                                            $currInput.prop("checked", false);
+                                            $currInput.val($currTD.text());
                                         }
-                                    }
-                                    else {
-                                        $currInput.val($currTD.text());
                                     }
                                 }
                             }
-                        }    
+                        }
+                        getTinyMCE();
+
                         if(noneSelected){
                             $("#none2").prop("checked", true);
                             $("#discount2").prop("checked", false);
@@ -469,6 +546,32 @@
 
         })
     }
+    var getTinyMCE = function () {
+        var $row = $(".selected");
+        var pk_id = selectedId;
+        $.ajax({
+            "url": serverPrefix + "Module/GetTinyMCEData/",
+            "type": "POST",
+            "data": {
+                "artnr": pk_id,
+            },
+            "success": function (data) {
+                if (data.length > 0) {
+                    var textModule = JSON.parse(data);
+                    $("#offer_description2").val(textModule.Offer_description);
+                    $("#contract_description2").val(textModule.Contract_description);
+
+                    for(var i = 0; i < tinyMCE.editors.length; i++)
+                    {
+                        var currentED = tinyMCE.editors[i];
+                        currentED.setContent($('#' + currentED.id).val());
+                    }
+
+                }
+            }
+        });
+    }
+    //End getTinyMCE function
 
     var triggerAlert = function(msg, priorty)
     {
@@ -520,54 +623,51 @@
     //$('#crm-save-btn').on('click', save);
 
     }
-
+    7
+    //Kommer hit för varje post som ska skrivas ut i tabellen
     var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-        var i = 0, j = 0;
+        var i = 0;
 
         var StateSelid = StateCookie.getCurrentSite().selectedId;
         var StateArea = StateCookie.getCurrentSite().area;
         var rowArea = aData["Area"];
 
+        //Skriver ut radiobutten för val av rad.
         for (var name in aData) {
             var $td;
-
-
             if (i == 0) {
 
                 $td = $('td:eq(' + i + ')', nRow);
 
                 $td.parent().click(function () {
-
                     selectRow(this.firstChild);
-
                 });
+
                 $td.addClass("radios");
                 $td.html("<input type='radio' value='" + aData["Article_number"] + "' name='selected-contact' onClick=''/>");
 
                 if( $td.find("input").val() == StateSelid && rowArea == StateArea){
-
                     selectRow($($td));
-
                 }
-                else if( $td.find("input").val() != selectedId){
+                else 
+                if( $td.find("input").val() != selectedId){
                     $td.parent().removeClass("selected");
                 }
                 i++;
-                j++;
             }
 
-            if (i >= 1 && j < 14) {
-                $td = $('td:eq(' + j + ')', nRow);
-                $td.attr("data-property", name);
-                $td.html(aData[name]);
-                j++;
+            if (i >= 1 && i < 16) {
+                if (name != "Offer_description" && name != "Contract_description") {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.attr("data-property", name);
+                    $td.html(aData[name]);
+                }
             }
-
             i++;
         }
 
-
+        editModalChanged = 0;
     }
 
 </script>
@@ -655,6 +755,7 @@
     }
 
     var save = function(){
+        tinymce.triggerSave();
         if(typeof $("#save-module-changes").attr("data-Article-number") != "undefined"){
             //Update
             var module = {}
@@ -667,6 +768,9 @@
                 {
                     if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
                         module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                    }
+                    else if($currInput.prop("id") == "offer_description2" || $currInput.prop("id") == "contract_description2"){
+                        module[$currInput.prop("name")] = tinyMCE.get($currInput.prop("id")).getContent()
                     }
                     else {
                         module[$currInput.attr("name")] = $currInput.val();
@@ -691,11 +795,11 @@
                         $("#save-module-changes").removeAttr("data-Article-number");
                         $("#moduleModal").modal("toggle");
                     } else if(data == "2") {
-                        triggerAlert("Failed to insert into database. Does not exist, cannot update.", "info");
+                        triggerAlert("Failed to save changes into database. Does not exist, cannot update.", "info");
                     } else if(data == "-2") {
-                        triggerAlert("Failed to insert into database. Wrong format provided.", "info");
+                        triggerAlert("Failed to save changes into database. Wrong format provided.", "info");
                     } else {
-                        triggerAlert("Failed to insert into database.", "info");
+                        triggerAlert("Failed to save changes into database.", "info");
                     }
 
                 }
@@ -714,6 +818,9 @@
                 {
                     if ($currInput.prop("type") == "checkbox" || $currInput.prop("type") == "radio") {
                         module[$currInput.attr("name")] = (($currInput.prop("checked")) ? "1" : "0");    
+                    }
+                    else if($currInput.prop("id") == "offer_description2" || $currInput.prop("id") == "contract_description2"){
+                        module[$currInput.prop("name")] = tinyMCE.get($currInput.prop("id")).getContent()
                     }
                     else {
                         module[$currInput.attr("name")] = $currInput.val();

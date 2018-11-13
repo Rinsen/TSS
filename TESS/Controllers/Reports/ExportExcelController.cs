@@ -15,12 +15,12 @@ namespace TietoCRM.Controllers
             return View();
         }
         [HttpGet]
-        public void CacheGet(string gid)
+        public void CacheGet(string gid, string fn)
         {
             ObjectCache cache = MemoryCache.Default;
             //CacheItem fsGet = cache.GetCacheItem(cid);
             byte[] fsG = cache.Get(gid) as byte[];
-            var fileName = "SentOffers.xlsx";
+            var fileName = fn;
 
             using (var mstream = new System.IO.MemoryStream())
             {

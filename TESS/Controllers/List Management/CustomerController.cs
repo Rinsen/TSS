@@ -10,7 +10,7 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Web.Security;
 using TietoCRM.Models;
-
+using TietoCRM.UD_Exceptions;
 
 
 namespace TietoCRM.Controllers
@@ -324,14 +324,14 @@ namespace TietoCRM.Controllers
         {
             try
             {
-                String value = Request.Form["primaryKey"];
+                String value = Request.Form["ID"];
                 view_Customer a = new view_Customer();
-                //a.Select("Article_number = " + value);
+                a.Select("Customer = '" + value + "'");
                 a.Delete("Customer = '" + value + "'");
             }
-            catch (Exception e)
+            catch (CustomerException e)
             {
-                return "-1";
+                return e.Message;
             }
             return "1";
         }

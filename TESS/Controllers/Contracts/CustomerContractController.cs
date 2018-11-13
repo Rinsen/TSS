@@ -58,6 +58,7 @@ namespace TietoCRM.Controllers.Contracts
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign).OrderBy(c => c).ToList());
             else
                 this.ViewData.Add("Customers", view_Customer.getCustomerNames().OrderBy(c => c).ToList());
+            ViewData.Add("Users", view_User.getAllUsers());
             this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_kontrakt);
             this.ViewData.Add("ControllerName", "CustomerContract");
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
@@ -72,6 +73,18 @@ namespace TietoCRM.Controllers.Contracts
                 view_Contract contract = new view_Contract("Contract_id = " + id);
                 on = contract.Customer;
             }
+
+            if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
+            {
+                ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
+                ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
+            }
+            else
+            {
+                ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
+                ViewData.Add("showModalReminder", false);
+            }
+
 
             this.ViewData.Add("OfferNumber", on);
 
@@ -156,6 +169,7 @@ namespace TietoCRM.Controllers.Contracts
            // string request = Request["selected-contract"];
             String urlCustomer = Request["customer"];
             String urlContractId = Request["contract-id"];
+            String urlOurSign = Request["our_sign"];
             bool ctrResign = false;
 
             view_Contract contract = new view_Contract("Contract_id = '" + urlContractId + "' AND Customer = '" + urlCustomer + "'");
@@ -358,28 +372,29 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Customer", customer);
 
             view_User user = new view_User();
-            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
-                user = System.Web.HttpContext.Current.GetUser();
-            else
-            {
-                List<view_User> users = new List<view_User>();
-                foreach(String name in customer._Representatives)
-                {
-                    view_User rep = new view_User();
-                    rep.Select("Sign=" + name);
-                    users.Add(rep);
-                }
-                if (users.Count > 0)
-                {
-                    List<view_User> tempUsers = users.Where(u => u.Area == contract.Area).ToList();
-                    if(tempUsers.Count > 0)
-                        user = tempUsers.First();
-                    else
-                        user = System.Web.HttpContext.Current.GetUser();
-                }
-                else
-                    user = System.Web.HttpContext.Current.GetUser();
-            }
+            user.Select("Sign = " + contract.Sign);
+            //if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+            //    user = System.Web.HttpContext.Current.GetUser();
+            //else
+            //{
+            //    List<view_User> users = new List<view_User>();
+            //    foreach(String name in customer._Representatives)
+            //    {
+            //        view_User rep = new view_User();
+            //        rep.Select("Sign=" + name);
+            //        users.Add(rep);
+            //    }
+            //    if (users.Count > 0)
+            //    {
+            //        List<view_User> tempUsers = users.Where(u => u.Area == contract.Area).ToList();
+            //        if(tempUsers.Count > 0)
+            //            user = tempUsers.First();
+            //        else
+            //            user = System.Web.HttpContext.Current.GetUser();
+            //    }
+            //    else
+            //        user = System.Web.HttpContext.Current.GetUser();
+            //}
                 
             ViewData.Add("Representative", user);
 
@@ -595,6 +610,8 @@ namespace TietoCRM.Controllers.Contracts
         public String CustomerContractJsonData()
         {
             String customer = Request.Form["customer"];
+            String our_sign = Request.Form["our_sign"];
+
             if (customer == "" || customer == null)
             {
                 List<String> customerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
@@ -603,7 +620,6 @@ namespace TietoCRM.Controllers.Contracts
                 else
                     customer = customerNames[0];
             }
-
 
             List<view_Contract> customerContracts;
             if(customer != "*")
@@ -615,7 +631,7 @@ namespace TietoCRM.Controllers.Contracts
 
             view_User user = System.Web.HttpContext.Current.GetUser();
             List<view_Customer> vCustomers = new List<view_Customer>();
-            foreach (view_Contract contract in customerContracts)
+            foreach (view_Contract contract in customerContracts.Where(c => (c.Sign == our_sign && our_sign != "*") || (c.Sign == c.Sign && our_sign == "*")))
             {
                 view_Customer vCustomer;
                 if (vCustomers.Any(c => c.Customer == contract.Customer))
@@ -692,7 +708,7 @@ namespace TietoCRM.Controllers.Contracts
                     contractHead.Buyer = customer.Customer;
                     contractHead.Zip_code = customer.Zip_code;
                     contractHead.Corporate_identity_number = customer.Corporate_identity_number;
-
+                    contractHead.Administration = customer.Administration;
 
                     contractHead.Insert();
                 }
@@ -780,6 +796,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractHead.Contact_person = a.Contact_person;
                 contractHead.Customer_sign = a.Contact_person.Substring(0, Math.Min(a.Contact_person.Length, 50));
                 contractHead.Our_sign = System.Web.HttpContext.Current.GetUser().Name.Substring(0, Math.Min(System.Web.HttpContext.Current.GetUser().Name.Length, 50));
+                contractHead.Administration = customer.Administration;
                 
                 contractHead.Insert();
 
@@ -1370,6 +1387,11 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
+
+                view_ContractText ctext = new view_ContractText();
+                string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+                ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo);
+
                 return "1";
             }
             catch{
@@ -1478,6 +1500,10 @@ namespace TietoCRM.Controllers.Contracts
             contract.Updated = System.DateTime.Now;
             contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
 
+            view_ContractText ctext = new view_ContractText();
+            string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+            ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo);
+
             return "1";
         }
 
@@ -1496,7 +1522,8 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
 
                 String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+                                                M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
@@ -1889,9 +1916,20 @@ namespace TietoCRM.Controllers.Contracts
             try
             {
                 String customer = Request.Form["customer"];
+                String our_sign = Request.Form["our_sign"];
                 view_User user = System.Web.HttpContext.Current.GetUser();
-                List<String> mainContracts = view_Contract.GetContracts(customer).Where(c=>c.Is(ContractType.MainContract) && c.Status == "Giltigt" && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
-                
+                List<String> mainContracts = new List<String>();
+                if (our_sign != "*")
+                {
+                    mainContracts = view_Contract.GetContracts(customer).Where(c => c.Is(ContractType.MainContract) && 
+                        c.Status == "Giltigt" && c.Sign == our_sign && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
+                }
+                else
+                {
+                   mainContracts = view_Contract.GetContracts(customer).Where(c => c.Is(ContractType.MainContract) && 
+                        c.Status == "Giltigt" && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
+                }
+
                 return (new JavaScriptSerializer()).Serialize(mainContracts);
             }
             catch
@@ -2391,10 +2429,11 @@ namespace TietoCRM.Controllers.Contracts
             try
             {
                 String value = Request.Form["id"];
-                view_Contract co = new view_Contract("Contract_id='" + value + "'");
+                String customer = Request.Form["customer"];
+                view_Contract co = new view_Contract("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
                 //a.Select("Article_number = " + value);
                 if (co.Status == "Makulerat")
-                    co.Delete("Contract_id='" + value + "'");
+                    co.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
                 else
                     return "-1";
             }
@@ -2446,6 +2485,23 @@ namespace TietoCRM.Controllers.Contracts
 
             return "1";
 
+        }
+        private string updateDescriptions(string cust, string ctr_id)
+        {
+            view_ContractRow crow = new view_ContractRow();
+            List<dynamic> l = crow.GetContractRowsForModuleInfo(cust, ctr_id);
+            var moduleInfo = "";
+
+            foreach (var mi in l)
+            {
+                if (moduleInfo == "")
+                {
+                    moduleInfo = "<h4><strong>Information produkter</strong></h4>";
+                }
+                //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                moduleInfo += "<p>" + mi.Contract_description + "</p>";
+            }
+            return moduleInfo;
         }
     }
 }

@@ -104,7 +104,7 @@
                 </ul>
             </div>
             <!--<button type="button" class="btn btn-success navbar-btn">Save</button>-->
-            <button type="button" onclick="window.location = '@Url.Content("~/CustomerContract/Index?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]) + "&search=" + Url.Encode(Request["search"]))';" class="btn btn-default navbar-btn">Back</button>
+            <button type="button" onclick="window.location = '@Url.Content("~/CustomerContract/Index?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]) + "&our_sign=" + Url.Encode(Request["our_sign"]) + "&search=" + Url.Encode(Request["search"]))';" class="btn btn-default navbar-btn">Back</button>
             <span style="margin-left: 1em"></span>
             <a class="btn btn-primary navbar-btn" href="@Url.Content("~/CustomerContract/Pdf?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))" target="_blank">PDF</a>
             <a class="btn btn-primary navbar-btn" href="@Url.Content("~/CustomerContract/ViewShippingListPdf?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))" target="_blank">Shipping List</a>
@@ -474,6 +474,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="administration3" class="col-sm-2 control-label">Administration</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="administration3" name="Administration" placeholder="Administration" />
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="address3" class="col-sm-2 control-label">Address</label>
                         <div class="col-sm-10">
                             <input class="form-control" id="address3" name="Address" placeholder="Address" />
@@ -557,11 +563,12 @@
                                     <div class="panel-heading">
                                         <h3 class="panel-title">Available articles</h3>
                                     </div>
-                                    <div class="panel-body">
+                                    <div class="panel-body" style="font-size: 9pt;">
                                         <table style="margin-left: 0.8em;">
                                             <tr>
                                                 <th></th>
                                                 <th title="Exists in previous contract">#</th>
+                                                <th title="Dependencies">#</th>
                                                 <th>Art. nr</th>
                                                 <th>Module</th>
                                                 <th>License</th>
@@ -581,7 +588,7 @@
                                     <div class="panel-heading">
                                         <h3 class="panel-title">Selected articles to add</h3>
                                     </div>
-                                    <div class="panel-body">
+                                    <div class="panel-body" style="font-size: 9pt;">
                                         <table style="margin-left: 0.8em;">
                                             <tr>
                                                 <th>Art. nr</th>
@@ -1065,6 +1072,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="module-info-text" class="col-sm-2 control-label">Module and Services Info</label>
+                        <div class="col-sm-10">
+                            <textarea id="module-info-text" name="Module_info" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
                         <div class="col-sm-10">
                             <textarea id="document-foot-text" name="Document_foot" class="form-control" rows="3"></textarea>
@@ -1317,10 +1330,16 @@
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars
         });
+        tinymce.init({
+            selector: "#module-info-text",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars
+        });
         tinyMCE.execCommand('mceAddControl', false, 'page-head-text');
         tinyMCE.execCommand('mceAddControl', false, 'deluhtitle');
         tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
         tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
+        tinyMCE.execCommand('mceAddControl', false, 'module-info-text');
     });
     $('#templatesModal').bind('hidden.bs.modal', function () {
         tinyMCE.remove();
@@ -1486,7 +1505,7 @@
         });
 
         $("#resign-modal-button").click(function () {
-            
+
             @{
                 var opt = "";
                 foreach (String ctr in ViewBag.MainCtrResign)
@@ -1624,6 +1643,7 @@
     var aktStatus = "@Html.Raw(ViewBag.CustomerContract.Status)";
     var contractValidFrom = "@Html.Raw(ViewBag.CustomerContract.Valid_from)";
     var ctrResign = "@Html.Raw(ViewBag.CtrResign)";
+    var our_sign = "@ViewBag.CustomerContract.Sign"
 
 </script>
 

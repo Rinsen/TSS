@@ -98,16 +98,12 @@ namespace TietoCRM.Controllers.Reports
             {
                 ViewData.Add("ValidDate", false);
             }
-
-           
             return pdf;
  
         }
 
         private List<Dictionary<String, object>> GetFilteredModules(DateTime Start, DateTime Stop)
         {
-            
-
             var Printable = new List<String> {
                 "Article_number",
                 "Module",
@@ -184,14 +180,35 @@ namespace TietoCRM.Controllers.Reports
             {
                 return "{\"data\": {}}";
             }
-            
-
-            
-           
-
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GetFilteredModules(Start, Stop)) + "}";
         }
-
-
+        public string ExportExcel()
+        {
+            String startRe;
+            String stopRe;
+            DateTime Start;
+            DateTime Stop;
+            try
+            {
+                if (IsValidSqlDateTimeNative(Request.Form["start"]) && IsValidSqlDateTimeNative(Request.Form["stop"]))
+                {
+                    startRe = Request.Form["start"];
+                    stopRe = Request.Form["stop"];
+                    Start = Convert.ToDateTime(startRe);
+                    Stop = Convert.ToDateTime(stopRe);
+                }
+                else
+                {
+                    return "-1";
+                }
+            }
+            catch (Exception ignore)
+            {
+                return "-1";
+            }
+            System.Data.DataTable dt = view_ContractRow.ExportContractRowsByDateIntervalToExcel(Start, Stop);
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+            return ex.Export(dt, "ContractSoldProductsReport.xlsx");
+        }
     }
 }

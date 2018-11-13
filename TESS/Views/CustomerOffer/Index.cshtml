@@ -1,58 +1,82 @@
-﻿<form>
-    <div class="col-md-12">
-        <div class="form-group">
-            <label for="crm-select-customer">Customer:</label>
-            <select name="customer" id="crm-select-customer" class="form-inline selectpicker" data-live-search="true">
-                <option value="*">All</option>
-                @{bool first = true;}
-                @foreach (String Customer in ViewBag.Customers)
-                {
-                    if (first)
-                    {
-                        <option selected value="@Customer">@Customer</option>
-                        first = false;
-                    }
-                    else
-                    {
-                        <option value="@Customer">@Customer</option>
-                    }
-                }
-            </select>
-            <button type='button' class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-            <div id='crm-edit-contact' class='crm-table-btn'>
-                <button type='button' class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
-            </div>
-            <button type='button' style="display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
-            </div>
-            </div>
-        </div>
-        <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
-            <thead>
-                <tr>
-                    @foreach (String ColumnName in ViewBag.Properties)
-                    {
-                        String PropertyName = ColumnName.Replace("_", " ");
-                        if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
+﻿@using TietoCRM.Extensions;
+@using TietoCRM.Models;
+    <row>
+        <div class="col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="crm-select-user">Our Salesman:</label>
+                    <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
+                        <option value="*">All</option>
+                        @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
                         {
-                            if (ColumnName == "Hashtags")
+                            if (ViewBag.CurrentUser == User.Sign)
                             {
-                                <th class="hidden" data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                                <option selected value="@User.Sign">@User.Name</option>
                             }
                             else
                             {
-                                <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                                <option value="@User.Sign">@User.Name</option>
                             }
                         }
-                        else if (@PropertyName != "SSMA timestamp") // this is for #
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="crm-select-customer">Customer:</label>
+                    <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
+                        <option value="*">All</option>
+                        @{bool first = true;}
+                        @foreach (String Customer in ViewBag.Customers)
                         {
-                            <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
+                            if (first)
+                            {
+                                <option selected value="@Customer">@Customer</option>
+                                first = false;
+                            }
+                            else
+                            {
+                                <option value="@Customer">@Customer</option>
+                            }
                         }
-
+                    </select>
+                </div>
+                <button type='button' style="margin-top: 1.7em;" class='btn btn-default form-control' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
+                <div id='crm-edit-contact' class='crm-table-btn'>
+                    <button type='button'  style="margin-top: 1.7em;" class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+                </div>
+                <button type='button' style="display:none; margin-top: 1.7em;" class='btn btn-warning form-control' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+                <div class="form-group">
+                    <input hidden name="CurrentUser" id="current_user" value="@ViewBag.CurrentUser">
+                </div>            
+            </form>
+        </div>
+    </row>
+    <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+        <thead>
+            <tr>
+                @foreach (String ColumnName in ViewBag.Properties)
+                {
+                    String PropertyName = ColumnName.Replace("_", " ");
+                    if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
+                    {
+                        if (ColumnName == "Hashtags")
+                        {
+                            <th class="hidden" data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                        }
+                        else
+                        {
+                            <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
+                        }
                     }
-                </tr>
-            </thead>
-        </table>
-    </form>
+                    else if (@PropertyName != "SSMA timestamp") // this is for #
+                    {
+                        <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
+                    }
+
+                }
+            </tr>
+        </thead>
+    </table>
+
 
     <!-- #region reminders -->
 
@@ -307,6 +331,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="ourSign4" class="col-sm-2 control-label">Our Salesman</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="ourSign4">
+                                <option value="">No one selected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="created4" class="col-sm-2 control-label">Offer created</label>
                         <div class="col-sm-10">
                             <input class="form-control" name="Created" id="created4" type="date" value='@DateTime.Now.Date.ToShortDateString()'/>
@@ -371,7 +403,7 @@
     var serverPrefix = "@Url.Content("~/")";
    
     var $customerSelect = $("#crm-select-customer");
-    var checkReminder = function(customer){
+    var checkReminder = function(customer, showModal){
         $.ajax({
             "url": serverPrefix + "CustomerOffer/checkReminder/",
             "type": "POST",
@@ -381,6 +413,10 @@
             "success": function(data){
                 if (data == "1") {
                     $("#remind-modal-button").show();
+                    loadReminders();
+                    if (showModal == true) {
+                        $("#reminderModal").appendTo("body").modal("show").draggable();
+                    }
                 }
                 else {
                     $("#remind-modal-button").hide();
@@ -414,6 +450,39 @@
             }
         });
     }
+
+    var loadNewRepresentativeData = function()
+    {
+        $.ajax({
+            "url": serverPrefix + "CustomerOffer/GetRepr/",
+            "type": "POST",
+            "data": {
+                "customer": $customerSelect.val()
+            },
+            "success": function(data){
+                currentSign = JSON.parse(data);
+                $select = $("#ourSign4");
+                $select.html("");
+             
+                if(currentPerson.length > 0){
+                    for(var i = 0; i < currentSign.length; i++)
+                    {
+                        if (currentSign[i] == $("#current_user").val()) 
+                        {
+                            $select.append($("<option> selected </option>").attr("innerText", currentSign[i]).html(currentSign[i]));
+                        }
+                        else 
+                        {
+                            $select.append($("<option></option>").attr("innerText", currentSign[i]).html(currentSign[i]));
+                        }
+                    }
+                }                 
+                //$select.append("<option selected value=''>No one selected</option>");
+                $select.selectpicker('refresh');
+            }
+        });
+    }
+
     function get_browser() {
         var ua = navigator.userAgent,
             tem,
@@ -456,6 +525,7 @@
         newOffer.Offer_status =  $("#offerStatus4").val();
         newOffer.Title =  $("#offerTitle4").val();
         newOffer.Summera = $("#summera").prop("checked") ? 1 : 0;
+        newOffer.Our_Sign = $("#ourSign4").val();
         
         $.ajax({
             "url": serverPrefix + "CustomerOffer/Insert/",
@@ -466,8 +536,7 @@
             },
             "success": function(data){
                 if(data > 0){
-                    updateDataTable($("#crm-select-customer").val());
-                    //checkReminder($("#crm-select-customer").val());
+                    updateDataTable($("#crm-select-customer").val(), $("#crm-select-user").val());
                     drawButtons();
                     triggerAlert("Successfully added new offer.", "success");
                     $("#newRowModal").modal("toggle");
@@ -478,7 +547,7 @@
 
                 }
                 else {
-                    triggerAlert("Failed to add new offer.", "warning");
+                    triggerAlert(data, "warning");
                 }
             }
         });
@@ -586,7 +655,7 @@
             });
         }
         $("#reminderModal").modal("hide");
-        checkReminder($("#crm-select-customer").val());
+        checkReminder($("#crm-select-customer").val(), false);
         triggerAlert("Successfully deactivated reminders", "success");
     });
 
@@ -784,8 +853,7 @@
                     "success": function(data){
                         if(data > 0)
                         {
-                            updateDataTable($("#crm-select-customer").val());
-                            //checkReminder($("#crm-select-customer").val());
+                            updateDataTable($("#crm-select-customer").val(), $("#crm-select-user").val());
                             drawButtons();
                             selectedId = null;
                             triggerAlert("Successfully updated contact.", "success");
@@ -863,8 +931,7 @@
                                     "success": function(data){
                                         if(data > 0)
                                         {
-                                            updateDataTable($("#crm-select-customer").val());
-                                            //checkReminder($("#crm-select-customer").val());
+                                            updateDataTable($("#crm-select-customer").val(), $("#crm-select-user").val());
                                             drawButtons();
                                             selectedId = null;
                                             triggerAlert("Successfully deleted offer.", "success");
@@ -960,7 +1027,7 @@
                 }
                 i++;
             }
-            if(i <= 8)
+            if(i <= 10)
             {
                 $td = $('td:eq(' + i + ')', nRow);
                 if(name == "Hashtags"){
@@ -985,7 +1052,7 @@
             DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @ColumnName + "\"  },\r\n";
         }
     }
-    var updateDataTable = function(customer, onSuccess)
+    var updateDataTable = function(customer, representative, onSuccess)
     {
         $('#@ViewBag.ControllerName-table').DataTable({
             "destroy": true,
@@ -995,7 +1062,8 @@
                 "url": serverPrefix + "CustomerOffer/CustomerOfferJsonData/",
                 "type": "POST",
                 "data": {
-                    "customer": customer
+                    "customer": customer,
+                    "representative": representative
                 }
             },
             "initComplete": function(settings, json) {
@@ -1021,7 +1089,7 @@
             "scrollX": true,
             "fnRowCallback": drawCallBack
         });
-        checkReminder(customer);
+        checkReminder(customer, false);
         var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
         //$selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Add row</button></div>");
         //$selRowContainer.append("<div id='crm-save-updates' class='crm-table-btn'><button type='button' id='crm-save-btn' class='btn btn-success' autocomplete='off'>Save</button></div>");
@@ -1079,8 +1147,7 @@
                     var isFunction = onSuccess && getType.toString.call(onSuccess) === '[object Function]';
                     if(typeof onSuccess != "undefined" && isFunction)
                         onSuccess();
-                    updateDataTable($customerSelect.val());
-                    //checkReminder($customerSelect.val());
+                    updateDataTable($customerSelect.val(), $("#crm-select-user").val());
                     drawButtons();
                     $(document).trigger("clear-alerts");
                     $(document).trigger("add-alerts", [
@@ -1171,24 +1238,36 @@
 
         $("#crm-add-row").click(function(){
                 loadNewContactData();
-            $("#newRowModal").appendTo("body").modal("show").draggable();
+                loadNewRepresentativeData();
+                $("#newRowModal").appendTo("body").modal("show").draggable();
             });
-
             drawButtonsExtension($selRowContainer, "bottom");
-
     }
 
     $(document).ready(function () {
-        $('.selectpicker').val('@Request["customer"]');
-        $('.selectpicker').selectpicker('refresh');
+        @*$('.selectpicker').val('@Request["customer"]');
+        $('.selectpicker').selectpicker('refresh');*@
+        $('.selectpicker').selectpicker();
         $("#crm-select-customer").change(function () {
             selectedId = null;
             loadAppointments();
-            updateDataTable(this.value);
-            //checkReminder(this.value);
+            updateDataTable(this.value, $("#crm-select-user").val());
             drawButtons();
             $("#crm-add-row").click(function(){
                 loadNewContactData();
+                loadNewRepresentativeData();
+                $("#newRowModal").appendTo("body").modal("show").draggable();
+            });
+            checkReminder(this.value, "@Html.Raw(ViewBag.showModalReminder)" == "True");
+        });
+
+        $("#crm-select-user").change(function () {
+            selectedId = null;
+            updateDataTable($("#crm-select-customer").val(), this.value);
+            drawButtons();
+            $("#crm-add-row").click(function(){
+                loadNewContactData();
+                loadNewRepresentativeData();
                 $("#newRowModal").appendTo("body").modal("show").draggable();
             });
         });
@@ -1230,7 +1309,12 @@
                     required: true,
                     date: true
                 },
-
+                "Our_Sign": {
+                    required: true
+                },
+                "Title": {
+                    maxlength: 100
+                },
             },
             errorElement: "span",
             wrapper: "a",  // a wrapper around the error message
@@ -1298,10 +1382,12 @@
 
         });
         $customerSelect = $("#crm-select-customer");
+        $currentUserSelect = $("#crm-select-user");
         //@Html.Raw(@ViewBag.OfferNumber)
         $customerSelect.val("@Html.Raw(@ViewBag.OfferNumber)");
+        $currentUserSelect.val("@Html.Raw(@ViewBag.CurrentUser)");
         $(".selectpicker").selectpicker("refresh");
-        updateDataTable("@Html.Raw(@ViewBag.OfferNumber)", function(){
+        updateDataTable("@Html.Raw(@ViewBag.OfferNumber)","@Html.Raw(@ViewBag.CurrentUser)" , function(){
             drawButtons();
             if($customerSelect.val() == "")
                 $("#crm-add-row").unbind("click");
@@ -1309,7 +1395,9 @@
             $input = $("#CustomerOffer-table_filter").find(":input");
        });
 
-
+        @*if ("@Html.Raw(ViewBag.showModalReminder)" == "True") {*@
+            checkReminder($customerSelect.val(), "@Html.Raw(ViewBag.showModalReminder)" == "True");
+        //}
 
     });
 </script>

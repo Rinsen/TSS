@@ -41,6 +41,9 @@ namespace TietoCRM.Models
         private String document_foot;
         public String Document_foot { get { return document_foot; } set { document_foot = value; } }
 
+        private String module_info;
+        public String Module_info { get { return module_info; } set { module_info = value; } }
+
         private DateTime ssma_timestamp;
         public DateTime SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -67,7 +70,7 @@ namespace TietoCRM.Models
 
                 // Default query
                 command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Document_head] ,[Page_head] ,[Title] ,";
-                command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot],";
+                command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot], Module_info,";
                 command.CommandText += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractText WHERE " + "Customer = @customer";
 
                 command.Prepare();
@@ -99,6 +102,26 @@ namespace TietoCRM.Models
             }
             return list;
         }
+        public void UpdateModuleInfo(string customer, string contract_id, string moduleInfo)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = "Update dbo.A_Text Set Modultext = @moduleInfo ";
+                command.CommandText += "Where avtalsid = @contract_id And Kund = @customer";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@moduleInfo", moduleInfo);
+                command.Parameters.AddWithValue("@contract_id", contract_id);
+                command.Parameters.AddWithValue("@customer", customer);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
     }
 
 }

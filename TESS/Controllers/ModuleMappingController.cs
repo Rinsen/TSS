@@ -241,7 +241,7 @@ namespace TietoCRM.Controllers
         List<SelectListItem> GetAllSystemNames(String area)
         {
             IEnumerable<view_Sector> allSectors = view_Sector.getAllSectors()
-                 .Where(a => a.Area == area)
+                 //.Where(a => a.Area == area)
                  .DistinctBy(a => a.System)
                  .OrderBy(a => a.SortNo);
             List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.System, Text = a.System }).ToList();

@@ -22,9 +22,10 @@ namespace TietoCRM.Controllers.List_Management
         public String serviceJsonData()
         {
             this.Response.ContentType = "text/plain";
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Service.getAllServices()) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Service.getAllServices(true)) + "}";
         }
 
+        [HttpPost, ValidateInput(false)]
         public String SaveService()
         {
             try
@@ -61,6 +62,7 @@ namespace TietoCRM.Controllers.List_Management
             }
         }
 
+        [HttpPost, ValidateInput(false)]
         public String InsertService()
         {
             try
@@ -88,6 +90,36 @@ namespace TietoCRM.Controllers.List_Management
             {
                 return "-1";
             }
+        }
+        public String DeleteService()
+        {
+            try
+            {
+                string code = Request.Form["code"];
+                view_Service a = new view_Service();
+                //a.Select("Article_number = " + value);
+                a.Delete("Code = " + code);
+            }
+            catch (Exception e)
+            {
+                return "-1";
+            }
+            return "1";
+        }
+        public String GetTinyMCEData()
+        {
+            string code = Request.Form["artnr"];
+            view_Service service = new view_Service();
+            service.Select("code = " + code);
+            dynamic j = null;
+
+            j = new
+            {
+                Offer_description = service.Offer_description,
+                Contract_description = service.Contract_description
+            };
+
+            return (new JavaScriptSerializer()).Serialize(j);
         }
     }
 }

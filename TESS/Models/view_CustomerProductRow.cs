@@ -261,5 +261,44 @@ namespace TietoCRM.Models
             return csv;
         }
 
+        public static System.Data.DataTable ExportCustomerProductsToExcel(String customer, String contractId = null, String area = null, bool withExpired = true)
+        {
+
+            DataTable dt = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "";
+
+                if (withExpired)
+                {
+                    query = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
+                                        Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
+                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = '" + customer + "' And Discount_type = 0 ";
+                }
+                else
+                {
+                    query = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
+                                        Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
+                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = '" + customer + "' And Discount_type = 0 And Expired = 0 ";
+                }
+                if (contractId != null)
+                {
+                    query += "And Contract_id = " + contractId;
+                }
+                if (area != null)
+                {
+                    query += "And Area = " + area;
+                }
+                query += "Order By SortNo, Classification, Module";
+               
+                dt.TableName = customer.Replace(" ","_");
+
+                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                da.Fill(dt);
+            }
+            return dt;
+        }
     }
 }

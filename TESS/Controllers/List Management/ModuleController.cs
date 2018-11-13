@@ -41,9 +41,9 @@ namespace TietoCRM.Controllers
             view_User user = System.Web.HttpContext.Current.GetUser();
             List<view_Module> modules;
             if (user.User_level == 2)
-                modules = view_Module.getAllModules().Where(d => user.IfSameArea(d.Area)).ToList();
+                modules = view_Module.getAllModules(true).Where(d => user.IfSameArea(d.Area)).ToList();
             else
-                modules = view_Module.getAllModules();
+                modules = view_Module.getAllModules(true);
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(modules) + "}";
         }
@@ -149,6 +149,7 @@ namespace TietoCRM.Controllers
                 throw new FormatException("Article_number is not parsable as Integer");
         }
 
+        [HttpPost, ValidateInput(false)]
         public String InsertModule()
         {
             try
@@ -201,6 +202,7 @@ namespace TietoCRM.Controllers
             
         }
 
+        [HttpPost, ValidateInput(false)]
         public String SaveModule()
         {
             try
@@ -263,6 +265,21 @@ namespace TietoCRM.Controllers
                 vcp.WriteExcelWithNPOI(view_Module.getAllModules());
             else
                 vcp.WriteExcelWithNPOI(view_Module.getAllModules().Where(a => a.Area == Area).ToList());
+        }
+        public String GetTinyMCEData()
+        {
+            string article_no = Request.Form["artnr"];
+            view_Module module = new view_Module();
+            module.Select("article_number = " + article_no);
+            dynamic j = null;
+
+            j = new
+            {
+                Offer_description = module.Offer_description,
+                Contract_description = module.Contract_description
+            };
+
+            return (new JavaScriptSerializer()).Serialize(j);
         }
     }
 }

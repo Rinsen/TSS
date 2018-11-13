@@ -15,6 +15,7 @@
                 </select>
             </div>
             <button id="fetch-pdf" style="margin-top: 1.7em" class="btn btn-default" type="button">PDF</button>
+            <button id="export-excel" style="margin-top: 1.7em;" class="btn" type="button">Excel</button>
             <div class="checkbox" style="margin-top: 1.7em">
                 <label>
                     <input type="checkbox" id="desc"> Show module description
@@ -96,6 +97,13 @@
             }
         })
 
+        $('#export-excel').click(function () {
+            var module = $moduleContainer.val();
+            var $dt = $('.dataTable').DataTable();
+            var sortArr = $dt.order();
+            var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+            window.open(serverPrefix + 'ModuleReport/ExportExcel?module=' + module + sort, "_parent").focus();
+        })
     });
 
     </script>

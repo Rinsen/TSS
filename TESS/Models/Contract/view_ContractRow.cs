@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using TietoCRM.Extensions;
+using System.Dynamic;
 
 namespace TietoCRM.Models
 {
@@ -387,7 +388,48 @@ public class view_ContractRow : SQLBaseClass
                 return list;
             }
         }
-    private static string GetOrderBy()
+        public List<dynamic> GetContractRowsForModuleInfo(string customer, string contract_id)
+        {
+            List<dynamic> list = new List<dynamic>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+                // Default query
+                //command.CommandText = @"SELECT C.Article_number, C.Alias, M.Contract_Description FROM " + databasePrefix + @"ContractRow C 
+                //                        Inner Join  " + databasePrefix + @"Module M On M.Article_number = C.Article_number 
+                //                        Where IsNull(M.Contract_Description,'') <> '' And C.Customer = @customer And C.Contract_id = @contract_id Order By " + GetOrderBy();
+
+                command.CommandText = @"SELECT Alias, Contract_Description FROM qry_ContractArtDescription Where Avtalsid = @contract_id And Kund = @customer Order By Typ, Art_id";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@contract_id", contract_id);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            dynamic t = new ExpandoObject();
+                            t.Alias = reader.GetValue(0);
+                            t.Contract_description = reader.GetValue(1);
+                            list.Add(t);
+                        }
+                    }
+                }
+
+
+            }
+            return list;
+
+        }
+        private static string GetOrderBy()
         {
             ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
             if (ASort == 1) return "Alias";
@@ -395,6 +437,68 @@ public class view_ContractRow : SQLBaseClass
             if (ASort == 3) return "Classification, Article_number";
             return "Alias";
         }
+        public static System.Data.DataTable ExportValidContractRowsToExcel(string articleNumber)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+
+                // Default query
+               string query  = @"SELECT Article_number, alias as Module, Customer, Contract_id , Classif as Classification, our_sign as Representative FROM qry_ValidContractRow WHERE Article_number=" + articleNumber + " Order By Customer, Contract_id";
+
+                dt.TableName = "ModuleReport_" + articleNumber.Replace(" ", "_");
+
+                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                da.Fill(dt);
+            }
+            return dt;
+        }
+        public static System.Data.DataTable ExportContractRowsByDateIntervalToExcel(DateTime Start, DateTime Stop)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                // Default query
+
+                string query = @"SELECT [view_ContractRow].[Contract_id], 
+                    [view_ContractRow].[Customer] ,[view_ContractRow].[Article_number] ,
+                    [view_ContractRow].[Offer_number] ,[view_ContractRow].[License] ,
+                    [view_ContractRow].[Maintenance] ,[view_ContractRow].[Delivery_date] ,
+                    [view_ContractRow].[Created] ,[view_ContractRow].[Updated] ,
+                    [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
+                    [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
+                    [view_ContractRow].[Fixed_price] ,
+                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp ,
+                    [view_ContractRow].[Alias] 
+                    FROM " + databasePrefix + @"ContractRow 
+                    INNER JOIN " + databasePrefix + @"Contract ON 
+                    view_Contract.Customer=view_ContractRow.Customer and 
+                    view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
+                    view_Contract.Valid_from >= @startDate AND
+                    view_Contract.Valid_from <= @stopDate Order By " + GetOrderBy();
+                //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
+                //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
+
+
+                //command.Prepare();
+                //command.Parameters.AddWithValue("@startDate", Start);
+                //command.Parameters.AddWithValue("@stopDate", Stop);
+                ////command.Parameters.AddWithValue("@startDate", Start.ToString("yyyy-MM-dd"));
+                ////command.Parameters.AddWithValue("@endDate", Start.ToString("yyyy-MM-dd")));
+
+                dt.TableName = "ContractSoldReport";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                da.Fill(dt);
+            }
+            return dt;
+            }
     }
 }
 

@@ -19,6 +19,9 @@ namespace TietoCRM.Models
         private String contact_person;
         public String Contact_person { get { return contact_person; } set { contact_person = value; } }
 
+        private String administration;
+        public String Administration { get { return administration; } set { administration = value; } }
+
         private String address;
         public String Address { get { return address; } set { address = value; } }
 

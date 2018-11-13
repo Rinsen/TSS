@@ -295,6 +295,7 @@
                 }
             }
         }
+        //editModalChanged = 0;
     }
     //End - DrawCallBack function
 
@@ -352,6 +353,7 @@
 
         $selRowContainer.append("<div id='crm-new-template' class='crm-table-btn'><button type='button' class='btn btn-default' data-toggle='modal' id='new-template-modal-button' >Create</button></div>");
         $selRowContainer.append("<div id='crm-edit-template' class='crm-table-btn'><button type='button' class='btn btn-default' data-toggle='modal' id='edit-template-modal-button'>Edit</button></div>");
+        $selRowContainer.append("<div id='crm-delete-template' class='crm-table-btn'><button type='button' class='btn btn-danger' data-toggle='modal' id='delete-template-modal-button'>Delete</button></div>");
 
         $("#delete-template-modal-button").click(function () {
             if (selectedId != null) {
@@ -382,6 +384,7 @@
 
         $("#edit-template-modal-button").click(function () {
             if (selectedId != null) {
+                //editModalChanged = 1;
                 getTemplate();
                 $("#templateModal").appendTo("body").modal("show");
                 $("#save-template-btn").attr("onclick", "save('update');");
@@ -433,8 +436,6 @@
     //Start - Get Templates function - anropas från Edit-knappen.
     var getTemplate = function () {
         var $row = $(".selected");
-        var templateNumber = $row.find("td[data-property='Template_number']").html();
-        //var sign = $("#crm-select-user").val();
         var pk_id = selectedId;
        $.ajax({
             "url": serverPrefix + "Template/SpecificTemplateData/",
@@ -602,8 +603,33 @@
 
     $(document).ready(function () {
 
+        var editModalChanged = 0;
 
+        $('#templateModal').change(function () {
+            editModalChanged = 1;
+        });
 
+        window.onbeforeunload = function() {
+            if (editModalChanged == 1) {
+                return null;
+            }
+            return null
+        }
+
+        //Själva funktionen
+
+        //function confirmExit() {
+        //    if (editModalChanged == 1) {
+        //        return null;
+        //    }
+        //    return null
+        //}
+        
+        //Nollställ variabeln om användaren gjort ett aktivt val att ignorera ändringar
+
+        $('#templateModal').on('hide.bs.modal', function () {
+            editModalChanged = 0;
+        })
 
         $('.selectpicker').selectpicker();
         $("#crm-select-user").change(function () {

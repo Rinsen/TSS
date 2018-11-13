@@ -38,7 +38,7 @@
                     <th data-field="maintenance" data-sortable="true">Maintenance / month</th>
                     <th data-field="license" data-sortable="true">License</th>
                     <th data-field="contact_person" data-sortable="true">Contact person</th>
-                    <th data-field="customer_type" data-sortable="true">Customer type</th>
+                    <th data-field="our_sign" data-sortable="true">Our Salesperson</th>
                 </tr>
             </thead>
         </table>
@@ -58,7 +58,7 @@
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "maintenance" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "license" + "\"  },\r\n";
         DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contact_person" + "\"  },\r\n";
-        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer_type" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "our_sign" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(user)
@@ -126,26 +126,27 @@
 
         $('#export-excel').click(function () {
             var user = $userContainer.val();
-            $.ajax({
-                "url": serverPrefix + "SaleReport/SaleReportExportExcel/",
-                "type": "POST",
-                "data": {
-                    "user": $userContainer.val()
-                },
-                "success": function (data) {
-                    if (data != "") {
-                        //var url = serverPrefix + "SaleReport/ExportExcel/";
-                        var url = serverPrefix + "ExportExcel/" + data;
-                        window.location.href = url;
-                    }
-                    else {
-                        triggerAlert("Something went wrong when trying to export to excel", "warning");
-                    }
-                },
-                "error": function () {
-                        triggerAlert("Something went wrong when saving the Excel file", "warning");
-                }
-            });
+            window.open(serverPrefix + "SaleReport/ExportExcel?user=" + user, "_parent").focus();
+            //$.ajax({
+            //    "url": serverPrefix + "SaleReport/SaleReportExportExcel/",
+            //    "type": "POST",
+            //    "data": {
+            //        "user": $userContainer.val()
+            //    },
+            //    "success": function (data) {
+            //        if (data != "") {
+            //            //var url = serverPrefix + "SaleReport/ExportExcel/";
+            //            var url = serverPrefix + "ExportExcel/" + data;
+            //            window.location.href = url;
+            //        }
+            //        else {
+            //            triggerAlert("Something went wrong when trying to export to excel", "warning");
+            //        }
+            //    },
+            //    "error": function () {
+            //            triggerAlert("Something went wrong when saving the Excel file", "warning");
+            //    }
+            //});
         })
 
     });

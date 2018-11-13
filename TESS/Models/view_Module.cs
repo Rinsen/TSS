@@ -48,6 +48,12 @@ namespace TietoCRM.Models
         private int multiple_type;
         public int Multiple_type { get { return multiple_type; } set { multiple_type = value; } }
 
+        private String offer_description;
+        public String Offer_description { get { return offer_description; } set { offer_description = value; } }
+
+        private String contract_description;
+        public String Contract_description { get { return contract_description; } set { contract_description = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -61,15 +67,29 @@ namespace TietoCRM.Models
         /// Gets all modules
         /// </summary>
         /// <returns>A list of modules</returns>
-        public static List<view_Module> getAllModules()
+        public static List<view_Module> getAllModules(bool withoutFormatted = false)
         {
             List<view_Module> list = new List<view_Module>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                String query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
-                query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                String query = "";
+
+                if (withoutFormatted == false)
+                {
+                    query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
+                    query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
+                    query += "offer_description, contract_description, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                }
+                else
+                {
+                    query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
+                    query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
+                    query += " Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption,";
+                    query += " Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption,";
+                    query += " CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                }
 
                 SqlCommand command = new SqlCommand(query, connection);
 

@@ -17,6 +17,13 @@ namespace TietoCRM.Models
         private decimal? price;
         public decimal? Price { get { return price; } set { price = value; } }
 
+        private String offer_description;
+        public String Offer_description { get { return offer_description; } set { offer_description = value; } }
+
+        private String contract_description;
+        public String Contract_description { get { return contract_description; } set { contract_description = value; } }
+
+
         public view_Service()
             : base("Service")
         {
@@ -27,7 +34,7 @@ namespace TietoCRM.Models
         /// Gets all services.
         /// </summary>
         /// <returns>A list of all services.</returns>
-        public static List<view_Service> getAllServices()
+        public static List<view_Service> getAllServices(bool withoutFormatted = false)
         {
             List<view_Service> list = new List<view_Service>();
 
@@ -38,13 +45,20 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT Code ,Description ,Price FROM " + databasePrefix + "Service";
+                if (withoutFormatted == false)
+                {
+                    command.CommandText = "SELECT Code ,Description ,Price, Offer_Description, Contract_Description FROM " + databasePrefix + "Service";
+                }
+                else
+                {
+                    command.CommandText = @"SELECT Code ,Description ,Price, 
+                                            Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption, 
+                                            Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption 
+                                            FROM " + databasePrefix + "Service";
+                }
 
                 command.Prepare();
-
-
                 command.ExecuteNonQuery();
-
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -65,8 +79,6 @@ namespace TietoCRM.Models
                         }
                     }
                 }
-
-
             }
             return list;
         }

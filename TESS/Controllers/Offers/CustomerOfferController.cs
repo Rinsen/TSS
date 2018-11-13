@@ -1,6 +1,7 @@
 ﻿using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -37,7 +38,7 @@ namespace TietoCRM.Controllers
         // GET: CustomerOffer
         public ActionResult Index()
         {
-
+            //string customer = "";
             GlobalVariables.checkIfAuthorized("CustomerOffer");
             this.ViewData.Add("User_level", System.Web.HttpContext.Current.GetUser().User_level);
             if(System.Web.HttpContext.Current.GetUser().User_level > 1)
@@ -52,6 +53,21 @@ namespace TietoCRM.Controllers
             this.ViewData.Add("PrimaryKey", "SSMA_timestamp");
             this.ViewData.Add("Summera", System.Web.HttpContext.Current.GetUser().Std_sum_offert);
             this.ViewData["title"] = "Customer Offer";
+            ViewData.Add("Users", view_User.getAllUsers());
+
+            if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
+            {
+                ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
+                ViewData.Add("CurrentName", System.Web.HttpContext.Current.GetUser().Name);
+                ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
+            }
+            else
+            {
+                view_User us = new view_User();
+                ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
+                ViewData.Add("CurrentName", us.GetName(Request.QueryString["our_sign"]));
+                ViewData.Add("showModalReminder", false);
+            }
 
             String on;
             if (ViewBag.Customers.Count <= 0)
@@ -69,6 +85,7 @@ namespace TietoCRM.Controllers
                 }
                 ViewData["Appointments"] = vA;
                 ViewData.Add("Customer", on);
+                //customer = on;
             }
             else
             {
@@ -80,6 +97,7 @@ namespace TietoCRM.Controllers
                 }
                 ViewData["Appointments"] = vA;
                 ViewData.Add("Customer", Request["customer"]);
+
             }
 
             if (Request["selected-offer"] != null && Request["selected-offer"] != "" && Request["selected-offer"] != "undefined")
@@ -101,6 +119,7 @@ namespace TietoCRM.Controllers
             columnNames.Add("Contact_person");
             columnNames.Add("Area");
             columnNames.Add("Summera");
+            columnNames.Add("Our_Sign");
             columnNames.Add("Hashtags");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
@@ -117,6 +136,17 @@ namespace TietoCRM.Controllers
                 selectOfferStatus.Add(selectItem);
             }
             ViewData.Add("SelectOfferStatus", selectOfferStatus);
+
+            //Server.Transfer(Request.Url.AbsoluteUri, true);
+
+            //PropertyInfo isreadonly = typeof(NameValueCollection).GetProperty("IsReadOnly", BindingFlags.Instance | BindingFlags.NonPublic);
+            // make collection editable 
+            //isreadonly.SetValue(Request.QueryString, false, null);
+            // remove 
+            //Request.QueryString.Remove("our_sign");
+            //Request.QueryString.Remove("customer");
+            //Request.QueryString.Remove("selected-offer");
+            //Request.QueryString.Remove("search");
 
             return View();
         }
@@ -215,9 +245,12 @@ namespace TietoCRM.Controllers
                 else
                     user = System.Web.HttpContext.Current.GetUser();
             }
-            ViewData.Add("Representative", user);
 
-            ViewData.Add("UseLogo", user.Use_logo);
+            view_User repr = new view_User();
+            repr.Select("Sign = '" + co.Our_sign + "'");
+            ViewData.Add("Representative", repr);
+
+            ViewData.Add("UseLogo", repr.Use_logo);
 
             this.ViewData["Title"] = "Customer Offer";
 
@@ -325,7 +358,10 @@ namespace TietoCRM.Controllers
                 else
                     user = System.Web.HttpContext.Current.GetUser();
             }
-            ViewData.Add("Representative", user);
+            view_User repr = new view_User();
+            repr.Select("Sign = '" + co.Our_sign + "'");
+            ViewData.Add("Representative", repr);
+            //ViewData.Add("Representative", user);
             String footerPath = Server.MapPath("~/Views/Shared/Footer_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
             String footerFilePath = "file:///" + footerPath;
 
@@ -445,6 +481,12 @@ namespace TietoCRM.Controllers
 
             ViewData.Add("ContactPersons", view_CustomerContact.getAllCustomerContacts(customer));
 
+            List<string> l = new List<string>();
+            view_Customer us = new view_Customer();
+            us.Select("Customer = '" + customer + "'");
+            l = us.getLoadedRepresentatives();
+            ViewData.Add("Repr", l);
+
             ViewData.Add("CustomerOfferJSON", (new JavaScriptSerializer()).Serialize(co));
 
             List<view_TextTemplate> tts = view_TextTemplate.getTextTemplatesType("Offert", sign);
@@ -476,10 +518,18 @@ namespace TietoCRM.Controllers
         public String CustomerOfferJsonData()
         {
             String customer = Request.Form["customer"];
+            String representative = Request.Form["representative"];
+            view_User user = new view_User();
+            if (representative == "undefined" || representative == "*")
+            {
+                user.Select("Sign = '" + System.Web.HttpContext.Current.GetUser() + "'");
+            }
+            else
+            {
+                user.Select("Sign = '" + representative + "'");
+            }
 
-            view_User user = System.Web.HttpContext.Current.GetUser();
-
-                List<String> customerNames = view_Customer.getCustomerNames(user.Sign);
+            List<String> customerNames = view_Customer.getCustomerNames(user.Sign);
             if (customer == "" || customer == null)
             {
                 if (customerNames.Count <= 0)
@@ -488,40 +538,59 @@ namespace TietoCRM.Controllers
                     customer = customerNames[0];
             }
             List<view_CustomerOffer> customerOffers;
-            if (customer != "*")
-                customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
-            else
-                customerOffers = view_CustomerOffer.getAllCustomerOffers();
+            customerOffers = view_CustomerOffer.getAllCustomerOffers(customer, representative);
+
+            //if (customer != "*")
+            //    if (representative == "*")
+            //    {
+            //        customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
+            //    }
+            //    else
+            //    {
+            //        customerOffers = view_CustomerOffer.getAllCustomerOffers(customer,representative);
+            //    }
+            //else
+            //{
+            //    if (representative == "*")
+            //    {
+            //        customerOffers = view_CustomerOffer.getAllCustomerOffers();
+            //    }
+            //    else
+            //    {
+
+            //    }
+            //}
             List<dynamic> customers = new List<dynamic>();
-            List<view_Customer> vCustomers = new List<view_Customer>();
+            //List<view_Customer> vCustomers = new List<view_Customer>();
 
             foreach (view_CustomerOffer co in customerOffers)
             {
-                view_Customer vCustomer;
-                if (vCustomers.Any(c => c.Customer == co.Customer))
-                    vCustomer = vCustomers.Find(c => c.Customer == co.Customer);
-                else
-                {
-                    vCustomer = new view_Customer("Customer='" + co.Customer + "'");
-                    vCustomers.Add(vCustomer);
-                }
+                //view_Customer vCustomer;
+                //if (vCustomers.Any(c => c.Customer == co.Customer))
+                //    vCustomer = vCustomers.Find(c => c.Customer == co.Customer);
+                //else
+                //{
+                //    vCustomer = new view_Customer("Customer='" + co.Customer + "'");
+                //    vCustomers.Add(vCustomer);
+                //}
 
-                if (user.IfSameArea(co.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
+                //if (user.IfSameArea(co.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
+                //{
+                var v = new
                 {
-                    var v = new
-                    {
-                        Offer_number = co._Offer_number,
-                        Title = co.Title,
-                        Offer_created = co.Offer_created,
-                        Offer_valid = co.Offer_valid,
-                        Offer_status = co.Offer_status,
-                        Contact_person = co.Contact_person,
-                        Area = co.Area,
-                        Summera = co.Summera,
-                        Hashtags = co.HashtagsAsString()
-                    };
-                    customers.Add(v);
-                }
+                    Offer_number = co._Offer_number,
+                    Title = co.Title,
+                    Offer_created = co.Offer_created,
+                    Offer_valid = co.Offer_valid,
+                    Offer_status = co.Offer_status,
+                    Contact_person = co.Contact_person,
+                    Area = co.Area,
+                    Summera = co.Summera,
+                    Our_Sign = co.Our_sign,
+                    Hashtags = co.HashtagsAsString()
+                };
+                customers.Add(v);
+                //}
             }
 
             //ViewData.Add("viewRemind", checkReminder(customer));
@@ -548,412 +617,31 @@ namespace TietoCRM.Controllers
 
         public String JsonData()
         {
-            String requestData = Request.Form["requestData"];
 
-            if (requestData == "view_TextTemplate")
+            switch (Request.Form["requestData"])
             {
-                int templateId = int.Parse(Request.Form["templateId"]);
-
-                view_TextTemplate textTemplate = new view_TextTemplate();
-                textTemplate.Select("ID_PK = " + templateId);
-
-                return (new JavaScriptSerializer()).Serialize(textTemplate);
+                case "view_TextTemplate":
+                    int templateId = int.Parse(Request.Form["templateId"]);
+                    view_TextTemplate textTemplate = new view_TextTemplate();
+                    textTemplate.Select("ID_PK = " + templateId);
+                    return (new JavaScriptSerializer()).Serialize(textTemplate);
+                case "update_view_CustomerOffer":
+                    return this.Data("Offer_number");
+                case "update_head_information":
+                    return Json_UpdateHeadInformation();
+                case "update_classification_select":
+                    return Json_UpdateClassificationSelect();
+                case "update_view_Service":
+                    return Json_UpdateViewService();
+                case "get_modules":
+                    return Json_GetModules();
+                case "get_modules_all":
+                    return Json_GetModulesAll();
+                case "update_module_rows":
+                    return Json_UpdateModuleRows();
+                default:
+                    return "";
             }
-            else if (requestData == "update_view_CustomerOffer")
-            {
-                return this.Data("Offer_number");
-            }
-            else if (requestData == "update_head_information")
-            {
-                try
-                {
-                    // Customer to select from DB. This might change after update.
-                    String offerNumber = Request.Form["offerNumber"];
-                    String objectData = Request.Form["object"];
-
-
-                    Dictionary<String, Object> offerVariables = null;
-
-                    try
-                    {
-                        offerVariables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(objectData, typeof(Dictionary<String, dynamic>));
-                    }
-                    catch
-                    {
-                        return "0";
-                    }
-
-                    try
-                    {
-                        view_CustomerOffer co = new view_CustomerOffer();
-                        co.Select("Offer_number = '" + offerNumber + "'");
-
-                        foreach (KeyValuePair<String, object> offerVariable in offerVariables)
-                        {
-                            if (offerVariable.Key == "Hashtags")
-                                co.ParseHashtags(offerVariable.Value.ToString());
-                            else
-                                co.SetValue(offerVariable.Key, offerVariable.Value);
-                        }
-
-                        co.Update("Offer_number = '" + offerNumber + "'");
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.Write(ex.Message);
-                        // Return -1 on any possible arror
-                        return "-1";
-                    }
-
-
-                    return "1";
-                }
-                catch
-                {
-                    return "-1";
-                }
-            }
-            else if (requestData == "update_classification_select")
-            {
-                String System = Request.Form["System"];
-                String Area = Request.Form["Area"];
-                List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.System == System && a.Area == Area).DistinctBy(a => a.Classification).ToList();
-                List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
-                returnList = returnList.OrderBy(a => a.Value == "-").ToList();
-                return (new JavaScriptSerializer()).Serialize(returnList);
-            }
-            else if (requestData == "update_view_Service")
-            {
-                String obj = Request.Form["object"];
-                int offer = Convert.ToInt32(Request.Form["offer"]);
-
-                List<dynamic> list = null;
-                try
-                {
-                    list = (List<dynamic>)(new JavaScriptSerializer()).Deserialize(obj, typeof(List<dynamic>));
-                }
-                catch (Exception e)
-                {
-                    return "0";
-                }
-
-                view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offer);
-                // remove all consultant row to later insert the new ones
-                foreach (view_ConsultantRow cr in customerOffer._ConsultantRows)
-                {
-                    cr.Delete("Offer_number = " + cr.Offer_number + " AND Code = " + cr.Code);
-                }
-
-                foreach (Dictionary<String, Object> dict in list)
-                {
-                    int id = Convert.ToInt32(dict["id"]);
-                    int amount = Convert.ToInt32(dict["amount"]);
-                    int total = Convert.ToInt32(dict["total"]);
-                    String alias = "";
-                    if (dict.Keys.Contains("desc"))
-                        alias = dict["desc"].ToString();
-
-                    view_ConsultantRow consultantRow = new view_ConsultantRow();
-                    consultantRow.Offer_number = offer;
-                    consultantRow.Alias = alias;
-                    consultantRow.Code = id;
-                    consultantRow.Amount = amount;
-                    consultantRow.Total_price = total;
-                    consultantRow.Include_status = false;
-                    consultantRow.Insert();
-                }
-
-                return "1";
-
-            }
-            #region GET_MODULES
-            else if (requestData == "get_modules")
-            {
-                String customer = Request.Form["customer"];
-                String system = Request.Form["System"];
-                String classification = Request.Form["classification"];
-
-                String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-
-                    /*String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
-                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Comment
-                                        FROM view_Module                                                                                       
-                                        INNER JOIN view_Tariff                                                                                       
-                                        on view_Module.Price_category = view_Tariff.Price_category
-                                        WHERE System = @System AND Classification = @classification AND Expired = 0
-                                        AND Inhabitant_level = (
-                                            Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
-                                            where Customer = @customer
-                                        )
-                                        order by Article_number asc";*/
-
-                    String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level 
-					                                    from view_Module M, view_Customer C
-					                                    Where C.Customer = @customer And M.Expired = 0) A
-	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
-	                                    Where A.System = @System AND A.Classification = @classification Order By A.Module";
-
-                    // Default query
-                    command.CommandText = queryText;
-
-                    command.Prepare();
-                    command.Parameters.AddWithValue("@System", system);
-                    command.Parameters.AddWithValue("@classification", classification);
-                    command.Parameters.AddWithValue("@customer", customer);
-
-
-                    command.ExecuteNonQuery();
-                    List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            if (reader.HasRows)
-                            {
-                                Dictionary<String, object> result = new Dictionary<String, object>();
-                                int i = 0;
-                                while (reader.FieldCount > i)
-                                {
-
-                                    result.Add(reader.GetName(i), reader.GetValue(i));
-
-
-
-                                    i++;
-                                }
-                                result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
-                                result["System"] = result["System"].ToString();
-                               // result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
-                                if((bool)result["Fixed_price"])
-                                {
-                                    result["Maintenance"] = result["Price_category"];
-                                    result["License"] = "0";
-
-                                }
-                                if ((Byte)result["Discount"] == 1)
-                                {
-                                    int length = result["Price_category"].ToString().Length;
-                                    result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
-                                    result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
-                                }
-                                view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
-                                if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
-                                    + " AND Area=" + result["Area"].ToString()))
-                                {
-                                    result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1-((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
-                                    result["License"] = (decimal.Parse(result["License"].ToString()) * (1-((decimal)moduleDiscount.License_discount / 100))).ToString();
-                                    if (!String.IsNullOrEmpty(moduleDiscount.Alias))
-                                        result["Module"] = moduleDiscount.Alias;
-                                }
-                                result["License"] = result["License"].ToString().Replace(",", ".");
-                                result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
-
-                                view_User user = System.Web.HttpContext.Current.GetUser();
-
-                                if (user.IfSameArea(result["Area"].ToString()))
-                                    resultList.Add(result);
-                            }
-                        }
-                    }
-                    Response.ContentType = "text/plain";
-
-                    List<view_ContractRow> rows = view_ContractRow.GetAllContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
-
-                    foreach (Dictionary<String, dynamic> kv in resultList)
-                    {
-                        if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
-                            kv.Add("Used", true);
-                        List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
-                        if (dependencies.Count > 0)
-                        {
-                            kv.Add("HasDependencies", true);
-                            kv.Add("Dependencies", dependencies);
-                        }
-                    }
-                    //Response.Charset = "UTF-8";
-                    // this.solve();
-                    String resultString = (new JavaScriptSerializer()).Serialize(resultList);
-                    return resultString;
-
-                }
-            }
-            #endregion
-            #region GET_MODULES_ALL
-            else if (requestData == "get_modules_all")
-            {
-                String customer = Request.Form["customer"];
-                String searchtext = Request.Form["searchtext"];
-
-                String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
-
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-
-                    String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
-                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type
-                                        FROM view_Module                                                                                       
-                                        Left JOIN view_Tariff                                                                                       
-                                        on view_Module.Price_category = view_Tariff.Price_category
-                                        WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
-                                        view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
-                                        AND IsNull(Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
-                                            where Customer = @customer)) = (
-                                            Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
-                                            where Customer = @customer
-                                        )
-                                        order by Module asc";
-
-                    // Default query
-                    command.CommandText = queryText;
-
-                    command.Prepare();
-                    command.Parameters.AddWithValue("@customer", customer);
-                    command.Parameters.AddWithValue("@searchtext", "%" + searchtext + "%");
-
-                    command.ExecuteNonQuery();
-                    List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            if (reader.HasRows)
-                            {
-                                Dictionary<String, object> result = new Dictionary<String, object>();
-                                int i = 0;
-                                while (reader.FieldCount > i)
-                                {
-
-                                    result.Add(reader.GetName(i), reader.GetValue(i));
-
-
-
-                                    i++;
-                                }
-                                result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
-                                result["System"] = result["System"].ToString();
-                                if ((bool)result["Fixed_price"])
-                                {
-                                    result["Maintenance"] = result["Price_category"];
-                                    result["License"] = "0";
-
-                                }
-                                if ((Byte)result["Discount"] == 1)
-                                {
-                                    int length = result["Price_category"].ToString().Length;
-                                    result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
-                                    result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
-
-                                }
-                                view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
-                                if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
-                                    + " AND Area=" + result["Area"].ToString()))
-                                {
-                                    result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
-                                    result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
-                                    if (!String.IsNullOrEmpty(moduleDiscount.Alias))
-                                        result["Module"] = moduleDiscount.Alias;
-                                }
-                                result["License"] = result["License"].ToString().Replace(",", ".");
-                                result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
-
-                                view_User user = System.Web.HttpContext.Current.GetUser();
-
-                                if (user.Area == result["Area"].ToString() || user.Area == "*")
-                                    resultList.Add(result);
-                            }
-                        }
-                    }
-                    Response.ContentType = "text/plain";
-
-                    List<view_ContractRow> rows = view_ContractRow.GetAllContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
-
-                    foreach (Dictionary<String, dynamic> kv in resultList)
-                    {
-                        if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
-                            kv.Add("Used", true);
-                        List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
-                        if (dependencies.Count > 0)
-                        {
-                            kv.Add("HasDependencies", true);
-                            kv.Add("Dependencies", dependencies);
-                        }
-                    }
-                    //Response.Charset = "UTF-8";
-                    // this.solve();
-                    String resultString = (new JavaScriptSerializer()).Serialize(resultList);
-                    return resultString;
-
-                }
-            }
-            #endregion
-            else if (requestData == "update_module_rows")
-            {
-                String selectedArticles = Request.Form["Object"];
-                int Offer_number = Convert.ToInt32(Request.Form["Offer_number"]);
-
-                List<dynamic> list = null;
-                try
-                {
-                    list = (List<dynamic>)(new JavaScriptSerializer()).Deserialize(selectedArticles, typeof(List<dynamic>));
-                }
-                catch (Exception e)
-                {
-                    return "0";
-                }
-
-                view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + Offer_number);
-                // remove all consultant row to later insert the new ones
-                foreach (view_OfferRow or in customerOffer._OfferRows)
-                {
-                    or.Delete("Offer_number = " + or.Offer_number + " AND Article_number = " + or.Article_number);
-                }
-
-                foreach (Dictionary<String, Object> dict in list)
-                {
-                    int Article_number = Convert.ToInt32(dict["Article_number"]);
-                    decimal License = 0;
-                    decimal Maintenance = 0;
-                    if(Convert.ToInt32(dict["Discount_type"]) != 1)
-                    {
-                        if (dict.Keys.Contains("License"))
-                            License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
-                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
-                    }
-                    else
-                    {
-                        if (dict.Keys.Contains("License"))
-                            License = Decimal.Parse(dict["License"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
-                        //License = Decimal.Parse(0.ToString().Replace(".", ",").Replace("%", ""));
-                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
-                    }
-
-                    String Alias = dict["Alias"].ToString();
-
-                    view_OfferRow offerRow = new view_OfferRow();
-                    offerRow.Offer_number = Offer_number;
-                    offerRow.Article_number = Article_number;
-                    offerRow.License = Convert.ToDecimal(License);
-                    offerRow.Maintenance = Convert.ToDecimal(Maintenance);
-                    offerRow.Include_status = false;
-                    offerRow.Alias = Alias;
-                    offerRow.Insert();
-                }
-
-                return "1";
-
-            }
-            else
-                return "";
         }
 
         [ValidateInput(false)]
@@ -1104,7 +792,11 @@ namespace TietoCRM.Controllers
                 }
                 catch (Exception e)
                 {
-                    return "0";
+                    return "Failed to add new offer. Something wrong when deserializing";
+                }
+                if (a.Our_sign == "")
+                {
+                    return "You have to select 'Our salesman'.";
                 }
                 a.Area = System.Web.HttpContext.Current.GetUser().Area;
                 a.ParseHashtags(Request["hashtags"]);
@@ -1117,7 +809,7 @@ namespace TietoCRM.Controllers
             }
             catch (Exception e)
             {
-                return "-1";
+                return "Failed to add new offer. Something wrong when saving.";
             }
         }
 
@@ -1168,6 +860,14 @@ namespace TietoCRM.Controllers
                 contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
             }
 
+            return (new JavaScriptSerializer()).Serialize(l);
+        }
+
+        public String GetRepr()
+        {
+            view_Customer cust = new view_Customer();
+            cust.Select("Customer = '" + Request.Form["customer"] + "'");
+            List<string> l = cust.getLoadedRepresentatives();
             return (new JavaScriptSerializer()).Serialize(l);
         }
 
@@ -1249,6 +949,412 @@ namespace TietoCRM.Controllers
         public String UseLogo()
         {
             return System.Web.HttpContext.Current.GetUser().Use_logo.ToString();
+        }
+        private String Json_UpdateModuleRows()
+        {
+            String selectedArticles = Request.Form["Object"];
+            int Offer_number = Convert.ToInt32(Request.Form["Offer_number"]);
+
+            List<dynamic> list = null;
+            try
+            {
+                list = (List<dynamic>)(new JavaScriptSerializer()).Deserialize(selectedArticles, typeof(List<dynamic>));
+            }
+            catch (Exception e)
+            {
+                return "0";
+            }
+
+            view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + Offer_number);
+            // remove all consultant row to later insert the new ones
+            foreach (view_OfferRow or in customerOffer._OfferRows)
+            {
+                or.Delete("Offer_number = " + or.Offer_number + " AND Article_number = " + or.Article_number);
+            }
+
+            foreach (Dictionary<String, Object> dict in list)
+            {
+                int Article_number = Convert.ToInt32(dict["Article_number"]);
+                decimal License = 0;
+                decimal Maintenance = 0;
+                if (Convert.ToInt32(dict["Discount_type"]) != 1)
+                {
+                    if (dict.Keys.Contains("License"))
+                        License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                }
+                else
+                {
+                    if (dict.Keys.Contains("License"))
+                        License = Decimal.Parse(dict["License"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
+                    //License = Decimal.Parse(0.ToString().Replace(".", ",").Replace("%", ""));
+                    Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
+                }
+
+                String Alias = dict["Alias"].ToString();
+
+                view_OfferRow offerRow = new view_OfferRow();
+                offerRow.Offer_number = Offer_number;
+                offerRow.Article_number = Article_number;
+                offerRow.License = Convert.ToDecimal(License);
+                offerRow.Maintenance = Convert.ToDecimal(Maintenance);
+                offerRow.Include_status = false;
+                offerRow.Alias = Alias;
+                offerRow.Insert();
+            }
+
+            customerOffer.Module_info = updateDescriptions(Offer_number);
+            customerOffer.Update("Offer_number = " + Offer_number.ToString());
+
+            return "1";
+        }
+        private String Json_GetModulesAll()
+        {
+            String customer = Request.Form["customer"];
+            String searchtext = Request.Form["searchtext"];
+
+            String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
+                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
+                                        view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description
+                                        FROM view_Module                                                                                       
+                                        Left JOIN view_Tariff                                                                                       
+                                        on view_Module.Price_category = view_Tariff.Price_category
+                                        WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
+                                        view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
+                                        AND IsNull(Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
+                                            where Customer = @customer)) = (
+                                            Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
+                                            where Customer = @customer
+                                        )
+                                        order by Module asc";
+
+                // Default query
+                command.CommandText = queryText;
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@searchtext", "%" + searchtext + "%");
+
+                command.ExecuteNonQuery();
+                List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            Dictionary<String, object> result = new Dictionary<String, object>();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+
+                                result.Add(reader.GetName(i), reader.GetValue(i));
+
+
+
+                                i++;
+                            }
+                            result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
+                            result["System"] = result["System"].ToString();
+                            if ((bool)result["Fixed_price"])
+                            {
+                                result["Maintenance"] = result["Price_category"];
+                                result["License"] = "0";
+
+                            }
+                            if ((Byte)result["Discount"] == 1)
+                            {
+                                int length = result["Price_category"].ToString().Length;
+                                result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
+                                result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
+
+                            }
+                            view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
+                            if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
+                                + " AND Area=" + result["Area"].ToString()))
+                            {
+                                result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
+                                result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
+                                if (!String.IsNullOrEmpty(moduleDiscount.Alias))
+                                    result["Module"] = moduleDiscount.Alias;
+                            }
+                            result["License"] = result["License"].ToString().Replace(",", ".");
+                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
+
+                            view_User user = System.Web.HttpContext.Current.GetUser();
+
+                            if (user.Area == result["Area"].ToString() || user.Area == "*")
+                                resultList.Add(result);
+                        }
+                    }
+                }
+                Response.ContentType = "text/plain";
+
+                List<view_ContractRow> rows = view_ContractRow.GetAllContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+
+                foreach (Dictionary<String, dynamic> kv in resultList)
+                {
+                    if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
+                        kv.Add("Used", true);
+                    List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                    if (dependencies.Count > 0)
+                    {
+                        kv.Add("HasDependencies", true);
+                        kv.Add("Dependencies", dependencies);
+                    }
+                }
+                //Response.Charset = "UTF-8";
+                // this.solve();
+                String resultString = (new JavaScriptSerializer()).Serialize(resultList);
+                return resultString;
+            }
+        }
+        private String Json_GetModules()
+        {
+            String customer = Request.Form["customer"];
+            String system = Request.Form["System"];
+            String classification = Request.Form["classification"];
+
+            String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                /*String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
+                                    view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, view_Module.Comment
+                                    FROM view_Module                                                                                       
+                                    INNER JOIN view_Tariff                                                                                       
+                                    on view_Module.Price_category = view_Tariff.Price_category
+                                    WHERE System = @System AND Classification = @classification AND Expired = 0
+                                    AND Inhabitant_level = (
+                                        Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
+                                        where Customer = @customer
+                                    )
+                                    order by Article_number asc";*/
+
+                String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+                                                    M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description
+					                                    from view_Module M, view_Customer C
+					                                    Where C.Customer = @customer And M.Expired = 0) A
+	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
+	                                    Where A.System = @System AND A.Classification = @classification Order By A.Module";
+
+                // Default query
+                command.CommandText = queryText;
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@System", system);
+                command.Parameters.AddWithValue("@classification", classification);
+                command.Parameters.AddWithValue("@customer", customer);
+
+
+                command.ExecuteNonQuery();
+                List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            Dictionary<String, object> result = new Dictionary<String, object>();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+
+                                result.Add(reader.GetName(i), reader.GetValue(i));
+
+
+
+                                i++;
+                            }
+                            result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
+                            result["System"] = result["System"].ToString();
+                            // result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
+                            if ((bool)result["Fixed_price"])
+                            {
+                                result["Maintenance"] = result["Price_category"];
+                                result["License"] = "0";
+
+                            }
+                            if ((Byte)result["Discount"] == 1)
+                            {
+                                int length = result["Price_category"].ToString().Length;
+                                result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
+                                result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
+                            }
+                            view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
+                            if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
+                                + " AND Area=" + result["Area"].ToString()))
+                            {
+                                result["Maintenance"] = (decimal.Parse(result["Maintenance"].ToString()) * (1 - ((decimal)moduleDiscount.Maintenance_discount / 100))).ToString();
+                                result["License"] = (decimal.Parse(result["License"].ToString()) * (1 - ((decimal)moduleDiscount.License_discount / 100))).ToString();
+                                if (!String.IsNullOrEmpty(moduleDiscount.Alias))
+                                    result["Module"] = moduleDiscount.Alias;
+                            }
+                            result["License"] = result["License"].ToString().Replace(",", ".");
+                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
+
+                            view_User user = System.Web.HttpContext.Current.GetUser();
+
+                            if (user.IfSameArea(result["Area"].ToString()))
+                                resultList.Add(result);
+                        }
+                    }
+                }
+                Response.ContentType = "text/plain";
+
+                List<view_ContractRow> rows = view_ContractRow.GetAllContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+
+                foreach (Dictionary<String, dynamic> kv in resultList)
+                {
+                    if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
+                        kv.Add("Used", true);
+                    List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
+                    if (dependencies.Count > 0)
+                    {
+                        kv.Add("HasDependencies", true);
+                        kv.Add("Dependencies", dependencies);
+                    }
+                }
+                //Response.Charset = "UTF-8";
+                // this.solve();
+                String resultString = (new JavaScriptSerializer()).Serialize(resultList);
+                return resultString;
+            }
+        }
+        private String Json_UpdateClassificationSelect()
+        {
+            String System = Request.Form["System"];
+            String Area = Request.Form["Area"];
+            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.System == System && a.Area == Area).DistinctBy(a => a.Classification).ToList();
+            List<SelectListItem> returnList = allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList();
+            returnList = returnList.OrderBy(a => a.Value == "-").ToList();
+            return (new JavaScriptSerializer()).Serialize(returnList);
+        }
+        private String Json_UpdateViewService()
+        {
+            String obj = Request.Form["object"];
+            int offer = Convert.ToInt32(Request.Form["offer"]);
+
+            List<dynamic> list = null;
+            try
+            {
+                list = (List<dynamic>)(new JavaScriptSerializer()).Deserialize(obj, typeof(List<dynamic>));
+            }
+            catch (Exception e)
+            {
+                return "0";
+            }
+
+            view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offer);
+            // remove all consultant row to later insert the new ones
+            foreach (view_ConsultantRow cr in customerOffer._ConsultantRows)
+            {
+                cr.Delete("Offer_number = " + cr.Offer_number + " AND Code = " + cr.Code);
+            }
+
+            foreach (Dictionary<String, Object> dict in list)
+            {
+                int id = Convert.ToInt32(dict["id"]);
+                int amount = Convert.ToInt32(dict["amount"]);
+                int total = Convert.ToInt32(dict["total"]);
+                String alias = "";
+                if (dict.Keys.Contains("desc"))
+                    alias = dict["desc"].ToString();
+
+                view_ConsultantRow consultantRow = new view_ConsultantRow();
+                consultantRow.Offer_number = offer;
+                consultantRow.Alias = alias;
+                consultantRow.Code = id;
+                consultantRow.Amount = amount;
+                consultantRow.Total_price = total;
+                consultantRow.Include_status = false;
+                consultantRow.Insert();
+            }
+
+            customerOffer.Module_info = updateDescriptions(offer);
+            customerOffer.Update("Offer_number = " + offer.ToString());
+
+            return "1";
+        }
+        private String Json_UpdateHeadInformation()
+        {
+            try
+            {
+                // Customer to select from DB. This might change after update.
+                String offerNumber = Request.Form["offerNumber"];
+                String objectData = Request.Form["object"];
+
+
+                Dictionary<String, Object> offerVariables = null;
+
+                try
+                {
+                    offerVariables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(objectData, typeof(Dictionary<String, dynamic>));
+                }
+                catch
+                {
+                    return "0";
+                }
+
+                try
+                {
+                    view_CustomerOffer co = new view_CustomerOffer();
+                    co.Select("Offer_number = '" + offerNumber + "'");
+
+                    foreach (KeyValuePair<String, object> offerVariable in offerVariables)
+                    {
+                        if (offerVariable.Key == "Hashtags")
+                            co.ParseHashtags(offerVariable.Value.ToString());
+                        else
+                            co.SetValue(offerVariable.Key, offerVariable.Value);
+                    }
+
+                    co.Update("Offer_number = '" + offerNumber + "'");
+                }
+                catch (Exception ex)
+                {
+                    Debug.Write(ex.Message);
+                    // Return -1 on any possible arror
+                    return "-1";
+                }
+
+
+                return "1";
+            }
+            catch
+            {
+                return "-1";
+            }
+        }
+        private string updateDescriptions(int ofnr)
+        {
+            view_OfferRow orow = new view_OfferRow();
+            List<dynamic> l = orow.GetOfferRowsForModuleInfo(ofnr);
+            string moduleInfo = "";
+
+            foreach (var mi in l)
+            {
+                if (moduleInfo == "")
+                {
+                    moduleInfo = "<h4><strong>Information produkter</strong></h4>";
+                }
+                //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                moduleInfo += "<p>" + mi.Offer_description + "</p>";
+            }
+            return moduleInfo;
         }
     }
 }
