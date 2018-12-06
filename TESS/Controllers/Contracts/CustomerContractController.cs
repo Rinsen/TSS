@@ -493,7 +493,7 @@ namespace TietoCRM.Controllers.Contracts
 
             FileStream ffs = updateFooter(footerPath, user);
 
-            string cusomtSwitches = string.Format("--print-media-type --header-spacing 4 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
+            string cusomtSwitches = string.Format("--print-media-type --margin-top 18 --margin-bottom 20 --header-spacing 2 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.CustomSwitches = cusomtSwitches;
 
@@ -794,7 +794,8 @@ namespace TietoCRM.Controllers.Contracts
                 contractHead.Zip_code = customer.Zip_code;
                 contractHead.Corporate_identity_number = customer.Corporate_identity_number;
                 contractHead.Contact_person = a.Contact_person;
-                contractHead.Customer_sign = a.Contact_person.Substring(0, Math.Min(a.Contact_person.Length, 50));
+                //contractHead.Customer_sign = a.Contact_person.Substring(0, Math.Min(a.Contact_person.Length, 50));
+                contractHead.Customer_sign = "";
                 contractHead.Our_sign = System.Web.HttpContext.Current.GetUser().Name.Substring(0, Math.Min(System.Web.HttpContext.Current.GetUser().Name.Length, 50));
                 contractHead.Administration = customer.Administration;
                 
@@ -1570,8 +1571,8 @@ namespace TietoCRM.Controllers.Contracts
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
                             {
-                                result["Maintenance"] = result["Price_category"];
-                                result["License"] = "0";
+                                result["Maintenance"] = "0";
+                                result["License"] = result["Price_category"];
 
                             }
                             if ((Byte)result["Discount"] == 1)
@@ -1696,8 +1697,8 @@ namespace TietoCRM.Controllers.Contracts
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
                             {
-                                result["Maintenance"] = result["Price_category"];
-                                result["License"] = "0";
+                                result["Maintenance"] = 0;
+                                result["License"] = result["Price_category"];
 
                             }
                             if ((Byte)result["Discount"] == 1)

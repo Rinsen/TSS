@@ -132,7 +132,9 @@ var editService = function(span)
                 label: "Save",
                 className: "btn-success",
                 callback: function () {
-                    newCost = formatCurrency($("#cost-text").val());
+                    var $newCost = $("#cost-text");
+                    if ($newCost.val() == "") { $newCost.val("0") };
+                    newCost = formatCurrency($newCost.val());
                     newAlias = $("#alias-text").val()
                     $button = $tr.find("button");
                     var code = $button.attr("data-code");

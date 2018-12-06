@@ -6,17 +6,17 @@
                 <div class="form-group">
                     <label for="crm-select-user">Our Salesman:</label>
                     <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
-                        <option value="*">All</option>
+                        <option selected value="*">All</option>
                         @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
                         {
-                            if (ViewBag.CurrentUser == User.Sign)
+                            @*if (ViewBag.CurrentUser == User.Sign)
                             {
                                 <option selected value="@User.Sign">@User.Name</option>
                             }
                             else
-                            {
+                            {*@
                                 <option value="@User.Sign">@User.Name</option>
-                            }
+                            @*}*@
                         }
                     </select>
                 </div>

@@ -367,7 +367,7 @@ namespace TietoCRM.Controllers
 
             String headerPath = Server.MapPath("~/Views/CustomerOffer/Header_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
             String headerFilePath = "file:///" + headerPath;
-            string cusomtSwitches = string.Format("--print-media-type --header-spacing 4 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
+            string cusomtSwitches = string.Format("--print-media-type --margin-top 18 --margin-bottom 20 --header-spacing 3 --header-html \"{1}\" --footer-html \"{0}\" ", footerFilePath, headerFilePath);
 
             FileStream ffs = updateFooter(footerPath, user);
             FileStream hfs = updateHeader(headerPath, user, co);
@@ -1066,8 +1066,8 @@ namespace TietoCRM.Controllers
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
                             {
-                                result["Maintenance"] = result["Price_category"];
-                                result["License"] = "0";
+                                result["Maintenance"] = "0";
+                                result["License"] = result["Price_category"];
 
                             }
                             if ((Byte)result["Discount"] == 1)
@@ -1184,8 +1184,8 @@ namespace TietoCRM.Controllers
                             // result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
                             if ((bool)result["Fixed_price"])
                             {
-                                result["Maintenance"] = result["Price_category"];
-                                result["License"] = "0";
+                                result["Maintenance"] = "0";
+                                result["License"] = result["Price_category"];
 
                             }
                             if ((Byte)result["Discount"] == 1)

@@ -158,6 +158,8 @@ var editOption = function (editButton) {
                 callback: function () {
                     var $licenseEl = $("#license-text");
                     var $maintenanceEl = $("#maintenance-text");
+                    if ($licenseEl.val() == "") { $licenseEl.val("0") };
+                    if ($maintenanceEl.val() == "") { $maintenanceEl.val("0") };
                     // Update article data attrs
                     if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
                         $articleBtn.attr("data-license", $licenseEl.val());

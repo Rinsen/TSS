@@ -297,6 +297,19 @@ var formatCurrency = function (n) {
     }
 }
 
+var formatCurrencyNoKr = function (n) {
+    if (typeof n === typeof "" && n.indexOf('%') >= 0)
+        return n;
+    else if (String(n).indexOf('.') > -1)
+        return parseFloat(n).toFixed(2) + "";
+    else {
+        n = parseFloat(n);
+        return n.toFixed(2).replace(/./g, function (c, i, a) {
+            return i && c !== "." && ((a.length - i) % 3 === 0) ? ' ' + c : c;
+        }) + "";
+    }
+}
+
 
 var triggerAlert = function (message, priority) {
     $(document).trigger("clear-alerts");

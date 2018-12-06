@@ -59,7 +59,7 @@
 .crm-pdf div.crm-pdf-head {
   /*border: medium;*/
   border: none;
-  margin-bottom: 1em;
+  margin-bottom: 0em;
 }
 .crm-pdf div.crm-pdf-head table {
   width: 100%;

@@ -146,19 +146,21 @@ var editArticle = function(editButton){
                     var $licenseEl = $("#license-text");
                     var $maintenanceEl = $("#maintenance-text");
                     var $aliasEl = $("#alias-text");
+                    if ($licenseEl.val() == "") { $licenseEl.val("0") };
+                    if ($maintenanceEl.val() == "") {$maintenanceEl.val("0")};
                     // Update article data attrs
                     if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
                         $articleBtn.attr("data-license", $licenseEl.val());
                         $articleBtn.data("license", $licenseEl.val());
                         if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
-                            $articleBtn.find(".license").html(formatCurrency($licenseEl.val()));
+                            $articleBtn.find(".license").html(formatCurrencyNoKr($licenseEl.val()));
                         else
                             $articleBtn.find(".license").html($licenseEl.val() + "%");
                     }
                     $articleBtn.attr("data-maintenance", $maintenanceEl.val());
                     $articleBtn.data("maintenance", $maintenanceEl.val());
                     if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
-                        $articleBtn.find(".maintenance").html(formatCurrency($maintenanceEl.val()));
+                        $articleBtn.find(".maintenance").html(formatCurrencyNoKr($maintenanceEl.val()));
                     else
                         $articleBtn.find(".maintenance").html($maintenanceEl.val() + "%");
 
@@ -241,7 +243,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                         + usedCell + usedDep +
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
-                                            <td class='maintenance' style='float: right; width:auto;'>" + formatCurrency(article.Price_category) + "</td>\
+                                            <td class='maintenance' style='float: right; width:auto;'>" + formatCurrencyNoKr(article.Price_category) + "</td>\
                                         </tr>                                                                       \
                                     </table>                                                                        \
                                 </button>");
@@ -270,8 +272,8 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             ";
             if (article.Discount_type != '1') {
-                button += "<td class='license'>" + formatCurrency(article.License) + "</td>        \
-                            <td class='maintenance'>" + formatCurrency(article.Maintenance) + "</td>";
+                button += "<td class='license'>" + formatCurrencyNoKr(article.License) + "</td>        \
+                            <td class='maintenance'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
             }
             else {
                 button += "<td class='license'>" + article.License + "%</td>        \
@@ -451,8 +453,8 @@ var updateSelectedItems = function () {
                         html += "<td class='alias'>" + module.Module + "</td>";
                     }
                     if (module.Discount != '1' || module.Discount_type == '0') {
-                        html += "<td>" + formatCurrency(module.License) + "</td>                                \
-                                    <td>" + formatCurrency(module.Maintenance) + "</td>                             \
+                        html += "<td>" + formatCurrencyNoKr(module.License) + "</td>                                \
+                                    <td>" + formatCurrencyNoKr(module.Maintenance) + "</td>                             \
                                 </tr>                                                               \
                             </table>                                                                \
                         </button>                                                                   \
@@ -706,8 +708,8 @@ var zeroArticlesFunction = function () {
         $button.data("maintenance",0);
         $button.attr("data-license", 0);
         $button.attr("data-maintenance", 0);
-        $button.find('.maintenance').html(formatCurrency(0));
-        $button.find('.license').html(formatCurrency(0));
+        $button.find('.maintenance').html(formatCurrencyNoKr(0));
+        $button.find('.license').html(formatCurrencyNoKr(0));
 
     }
     calculateSums();
