@@ -176,6 +176,9 @@ namespace TietoCRM.Models
         private String moduleText;
         public String ModuleText { get { return moduleText; } set { moduleText = value; } }
 
+        private String contract_Description;
+        public String Contract_Description { get { return contract_Description; } set { contract_Description = value; } }
+
         private DateTime ssma_timestamp;
         public DateTime SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -201,7 +204,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Title1] ,[Title2] ,[Title3] ,[Title4] ,[Title5] ,[Title6] ,[Title7] ,[Title8] ,[Title9] ,[Title10] ,[Title11] ,[Title12] ,[Title13] ,[Title14] ,[Title15] ,[Title16] ,[Title17] ,[Title18] ,[Title19] ,[Title20] ,[Title21] ,[Title22] ,[Title23] ,[Title24] ,[Title25] ,[Title26] ,[Title27] ,[Title28] ,[text1] ,[text2] ,[text3] ,[text4] ,[text5] ,[text6] ,[text7] ,[text8] ,[text9] ,[text10] ,[text11] ,[text12] ,[text13] ,[text14] ,[text15] ,[text16] ,[text17] ,[text18] ,[text19] ,[text20] ,[text21] ,[text22] ,[text23] ,[Prolog] ,[Epilog], CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractTemplate WHERE " + "Customer = @customer";
+                command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Title1] ,[Title2] ,[Title3] ,[Title4] ,[Title5] ,[Title6] ,[Title7] ,[Title8] ,[Title9] ,[Title10] ,[Title11] ,[Title12] ,[Title13] ,[Title14] ,[Title15] ,[Title16] ,[Title17] ,[Title18] ,[Title19] ,[Title20] ,[Title21] ,[Title22] ,[Title23] ,[Title24] ,[Title25] ,[Title26] ,[Title27] ,[Title28] ,[text1] ,[text2] ,[text3] ,[text4] ,[text5] ,[text6] ,[text7] ,[text8] ,[text9] ,[text10] ,[text11] ,[text12] ,[text13] ,[text14] ,[text15] ,[text16] ,[text17] ,[text18] ,[text19] ,[text20] ,[text21] ,[text22] ,[text23] ,[Prolog] ,[Epilog], Contract_Description CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractTemplate WHERE " + "Customer = @customer";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);

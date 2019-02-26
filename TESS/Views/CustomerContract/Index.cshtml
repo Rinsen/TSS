@@ -47,7 +47,7 @@
             </form>
         </div>
 </row>
-<table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+<table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="Valid_from" data-sort-order="desc">
     <thead>
         <tr>
             <th data-field="#" data-sortable="false">#</th>
@@ -1186,7 +1186,7 @@
             "bPaginate": false,
             "bInfo" : false,
             //"iDisplayLength": Math.ceil(($("#page-content-wrapper").height() / 60)),
-            "order": [[7, "desc"]],
+            "order": [[9, "desc"]],
             //[14, "desc"],
             "columns": [@Html.Raw(DataObject)
             ],
@@ -1463,7 +1463,7 @@
         @*$userSelect.val("@Html.Raw(ViewBag.User)");*@
         $(".selectpicker").selectpicker();
         $(".selectpicker").selectpicker("refresh");
-        updateDataTable("@Html.Raw(ViewBag.Customer)", "@Html.Raw(ViewBag.CurrentUser)", function(){
+        updateDataTable("@Html.Raw(ViewBag.Customer)", $userSelect.val(), function(){
             if($customerSelect.val() == "")
             {
                 $("#crm-add-row").unbind("click");

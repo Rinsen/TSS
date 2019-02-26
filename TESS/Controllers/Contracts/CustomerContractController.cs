@@ -474,6 +474,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Prolog", this.GetProlog(urlCustomer, urlContractId));
             ViewData.Add("Epilog", this.GetEpilog(urlCustomer, urlContractId));
             ViewData.Add("ModuleText", this.GetModuleText(urlCustomer, urlContractId));
+            ViewData.Add("Contract_Description", this.GetContract_Description(urlCustomer, urlContractId));
             ViewBag.Area = System.Web.HttpContext.Current.GetUser().Area;
 
         }
@@ -931,6 +932,9 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
+                view_ContractText ctext = new view_ContractText();
+                string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+                ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo, contract.Contract_type);
                 return "1";
             }
             catch
@@ -1180,7 +1184,7 @@ namespace TietoCRM.Controllers.Contracts
                 services.Add(obj);
             }
 
-            return (new JavaScriptSerializer()).Serialize(services);
+            return (new JavaScriptSerializer()).Serialize(services.OrderBy(s => s.Description));
         }
 
         private List<String> GetStatuses()
@@ -1391,7 +1395,7 @@ namespace TietoCRM.Controllers.Contracts
 
                 view_ContractText ctext = new view_ContractText();
                 string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
-                ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo);
+                ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo, contract.Contract_type);
 
                 return "1";
             }
@@ -1503,7 +1507,7 @@ namespace TietoCRM.Controllers.Contracts
 
             view_ContractText ctext = new view_ContractText();
             string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
-            ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo);
+            ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo, contract.Contract_type);
 
             return "1";
         }
@@ -2345,6 +2349,29 @@ namespace TietoCRM.Controllers.Contracts
             }
         }
 
+        public String GetContract_Description(String customerP = null, String contractIdP = null)
+        {
+            try
+            {
+                String text = "";
+                view_ContractTemplate template = new view_ContractTemplate();
+                template.Select("Customer = '" + customerP + "' AND Contract_id = '" + contractIdP + "'");
+                if (!String.IsNullOrEmpty(template.Contract_Description))
+                {
+                    text = template.Contract_Description;
+                }
+                else
+                {
+                    text = "";
+                }
+                return text;
+            }
+            catch
+            {
+                return "0";
+            }
+        }
+
         private String ModuleTemplateToText(view_ContractTemplate template)
         {
             return "<p>" + template.Text4.Replace("\r\n", "<br>") + "</p>";
@@ -2497,7 +2524,8 @@ namespace TietoCRM.Controllers.Contracts
             {
                 if (moduleInfo == "")
                 {
-                    moduleInfo = "<h4><strong>Information produkter</strong></h4>";
+                    //moduleInfo = "<h5><strong>Information produkter</strong></h4>";
+                    moduleInfo = "<h5>Information produkter</h5>";
                 }
                 //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + mi.Contract_description + "</p>";

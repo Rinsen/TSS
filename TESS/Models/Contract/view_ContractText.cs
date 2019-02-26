@@ -102,16 +102,24 @@ namespace TietoCRM.Models
             }
             return list;
         }
-        public void UpdateModuleInfo(string customer, string contract_id, string moduleInfo)
+        public void UpdateModuleInfo(string customer, string contract_id, string moduleInfo, string contract_type)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
 
-                // Default query
-                command.CommandText = "Update dbo.A_Text Set Modultext = @moduleInfo ";
-                command.CommandText += "Where avtalsid = @contract_id And Kund = @customer";
+                if (contract_type == "Huvudavtal")
+                {
+                    command.CommandText = "Update dbo.A_H_Text Set Modultext2 = @moduleInfo ";
+                    command.CommandText += "Where avtalsid = @contract_id And Kund = @customer";
+                }
+                else
+                {
+                    // Default query
+                    command.CommandText = "Update dbo.A_Text Set Modultext = @moduleInfo ";
+                    command.CommandText += "Where avtalsid = @contract_id And Kund = @customer";
+                }
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@moduleInfo", moduleInfo);
