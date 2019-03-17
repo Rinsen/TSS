@@ -65,10 +65,18 @@
             <tr>
                 <td id="crm-pdf-offer-info">
                     <div><strong>@ViewBag.CustomerOffer.Customer</strong></div>
+                    @if (@ViewBag.CustomerOffer.Administration != "")
+                    {
+                        <div id="Administration">@ViewBag.CustomerOffer.Administration</div>
+                    }
                     <div id="Contact_person_name">@ViewBag.CustomerOffer.Contact_person</div>
                     <a href="mailto:@ViewBag.CustomerContact.Email" id="Contact_person_email">@ViewBag.CustomerContact.Email</a>
                 </td>
                 <td id="crm-pdf-tieto-info">
+                    @if (@ViewBag.CustomerOffer.Administration != "")
+                    {
+                        <br/>
+                    }
                     <div>Tieto Sweden AB</div>
                     <div>@ViewBag.Representative.Address</div>
                     <div>@ViewBag.Representative.City</div>

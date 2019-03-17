@@ -120,6 +120,7 @@ namespace TietoCRM.Controllers
             columnNames.Add("Area");
             columnNames.Add("Summera");
             columnNames.Add("Our_Sign");
+            columnNames.Add("Administration");
             columnNames.Add("Hashtags");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
@@ -587,6 +588,7 @@ namespace TietoCRM.Controllers
                     Area = co.Area,
                     Summera = co.Summera,
                     Our_Sign = co.Our_sign,
+                    Administration = co.Administration,
                     Hashtags = co.HashtagsAsString()
                 };
                 customers.Add(v);
@@ -1022,10 +1024,12 @@ namespace TietoCRM.Controllers
 
                 String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
                                         view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
-                                        view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description
+                                        view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description, 
+                                        view_Module.Module_status, IsNull(O.Text,'') as Module_status_txt
                                         FROM view_Module                                                                                       
                                         Left JOIN view_Tariff                                                                                       
                                         on view_Module.Price_category = view_Tariff.Price_category
+                                        Left Join view_SelectOption O on O.Value = view_Module.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
                                         WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
                                         view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
                                         AND IsNull(Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
@@ -1142,13 +1146,14 @@ namespace TietoCRM.Controllers
                                     )
                                     order by Article_number asc";*/
 
-                String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License
+                String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License, IsNull(O.Text,'') as Module_status_txt
 	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
-                                                    M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description
+                                                    M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
-	                                    Where A.System = @System AND A.Classification = @classification Order By A.Module";
+	                                    Left Join view_SelectOption O on O.Value = A.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
+                                        Where A.System = @System AND A.Classification = @classification Order By A.Module";
 
                 // Default query
                 command.CommandText = queryText;

@@ -201,7 +201,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         if (article.Used == true) {
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
         }
-        if (article.HasDependencies || article.Description.length > 0) {
+        if (article.HasDependencies || article.Description.length > 0 || article.Module_status != "0") {
             var depTitle = "";
             if (article.HasDependencies) {
                 var depLen = article.Dependencies.length;
@@ -218,6 +218,12 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 }
                 depTitle += "Important info:\n";
                 depTitle += article.Description;
+            }
+            if (article.Module_status_txt.length > 0 && article.Module_status != "0") {
+                if (depTitle.length > 0) {
+                    depTitle += "\n";
+                }
+                depTitle += article.Module_status_txt;
             }
             usedDep = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
         }

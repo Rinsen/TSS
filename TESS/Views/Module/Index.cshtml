@@ -157,15 +157,29 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="module-status2" class="col-sm-2 control-label">Modul Status</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control selectpicker" name="Module_status" id="module-status2">
+                                        @{
+                                            TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module> selectOptionsM = new TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>();
+                                            foreach (TietoCRM.Models.SelectOptions<TietoCRM.Models.view_Module>.SelectOption so in selectOptionsM.GetOptions("Module_status"))
+                                            {
+                                                <option value="@so.Value">@so.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label for="offer_description2" class="col-sm-2 control-label">Offer Description</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="9"></textarea>
+                                    <textarea class="form-control" name="Offer_description" id="offer_description2" rows="6"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="contract_description2" class="col-sm-2 control-label">Contract Description</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="9"></textarea>
+                                    <textarea class="form-control" name="Contract_description" id="contract_description2" rows="6"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -657,7 +671,7 @@
                 i++;
             }
 
-            if (i >= 1 && i < 16) {
+            if (i >= 1 && i < 17) {
                 if (name != "Offer_description" && name != "Contract_description") {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);

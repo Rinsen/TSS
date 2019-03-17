@@ -14,6 +14,11 @@
 <!-- Print Options -->
 @PrintListContent(ViewBag.OptionSystemList, "Option")
 
+<div id="crm-pdf-module-info">
+    <div id="Module_info">@Html.Raw(@ViewBag.ContractText.Module_info)</div>
+</div>
+
+
 <div class="crm-pdf-module-section-text">
     @Html.Raw(ViewBag.ModuleText)
 </div>
@@ -400,9 +405,9 @@
         }
         </div>
     }
-    <div id="crm-pdf-module-info">
+    @*<div id="crm-pdf-module-info">
         <div id="Module_info">@Html.Raw(@ViewBag.ContractText.Module_info)</div>
-    </div>
+    </div>*@
 
 }
 

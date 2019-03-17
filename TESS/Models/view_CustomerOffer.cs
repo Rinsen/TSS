@@ -69,6 +69,9 @@ namespace TietoCRM.Models
         private String our_sign;
         public String Our_sign { get { return our_sign; } set { our_sign = value; } }
 
+        private String administration;
+        public String Administration { get { return administration; } set { administration = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

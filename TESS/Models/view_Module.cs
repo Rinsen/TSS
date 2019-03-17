@@ -54,6 +54,9 @@ namespace TietoCRM.Models
         private String contract_description;
         public String Contract_description { get { return contract_description; } set { contract_description = value; } }
 
+        private int module_status;
+        public int Module_status { get { return module_status; } set { module_status = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -80,14 +83,14 @@ namespace TietoCRM.Models
                 {
                     query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
                     query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
-                    query += "offer_description, contract_description, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                    query += "offer_description, contract_description, Module_status CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
                 }
                 else
                 {
                     query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
                     query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
                     query += " Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption,";
-                    query += " Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption,";
+                    query += " Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, Module_status,";
                     query += " CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
                 }
 
