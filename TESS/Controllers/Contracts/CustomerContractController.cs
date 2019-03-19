@@ -175,8 +175,17 @@ namespace TietoCRM.Controllers.Contracts
             view_Contract contract = new view_Contract("Contract_id = '" + urlContractId + "' AND Customer = '" + urlCustomer + "'");
             ViewData.Add("CustomerContract", contract);
 
+
+            //IEnumerable<view_ContractText> lsttext = view_ContractText.GetContractTextsToShow(urlCustomer, urlContractId);
             view_ContractText text = new view_ContractText();
             text.Select("Contract_id = '" + contract.Contract_id + "' AND Customer = '" + contract.Customer + "'");
+            //view_ContractText text = new view_ContractText();
+
+            //foreach (view_ContractText ct in lsttext)
+            //{
+
+            //}
+
             ViewData.Add("ContractText", text);
 
             ViewData.Add("Systems", GetAllSystemNames(contract.Area));

@@ -14,18 +14,28 @@
 <!-- Print Options -->
 @PrintListContent(ViewBag.OptionSystemList, "Option")
 
-<div id="crm-pdf-module-info">
-    <div id="Module_info">@Html.Raw(@ViewBag.ContractText.Module_info)</div>
-</div>
+    @if (ViewBag.CustomerContract.Is(ContractType.MainContract))
+    {
+        <div id="crm-pdf-module-info">
+            <div id="Module_info">@Html.Raw(@ViewBag.Contract_Description)</div>
+        </div>
+    }
 
-
-<div class="crm-pdf-module-section-text">
-    @Html.Raw(ViewBag.ModuleText)
-</div>
+    <div class="crm-pdf-module-section-text">
+        @Html.Raw(ViewBag.ModuleText)
+    </div>
 
 <!-- Print Consultant Services -->
 @PrintConsultantServices(ViewBag.CustomerContract._ContractConsultantRows, "Tjänster")
 
+@if (!ViewBag.CustomerContract.Is(ContractType.MainContract))
+{
+    {
+    <div id="crm-pdf-module-info">
+        <div id = "Module_info" > @Html.Raw(@ViewBag.ContractText.Module_info) </div >
+    </div>
+    }
+}
 <!-- Help printing functinos -->
 
 @helper PrintListContent(List<KeyValuePair<String, List<dynamic>>> list, String title)

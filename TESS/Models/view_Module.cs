@@ -83,7 +83,7 @@ namespace TietoCRM.Models
                 {
                     query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
                     query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
-                    query += "offer_description, contract_description, Module_status CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                    query += "offer_description, contract_description, Module_status, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
                 }
                 else
                 {

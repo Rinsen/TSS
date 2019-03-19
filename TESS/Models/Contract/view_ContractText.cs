@@ -71,7 +71,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Document_head] ,[Page_head] ,[Title] ,";
                 command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot], Module_info,";
-                command.CommandText += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractText WHERE " + "Customer = @customer";
+                command.CommandText += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractText_Show WHERE " + "Customer = @customer";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -130,6 +130,49 @@ namespace TietoCRM.Models
             }
         }
 
+        public static List<view_ContractText> GetContractTextsToShow(String customer, String cid)
+        {
+            List<view_ContractText> list = new List<view_ContractText>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Document_head] ,[Page_head] ,[Title] ,";
+                command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot], Module_info,";
+                command.CommandText += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractText_Show WHERE Customer = @customer And contract_id = @cid";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@cid", cid);
+
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ContractText t = new view_ContractText();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+            }
+            return list;
+        }
     }
 
 }
