@@ -218,8 +218,12 @@
             //height : 250
         });
 
-        tinyMCE.execCommand('mceAddControl', false, 'offer_description2');
-        tinyMCE.execCommand('mceAddControl', false, 'contract_description2');
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'offer_description2');
+            tinyMCE.execCommand('mceAddControl', false, 'contract_description2');
+        } catch (error) {
+            console.error(error);
+        }
 
         $('.selectpicker').selectpicker('refresh');
 
@@ -535,7 +539,7 @@
                                 }
                             }
                         }
-                        getTinyMCE();
+                        //getTinyMCE();
 
                         if(noneSelected){
                             $("#none2").prop("checked", true);
@@ -551,7 +555,8 @@
                         $("#save-module-changes").attr("data-Article-number",selectedId);
 
                         $("#moduleModal").appendTo("body").modal().draggable();
-                        $('.selectpicker').selectpicker('refresh')
+                        $('.selectpicker').selectpicker('refresh');
+                        getTinyMCE();
                     });
                 })
 
