@@ -26,7 +26,15 @@ namespace TietoCRM
         protected void Session_Start(object sender, EventArgs e)
         {
             view_User CurrentUser = new view_User();
+
+            //Plockar ut inloggat windowskonto som används för att exekvera ASP.NET server-kod.
+            //ASP.NET web apps kör default under IIS Application pool identiteten och då får man inte ut windowsanvändaren om man inte sätter <identity impersonate="true" /> i web.config.
+            //Vid problem att få ut sin windowsanvändare (och istället får t.ex. "applicationpool identity") kan man här istället prova att antingen ändra i sin web.config enligt ovan, alternativt plocka ut användaren enligt parameter "name2" nedan.
             String name = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+
+            //Plockar ut inloggad användares windowskonto
+            //String name2 = HttpContext.Current.User.Identity.Name; 
+
             if (!HttpContext.Current.Items.Contains("__User") && Request.Url.AbsolutePath.StartsWith("/Access/Denied") && Request.Url.AbsolutePath.StartsWith("/Access/Login"))
             {
                 if (CurrentUser.Select(@"windows_user = '" + name + "'"))
