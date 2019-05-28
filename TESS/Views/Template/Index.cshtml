@@ -155,12 +155,18 @@
                 plugins: tinyDefaultPlugins,
                 toolbar: tinyDefaultToolbars
             });
-            tinyMCE.execCommand('mceAddControl', false, 'deluhtext5');
-            tinyMCE.execCommand('mceAddControl', false, 'deluhtitle5');
+            try {
+                tinyMCE.execCommand('mceAddControl', false, 'deluhtext5');
+                tinyMCE.execCommand('mceAddControl', false, 'deluhtitle5');
+            } catch (e) {
+            }
         }
 
-        tinyMCE.execCommand('mceAddControl', false, 'opening5');
-        tinyMCE.execCommand('mceAddControl', false, 'body5');
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'opening5');
+            tinyMCE.execCommand('mceAddControl', false, 'body5');
+        } catch (e) {
+        }
 
         $('.selectpicker').selectpicker('refresh');
 

@@ -1336,11 +1336,15 @@
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars
         });
-        tinyMCE.execCommand('mceAddControl', false, 'page-head-text');
-        tinyMCE.execCommand('mceAddControl', false, 'deluhtitle');
-        tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
-        tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
-        tinyMCE.execCommand('mceAddControl', false, 'module-info-text');
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'page-head-text');
+            tinyMCE.execCommand('mceAddControl', false, 'deluhtitle');
+            tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
+            tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
+            tinyMCE.execCommand('mceAddControl', false, 'module-info-text');
+        } catch (error) {
+
+        }
     });
     $('#templatesModal').bind('hidden.bs.modal', function () {
         tinyMCE.remove();
@@ -1378,10 +1382,13 @@
             }
         });
 
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'prolog-text');
+            tinyMCE.execCommand('mceAddControl', false, 'module-text');
+            tinyMCE.execCommand('mceAddControl', false, 'epilog-text');
+        } catch (error) {
 
-        tinyMCE.execCommand('mceAddControl', false, 'prolog-text');
-        tinyMCE.execCommand('mceAddControl', false, 'module-text');
-        tinyMCE.execCommand('mceAddControl', false, 'epilog-text');
+        }
 
 
     });
