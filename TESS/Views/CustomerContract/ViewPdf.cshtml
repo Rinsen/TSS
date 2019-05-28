@@ -1314,37 +1314,59 @@
         tinymce.init({
             selector: "#page-head-text",
             plugins: tinyDefaultPlugins,
-            toolbar: tinyDefaultToolbars
+            toolbar: tinyDefaultToolbars,
+            branding: false
         });
         tinymce.init({
             selector: "#deluhtitle",
             plugins: tinyDefaultPlugins,
-            toolbar: tinyDefaultToolbars 
+            toolbar: tinyDefaultToolbars,
+            branding: false
         });
         tinymce.init({
             selector: "#deluhtext",
             plugins: tinyDefaultPlugins,
-            toolbar: tinyDefaultToolbars 
+            toolbar: tinyDefaultToolbars,
+            branding: false
         });
         tinymce.init({
             selector: "#document-foot-text",
             plugins: tinyDefaultPlugins,
-            toolbar: tinyDefaultToolbars
+            toolbar: tinyDefaultToolbars,
+            branding: false
         });
         tinymce.init({
             selector: "#module-info-text",
             plugins: tinyDefaultPlugins,
-            toolbar: tinyDefaultToolbars
+            toolbar: tinyDefaultToolbars,
+            branding: false
         });
+
         try {
             tinyMCE.execCommand('mceAddControl', false, 'page-head-text');
-            tinyMCE.execCommand('mceAddControl', false, 'deluhtitle');
-            tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
-            tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
-            tinyMCE.execCommand('mceAddControl', false, 'module-info-text');
         } catch (error) {
-
         }
+
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'deluhtitle');
+        } catch (e) {
+        }
+
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'deluhtext');
+        } catch (e) {
+        }
+
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'document-foot-text');
+        } catch (e) {
+        }
+
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'module-info-text');
+        } catch (e) {
+        }
+
     });
     $('#templatesModal').bind('hidden.bs.modal', function () {
         tinyMCE.remove();
@@ -1355,6 +1377,7 @@
             selector: "#prolog-text",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            branding: false,
             setup: function (editor) {
                 editor.on('init', function (e) {
                     loadPrologText();
@@ -1365,6 +1388,7 @@
             selector: "#module-text",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            branding: false,
             setup: function (editor) {
                 editor.on('init', function (e) {
                     loadModuleText();
@@ -1375,6 +1399,7 @@
             selector: "#epilog-text",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            branding: false,
             setup: function (editor) {
                 editor.on('init', function (e) {
                     loadEpilogText();
@@ -1382,14 +1407,21 @@
             }
         });
 
+
         try {
             tinyMCE.execCommand('mceAddControl', false, 'prolog-text');
-            tinyMCE.execCommand('mceAddControl', false, 'module-text');
-            tinyMCE.execCommand('mceAddControl', false, 'epilog-text');
         } catch (error) {
-
         }
 
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'module-text');
+        } catch (error) {
+        }
+
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'epilog-text');
+        } catch (error) {
+        }
 
     });
     $('#mainTemplatesModal').bind('hidden.bs.modal', function () {

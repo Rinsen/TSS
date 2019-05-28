@@ -38,19 +38,22 @@
 @*<script type="text/javascript" src="~/Scripts/tinymce/jquery.tinymce/tinymce.min.js"></script>*@
 <script type="text/javascript">
     tinymce.init({
-        selector: "#epilog-text",
+        selector: "textarea#epilog-text",
         plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars
+        toolbar: tinyDefaultToolbars,
+        branding: false,
     });
     tinymce.init({
-        selector: "#prolog-text",
+        selector: "textarea#prolog-text",
         plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars
+        toolbar: tinyDefaultToolbars,
+        branding: false,
     });
     tinymce.init({
-        selector: "#module-text",
+        selector: "textarea#module-text",
         plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars
+        toolbar: tinyDefaultToolbars,
+        branding: false,
     });
 </script>
 

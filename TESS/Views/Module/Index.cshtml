@@ -203,7 +203,8 @@
 
     $(document).on('show.bs.modal', '#moduleModal', function () {
         tinymce.init({
-            selector: "#offer_description2"
+            selector: "#offer_description2",
+            branding: false
             //plugins: tinyDefaultPlugins,
             //toolbar: tinyDefaultToolbars,
             ////encoding: 'xml',
@@ -211,7 +212,8 @@
         });
 
         tinymce.init({
-            selector: "#contract_description2"
+            selector: "#contract_description2",
+            branding: false
             //plugins: tinyDefaultPlugins,
             //toolbar: tinyDefaultToolbars,
             ////encoding: 'xml',
@@ -219,9 +221,13 @@
         });
 
         try {
-            tinyMCE.execCommand('mceAddControl', false, 'offer_description2');
+            tinyMCE.execCommand('mceAddControl', false, 'offer_description2');            
+        } catch (e) {
+        }
+
+        try {
             tinyMCE.execCommand('mceAddControl', false, 'contract_description2');
-        } catch (error) {
+        } catch (e) {
         }
 
         $('.selectpicker').selectpicker('refresh');

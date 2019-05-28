@@ -68,7 +68,8 @@
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
             encoding: 'xml',
-            height: 200
+            height: 200,
+            branding: false
         });
 
         tinymce.init({
@@ -76,11 +77,16 @@
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
             encoding: 'xml',
-            height: 200
+            height: 200,
+            branding: false
         });
 
         try {
-            tinyMCE.execCommand('mceAddControl', false, 'offer_description2');
+            tinyMCE.execCommand('mceAddControl', false, 'offer_description2');            
+        } catch (e) {
+        }
+
+        try {
             tinyMCE.execCommand('mceAddControl', false, 'contract_description2');
         } catch (e) {
         }
