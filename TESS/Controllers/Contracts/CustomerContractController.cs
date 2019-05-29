@@ -2474,6 +2474,33 @@ namespace TietoCRM.Controllers.Contracts
                     co.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
                 else
                     return "-1";
+
+                //Ta även bort från tabellen A_huvud (bug-fix)
+                view_ContractHead coh = new view_ContractHead();
+                coh.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                //Ta även bort från tabellen A_avtalsrader (bug-fix)
+                view_ContractRow cr = new view_ContractRow();
+                cr.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                //Ta även bort från tabellen A_konsultrader (bug-fix)
+                view_ContractConsultantRow ccr = new view_ContractConsultantRow();
+                ccr.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                //Ta även bort från tabellen Option (bug-fix)
+                view_ContractOption copt = new view_ContractOption();
+                copt.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                //Ta även bort från tabellen A_H_text (bug-fix)
+                view_ContractTemplate ct = new view_ContractTemplate();
+                ct.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                //Ta även bort från tabellen A_text (bug-fix)
+                view_ContractText ctxt = new view_ContractText();
+                ctxt.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+                
+                //Vilken vy är detta? Aktuell för rensning vid delete?
+                //Avtal_flag
             }
             catch (Exception e)
             {

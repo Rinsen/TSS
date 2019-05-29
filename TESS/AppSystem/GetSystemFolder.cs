@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-/// <summary>
-/// Class containing methods to retrieve specific file system paths.
-/// </summary>
+// Class containing methods to retrieve specific file system paths.
+
 namespace TietoCRM
 {
     public static class KnownFolders
