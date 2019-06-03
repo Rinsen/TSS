@@ -1035,7 +1035,10 @@
                                         }
                                         else
                                         {
-                                            triggerAlert("Failed to delete contract.", "warning");
+                                            if (data === "-1")
+                                                triggerAlert("Failed to delete contract.", "warning");
+                                            else if (data === "-2")
+                                                triggerAlert("Failed to delete subdata to contract", "warning");
                                         }
                                     }
                                 });
