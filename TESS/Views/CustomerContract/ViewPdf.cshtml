@@ -1315,30 +1315,35 @@
             selector: "#page-head-text",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
             branding: false
         });
         tinymce.init({
             selector: "#deluhtitle",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
             branding: false
         });
         tinymce.init({
             selector: "#deluhtext",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
             branding: false
         });
         tinymce.init({
             selector: "#document-foot-text",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
             branding: false
         });
         tinymce.init({
             selector: "#module-info-text",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
             branding: false
         });
 
@@ -1378,17 +1383,19 @@
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
             branding: false,
+            browser_spellcheck: true,
             setup: function (editor) {
                 editor.on('init', function (e) {
                     loadPrologText();
                 });
-            }
+            },
         });
         tinymce.init({
             selector: "#module-text",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
             branding: false,
+            browser_spellcheck: true,
             setup: function (editor) {
                 editor.on('init', function (e) {
                     loadModuleText();
@@ -1400,6 +1407,7 @@
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
             branding: false,
+            browser_spellcheck: true,
             setup: function (editor) {
                 editor.on('init', function (e) {
                     loadEpilogText();
@@ -1433,7 +1441,7 @@
 </script>
 
 <script>
-    @*var openModal = function (el) {
+@*var openModal = function (el) {
         var $el = $(el);
         bootbox.dialog({
             title: "Edit " + $el.text(),
@@ -1465,6 +1473,13 @@
             }
         });
     }*@
+
+    //Fix för att kunna editera <source> i editorn.
+    $(document).on('focusin', function(e) {
+    if ($(e.target).closest(".tox-dialog").length) {
+        e.stopImmediatePropagation();
+    }
+});
 
     $(document).ready(function () {
 

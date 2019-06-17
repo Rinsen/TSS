@@ -314,12 +314,12 @@ var formatCurrencyNoKr = function (n) {
 var triggerAlert = function (message, priority) {
     $(document).trigger("clear-alerts");
     $(document).trigger("add-alerts", [
-      {
-          'message': message,
-          'priority': priority,
-      }
+        {
+            'message': message,
+            'priority': priority
+        }
     ]);
-}
+};
 
 function get_browser() {
     var ua = navigator.userAgent,
@@ -330,9 +330,9 @@ function get_browser() {
         return 'IE';
     }
     if (M[1] === 'Chrome') {
-        tem = ua.match(/\bOPR\/(\d+)/)
+        tem = ua.match(/\bOPR\/(\d+)/);
         if (tem != null) {
-            return 'Opera'
+            return 'Opera';
         }
     }
     M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
@@ -351,7 +351,7 @@ var tinyDefaultPlugins = [
         'advlist autolink lists link image charmap print preview anchor',
         'searchreplace visualblocks code fullscreen',
         'insertdatetime media table paste code'
-    ];
+];
 var tinyDefaultToolbars = 'insertfile undo redo | styleselect         \
     | bold italic | alignleft aligncenter alignright alignjustify |   \
     bullist numlist outdent indent | fullscreen';
@@ -366,23 +366,22 @@ function isJSONString(str) {
 }
 
 /* CRMSessionDatas Namespace */
-var CRMSessionData = function()
-{
+var CRMSessionData = function () {
     // Constructor
     var _ic = JSON.parse(sessionStorage.getItem("CRMSessionData"));
     console.log(_ic);
     this.sites = _ic === null || _ic.sites === null ? this.bake().sites : _ic.sites;
-}
+};
 
 CRMSessionData.prototype.bake = function () {
     console.log("Baking, mmm");
     var CRMSessionData = {
         sites: []
-    }
+    };
     sessionStorage.setItem('CRMSessionData', JSON.stringify(CRMSessionData));
 
     return CRMSessionData;
-}
+};
 
 CRMSessionData.prototype.findSite = function (site) {
     for (var i = 0; i < this.sites.length; i++) {
@@ -390,25 +389,25 @@ CRMSessionData.prototype.findSite = function (site) {
             return i;
     }
     return -1;
-}
+};
 
 CRMSessionData.prototype.hasSite = function (site) {
     if (this.findSite(site) != -1)
         return true;
     else
         return false;
-}
+};
 
 CRMSessionData.prototype.updateSessionData = function () {
     sessionStorage.setItem('CRMSessionData', JSON.stringify({
         sites: this.sites
     }));
-}
+};
 
 
 CRMSessionData.prototype.getCurrentSiteName = function () {
     return window.location.pathname.split('/')[2];
-}
+};
 
 CRMSessionData.prototype.getCurrentSite = function () {
     // Make sure that the current site exists.
@@ -417,7 +416,7 @@ CRMSessionData.prototype.getCurrentSite = function () {
     // Find the site and update its properties
     var _siteID = this.findSite(this.getCurrentSiteName());
     return this.sites[_siteID];
-}
+};
 
 CRMSessionData.prototype.appendCurrentSite = function () {
     var currentSiteName = this.getCurrentSiteName();
@@ -431,8 +430,8 @@ CRMSessionData.prototype.appendCurrentSite = function () {
         return true;
     }
     else
-        return false;     
-}
+        return false;
+};
 
 /*
  * Update the current page with current search data and selected id.
@@ -461,7 +460,7 @@ CRMSessionData.prototype.updateSite = function (search, selectedId, area) {
 
     // Update the cookie
     this.updateSessionData();
-}
+};
 
 //calculate what the value should be if it is precentage
 var calculateValue = function (val, oldVal) {
@@ -479,12 +478,12 @@ var calculateValue = function (val, oldVal) {
         val = oldVal;
 
     return val;
-}
+};
 
-var calculateDiscount = function (val, oldVal){
+var calculateDiscount = function (val, oldVal) {
     val = parseFloat(val);
     return (oldVal - oldVal * (val / 100)).toFixed(2);
-}
+};
 
 // Handle where to put error messages if selectpickers exist.
 var handleErrorPlacement = function (error, $element) {
@@ -495,5 +494,5 @@ var handleErrorPlacement = function (error, $element) {
     } else {
         error.insertAfter($element);
     }
-} 
+};
             
