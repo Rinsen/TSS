@@ -348,7 +348,7 @@ var webkit = get_browser() == "Chrome" ||
 
 /* TinyMCE Default Settigns */
 var tinyDefaultPlugins = [
-        'advlist autolink lists link image charmap print preview anchor',
+        'advlist autolink lists image charmap print preview anchor',
         'searchreplace visualblocks code fullscreen',
         'insertdatetime media table paste code'
 ];
