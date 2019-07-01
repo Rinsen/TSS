@@ -712,7 +712,7 @@ namespace TietoCRM.Controllers.Contracts
                         contractHead.SetValue(variable.Key, System.Web.HttpUtility.HtmlDecode(variable.Value.ToString()));
                     }
                     view_Customer customer = new view_Customer();
-                    customer.Select("Customer = '" + customer + "'");
+                    customer.Select("Customer = '" + customerString + "'");
                     contractHead.Address = customer.Address;
                     contractHead.City = customer.City;
                     contractHead.Buyer = customer.Customer;

@@ -41,6 +41,17 @@ namespace TietoCRM.Models
         //private int ASort;
         private static string OrderBy { get; set; }
 
+        /// <summary>
+        /// Offer description for module, needed for new dialog "Edit Module Info". Not saved to database.
+        /// </summary>
+        public string _OfferDescription { get; set; }
+        
+        /// <summary>
+        /// Id for ModuleText, not in DB 
+        /// </summary>
+        public int _ModuleTextId { get; set; }
+
+
         public view_OfferRow()
             : base("OfferRow")
         {
@@ -117,6 +128,16 @@ namespace TietoCRM.Models
                                 t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                 i++;
                             }
+
+                            //Also get Offer descritption..
+                            view_Module module = new view_Module();
+                            module.Select("Article_number = " + t.Article_number.ToString());
+                            view_ModuleText moduleText = new view_ModuleText();
+                            moduleText.Select("Type = 'O' AND TypeId = " + t.Offer_number.ToString() + " AND ModuleType = 'A' AND ModuleId = " + t.Article_number.ToString());
+
+                            t._OfferDescription = moduleText.Description;
+                            t._ModuleTextId = moduleText._ID;
+
                             list.Add(t);
                         }
                     }
@@ -183,7 +204,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
                 // Default query
-                command.CommandText = @"SELECT Alias, Offer_Description FROM qry_OfferArtDescription Where Offertnr = @offerNumber Order By Typ, Art_id";
+                command.CommandText = @"SELECT Alias, Description FROM qry_OfferArtDescription Where Offertnr = @offerNumber Order By Typ, Art_id";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -217,6 +238,62 @@ namespace TietoCRM.Models
             if (ASort == 2) return "Classification, Alias";
             if (ASort == 3) return "Classification, Article_number";
             return "Alias";
+        }
+
+        /// <summary>
+        /// Gets all offer rows for specific offer id
+        /// </summary>
+        /// <param name="offerId"></param>
+        /// <returns></returns>
+        public static List<view_OfferRow> getOfferRows(int offerId)
+        {
+            List<view_OfferRow> list = new List<view_OfferRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = @"SELECT Offer_number, Article_number, License, 
+                                        Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
+                                        ,alias , Area FROM " + databasePrefix + "OfferRow where Offer_number = @offerNumber Order By " + GetOrderBy();
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@offerNumber", offerId);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_OfferRow t = new view_OfferRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+
+                            //Also get Offer descritption..
+                            view_Module module = new view_Module();
+                            module.Select("Article_number = " + t.Article_number.ToString());
+                            view_ModuleText moduleText = new view_ModuleText();
+                            moduleText.Select("Type = 'O' AND TypeId = " + t.Offer_number.ToString() + " AND ModuleType = 'A' AND ModuleId = " + t.Article_number.ToString());
+
+                            t._OfferDescription = moduleText.Description;
+                            t._ModuleTextId = moduleText._ID;
+
+                            list.Add(t);
+                        }
+                    }
+                }
+            }
+            return list;
         }
     }
 

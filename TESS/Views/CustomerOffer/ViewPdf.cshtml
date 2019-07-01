@@ -25,6 +25,7 @@
                 <ul class="dropdown-menu">
                     <li><a onclick="openModal(this)" data-modal-target="head-information" href="#">Head information</a></li>
                     <li><a @{if (!isOpen) { @Html.Raw("class='disabled-link'") ; } else {@Html.Raw("onclick='openModal(this)'") ; }} data-modal-target="text-template" href="#">Text templates</a></li>
+                    <li><a @{if (!isOpen) { @Html.Raw("class='disabled-link'") ; } else {@Html.Raw("onclick='openModal(this)'") ; }} data-modal-target="module-info" href="#">Module Info</a></li>
                     <li><a @{if (!isOpen) { @Html.Raw("class='disabled-link'") ; } else {@Html.Raw("onclick='openModal(this)'") ; }} data-modal-target="articles" href="#">Articles</a></li>
                     <li><a @{if (!isOpen) { @Html.Raw("class='disabled-link'") ; } else {@Html.Raw("onclick='openModal(this)'") ; }} data-modal-target="services" href="#">Services</a></li>
                 </ul>

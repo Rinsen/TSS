@@ -478,6 +478,97 @@ namespace TietoCRM.Controllers
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             ViewData.Add("CustomerOffer", co);
 
+            List<dynamic> articles = new List<dynamic>();
+
+            SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
+
+            foreach (view_OfferRow offerRow in co._OfferRows)
+            {
+                view_Module module = new view_Module();
+                module.Select("Article_number = " + offerRow.Article_number);
+                dynamic offerInfo = new ExpandoObject();
+                offerInfo.Article_number = module.Article_number;
+                if (offerRow.Alias == null || offerRow.Alias == "")
+                    offerInfo.Module = module.Module;
+                else
+                    offerInfo.Module = offerRow.Alias;
+                offerInfo.System = module.System;
+                offerInfo.Classification = "A";
+                offerInfo.Price_category = module.Price_category;
+                offerInfo.Discount_type = module.Discount_type;
+                offerInfo.Discount = module.Discount;
+
+                view_Sector sector = new view_Sector();
+                sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
+
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleType = 'A' AND ModuleId = " + offerRow.Article_number.ToString());
+                offerInfo.OfferDescription = moduleText.Description;
+                offerInfo.Offer_number = offerRow.Offer_number;
+                offerInfo.ModuleTextId = moduleText._ID;
+
+                offerInfo.Price_type = sector.Price_type;
+                offerInfo.License = offerRow.License;
+                offerInfo.Maintenance = offerRow.Maintenance;
+                offerInfo.Fixed_price = offerRow.Fixed_price;
+                offerInfo.Sort_number = sector.SortNo;
+                articles.Add(offerInfo);
+                if (!articleSystemDic.ContainsKey(offerInfo.System))
+                {
+                    articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
+                }
+                else
+                {
+                    articleSystemDic[offerInfo.System].Add(offerInfo);
+                }
+            }
+
+            foreach (view_ConsultantRow consultantRow in co._ConsultantRows)
+            {
+                view_Service service = new view_Service();
+                service.Select("Code = " + consultantRow.Code.ToString());
+
+                dynamic offerInfo = new ExpandoObject();
+
+                offerInfo.Article_number = service.Code;
+                if (consultantRow.Alias == null || consultantRow.Alias == "")
+                    offerInfo.Module = service.Description;
+                else
+                    offerInfo.Module = consultantRow.Alias;
+                offerInfo.System = "Konsulttjänster";
+                offerInfo.Classification = "T";
+                offerInfo.Price_category = service.Price;
+                //offerInfo.Discount_type = module.Discount_type;
+                //offerInfo.Discount = module.Discount;
+
+                //view_Sector sector = new view_Sector();
+                //sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
+
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("Type = 'O' AND TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleType = 'T' AND ModuleId = " + consultantRow.Code.ToString());
+                offerInfo.OfferDescription = moduleText.Description;
+                offerInfo.Offer_number = consultantRow.Offer_number;
+                offerInfo.ModuleTextId = moduleText._ID;
+
+                offerInfo.Price_type = "Fastpris";
+                //offerInfo.License = offerRow.License;
+                //offerInfo.Maintenance = offerRow.Maintenance;
+                offerInfo.Fixed_price = service.Price;
+                offerInfo.Sort_number = "20";
+                articles.Add(offerInfo);
+                if (!articleSystemDic.ContainsKey(offerInfo.System))
+                {
+                    articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
+                }
+                else
+                {
+                    articleSystemDic[offerInfo.System].Add(offerInfo);
+                }
+            }
+
+            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
+
             ViewData.Add("Systems", GetAllSystemNames(co.Area));
 
             ViewData.Add("ContactPersons", view_CustomerContact.getAllCustomerContacts(customer));
@@ -641,6 +732,8 @@ namespace TietoCRM.Controllers
                     return Json_GetModulesAll();
                 case "update_module_rows":
                     return Json_UpdateModuleRows();
+                case "update_view_ModuleText":
+                    return this.ModuleTextData();
                 default:
                     return "";
             }
@@ -649,10 +742,8 @@ namespace TietoCRM.Controllers
         [ValidateInput(false)]
         public String Data(String key = "SSMA_timestamp")
         {
-
             try
             {
-
                 //String json = Request.Form["object"];
                 String json = HttpContext.Request.Unvalidated.Form["object"];
                 List<dynamic> map = null;
@@ -696,6 +787,115 @@ namespace TietoCRM.Controllers
             }
             catch (Exception e)
             {
+                return "-1";
+            }
+        }
+
+        /// <summary>
+        /// Sparar modultexterna till vyn view_ModuleText
+        /// </summary>
+        /// <returns>Result code</returns>
+        [ValidateInput(false)]
+        public string ModuleTextData()
+        {
+            try
+            {
+                //String json = Request.Form["object"];
+                string json = HttpContext.Request.Unvalidated.Form["object"];
+                var offertNr = 0;
+
+                List<dynamic> map = null;
+                try
+                {
+                    map = (List<dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(List<dynamic>));
+                }
+                catch (Exception)
+                {
+                    return "0";
+                }
+                if (map.Count == 0)
+                {
+                    return "0";
+                }
+                foreach (Dictionary<string, object> d in map)
+                {
+                    var amountOfModules = Convert.ToInt32(d["moduleCount"]) - 1;
+
+                    for (int i = 1; i <= amountOfModules; i++)
+                    {
+                        string currentTypeId = "typeId" + i.ToString();
+                        string currentModuleId = "moduleId" + i.ToString();
+
+                        view_ModuleText moduleText = new view_ModuleText();
+
+                        moduleText.ChangedBy = System.Web.HttpContext.Current.GetUser().Sign;
+                        moduleText.Changed = DateTime.Now;
+
+                        var moduleTextId = 0;
+                        int.TryParse(d["moduleTextId" + i.ToString()] != null ? d["moduleTextId" + i.ToString()].ToString() : "0", out moduleTextId);
+
+                        if(moduleTextId > 0) //Existing ModuleText
+                        {
+                            //Read row
+                            moduleText.Select("Id = " + moduleTextId.ToString());
+                        }
+
+                        foreach (KeyValuePair<string, object> entry in d)
+                        {
+                            if (entry.Key != "moduleCount")
+                            {
+                                if(moduleText._ID == 0)
+                                {
+                                    //Vi har flera modultexter i samma formulär med endast slutsiffra i id-namn som skiljer
+                                    if (entry.Key.CompareTo("typeId" + i.ToString()) == 0)
+                                    {
+                                        moduleText.SetValue("TypeId", entry.Value);
+                                    }
+                                    else if (entry.Key.CompareTo("moduleId" + i.ToString()) == 0)
+                                    {
+                                        moduleText.SetValue("ModuleId", entry.Value);
+                                    }
+                                }
+
+                                if (entry.Key.CompareTo("module-info-text" + i.ToString()) == 0)
+                                {
+                                    moduleText.SetValue("Description", entry.Value);
+                                }
+                            }
+                        }
+
+                        if (moduleText._ID > 0)
+                            moduleText.Update("Id = " + moduleText._ID.ToString() );
+                        else
+                        {
+                            //Endast vid INSERT
+                            moduleText.Type = "O"; //Offert
+                            moduleText.ModuleType = d["moduleType" + i.ToString()] != null ? d["moduleType" + i.ToString()].ToString() : ""; //"A"; //Artikel ?? Hur vet man? Hiddenparam?
+                            moduleText.Order = 0; // Vad ska hit? Sorteringsordning. Lämnar den så länge
+
+                            moduleText.CreatedBy = System.Web.HttpContext.Current.GetUser().Sign;
+                            moduleText.Created = DateTime.Now;
+
+                            moduleText.Insert();
+                        }
+
+                        offertNr = moduleText.TypeId;
+                    }
+                }
+
+                if(offertNr > 0) //Vi har en offert
+                {
+                    //Uppdatera offerten med nya texterna.
+                    view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offertNr.ToString());
+                    customerOffer.Module_info = updateDescriptions(offertNr);
+                    customerOffer.Update("Offer_number = " + offertNr.ToString());
+                }
+
+                return "1";
+            }
+            catch (Exception e)
+            {
+                var message = e.Message;
                 return "-1";
             }
         }
@@ -972,6 +1172,17 @@ namespace TietoCRM.Controllers
             foreach (view_OfferRow or in customerOffer._OfferRows)
             {
                 or.Delete("Offer_number = " + or.Offer_number + " AND Article_number = " + or.Article_number);
+
+                //Sätt eventuell Module_text till Deleted = 1
+                view_ModuleText moduleText = new view_ModuleText();
+
+                moduleText.Select("TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + or.Article_number.ToString());
+                if(moduleText._ID > 0) //Vi har en modultext
+                {
+                    //Den ska delete-markeras
+                    moduleText.Deleted = true;
+                    moduleText.Update("TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + or.Article_number.ToString());
+                }
             }
 
             foreach (Dictionary<String, Object> dict in list)
@@ -1003,6 +1214,17 @@ namespace TietoCRM.Controllers
                 offerRow.Include_status = false;
                 offerRow.Alias = Alias;
                 offerRow.Insert();
+
+                //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
+
+                if(moduleText._ID > 0)
+                {
+                    //Den ska avmarkeras FRÅN deleted.
+                    moduleText.Deleted = false;
+                    moduleText.Update("TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
+                }
             }
 
             customerOffer.Module_info = updateDescriptions(Offer_number);
@@ -1268,6 +1490,17 @@ namespace TietoCRM.Controllers
             foreach (view_ConsultantRow cr in customerOffer._ConsultantRows)
             {
                 cr.Delete("Offer_number = " + cr.Offer_number + " AND Code = " + cr.Code);
+
+                //Sätt eventuell Module_text till Deleted = 1
+                view_ModuleText moduleText = new view_ModuleText();
+
+                moduleText.Select("TypeId = " + cr.Offer_number.ToString() + " AND ModuleId = " + cr.Code.ToString());
+                if (moduleText._ID > 0) //Vi har en modultext
+                {
+                    //Den ska delete-markeras
+                    moduleText.Deleted = true;
+                    moduleText.Update("TypeId = " + cr.Offer_number.ToString() + " AND ModuleId = " + cr.Code.ToString());
+                }
             }
 
             foreach (Dictionary<String, Object> dict in list)
@@ -1287,6 +1520,17 @@ namespace TietoCRM.Controllers
                 consultantRow.Total_price = total;
                 consultantRow.Include_status = false;
                 consultantRow.Insert();
+
+                //Sätt eventuell Module_text till Deleted = 0
+                view_ModuleText moduleText = new view_ModuleText();
+
+                moduleText.Select("TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleId = " + consultantRow.Code.ToString());
+                if (moduleText._ID > 0) //Vi har en modultext
+                {
+                    //Den ska avmarkeras som deleted = false
+                    moduleText.Deleted = false;
+                    moduleText.Update("TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleId = " + consultantRow.Code.ToString());
+                }
             }
 
             customerOffer.Module_info = updateDescriptions(offer);
@@ -1346,6 +1590,7 @@ namespace TietoCRM.Controllers
         }
         private string updateDescriptions(int ofnr)
         {
+            //Här vill vi läsa upp texterna från view_ModuleText istället för V_Module - fixa qry_OfferArtDescription
             view_OfferRow orow = new view_OfferRow();
             List<dynamic> l = orow.GetOfferRowsForModuleInfo(ofnr);
             string moduleInfo = "";
@@ -1357,7 +1602,7 @@ namespace TietoCRM.Controllers
                     //moduleInfo = "<h4><strong>Information produkter</strong></h4>";
                     moduleInfo = "<h5>Information produkter</h5>";
                 }
-                //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + mi.Offer_description + "</p>";
             }
             return moduleInfo;

@@ -194,7 +194,14 @@ namespace TietoCRM.Models
 	            {
                     if (pi.Name.ToLower() != "ssma_timestamp" && !pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK"))
                     {
-                        query += "" + pi.Name + "=";
+                        if(pi.Name.CompareTo("Order") == 0)
+                        {
+                            query += "[" + pi.Name + "]=";
+                        }
+                        else
+                        {
+                            query += "" + pi.Name + "=";
+                        }                        
                         query += "@" + pi.Name + ",";
                     }
 	            }
@@ -354,7 +361,21 @@ namespace TietoCRM.Models
                 foreach (PropertyInfo pi in this.propertyInfos)
                 {
                     if (!pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK"))
-                        query += pi.Name + ",";
+                    {
+                        if(pi.Name.CompareTo("Order") == 0) //Reserved name..
+                        {
+                            query += "[Order]" + ",";
+                        }
+                        else if ( pi.Name.CompareTo("Id") == 0)
+                        {
+                            continue; //Identity i databasen ska ej göras insert på. Det sköter db.
+                        }
+                        else
+                        {
+                            query += pi.Name + ",";
+                        }                        
+                    }
+                        
                     if (pi.Name.Equals("ID_PK") || pi.Name.Equals("_ID"))
                         returnId = true;
                 }

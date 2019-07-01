@@ -188,37 +188,38 @@ namespace TietoCRM.Models
                     command.Parameters.AddWithValue("@customer", customer);
                 }
 
-                command.ExecuteNonQuery();
-
-                using (SqlDataReader reader = command.ExecuteReader())
+                if(!(customer == "*" && our_sign == "*"))
                 {
+                    command.ExecuteNonQuery();
 
-                    while (reader.Read())
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.HasRows)
+
+                        while (reader.Read())
                         {
-                            view_CustomerOffer t = new view_CustomerOffer();
-                            int i = 0;
-                            int j = 0;
-                            while (reader.FieldCount > i)
+                            if (reader.HasRows)
                             {
-                                String columnName = reader.GetName(i);
-                                if (columnName != "SSMA_TimeStamp" && columnName != "ID")
+                                view_CustomerOffer t = new view_CustomerOffer();
+                                int i = 0;
+                                int j = 0;
+                                while (reader.FieldCount > i)
                                 {
-                                    t.SetValue(t.GetType().GetProperties()[j].Name, reader.GetValue(i));
-                                    j++;
+                                    String columnName = reader.GetName(i);
+                                    if (columnName != "SSMA_TimeStamp" && columnName != "ID")
+                                    {
+                                        t.SetValue(t.GetType().GetProperties()[j].Name, reader.GetValue(i));
+                                        j++;
+                                    }
+                                    i++;
                                 }
-                                i++;
+                                t.GetHashtags();
+                                t._OfferRows = view_OfferRow.getAllOfferRows(t._Offer_number.ToString(), t.Area);
+                                t._ConsultantRows = view_ConsultantRow.getAllConsultantRow(t._Offer_number.ToString());
+                                list.Add(t);
                             }
-                            t.GetHashtags();
-                            t._OfferRows = view_OfferRow.getAllOfferRows(t._Offer_number.ToString(), t.Area);
-                            t._ConsultantRows = view_ConsultantRow.getAllConsultantRow(t._Offer_number.ToString());
-                            list.Add(t);
                         }
                     }
                 }
-
-
             }
             return list;
         }
