@@ -204,7 +204,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
                 // Default query
-                command.CommandText = @"SELECT Alias, Description FROM qry_OfferArtDescription Where Offertnr = @offerNumber Order By Typ, Art_id";
+                command.CommandText = @"SELECT Alias, Description FROM qry_OfferArtDescription Where Offertnr = @offerNumber Order By Typ, Alias";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -225,11 +225,9 @@ namespace TietoCRM.Models
                         }
                     }
                 }
-
-
             }
-            return list;
 
+            return list;
         }
         private static string GetOrderBy()
         {

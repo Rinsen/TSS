@@ -1557,11 +1557,10 @@ else if (Request["modal"] == "module-info")
                             </tr>
                             count++;
                         }
-
                     }
                 </table>
-                    <input type="hidden" id="moduleCount" name="moduleCount" value="@count">
-                </div>
+                <input type="hidden" id="moduleCount" name="moduleCount" value="@count">
+            </div>
         </div>
     </form>
 
@@ -1645,6 +1644,7 @@ else if (Request["modal"] == "module-info")
                         "type": "GET",
                         "success": function (data) {
                             $(".crm-pdf-offer-section").html(data);
+                            triggerAlert("Successfully saved module texts", "success");
                         }
                     });
                         //// Update current values

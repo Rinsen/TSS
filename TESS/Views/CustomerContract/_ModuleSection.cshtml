@@ -77,22 +77,24 @@
         bool hasDiscounts = false;
 
 
-        <div id="crm-pdf-module-rows" class="">
-       
-        @foreach (KeyValuePair<String, List<dynamic>> system in list)
-        {
-            // Get next Price_type
-            String nextPriceType = "";
-            hasDiscounts = false;
-            int nextIndex = systemCount + 1;
-            if (nextIndex < list.Count)
-            {
-                nextPriceType = list[nextIndex].Value[0].Price_type;
-            }
+<div id="crm-pdf-module-rows" class="">
 
-            for (int i = 0; i < system.Value.Count; i++)
+    @foreach (KeyValuePair<String, List<dynamic>> system in list)
+    {
+        // Get next Price_type
+        String nextPriceType = "";
+        hasDiscounts = false;
+        int nextIndex = systemCount + 1;
+        if (nextIndex < list.Count)
+        {
+            nextPriceType = list[nextIndex].Value[0].Price_type;
+        }
+
+        for (int i = 0; i < system.Value.Count; i++)
+        {
+            var article = system.Value[i];
+            if (article.ModuleType == "A") //Artiklar
             {
-                var article = system.Value[i];
                 currentPriceType = article.Price_type;
                 if (i == 0)
                 {
@@ -100,7 +102,7 @@
                         <table>
                             <tr>
                                 <td>
-                                    @if(canShowTitle)
+                                    @if (canShowTitle)
                                     {
                                         canShowTitle = false;
                                         <span style="font-size: 10pt; font-weight: bold">@title</span>
@@ -127,7 +129,7 @@
                 String License = "";
                 String Maintenance = "";
                 // Format currency
-                if(((IDictionary<String, object>)article).ContainsKey("Discount")) // Handle Discounts
+                if (((IDictionary<String, object>)article).ContainsKey("Discount")) // Handle Discounts
                 {
                     hasDiscounts = true;
                     if (article.Discount != 1 || article.Discount_type == 0)
@@ -206,7 +208,7 @@
                 }
 
                 // Print System header for article groups
-                if ( i == 0 )
+                if (i == 0)
                 {
                     <div class="crm-pdf-subrows_1">
                         <table>
@@ -230,70 +232,71 @@
 
                 previousPriceType = article.Price_type;
             }
-            if(hasDiscounts)
-            {
-                if (discountsMP < -100)
-                {
-                    discountsMP = -100;
-                }
-                if (discountsLP < -100)
-                {
-                    discountsLP = -100;
-                }
-
-                ProductLicenseTotal += discountsLM;
-                ProductMaintenanceTotal += discountsMM;
-                discountsLM = 0;
-                discountsMM = 0;
-            }
-
-
-            // Format currency for total sums
-            String ProductLicenseTotalFormated;
-            String ProductMaintenanceTotalFormated;
-            if ((ProductLicenseTotal % 1) == 0)
-            {
-                ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
-            }
-            else
-            {
-                ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
-            }
-            if ((ProductMaintenanceTotal % 1) == 0)
-            {
-                ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
-            }
-            else
-            {
-                ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
-            }
-            if (!krEveryRow)
-            {
-                ProductLicenseTotalFormated = ProductLicenseTotalFormated.Replace(" kr", "");
-                ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
-            }
-
-            // Show summerization if next Price_type differs from current and summerization is enabled.
-            if (nextPriceType != currentPriceType && toBeSummerized)
-            {
-                <span class="large-divider"></span>
-                <div class="@subs1">
-                    <table>
-                        <tr>
-                            <td></td>
-                            <td>Summa</td>
-                            <td>@ProductLicenseTotalFormated</td>
-                            <td>@ProductMaintenanceTotalFormated</td>
-                        </tr>
-                    </table>
-                </div>
-                ProductLicenseTotal = 0;
-                ProductMaintenanceTotal = 0;
-            }
-            systemCount++;
         }
-       
-    </div>
+        if (hasDiscounts)
+        {
+            if (discountsMP < -100)
+            {
+                discountsMP = -100;
+            }
+            if (discountsLP < -100)
+            {
+                discountsLP = -100;
+            }
+
+            ProductLicenseTotal += discountsLM;
+            ProductMaintenanceTotal += discountsMM;
+            discountsLM = 0;
+            discountsMM = 0;
+        }
+
+
+        // Format currency for total sums
+        String ProductLicenseTotalFormated;
+        String ProductMaintenanceTotalFormated;
+        if ((ProductLicenseTotal % 1) == 0)
+        {
+            ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
+        }
+        else
+        {
+            ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal + ProductLicenseTotal * (decimal)discountsLP / 100).Replace(".", " ");
+        }
+        if ((ProductMaintenanceTotal % 1) == 0)
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
+        }
+        else
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal + ProductMaintenanceTotal * (decimal)discountsMP / 100).Replace(".", " ");
+        }
+        if (!krEveryRow)
+        {
+            ProductLicenseTotalFormated = ProductLicenseTotalFormated.Replace(" kr", "");
+            ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
+        }
+
+        // Show summerization if next Price_type differs from current and summerization is enabled.
+        if (nextPriceType != currentPriceType && toBeSummerized)
+        {
+            <span class="large-divider"></span>
+            <div class="@subs1">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td>Summa</td>
+                        <td>@ProductLicenseTotalFormated</td>
+                        <td>@ProductMaintenanceTotalFormated</td>
+                    </tr>
+                </table>
+            </div>
+            ProductLicenseTotal = 0;
+            ProductMaintenanceTotal = 0;
+        }
+        systemCount++;
+    }
+
+</div>
     }
 }
 

@@ -2,6 +2,19 @@
 
     var frm = $("#templatesModal form");
 
+    $("#moduleInfo-modal-button").click(function () {
+
+        $.ajax({
+            "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleInfoSection",
+            "type": "GET",
+            "success": function (data) {
+                $(".crm-pdf-module-info-section").html(data);
+                $("#moduleInfoModal").appendTo("body").modal("show").find('.modal-content').draggable();
+            }
+        });
+
+    });
+
     $("#textTemplate-modal-button").click(function () {
         
         if (isMainCont == "True") {
@@ -189,7 +202,6 @@ var loadTextData = function (templateID) {
         }
     });
 };
-
 
 var loadSelectData = function () {
 

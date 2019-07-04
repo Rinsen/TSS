@@ -912,6 +912,7 @@
     <Content Include="Views\ModuleMapping\Index.cshtml" />
     <Content Include="Views\CustomerContract\ShippingListPdf.cshtml" />
     <Content Include="Views\ExportExcel\Index.cshtml" />
+    <Content Include="Views\CustomerContract\_ModuleInfoSection.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -478,7 +478,6 @@ namespace TietoCRM.Controllers
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             ViewData.Add("CustomerOffer", co);
 
-            List<dynamic> articles = new List<dynamic>();
 
             SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
 
@@ -503,7 +502,7 @@ namespace TietoCRM.Controllers
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleType = 'A' AND ModuleId = " + offerRow.Article_number.ToString());
-                offerInfo.OfferDescription = moduleText.Description;
+                offerInfo.OfferDescription = (moduleText.Description == null) || (moduleText.Description == "") ? module.Offer_description : moduleText.Description;
                 offerInfo.Offer_number = offerRow.Offer_number;
                 offerInfo.ModuleTextId = moduleText._ID;
 
@@ -512,7 +511,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
-                articles.Add(offerInfo);
+
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
                 {
                     articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
@@ -536,26 +535,21 @@ namespace TietoCRM.Controllers
                 else
                     offerInfo.Module = consultantRow.Alias;
                 offerInfo.System = "Konsulttjänster";
-                offerInfo.Classification = "T";
+                offerInfo.Classification = "K";
                 offerInfo.Price_category = service.Price;
-                //offerInfo.Discount_type = module.Discount_type;
-                //offerInfo.Discount = module.Discount;
-
-                //view_Sector sector = new view_Sector();
-                //sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
 
                 view_ModuleText moduleText = new view_ModuleText();
-                moduleText.Select("Type = 'O' AND TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleType = 'T' AND ModuleId = " + consultantRow.Code.ToString());
-                offerInfo.OfferDescription = moduleText.Description;
-                offerInfo.Offer_number = consultantRow.Offer_number;
+                moduleText.Select("Type = 'O' AND TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
+                offerInfo.OfferDescription = (moduleText.Description == null) || (moduleText.Description == "") ? service.Offer_description : moduleText.Description;
+                offerInfo.Offer_number = consultantRow.Offer_number; //??
                 offerInfo.ModuleTextId = moduleText._ID;
 
-                offerInfo.Price_type = "Fastpris";
+                offerInfo.Price_type = "Övrig"; 
                 //offerInfo.License = offerRow.License;
                 //offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = service.Price;
                 offerInfo.Sort_number = "20";
-                articles.Add(offerInfo);
+
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
                 {
                     articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
@@ -566,8 +560,7 @@ namespace TietoCRM.Controllers
                 }
             }
 
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().System).ThenBy(d => d.Value.First().Module).ToList());
 
             ViewData.Add("Systems", GetAllSystemNames(co.Area));
 
@@ -870,8 +863,8 @@ namespace TietoCRM.Controllers
                         {
                             //Endast vid INSERT
                             moduleText.Type = "O"; //Offert
-                            moduleText.ModuleType = d["moduleType" + i.ToString()] != null ? d["moduleType" + i.ToString()].ToString() : ""; //"A"; //Artikel ?? Hur vet man? Hiddenparam?
-                            moduleText.Order = 0; // Vad ska hit? Sorteringsordning. Lämnar den så länge
+                            moduleText.ModuleType = d["moduleType" + i.ToString()] != null ? d["moduleType" + i.ToString()].ToString() : "";
+                            moduleText.Order = 0; // Sorteringsordning. Lämnar den så länge
 
                             moduleText.CreatedBy = System.Web.HttpContext.Current.GetUser().Sign;
                             moduleText.Created = DateTime.Now;
@@ -1176,12 +1169,12 @@ namespace TietoCRM.Controllers
                 //Sätt eventuell Module_text till Deleted = 1
                 view_ModuleText moduleText = new view_ModuleText();
 
-                moduleText.Select("TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + or.Article_number.ToString());
+                moduleText.Select("Type = 'O' AND TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + or.Article_number.ToString());
                 if(moduleText._ID > 0) //Vi har en modultext
                 {
                     //Den ska delete-markeras
                     moduleText.Deleted = true;
-                    moduleText.Update("TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + or.Article_number.ToString());
+                    moduleText.Update("Type = 'O' AND TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + or.Article_number.ToString());
                 }
             }
 
@@ -1217,13 +1210,13 @@ namespace TietoCRM.Controllers
 
                 //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
                 view_ModuleText moduleText = new view_ModuleText();
-                moduleText.Select("TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
+                moduleText.Select("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
 
                 if(moduleText._ID > 0)
                 {
                     //Den ska avmarkeras FRÅN deleted.
                     moduleText.Deleted = false;
-                    moduleText.Update("TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
+                    moduleText.Update("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
                 }
             }
 
@@ -1602,7 +1595,7 @@ namespace TietoCRM.Controllers
                     //moduleInfo = "<h4><strong>Information produkter</strong></h4>";
                     moduleInfo = "<h5>Information produkter</h5>";
                 }
-                moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
+                //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + mi.Offer_description + "</p>";
             }
             return moduleInfo;

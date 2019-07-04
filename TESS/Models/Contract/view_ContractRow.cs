@@ -401,7 +401,7 @@ public class view_ContractRow : SQLBaseClass
                 //                        Inner Join  " + databasePrefix + @"Module M On M.Article_number = C.Article_number 
                 //                        Where IsNull(M.Contract_Description,'') <> '' And C.Customer = @customer And C.Contract_id = @contract_id Order By " + GetOrderBy();
 
-                command.CommandText = @"SELECT Alias, Contract_Description FROM qry_ContractArtDescription Where Avtalsid = @contract_id And Kund = @customer Order By Typ, Art_id";
+                command.CommandText = @"SELECT Alias, Description FROM qry_ContractArtDescription Where Avtalsid = @contract_id And Kund = @customer Order By Typ, Alias";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);

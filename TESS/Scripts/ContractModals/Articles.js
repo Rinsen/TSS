@@ -671,6 +671,16 @@ var saveArticlesFunction = function () {
                         updateDoneAjax(2);
                     }
                 });
+
+                //Also update dialogs
+                $.ajax({
+                    "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleInfoSection",
+                    "type": "GET",
+                    "success": function (data) {
+                        $(".crm-pdf-module-info-section").html(data);
+                        updateDoneAjax(3);
+                    }
+                });
             }
             else{
                 console.log(data);
