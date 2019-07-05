@@ -54,6 +54,9 @@ namespace TietoCRM.Models
         private String title;
         public String Title { get { return title; } set { title = value; } }
 
+        private String module_header;
+        public String Module_header { get { return module_header; } set { module_header = value; } }
+
         private String module_info;
         public String Module_info { get { return module_info; } set { module_info = value; } }
 

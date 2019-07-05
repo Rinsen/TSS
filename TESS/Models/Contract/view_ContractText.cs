@@ -44,6 +44,9 @@ namespace TietoCRM.Models
         private String module_info;
         public String Module_info { get { return module_info; } set { module_info = value; } }
 
+        private String module_header;
+        public String Module_header { get { return module_header;  } set { module_header = value; } }
+
         private DateTime ssma_timestamp;
         public DateTime SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -70,7 +73,7 @@ namespace TietoCRM.Models
 
                 // Default query
                 command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Document_head] ,[Page_head] ,[Title] ,";
-                command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot], Module_info,";
+                command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot], Module_info, Module_header";
                 command.CommandText += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractText_Show WHERE " + "Customer = @customer";
 
                 command.Prepare();
@@ -142,7 +145,7 @@ namespace TietoCRM.Models
 
                 // Default query
                 command.CommandText = "SELECT [Contract_id] ,[Customer] ,[Contract_type] ,[Document_head] ,[Page_head] ,[Title] ,";
-                command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot], Module_info,";
+                command.CommandText += "Delivery_maint_title, Delivery_maint_text, Page_foot, Document_foot_title, [Document_foot], Module_info, Module_header";
                 command.CommandText += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ContractText_Show WHERE Customer = @customer And contract_id = @cid";
 
                 command.Prepare();

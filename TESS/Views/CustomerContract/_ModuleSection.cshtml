@@ -21,9 +21,9 @@
         </div>
     }
 
-    <div class="crm-pdf-module-section-text">
-        @Html.Raw(ViewBag.ModuleText)
-    </div>
+<div class="crm-pdf-module-section-text">
+    @Html.Raw(ViewBag.ModuleText)
+</div>
 
 <!-- Print Consultant Services -->
 @PrintConsultantServices(ViewBag.CustomerContract._ContractConsultantRows, "Tjänster")
@@ -31,9 +31,10 @@
 @if (!ViewBag.CustomerContract.Is(ContractType.MainContract))
 {
     {
-    <div id="crm-pdf-module-info">
-        <div id = "Module_info" > @Html.Raw(@ViewBag.ContractText.Module_info) </div >
-    </div>
+<div id="crm-pdf-module-info">
+    <div id="template-Module_header">@Html.Raw(@ViewBag.ContractText.Module_header)</div>
+    <div id="Module_info"> @Html.Raw(@ViewBag.ContractText.Module_info) </div>
+</div>
     }
 }
 <!-- Help printing functinos -->
@@ -93,7 +94,8 @@
         for (int i = 0; i < system.Value.Count; i++)
         {
             var article = system.Value[i];
-            if (article.ModuleType == "A") //Artiklar
+
+            if (!((IDictionary<String, object>)article).ContainsKey("ModuleType") || article.ModuleType == "A") //Om ModuleType finns så godtar vi bara Artiklar
             {
                 currentPriceType = article.Price_type;
                 if (i == 0)

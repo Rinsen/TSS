@@ -2723,11 +2723,12 @@ namespace TietoCRM.Controllers.Contracts
 
             foreach (var mi in l)
             {
-                if (moduleInfo == "")
-                {
-                    //moduleInfo = "<h5><strong>Information produkter</strong></h4>";
-                    moduleInfo = "<h5>Information produkter</h5>";
-                }
+                //Rubriken skapas nu från annat håll. Läggs ut i _ModuleSection.cshtml och hämtas från ny kolumn i view_ContractText (Module_Header)
+                //if (moduleInfo == "")
+                //{
+                //    //moduleInfo = "<h5><strong>Information produkter</strong></h4>";
+                //    moduleInfo = "<h5>Information produkter</h5>";
+                //}
                 //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + mi.Contract_description + "</p>";
             }

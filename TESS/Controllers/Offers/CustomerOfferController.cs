@@ -1583,18 +1583,19 @@ namespace TietoCRM.Controllers
         }
         private string updateDescriptions(int ofnr)
         {
-            //Här vill vi läsa upp texterna från view_ModuleText istället för V_Module - fixa qry_OfferArtDescription
+            //Vi läser upp texterna från view_ModuleText istället för V_Module. Ny tabell för att kunna spara en text per modul (artikel eller tjänst)
             view_OfferRow orow = new view_OfferRow();
             List<dynamic> l = orow.GetOfferRowsForModuleInfo(ofnr);
             string moduleInfo = "";
 
             foreach (var mi in l)
             {
-                if (moduleInfo == "")
-                {
-                    //moduleInfo = "<h4><strong>Information produkter</strong></h4>";
-                    moduleInfo = "<h5>Information produkter</h5>";
-                }
+                //Rubriken skapas nu från annat håll. Läggs ut i _OfferHTML_OfferSection.cshtml och hämtas från ny kolumn i view_CustomerOffer (Module_header)
+                //if (moduleInfo == "")
+                //{
+                //    //moduleInfo = "<h4><strong>Information produkter</strong></h4>";
+                //    moduleInfo = "<h5>Information produkter</h5>";
+                //}
                 //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + mi.Offer_description + "</p>";
             }
