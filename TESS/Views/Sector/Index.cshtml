@@ -124,7 +124,12 @@
                         triggerAlert("Successfully updated this Sector", "success");
                     }
                     else {
-                        triggerAlert("Something went wrong when trying to update the Sector on the server", "warning");
+                        if (data == 0) {
+                            triggerAlert("SortNo already exist", "warning");
+                        }
+                        else {
+                            triggerAlert("Something went wrong when trying to update the Sector on the server", "warning");
+                        }
                     }
                 }
             });
@@ -153,7 +158,12 @@
                         triggerAlert("Successfully inserted the new Sector", "success");
                     }
                     else {
-                        triggerAlert("Something went wrong when trying to insert the Sector to the server", "warning");
+                        if (data == 0) {
+                            triggerAlert("SortNo already exist", "warning");
+                        }
+                        else {
+                            triggerAlert("Something went wrong when trying to insert the Sector on the server", "warning");
+                        }
                     }
                 }
             });
