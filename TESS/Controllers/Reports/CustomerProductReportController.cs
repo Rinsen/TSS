@@ -52,11 +52,11 @@ namespace TietoCRM.Controllers
 
         public ActionResult Pdf()
         {
-            if(Request["customer"] != "null")
+            if (Request["customer"] != "null")
             {
 
-            String area = System.Web.HttpContext.Current.GetUser().Area;
-            bool withExpired = Request["expired"] == "Ja" ? true : false;
+                String area = System.Web.HttpContext.Current.GetUser().Area;
+                bool withExpired = Request["expired"] == "Ja" ? true : false;
 
                 List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null, area, withExpired);
 
@@ -103,9 +103,6 @@ namespace TietoCRM.Controllers
             {
                 return Content("No customer was chosen");
             }
-            
-            
-            
         }
 
         public void ExportAsCsv()

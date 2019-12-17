@@ -19,7 +19,17 @@
             for (var i = 0; i < length; i++) {
                 service = servicesData[i];
                 
-                services.push({ id: service.Code, amount: service.Amount, total: service.Total, desc:service.Alias });
+                services.push({
+                    id: service.Code,
+                    amount: service.Amount,
+                    total: service.Total,
+                    desc: service.Alias,
+                    Contract_description: service.Contract_Description,
+                    Contract_id: service.Contract_id,
+                    Module_text_id: service.Module_text_id,
+                    Module_type: service.Module_type,
+                    Article_number: service.Article_number
+                });
                 setTotalCost(service.Amount, service.Price);
             }
         }
@@ -185,7 +195,17 @@ var newItem = function(element, price){
             highlightItem($amountLabel.parent(), "highlight-item-blue");
 
             setTotalCost(1 ,price);
-            services.push({ id: $newButton.attr("data-code"), amount: 1, total: price, desc: $button.find("#description-title").html() });
+            services.push({
+                id: $newButton.attr("data-code"),
+                amount: 1,
+                total: price,
+                desc: $button.find("#description-title").html(),
+                Contract_description: $newButton.attr("data-contract-description"),
+                Contract_id: $newButton.attr("data-contract-id"),
+                Module_text_id: $newButton.attr("data-module-text-id"),
+                Module_type: $newButton.attr("data-module-type"),
+                Article_number: $newButton.attr("data-code")
+            });
         }
         else{
             $selectedButton = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']");
@@ -247,7 +267,17 @@ var updateServiceSelected = function () {
                     " + service.Description + "                                                                                         \
                 </button>                                                                                                               \
                 ");
-                services.push({ id: service.Code, amount: service.Amount, total: service.Total, desc: service.Description});
+                services.push({
+                    id: service.Code,
+                    amount: service.Amount,
+                    total: service.Total,
+                    desc: service.Description,
+                    Contract_description: service.Contract_Description,
+                    Contract_id: service.Contract_id,
+                    Module_text_id: service.Module_text_id,
+                    Module_type: service.Module_type,
+                    Article_number: service.Article_number
+                });
                 setTotalCost(service.Amount, service.Price);
             }
         }
@@ -272,14 +302,31 @@ var saveFunction = function(){
         "success": function (data) {
             if (data > 0) {
                 console.log("success");
-                // Success to update db. Now update the preview section.
+
+                //Need to save standard texts to moduleinfo
                 $.ajax({
-                    "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",
-                    "type": "GET",
+                    "url": serverPrefix + "CustomerContract/SaveModuleInfoTexts/",
+                    "type": "POST",
+                    "data": {
+                        "object": JSON.stringify(services)
+                    },
+                    dataType: 'text',
+                    // iOS 6 has a dreadful bug where POST requests are not sent to the
+                    // server if they are in the cache.
+                    headers: { 'Cache-Control': 'no-cache' }, // Apple!
                     "success": function (data) {
-                        $(".crm-pdf-module-section").html(data);
-                        $("#servicesModal").modal("hide");
-                        triggerAlert("Successfully added articles", "success");
+                        if (data > 0) {
+                            $.ajax({
+                                "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",
+                                "type": "GET",
+                                "success": function (data) {
+                                    $(".crm-pdf-module-section").html(data);
+                                    updateDoneAjax(0);
+                                }
+                            });
+                        }
+
+                        window.location = "ViewPdf?contract-id=" + contractId + "&customer=" + customerName;
                     }
                 });
             }

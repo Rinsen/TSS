@@ -54,7 +54,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" id="save-module-info-changes" class="btn btn-primary">Save</button>
+        <button type="button" id="save-module-info-changes" @{ if (ViewBag.ArticleSystemDictionary.Count == 0) { @Html.Raw("disabled='disabled' ")  ; } } class="btn btn-primary">Save</button>
     </div>
 }
 

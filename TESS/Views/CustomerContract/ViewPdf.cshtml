@@ -5,6 +5,7 @@
     bool isSent = ViewBag.CustomerContract.Status == "Sänt";
     bool isValid = ViewBag.CustomerContract.Status == "Giltigt";
     bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
+    bool hasModules = ViewBag.ArticleSystemDictionary.Count > 0 ? true : false;
 }
 @using TietoCRM.Models;
 @section Style
@@ -99,7 +100,15 @@
                     <li><a data-toggle="modal" id="head-info-modal-button" href="#">Contract information</a></li>
                     <li><a data-toggle="modal" id="contractHead-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Customer information</a></li>
                     <li><a data-toggle="modal" id="textTemplate-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Text templates</a></li>
-                    <li><a data-toggle="modal" id="moduleInfo-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Module Info</a></li>
+                    <li><a data-toggle="modal" @{ 
+                        if (!isSent || !hasModules)
+                        { 
+                            @Html.Raw("id='' class='disabled-link'"); //Inga moduler eller fel status -> Ej klickbar länk
+                        }
+                        else
+                        {
+                            @Html.Raw("id='moduleInfo-modal-button' href='#'");
+                        }}>Module Info</a></li>
                     <li><a data-toggle="modal" id="finalizetermination-modal-button" @{ if (!isValid || !isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Finalize Termination</a></li>
 
                 </ul>
@@ -611,7 +620,7 @@
                                                 CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
                                             }
-                                            @foreach (view_ContractRow or in ViewBag.CustomerContract._ContractRows)
+                                            @foreach (dynamic or in ViewBag.Articles)
                                             {
                                                 // Fetch modules
                                                 view_Module module = new view_Module();
@@ -659,7 +668,10 @@
                                                         data-discount-type="@module.Discount_type"
                                                         @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
                                                         data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
-                                                        data-alias="@or.Alias"
+                                                        data-alias="@or.Module"
+                                                        data-module-text-id="@or.ModuleTextId"
+                                                        data-contract-description="@module.Contract_description"
+                                                        data-contract-id="@or.Id"
                                                         @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
                                                         @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; }; }
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
@@ -670,36 +682,36 @@
                                                             {
                                                                 if (or.Removed == true)
                                                                 {
-                                                                    if (or.Alias.IsEmpty())
+                                                                    if (or.Module == "")
                                                                     {
                                                                         <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Alias</td>
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Module</td>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (or.Alias.IsEmpty())
+                                                                    if (or.Module == "")
                                                                     {
                                                                         <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@or.Alias</td>
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@or.Module</td>
                                                                     }
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (or.Alias.IsEmpty())
+                                                                if (or.Module == "")
                                                                 {
                                                                     <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@or.Alias</td>
+                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@or.Module</td>
                                                                 }
                                                             }
                                                             @if (module.System != "Lärportal")
@@ -944,6 +956,9 @@
                                                     cost = (int)service.Price;
                                                 }
 
+                                                view_ModuleText moduleText = new view_ModuleText();
+                                                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+
                                                 <table>
                                                     <td style="display:inline-block; margin-top: 2vh; cursor: pointer">
                                                         <span onclick="editService(this);" class="glyphicon glyphicon-pencil">
@@ -951,7 +966,16 @@
                                                         </span>
                                                     </td>
                                                     <td style="display:inline-block; float:right; width:95%">
-                                                        <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="false" class="list-group-item">
+                                                        <button style="margin-bottom:25px" 
+                                                                       type="button" 
+                                                                       onclick="newItem(this, @cost)" 
+                                                                       data-contract-id="@contract._ID" 
+                                                                       data-module-type="K" 
+                                                                       data-module-text-id="@moduleText._ID" 
+                                                                       data-code="@service.Code" 
+                                                                       data-selected="false" 
+                                                                       data-contract-description="@service.Contract_description"
+                                                                       class="list-group-item">
                                                             <label>@price</label>
                                                             <span class="service-amount"></span>
                                                             <br />

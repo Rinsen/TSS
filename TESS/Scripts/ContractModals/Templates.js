@@ -78,7 +78,7 @@
                             if ($updateTarget.length > 0) {
                                 $updateTarget.html(val);
                             }
-                        })
+                        });
 
                         $("#templatesModal").modal("hide");
                         triggerAlert("Successfully updated this contract text", "success");
