@@ -690,7 +690,7 @@ var saveArticlesFunction = function () {
                     "type": "GET",
                     "success": function (data) {
                         $(".crm-pdf-old-module-section").html(data);
-                        updateDoneAjax(0);
+                        updateDoneAjax(1);
                     }
                 });
 
@@ -699,7 +699,7 @@ var saveArticlesFunction = function () {
                     "type": "GET",
                     "success": function (data) {
                         $(".crm-pdf-moduletermination-section").html(data);
-                        updateDoneAjax(1);
+                        updateDoneAjax(2);
                     }
                 });
 
@@ -724,7 +724,7 @@ var saveArticlesFunction = function () {
     });
 };
 
-doneAjax = [false,false,false];
+doneAjax = [false,false,false, false];
 var updateDoneAjax = function(ajaxRequestDone)
 {
     doneAjax[ajaxRequestDone] = true;

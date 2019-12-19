@@ -2415,7 +2415,7 @@ namespace TietoCRM.Controllers.Contracts
                     //Har vi med oss "Contract_description" så kommer vi direkt från addering av artikel eller tjänst - ej från Modul info dialogen
                     if(d.ContainsKey("Contract_description") && d.ContainsKey("Contract_id"))
                     {
-                        var moduleTextId = d.ContainsKey("Contract_description") ? Convert.ToInt32(d["Module_text_id"]) : 0;
+                        var moduleTextId = d.ContainsKey("Module_text_id") ? Convert.ToInt32(d["Module_text_id"]) : 0;
                         object value;
 
                         contractId = Convert.ToInt32(d["Contract_id"]);
@@ -2430,7 +2430,7 @@ namespace TietoCRM.Controllers.Contracts
                                     Changed = DateTime.Now,
                                     Description = d["Contract_description"].ToString(),
 
-                                    Type = "A",
+                                    Type = "A", //Artikel
 
                                     ModuleType = d["Module_type"].ToString(),
                                     TypeId = Convert.ToInt32(d["Contract_id"]),
