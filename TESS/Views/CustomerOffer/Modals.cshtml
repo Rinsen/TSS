@@ -1306,11 +1306,13 @@ else if (Request["modal"] == "services")
 
                 String price = String.Format(se, "{0:C2}", service.Price);
                 int cost = (int)service.Price;
+
+                var resultString = !string.IsNullOrEmpty(service.Offer_description) ? service.Offer_description : "";
                 
                 @Html.Raw("services.push({id:" + row.Code +
                                        ", amount:" + row.Amount +
                                        ", total:" + (int)row.Total_price +
-                                       ", Offer_description:'" + service.Offer_description.ToString() + "'" +
+                                       ", Offer_description:'" + resultString + "'" +
                                        ", Offer_id:" + row.Offer_number +
                                        ", Module_text_id:" + moduleText._ID +
                                        ", Module_type:'K'" +
