@@ -219,9 +219,7 @@
                                                             }
 
                                                         </span>
-                                                        <!--
-                                                        -->
-                                                        <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-id="@module.Article_number" data-alias="@module.Alias" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
+                                                        <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-offer-number="@module.Offer_number" data-id="@module.Article_number" data-alias="@module.Alias" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
                                                     </li>
                                                 }
                                             }
@@ -251,7 +249,8 @@
                                                         <span class="list-inline" style="width:95%; display:inline-block">
                                                             @{ view_Service s = new view_Service();
                                                                 s.Select("Code = " + service.Code);
-                                                                String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + " }";
+                                                                String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + ", \"offer_number\":" + service.Offer_number + " }";
+
                                                             }
                                                             @s.Description
                                                         </span>

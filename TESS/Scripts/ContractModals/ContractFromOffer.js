@@ -38,6 +38,7 @@
             obj.License = $input.attr("data-license");
             obj.Maintenance = $input.attr("data-maintenance");
             obj.Alias = $input.attr("data-alias");
+            obj.Offer_number = $input.attr("data-offer-number");
             moduleList.push(obj);
         }
 

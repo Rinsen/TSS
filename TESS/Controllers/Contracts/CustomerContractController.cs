@@ -963,6 +963,18 @@ namespace TietoCRM.Controllers.Contracts
 
                     cRow.Delete("Article_number = " + cRow.Article_number + " AND Contract_id = '" + cRow.Contract_id + "' AND Customer = '" + cRow.Customer + "'");
                     cRow.Insert();
+
+                    //Läs upp eventuell modultext
+                    view_ModuleText offerModuleText = new view_ModuleText();
+                    offerModuleText.Select("Type = 'O' AND TypeId = " + article["Offer_number"] + " AND ModuleId = " + module.Article_number.ToString());
+
+                    if(!string.IsNullOrEmpty(offerModuleText.Description)) //Vi har en modultext på offerten, spara den till kontraktet!
+                    {
+                        //Delete-insert (om modultexten från offerten har ändrats)
+                        view_ModuleText contractModuleText = new view_ModuleText();
+                        contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + ((int)module.Article_number).ToString());
+                        InsertModuleText(offerModuleText.Description, "A", contract._ID, (int)module.Article_number);
+                    }
                 }
 
                 foreach(dynamic serviceObj in services)
@@ -981,6 +993,18 @@ namespace TietoCRM.Controllers.Contracts
 
                     ccRow.Delete("Code = " + ccRow.Code + " AND Contract_id = '" + ccRow.Contract_id + "' AND Customer = '" + ccRow.Customer + "'");
                     ccRow.Insert();
+
+                    //Läs upp eventuell modultext
+                    view_ModuleText offerModuleText = new view_ModuleText();
+                    offerModuleText.Select("Type = 'O' AND TypeId = " + serviceObj["offer_number"].ToString() + " AND ModuleId = " + service.Code.ToString());
+
+                    if (!string.IsNullOrEmpty(offerModuleText.Description)) //Vi har en modultext på offerten, spara den till kontraktet!
+                    {
+                        //Delete-insert (om modultexten från offerten har ändrats)
+                        view_ModuleText contractModuleText = new view_ModuleText();
+                        contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + service.Code.ToString());
+                        InsertModuleText(offerModuleText.Description, "K", contract._ID, service.Code);
+                    }
                 }
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
@@ -2390,8 +2414,6 @@ namespace TietoCRM.Controllers.Contracts
             {
                 string json = HttpContext.Request.Unvalidated.Form["object"];
                 var contractId = 0;      //Unik id från view_Contract
-                var contractIdText = ""; //Ex. "IFO RJS 2019-05-28 01"
-                var customer = "";
 
                 List<dynamic> map = null;
                 try
@@ -2420,35 +2442,11 @@ namespace TietoCRM.Controllers.Contracts
 
                         contractId = Convert.ToInt32(d["Contract_id"]);
 
+                        //ModulTextId = 0 (Finns inte sparad sedan tidigare)
                         if (moduleTextId == 0 && d.TryGetValue("Contract_description", out value) && !string.IsNullOrEmpty(d["Contract_description"].ToString())) //Skapa ny modultext från standardvärden på artikeln
                         {
-                            try
-                            {
-                                view_ModuleText moduleText = new view_ModuleText
-                                {
-                                    ChangedBy = System.Web.HttpContext.Current.GetUser().Sign,
-                                    Changed = DateTime.Now,
-                                    Description = d["Contract_description"].ToString(),
-
-                                    Type = "A", //Artikel
-
-                                    ModuleType = d["Module_type"].ToString(),
-                                    TypeId = Convert.ToInt32(d["Contract_id"]),
-                                    ModuleId = Convert.ToInt32(d["Article_number"]),
-
-                                    Order = 0, // Sorteringsordning. Lämnar den så länge
-
-                                    CreatedBy = System.Web.HttpContext.Current.GetUser().Sign,
-                                    Created = DateTime.Now
-                                };
-
-                                moduleText.Insert();
-                                contractId = moduleText.TypeId;
-                            }
-                            catch (Exception)
-                            {
-                                contractId = 0; //Error for some reason. Remove this after development.
-                            }
+                            view_ModuleText moduleText = InsertModuleText(d["Contract_description"].ToString(), d["Module_type"].ToString(), Convert.ToInt32(d["Contract_id"]), Convert.ToInt32(d["Article_number"]));
+                            contractId = moduleText.TypeId;
                         }
                     }
                     else
@@ -2502,14 +2500,7 @@ namespace TietoCRM.Controllers.Contracts
                                 else
                                 {
                                     //Endast vid INSERT
-                                    moduleText.Type = "A";
-                                    moduleText.ModuleType = d["moduleType" + i.ToString()] != null ? d["moduleType" + i.ToString()].ToString() : "";
-                                    moduleText.Order = 0; // Sorteringsordning. Lämnar den så länge
-
-                                    moduleText.CreatedBy = System.Web.HttpContext.Current.GetUser().Sign;
-                                    moduleText.Created = DateTime.Now;
-
-                                    moduleText.Insert();
+                                    moduleText = InsertModuleText(moduleText.Description, d["moduleType" + i.ToString()] != null ? d["moduleType" + i.ToString()].ToString() : "", moduleText.TypeId, moduleText.ModuleId);
                                 }
 
                                 contractId = moduleText.TypeId;
@@ -2551,6 +2542,30 @@ namespace TietoCRM.Controllers.Contracts
                 var message = e.Message;
                 return "-1";
             }
+        }
+
+        private static view_ModuleText InsertModuleText(string ContractDescription, string ModuleType, int contractId, int articleNumber)
+        {
+            view_ModuleText moduleText = new view_ModuleText
+            {
+                ChangedBy = System.Web.HttpContext.Current.GetUser().Sign,
+                Changed = DateTime.Now,
+                Description = ContractDescription,
+
+                Type = "A", //Artikel
+
+                ModuleType = ModuleType,
+                TypeId = contractId,
+                ModuleId = articleNumber,
+
+                Order = 0, // Sorteringsordning. Lämnar den så länge
+
+                CreatedBy = System.Web.HttpContext.Current.GetUser().Sign,
+                Created = DateTime.Now
+            };
+
+            moduleText.Insert();
+            return moduleText;
         }
 
         public String GetTopHead(String customerP = null, String contractIdP = null)
