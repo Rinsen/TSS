@@ -1008,9 +1008,25 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
-                view_ContractText ctext = new view_ContractText();
                 string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
-                ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo, contract.Contract_type);
+
+                view_ContractText contractText = new view_ContractText();
+                contractText.Select("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
+                if (contractText.Contract_id == null && contract.Contract_type.CompareTo("Huvudavtal") != 0)
+                {
+                    //Tilläggsavtal. Denna rad för kontraktets texter skapas i vanliga fall via menyn 'Edit/Text templates', 
+                    //men när vi lägger till artiklar i ett nytt tilläggsavtal så skapar vi upp den här för att kunna få in modultexterna på en gång.
+                    contractText.Contract_id = contract.Contract_id;
+                    contractText.Customer = contract.Customer;
+                    contractText.Contract_type = "Tilläggsavtal";
+                    contractText.Module_info = moduleInfo;
+                    contractText.Insert();
+                }
+                else
+                {
+                    contractText.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo, contract.Contract_type);
+                }
+
                 return "1";
             }
             catch
