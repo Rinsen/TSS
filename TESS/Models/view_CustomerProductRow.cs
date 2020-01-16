@@ -275,13 +275,13 @@ namespace TietoCRM.Models
                 {
                     query = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
                                         Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
-                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = '" + customer + "' And Discount_type = 0 ";
+                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = '" + customer + "' And Discount_type = 0 And Status = 'Giltigt'";
                 }
                 else
                 {
                     query = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
                                         Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
-                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = '" + customer + "' And Discount_type = 0 And Expired = 0 ";
+                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = '" + customer + "' And Discount_type = 0 And Status = 'Giltigt' And Expired = 0 ";
                 }
                 if (contractId != null)
                 {
