@@ -5,7 +5,7 @@
 }
 
 <!-- Print Products/Modules/Articles -->
-@PrintListContent(ViewBag.ArticleSystemDictionary)
+@PrintListContent(ViewBag.ArticleAndServiceDictionary)
 
 @helper PrintListContent(List<KeyValuePair<String, List<dynamic>>> list)
 {
@@ -21,7 +21,7 @@
                         int count = 1;
                     }
                     <table id="modules" class="table table-hover" style="width: 100%">
-                        @foreach (KeyValuePair<String, List<dynamic>> system in ViewBag.ArticleSystemDictionary)
+                        @foreach (KeyValuePair<String, List<dynamic>> system in list)
                         {
                             foreach (var contractInfo in system.Value)
                             {
@@ -54,7 +54,7 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" id="save-module-info-changes" @{ if (ViewBag.ArticleSystemDictionary.Count == 0) { @Html.Raw("disabled='disabled' ")  ; } } class="btn btn-primary">Save</button>
+        <button type="button" id="save-module-info-changes" @{ if (list.Count == 0) { @Html.Raw("disabled='disabled' ")  ; } } class="btn btn-primary">Save</button>
     </div>
 }
 

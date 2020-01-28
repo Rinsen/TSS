@@ -628,8 +628,6 @@ namespace TietoCRM.Controllers
             {
                 if (customerNames.Count <= 0)
                     customer = "-1337_ingen-kund.pådenna#sökning?!"; // a string that will make sure we wont get any result. having an empty string gave result, because it exists offers with empty strings as customers
-                else
-                    customer = customerNames[0];
             }
             List<view_CustomerOffer> customerOffers;
             customerOffers = view_CustomerOffer.getAllCustomerOffers(customer, representative);
@@ -1647,11 +1645,11 @@ namespace TietoCRM.Controllers
         private string updateDescriptions(int ofnr)
         {
             //Vi läser upp texterna från view_ModuleText istället för V_Module. Ny tabell för att kunna spara en text per modul (artikel eller tjänst)
-            view_OfferRow orow = new view_OfferRow();
-            List<dynamic> l = orow.GetOfferRowsForModuleInfo(ofnr);
+            var offerRow = new view_OfferRow();
+            var offerArtDescriptionList = offerRow.GetOfferRowsForModuleInfo(ofnr);
             string moduleInfo = "";
 
-            foreach (var mi in l)
+            foreach (var offerArtDescr in offerArtDescriptionList)
             {
                 //Rubriken skapas nu från annat håll. Läggs ut i _OfferHTML_OfferSection.cshtml och hämtas från ny kolumn i view_CustomerOffer (Module_header)
                 //if (moduleInfo == "")
@@ -1660,7 +1658,7 @@ namespace TietoCRM.Controllers
                 //    moduleInfo = "<h5>Information produkter</h5>";
                 //}
                 //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
-                moduleInfo += "<p>" + mi.Offer_description + "</p>";
+                moduleInfo += "<p>" + offerArtDescr.Offer_description + "</p>";
             }
             return moduleInfo;
         }

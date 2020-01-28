@@ -195,6 +195,12 @@ namespace TietoCRM.Models
             }
             return list;
         }
+
+        /// <summary>
+        /// Hämtar offertrader för att bygga ihop modultexter på offerten
+        /// </summary>
+        /// <param name="offerNumber"></param>
+        /// <returns></returns>
         public List<dynamic> GetOfferRowsForModuleInfo(int offerNumber)
         {
             List<dynamic> list = new List<dynamic>();
@@ -204,7 +210,16 @@ namespace TietoCRM.Models
             {
                 connection.Open();
                 // Default query
-                command.CommandText = @"SELECT Alias, Description FROM qry_OfferArtDescription Where Offertnr = @offerNumber Order By Typ, Alias";
+                //command.CommandText = @"SELECT Alias, Description FROM qry_OfferArtDescription Where Offertnr = @offerNumber Order By Typ, Alias";
+
+                command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System FROM qry_OfferArtDescription Q 
+                                        JOIN View_Module M ON M.Article_number = Q.Art_id 
+                                        WHERE OFFERTNR = @offerNumber 
+                                        UNION
+                                        SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, S.Description AS System FROM qry_OfferArtDescription Q
+                                        JOIN view_Service S ON S.Code = Q.Art_id 
+                                        WHERE OFFERTNR = @offerNumber 
+                                        ORDER BY " + GetOrderByForQry();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -229,9 +244,19 @@ namespace TietoCRM.Models
 
             return list;
         }
+
+        private string GetOrderByForQry()
+        {
+            ASort = HttpContext.Current.GetUser().AvtalSortera;
+            if (ASort == 1) return "Typ, System, Alias";
+            if (ASort == 2) return "Typ, System, Alias";
+            if (ASort == 3) return "Typ, System, Art_id";
+            return "Typ, System, Alias";
+        }
+
         private static string GetOrderBy()
         {
-            ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
+            ASort = HttpContext.Current.GetUser().AvtalSortera;
             if (ASort == 1) return "Alias";
             if (ASort == 2) return "Classification, Alias";
             if (ASort == 3) return "Classification, Article_number";

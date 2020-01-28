@@ -23,19 +23,11 @@
                 <div class="form-group">
                     <label for="crm-select-customer">Customer:</label>
                     <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
+                        <option selected value=""></option>
                         <option value="*">All</option>
-                        @{bool first = true;}
                         @foreach (String Customer in ViewBag.Customers)
                         {
-                            if (first)
-                            {
-                                <option selected value="@Customer">@Customer</option>
-                                first = false;
-                            }
-                            else
-                            {
-                                <option value="@Customer">@Customer</option>
-                            }
+                            <option value="@Customer">@Customer</option>
                         }
                     </select>
                 </div>
@@ -1459,11 +1451,10 @@
         });
 
 
-        $customerSelect.val("@Html.Raw(ViewBag.Customer)");
         @*$userSelect.val("@Html.Raw(ViewBag.User)");*@
         $(".selectpicker").selectpicker();
         $(".selectpicker").selectpicker("refresh");
-        updateDataTable("@Html.Raw(ViewBag.Customer)", $userSelect.val(), function(){
+        updateDataTable("", $userSelect.val(), function(){
             if($customerSelect.val() == "")
             {
                 $("#crm-add-row").unbind("click");

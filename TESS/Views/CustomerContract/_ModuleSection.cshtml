@@ -41,41 +41,41 @@
 
 @helper PrintListContent(List<KeyValuePair<String, List<dynamic>>> list, String title)
 {
-    // CultureInfo for swedish currency print out 
-    CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
-    bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
-    bool toBeSummerized = (ViewBag.CustomerContract.Summera == 1);
-    bool krEveryRow = (ViewBag.Representative.Kr_every_row == 1 ? true : false);
-    string krRow = (krEveryRow ? " kr" : "");
-    string krRub = (krEveryRow ? "" : " kr");
-    string rubEng = (krEveryRow ? "Engångsavgift" : "Engångs- avgift kr");
-    string subh1 = (krEveryRow ? "crm-pdf-subheader_1" : "crm-pdf-subheader_1-rubkr");
-    string subh2 = (krEveryRow ? "crm-pdf-subheader_2" : "crm-pdf-subheader_2-rubkr");
-    string subr2 = (krEveryRow ? "crm-pdf-subrows_2" : "crm-pdf-subrows_2-rubkr");
-    string subr3 = (krEveryRow ? "crm-pdf-subrows_3" : "crm-pdf-subrows_3-rubkr");
-    string subs1 = (krEveryRow ? "crm-pdf-subsum_1" : "crm-pdf-subsum_1-rubkr");
+// CultureInfo for swedish currency print out 
+CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
+bool toBeSummerized = (ViewBag.CustomerContract.Summera == 1);
+bool krEveryRow = (ViewBag.Representative.Kr_every_row == 1 ? true : false);
+string krRow = (krEveryRow ? " kr" : "");
+string krRub = (krEveryRow ? "" : " kr");
+string rubEng = (krEveryRow ? "Engångsavgift" : "Engångs- avgift kr");
+string subh1 = (krEveryRow ? "crm-pdf-subheader_1" : "crm-pdf-subheader_1-rubkr");
+string subh2 = (krEveryRow ? "crm-pdf-subheader_2" : "crm-pdf-subheader_2-rubkr");
+string subr2 = (krEveryRow ? "crm-pdf-subrows_2" : "crm-pdf-subrows_2-rubkr");
+string subr3 = (krEveryRow ? "crm-pdf-subrows_3" : "crm-pdf-subrows_3-rubkr");
+string subs1 = (krEveryRow ? "crm-pdf-subsum_1" : "crm-pdf-subsum_1-rubkr");
 
 
-    if (list.Count > 0)
-    {
-        decimal discountsMP = 0;
-        decimal discountsLP = 0;
-        decimal discountsLM = 0;
-        decimal discountsMM = 0;
-        decimal ProductLicenseTotal = 0;
-        decimal ProductMaintenanceTotal = 0;
-        bool uhManFinns = false;
-        bool summera = true;
-
-   
-        int systemCount = 0;
-
-        String previousPriceType = "";
-        String currentPriceType = "";
+if (list.Count > 0)
+{
+    decimal discountsMP = 0;
+    decimal discountsLP = 0;
+    decimal discountsLM = 0;
+    decimal discountsMM = 0;
+    decimal ProductLicenseTotal = 0;
+    decimal ProductMaintenanceTotal = 0;
+    bool uhManFinns = false;
+    bool summera = true;
 
 
-        bool canShowTitle = true;
-        bool hasDiscounts = false;
+    int systemCount = 0;
+
+    String previousPriceType = "";
+    String currentPriceType = "";
+
+
+    bool canShowTitle = true;
+    bool hasDiscounts = false;
 
 
 <div id="crm-pdf-module-rows" class="">
