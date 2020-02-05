@@ -54,7 +54,6 @@ namespace TietoCRM.Controllers
         {
             if (Request["customer"] != "null")
             {
-
                 String area = System.Web.HttpContext.Current.GetUser().Area;
                 bool withExpired = Request["expired"] == "Ja" ? true : false;
 
@@ -121,8 +120,11 @@ namespace TietoCRM.Controllers
                 ignoredPropertiesExtended.Add("System");
                 ViewData.Add("IgnoredPropertiesExtended", ignoredPropertiesExtended);
                 this.ViewData["Title"] = "Customer Product Report";
+                ViewData.Add("ShowValidThroughColumn", Request["validThroughCol"] != null && Request["validThroughCol"] == "true" ? true : false);
+                ViewData.Add("ShowContractIdColumn", Request["contractIdCol"] != null && Request["contractIdCol"] == "true" ? true : false);
 
                 ViewAsPdf pdf = new ViewAsPdf("Pdf");
+                pdf.RotativaOptions.PageMargins = new Rotativa.Core.Options.Margins(5, 10, 10, 10);
                 //pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["customer"] + "\"";
                 //pdf.RotativaOptions.CustomSwitches += " --header-center \"Kundens produkter\"";
               

@@ -30,9 +30,20 @@
                     }
                 </select>
             </div>
+            <div class="form-group">
+                <div class="checkbox" style="margin-top: 1.7em; margin-left: 0.5em; margin-right:0.5em;">
+                    <label>
+                        <input type="checkbox" id="show-contract-id-column"> Show Contract id (Pdf)
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="show-valid-through-column"> Show Valid through (Pdf)
+                    </label>
+                </div>
+            </div>
             <button id="fetch-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
             <div class="form-group">
-                <div class="checkbox" style="margin-top: 1.7em">
+                <div class="checkbox" style="margin-top: 1.7em; margin-left: 0.5em; margin-right:0.5em;">
                     <label>
                         <input type="checkbox" id="desc"> Show module description
                     </label>
@@ -153,6 +164,8 @@
         $('#fetch-pdf').click(function () {
             var customer = $customerContainer.val();
             var user = $userContainer.val();
+            var showContractIdCol = $('#show-contract-id-column').is(':checked') ? true : false;
+            var showValidThroughCol = $('#show-valid-through-column').is(':checked') ? true : false;
             var $dt = $('.dataTable').DataTable();
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
@@ -162,10 +175,10 @@
             }
 
             if ($('#desc').is(':checked')) {
-                window.open(serverPrefix + 'CustomerProductReport/Pdf?customer=' + customer + '&expired=' + exp + '&user=' + user + sort + '&showDesc=1', "_blank");
+                window.open(serverPrefix + 'CustomerProductReport/Pdf?customer=' + customer + '&expired=' + exp + '&user=' + user + sort + '&showDesc=1' + '&contractIdCol=' + showContractIdCol + '&validThroughCol=' + showValidThroughCol, "_blank");
             }
             else {
-                window.open(serverPrefix + 'CustomerProductReport/Pdf?customer=' + customer + '&expired=' + exp + '&user=' + user + sort, "_blank");
+                window.open(serverPrefix + 'CustomerProductReport/Pdf?customer=' + customer + '&expired=' + exp + '&user=' + user + sort + '&contractIdCol=' + showContractIdCol + '&validThroughCol=' + showValidThroughCol, "_blank");
             }
         })
         $('#export-excel').click(function () {
