@@ -56,6 +56,10 @@ namespace TietoCRM.Models
         private Boolean expired;
         public Boolean Expired { get { return expired; } set { expired = value; } }
 
+        public string Main_contract_id { get; set; }
+        public DateTime? MainContract_ValidFrom { get; set; }
+        public DateTime? MainContract_ValidThrough { get; set; }
+
         public view_CustomerProductRow()
             : base("CustomerProductRow")
         {
@@ -180,27 +184,32 @@ namespace TietoCRM.Models
                 //command.CommandText += "Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias FROM ";
                 //command.CommandText += databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer And Discount_type = 0 Order By SortNo, Classification, Module";
 
+                //Join mot view_Customer för att få tag på datumperiod och avtalstyp för Customer Module Report 
                 if (withExpired)
                 {
-                    command.CommandText = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
-                                        Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
-                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer And Discount_type = 0 ";
+                    command.CommandText = @"SELECT CPR.Customer, CPR.Article_number, CPR.Classification, CPR.Module, CPR.System, CPR.Contract_id, CPR.Sign, CPR.Valid_through, 
+                    CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, C.Main_contract_id, C.Valid_from as MainContract_ValidFrom, C.Valid_through as MainContract_ValidThrough
+                    FROM " + databasePrefix + "CustomerProductRow CPR " +
+                    "JOIN " + databasePrefix + "Contract C on C.Customer = CPR.Customer and C.Contract_id = CPR.Contract_id " +
+                    "WHERE C.Customer = @customer And CPR.Discount_type = 0 And (C.status = 'Giltigt' or C.status = 'Sänt') ";
                 }
                 else
                 {
-                    command.CommandText = @"SELECT Customer, Article_number, Classification, Module,System, Contract_id, Sign, Valid_through, 
-                                        Status, CAST (SSMA_timestamp AS BIGINT) AS SSMA_timestamp, SortNo, Discount_type, Alias, Expired 
-                                        FROM " + databasePrefix + "CustomerProductRow WHERE " + "Customer = @customer And Discount_type = 0 And Expired = 0 ";
+                    command.CommandText = @"SELECT CPR.Customer, CPR.Article_number, CPR.Classification, CPR.Module, CPR.System, CPR.Contract_id, CPR.Sign, CPR.Valid_through, 
+                    CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, C.Main_contract_id, C.Valid_from as MainContract_ValidFrom, C.Valid_through as MainContract_ValidThrough, 
+                    FROM " + databasePrefix + "CustomerProductRow CPR " +
+                    "JOIN " + databasePrefix + "Contract C on C.Customer = CPR.Customer and C.Contract_id = CPR.Contract_id " +
+                    "WHERE CPR.Customer = @customer And CPR.Discount_type = 0 And CPR.Expired = 0 And (C.status = 'Giltigt' or C.status = 'Sänt') ";
                 }
                 if (contractId != null)
                 {
-                    command.CommandText += "And Contract_id = @contract_id ";
+                    command.CommandText += "And CPR.Contract_id = @contract_id ";
                 }
                 if (area != null)
                 {
-                    command.CommandText += "And Area = @area ";
+                    command.CommandText += "And CPR.Area = @area ";
                 }
-                command.CommandText += "Order By SortNo, Classification, Module";
+                command.CommandText += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, CPR.Module";
 
                 // If contract id is specified
                 //if (contractId != null)

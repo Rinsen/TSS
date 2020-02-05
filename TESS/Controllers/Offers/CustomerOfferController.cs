@@ -59,7 +59,14 @@ namespace TietoCRM.Controllers
             {
                 ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
                 ViewData.Add("CurrentName", System.Web.HttpContext.Current.GetUser().Name);
-                ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
+                if (Request.QueryString["customer"] == null || Request.QueryString["customer"] == "")
+                {
+                    ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
+                }
+                else
+                {
+                    ViewData.Add("showModalReminder", false); //Vi stänger av Reminder-dialogen så att den inte visas flera gånger, utan endast då man första gången kommer in i CustomerContract
+                }
             }
             else
             {
@@ -86,6 +93,7 @@ namespace TietoCRM.Controllers
                 ViewData["Appointments"] = vA;
                 ViewData.Add("Customer", on);
                 //customer = on;
+                ViewData.Add("SelectedCustomer", "");
             }
             else
             {
@@ -97,7 +105,7 @@ namespace TietoCRM.Controllers
                 }
                 ViewData["Appointments"] = vA;
                 ViewData.Add("Customer", Request["customer"]);
-
+                ViewData.Add("SelectedCustomer", Request.QueryString["customer"]);
             }
 
             if (Request["selected-offer"] != null && Request["selected-offer"] != "" && Request["selected-offer"] != "undefined")

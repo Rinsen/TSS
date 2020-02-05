@@ -23,8 +23,8 @@
                 <div class="form-group">
                     <label for="crm-select-customer">Customer:</label>
                     <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
-                        <option selected value=""></option>
                         <option value="*">All</option>
+                        <option selected value="@ViewBag.SelectedCustomer">@ViewBag.SelectedCustomer</option>
                         @foreach (String Customer in ViewBag.Customers)
                         {
                             <option value="@Customer">@Customer</option>
@@ -1378,7 +1378,7 @@
         //@Html.Raw(@ViewBag.OfferNumber)
         @*$currentUserSelect.val("@Html.Raw(@ViewBag.CurrentUser)");*@
         $(".selectpicker").selectpicker("refresh");
-        updateDataTable("",$currentUserSelect.val() , function(){
+        updateDataTable("@Html.Raw(@ViewBag.SelectedCustomer)",$currentUserSelect.val() , function(){
             drawButtons();
             if($customerSelect.val() == "")
                 $("#crm-add-row").unbind("click");

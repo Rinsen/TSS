@@ -77,12 +77,29 @@ namespace TietoCRM.Controllers.Contracts
             if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
             {
                 ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
-                ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
+
+                if (Request.QueryString["customer"] == null || Request.QueryString["customer"] == "")
+                {
+                    ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
+                }
+                else
+                {
+                    ViewData.Add("showModalReminder", false); //Vi stänger av Reminder-dialogen så att den inte visas flera gånger, utan endast då man första gången kommer in i CustomerContract
+                }
             }
             else
             {
                 ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
                 ViewData.Add("showModalReminder", false);
+            }
+
+            if(Request.QueryString["customer"] != null)
+            {
+                ViewData.Add("SelectedCustomer", Request.QueryString["customer"]);
+            }
+            else
+            {
+                ViewData.Add("SelectedCustomer", "");
             }
 
 
