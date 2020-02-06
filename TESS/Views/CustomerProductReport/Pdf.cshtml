@@ -73,31 +73,31 @@
             var rubrik = pName.Split(new char[] { '#' })[1];
             <div class="crm-print-block">
                 <h2>@rubrik</h2>
-                <table class="table table-striped table-bordered cpr-table">
+                <table width="100%" class="table table-striped table-bordered" style="font-family: Verdana, Geneva, sans-serif !important;">
                     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
                     {
                         if (PropertyInfo.Name == "Article_number")
                         {
-                            <th width="10%">Artikelnr</th>
+                            <th width="8%;" style="white-space:nowrap">Artikelnr</th>
                         }
                         if (PropertyInfo.Name == "Module")
                         {
-                            <th width="50%">Modul</th>
+                            <th width="65%" style="white-space:nowrap">Modul</th>
                         }
                         if (PropertyInfo.Name == "Classification" && ViewBag.ShowClassificationColumn)
                         {
-                            <th width="10%">Indelning</th>
+                            <th width="8%;" style="white-space:nowrap">Indelning</th>
                         }
                         if (PropertyInfo.Name == "Contract_id" && ViewBag.ShowContractIdColumn)
                         {
-                            <th width="15%">Kontraktsnr</th>
+                            <th style="white-space:nowrap">Kontraktsnr</th>
                         }
                     }
                     @foreach (Dictionary<String, object> CPR in mainContract._CustomerProductRowsSorted)
                     {
                         if ((String)CPR["System"] == rubrik && (String)CPR["Status"] == "Giltigt")
                         {
-                            <tr class="">
+                            <tr>
                                 @foreach (KeyValuePair<String, object> dic in CPR)
                                 {
                                     if (!ViewBag.IgnoredPropertiesExtended.Contains(dic.Key))
