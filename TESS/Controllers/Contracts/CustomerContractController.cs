@@ -16,7 +16,7 @@ using System.Web.Script.Serialization;
 using TietoCRM.Models;
 using TietoCRM.Extensions;
 using System.Data;
-using System.Collections;
+using System.Net;
 
 namespace TietoCRM.Controllers.Contracts
 {
@@ -77,23 +77,15 @@ namespace TietoCRM.Controllers.Contracts
             if (Request.QueryString["our_sign"] == null || Request.QueryString["our_sign"] == "")
             {
                 ViewData.Add("CurrentUser", System.Web.HttpContext.Current.GetUser().Sign);
-
-                if (Request.QueryString["customer"] == null || Request.QueryString["customer"] == "")
-                {
-                    ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
-                }
-                else
-                {
-                    ViewData.Add("showModalReminder", false); //Vi stänger av Reminder-dialogen så att den inte visas flera gånger, utan endast då man första gången kommer in i CustomerContract
-                }
             }
             else
             {
                 ViewData.Add("CurrentUser", Request.QueryString["our_sign"]);
-                ViewData.Add("showModalReminder", false);
             }
 
-            if(Request.QueryString["customer"] != null)
+            ViewData.Add("showModalReminder", (System.Web.HttpContext.Current.GetUser().Reminder_Prompt == 1));
+
+            if (Request.QueryString["customer"] != null)
             {
                 ViewData.Add("SelectedCustomer", Request.QueryString["customer"]);
             }
@@ -101,7 +93,6 @@ namespace TietoCRM.Controllers.Contracts
             {
                 ViewData.Add("SelectedCustomer", "");
             }
-
 
             this.ViewData.Add("OfferNumber", on);
 
@@ -2824,13 +2815,41 @@ namespace TietoCRM.Controllers.Contracts
             return "1";
         }
 
+        [ValidateInput(false)]
         public string checkReminder()
         {
-            String customer = Request.Form["customer"];
-
+            string customer = Request.Form["customer"];
+            string customerquerystr = Request.Form["customerquerystr"];
+            string remindExist = "-1";
+            string customerFromQuery = "";
             view_Reminder vR = new view_Reminder();
 
-            String remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+            if (!string.IsNullOrEmpty(customerquerystr))
+            {
+                customerFromQuery = WebUtility.HtmlDecode(customerquerystr);
+            }
+
+            if (!string.IsNullOrEmpty(customer))
+            {
+                if(customer.CompareTo(customerFromQuery) != 0)
+                {
+                    remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+                }
+                else
+                {
+                    remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+                    
+                    if(remindExist == "1")
+                    {
+                        //Samma, visa knapp, men inte pop-up
+                        remindExist = "2";
+                    }
+                }
+            }
+            else
+            {
+                remindExist = vR.checkIfReminderPerCustomer(customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+            }
 
             return remindExist;
         }

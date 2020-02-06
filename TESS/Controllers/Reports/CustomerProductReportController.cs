@@ -120,7 +120,7 @@ namespace TietoCRM.Controllers
                 ignoredPropertiesExtended.Add("System");
                 ViewData.Add("IgnoredPropertiesExtended", ignoredPropertiesExtended);
                 this.ViewData["Title"] = "Customer Product Report";
-                ViewData.Add("ShowValidThroughColumn", Request["validThroughCol"] != null && Request["validThroughCol"] == "true" ? true : false);
+                ViewData.Add("ShowClassificationColumn", Request["classificationCol"] != null && Request["classificationCol"] == "true" ? true : false);
                 ViewData.Add("ShowContractIdColumn", Request["contractIdCol"] != null && Request["contractIdCol"] == "true" ? true : false);
 
                 ViewAsPdf pdf = new ViewAsPdf("Pdf");

@@ -400,7 +400,8 @@
             "url": serverPrefix + "CustomerOffer/checkReminder/",
             "type": "POST",
             "data": {
-                "customer": customer
+                "customer": customer,
+                "customerquerystr": "@Request.QueryString["customer"]"
             },
             "success": function(data){
                 if (data == "1") {
@@ -409,6 +410,10 @@
                     if (showModal == true) {
                         $("#reminderModal").appendTo("body").modal("show").draggable();
                     }
+                }
+                else if (data == "2") {
+                    $("#remind-modal-button").show();
+                    loadReminders();
                 }
                 else {
                     $("#remind-modal-button").hide();

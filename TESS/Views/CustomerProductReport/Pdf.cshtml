@@ -76,118 +76,104 @@
                 <table class="table table-striped table-bordered cpr-table">
                     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
                     {
-                        String PropertyName = PropertyInfo.Name.Replace("_", " ");
-                        if (!ViewBag.IgnoredPropertiesExtended.Contains(PropertyInfo.Name))
+                        if (PropertyInfo.Name == "Article_number")
                         {
-                            var newPropertyName = "";
-                            if (PropertyInfo.Name == "Article_number") { newPropertyName = "Artikelnr"; }
-                            if (PropertyInfo.Name == "Module") { newPropertyName = "Modul"; }
-                            if (PropertyInfo.Name == "Classification") { newPropertyName = "Indelning"; }
-                            if (PropertyInfo.Name == "Valid_through" && ViewBag.ShowValidThroughColumn) { newPropertyName = "Giltig till"; }
-                            if (PropertyInfo.Name == "Contract_id" && ViewBag.ShowContractIdColumn) { newPropertyName = "Kontraktsnr"; }
-
-                            if (!string.IsNullOrEmpty(newPropertyName))
-                            {
-                                <th>@newPropertyName</th>
-                            }
+                            <th width="10%">Artikelnr</th>
+                        }
+                        if (PropertyInfo.Name == "Module")
+                        {
+                            <th width="50%">Modul</th>
+                        }
+                        if (PropertyInfo.Name == "Classification" && ViewBag.ShowClassificationColumn)
+                        {
+                            <th width="10%">Indelning</th>
+                        }
+                        if (PropertyInfo.Name == "Contract_id" && ViewBag.ShowContractIdColumn)
+                        {
+                            <th width="10%">Kontraktsnr</th>
                         }
                     }
                     @foreach (Dictionary<String, object> CPR in mainContract._CustomerProductRowsSorted)
                     {
                         if ((String)CPR["System"] == rubrik && (String)CPR["Status"] == "Giltigt")
                         {
-                                <tr class="">
-                                    @foreach (KeyValuePair<String, object> dic in CPR)
+                            <tr class="">
+                                @foreach (KeyValuePair<String, object> dic in CPR)
+                                {
+                                    if (!ViewBag.IgnoredPropertiesExtended.Contains(dic.Key))
                                     {
-                                        if (!ViewBag.IgnoredPropertiesExtended.Contains(dic.Key))
+                                        if ((String)dic.Key == "Module")
                                         {
-                                            if (dic.Key == "Valid_through" && ViewBag.ShowValidThroughColumn)
+                                            if (String.IsNullOrEmpty((String)CPR["Alias"]))
                                             {
-                                                if (dic.Value != null)
-                                                {
-                                                    <td>@((Convert.ToDateTime(dic.Value)).ToString("yyyy-MM-dd"))</td>
-                                                }
-                                                else
-                                                {
-                                                    <td></td>
-                                                }
-                                            }
-                                            else if ((String)dic.Key == "Module")
-                                            {
-                                                if (String.IsNullOrEmpty((String)CPR["Alias"]))
-                                                {
-                                                    <td>
-                                                        <strong>@CPR["Module"]</strong>
-                                                        @if (showDesc)
+                                                <td>
+                                                    <strong>@CPR["Module"]</strong>
+                                                    @if (showDesc)
+                                                    {
+                                                        foreach (view_Module module in mainContract._MatchedModules)
                                                         {
-                                                            foreach (view_Module module in mainContract._MatchedModules)
+                                                            if (module.Article_number.ToString() == CPR["Article_number"].ToString())
                                                             {
-                                                                if (module.Article_number.ToString() == CPR["Article_number"].ToString())
-                                                                {
-                                                                    <div>@module.Description</div>
-                                                                }
+                                                                <div>@module.Description</div>
                                                             }
                                                         }
+                                                    }
 
-                                                    </td>
-                                                }
-                                                else
-                                                {
-                                                    <td>
-                                                        <strong>@CPR["Alias"]</strong>
-                                                        @if (showDesc)
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <strong>@CPR["Alias"]</strong>
+                                                    @if (showDesc)
+                                                    {
+                                                        foreach (view_Module module in mainContract._MatchedModules)
                                                         {
-                                                            foreach (view_Module module in mainContract._MatchedModules)
+                                                            if (module.Article_number.ToString() == CPR["Article_number"].ToString())
                                                             {
-                                                                if (module.Article_number.ToString() == CPR["Article_number"].ToString())
-                                                                {
-                                                                    <div>@module.Description</div>
-                                                                }
+                                                                <div>@module.Description</div>
                                                             }
                                                         }
-                                                    </td>
-                                                }
-
+                                                    }
+                                                </td>
                                             }
-                                            else if (dic.Key == "Article_number")
+                                        }
+                                        else if (dic.Key == "Article_number")
+                                        {
+                                            if (dic.Value != null)
                                             {
-                                                if (dic.Value != null)
-                                                {
-                                                    <td>@dic.Value</td>
-                                                }
-                                                else
-                                                {
-                                                    <td></td>
-                                                }
-
+                                                <td>@dic.Value</td>
                                             }
-                                            else if (dic.Key == "Classification")
+                                            else
                                             {
-                                                if (dic.Value != null)
-                                                {
-                                                    <td>@dic.Value</td>
-                                                }
-                                                else
-                                                {
-                                                    <td></td>
-                                                }
-
+                                                <td></td>
                                             }
-                                            else if (dic.Key == "Contract_id" && ViewBag.ShowContractIdColumn)
+                                        }
+                                        else if (dic.Key == "Classification" && ViewBag.ShowClassificationColumn)
+                                        {
+                                            if (dic.Value != null)
                                             {
-                                                if (dic.Value != null)
-                                                {
-                                                    <td>@dic.Value</td>
-                                                }
-                                                else
-                                                {
-                                                    <td></td>
-                                                }
-
+                                                <td>@dic.Value</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                            }
+                                        }
+                                        else if (dic.Key == "Contract_id" && ViewBag.ShowContractIdColumn)
+                                        {
+                                            if (dic.Value != null)
+                                            {
+                                                <td>@dic.Value</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
                                             }
                                         }
                                     }
-                                </tr>
+                                }
+                            </tr>
                         }
                         else
                         {
