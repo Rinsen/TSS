@@ -186,7 +186,9 @@ var loadTextData = function (templateID) {
                 $("#title-text").val(template.Title);
                 $("#page-head-text").val(template.Page_head);
                 $("#document-foot-text").val(template.Document_foot);
-                $("#module-info-header").val(template.Module_header);
+                if (template.Module_header != undefined) {
+                    $("#module-info-header").val(template.Module_header);
+                }
                 $("#bodytitle").val(template.Document_foot_title);
                 $("#deluhtitle").val(template.Delivery_maint_title);
                 $("#deluhtext").val(template.Delivery_maint_text);
