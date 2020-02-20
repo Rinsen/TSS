@@ -5,6 +5,7 @@
     bool isSent = ViewBag.CustomerContract.Status == "Sänt";
     bool isValid = ViewBag.CustomerContract.Status == "Giltigt";
     bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
+    bool hasModules = ViewBag.ArticleSystemDictionary.Count > 0 ? true : false;
 }
 @using TietoCRM.Models;
 @section Style
@@ -74,10 +75,10 @@
                     Add <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" id="articles-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ") ; } } href="#">Articles</a></li>
-                   @* <li><a data-toggle="modal" id="articles-search-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Articles by search</a></li>*@
-                    <li><a data-toggle="modal" id="services-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ") ; } } href="#">Services</a></li>
-                    <li><a data-toggle="modal" id="options-modal-button" @{ if (isServiceContract || !isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ") ; } } href="#">Options</a></li>
+                    <li><a data-toggle="modal" id="articles-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Articles</a></li>
+                    @* <li><a data-toggle="modal" id="articles-search-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Articles by search</a></li>*@
+                    <li><a data-toggle="modal" id="services-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Services</a></li>
+                    <li><a data-toggle="modal" id="options-modal-button" @{ if (isServiceContract || !isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Options</a></li>
                 </ul>
             </div>
             <div class="btn-group">
@@ -85,10 +86,10 @@
                     Import <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" id="contractFromOffer-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Items from offers</a></li>
+                    <li><a data-toggle="modal" id="contractFromOffer-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Items from offers</a></li>
                     <li><a data-toggle="modal" id="optionsFromActive-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Options from contracts</a></li>
-                    <li><a data-toggle="modal" id="modulesFromContracts-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Items from contracts</a></li>
-                    <li><a data-toggle="modal" id="resign-modal-button" @{ if (!isSent || !isMainContract) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Re-sign contract</a></li>
+                    <li><a data-toggle="modal" id="modulesFromContracts-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Items from contracts</a></li>
+                    <li><a data-toggle="modal" id="resign-modal-button" @{ if (!isSent || !isMainContract) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Re-sign contract</a></li>
                 </ul>
             </div>
             <div class="btn-group">
@@ -97,9 +98,18 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a data-toggle="modal" id="head-info-modal-button" href="#">Contract information</a></li>
-                    <li><a data-toggle="modal" id="contractHead-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Customer information</a></li>
-                    <li><a data-toggle="modal" id="textTemplate-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")   ; } } href="#">Text templates</a></li>
-                    <li><a data-toggle="modal" id="finalizetermination-modal-button" @{ if (!isValid || !isModuleTermination) { @Html.Raw("class='disabled-link' ")    ; } } href="#">Finalize Termination</a></li>
+                    <li><a data-toggle="modal" id="contractHead-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Customer information</a></li>
+                    <li><a data-toggle="modal" id="textTemplate-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Text templates</a></li>
+                    <li><a data-toggle="modal" @{ 
+                        if (!isSent || !hasModules)
+                        { 
+                            @Html.Raw("id='' class='disabled-link'"); //Inga moduler eller fel status -> Ej klickbar länk
+                        }
+                        else
+                        {
+                            @Html.Raw("id='moduleInfo-modal-button' href='#'");
+                        }}>Module Info</a></li>
+                    <li><a data-toggle="modal" id="finalizetermination-modal-button" @{ if (!isValid || !isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Finalize Termination</a></li>
 
                 </ul>
             </div>
@@ -112,28 +122,28 @@
     </nav>
     <page size="A4">
         @if (!isModuleTermination)
-            {
-                try
-                {
-                    Html.RenderPartial("_ContractHTML");
-                }
-                catch (Exception ex)
-                {
-                    Html.Raw(ex);
-                }
-            }
-            
-        @if (isModuleTermination)
         {
-            <div class="crm-pdf-moduletermination-section">
-            @try
+            try
             {
-                Html.RenderPartial("_ModuleTerminationSection");
+                Html.RenderPartial("_ContractHTML");
             }
             catch (Exception ex)
             {
                 Html.Raw(ex);
             }
+        }
+
+        @if (isModuleTermination)
+        {
+            <div class="crm-pdf-moduletermination-section">
+                @try
+                {
+                    Html.RenderPartial("_ModuleTerminationSection");
+                }
+                catch (Exception ex)
+                {
+                    Html.Raw(ex);
+                }
             </div>
         }
     </page>
@@ -192,28 +202,26 @@
                                     <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                                         <div id="modules-from-open-offer" class="list-group">
                                             @{
-                                            foreach (view_OfferRow module in ViewBag.OpenOfferModules)
-                                            {
-                                                <li class="list-group-item">
-                                                    <span class="list-inline" style="width:96%; display:inline-block">
-                                                        @{ view_Module article = new view_Module();
-                                                    article.Select("Article_number = " + module.Article_number);
-                                                        }
-                                                        @if (!String.IsNullOrEmpty(module.Alias))
-                                                        {
-                                                            <span>@article.Article_number - @module.Alias</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span>@article.Article_number - @article.Module</span>
-                                                        }
+                                                foreach (view_OfferRow module in ViewBag.OpenOfferModules)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:96%; display:inline-block">
+                                                            @{ view_Module article = new view_Module();
+                                                                article.Select("Article_number = " + module.Article_number);
+                                                            }
+                                                            @if (!String.IsNullOrEmpty(module.Alias))
+                                                            {
+                                                                <span>@article.Article_number - @module.Alias</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>@article.Article_number - @article.Module</span>
+                                                            }
 
-                                                    </span>
-                                                    <!--
-                                                    -->
-                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-id="@module.Article_number" data-alias="@module.Alias" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
-                                                </li>
-                                            }
+                                                        </span>
+                                                        <div class="pull-right list-inline" style="width:4%; display:inline-block;"><input data-offer-number="@module.Offer_number" data-id="@module.Article_number" data-alias="@module.Alias" data-license="@module.License" data-maintenance="@module.Maintenance" type="checkbox" /></div>
+                                                    </li>
+                                                }
                                             }
                                         </div>
                                     </div>
@@ -235,21 +243,22 @@
                                     <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                                         <div id="services-from-open-offer" class="list-group">
                                             @{
-                                            foreach (view_ConsultantRow service in ViewBag.OpenOfferServices)
-                                            {
-                                                <li class="list-group-item">
-                                                    <span class="list-inline" style="width:95%; display:inline-block">
-                                                        @{  view_Service s = new view_Service();
-                                                    s.Select("Code = " + service.Code);
-                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + " }";
-                                                        }
-                                                        @s.Description
-                                                    </span>
-                                                    <!--
-                                                    -->
-                                                    <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
-                                                </li>
-                                            }
+                                                foreach (view_ConsultantRow service in ViewBag.OpenOfferServices)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:95%; display:inline-block">
+                                                            @{ view_Service s = new view_Service();
+                                                                s.Select("Code = " + service.Code);
+                                                                String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + ", \"offer_number\":" + service.Offer_number + " }";
+
+                                                            }
+                                                            @s.Description
+                                                        </span>
+                                                        <!--
+                                                        -->
+                                                        <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
+                                                    </li>
+                                                }
                                             }
                                         </div>
                                     </div>
@@ -297,28 +306,28 @@
                                     <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                                         <div id="options-from-active-contract" class="list-group">
                                             @{
-                                            foreach (view_Contract contract1 in ViewBag.ActiveContracts)
-                                            {
-                                            if(contract1.Contract_id != ViewBag.CustomerContract.Contract_id)
-                                            {
-                                            foreach (view_ContractOption option in contract1._ContractOptions)
-                                            {
-                                                <li class="list-group-item">
-                                                    <span class="list-inline" style="width:96%; display:inline-block">
-                                                        @{ view_Module article = new view_Module();
-                                                    article.Select("Article_number = " + option.Article_number);
+                                                foreach (view_Contract contract1 in ViewBag.ActiveContracts)
+                                                {
+                                                    if (contract1.Contract_id != ViewBag.CustomerContract.Contract_id)
+                                                    {
+                                                        foreach (view_ContractOption option in contract1._ContractOptions)
+                                                        {
+                                                            <li class="list-group-item">
+                                                                <span class="list-inline" style="width:96%; display:inline-block">
+                                                                    @{ view_Module article = new view_Module();
+                                                                        article.Select("Article_number = " + option.Article_number);
+                                                                    }
+                                                                    @article.Module
+                                                                </span>
+                                                                <!--
+                                                                -->
+                                                                <div class="pull-right list-inline" style="width:4%; display:inline-block;">
+                                                                    <input data-id="@option.Article_number" type="checkbox" />
+                                                                </div>
+                                                            </li>
                                                         }
-                                                        @article.Module
-                                                    </span>
-                                                    <!--
-                                                    -->
-                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;">
-                                                        <input data-id="@option.Article_number" type="checkbox" />
-                                                    </div>
-                                                </li>
-                                            }
-                                            }
-                                            }
+                                                    }
+                                                }
                                             }
                                         </div>
                                     </div>
@@ -366,22 +375,22 @@
                                     <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                                         <div id="modules-from-contracts" class="list-group">
                                             @{
-                                            foreach (view_ContractRow cr in ViewBag.CustomersModules)
-                                            {
-                                                <li class="list-group-item">
-                                                    <span class="list-inline" style="width:96%; display:inline-block">
-                                                        @{ view_Module article = new view_Module();
-                                                    article.Select("Article_number = " + cr.Article_number);
-                                                        }
-                                                        @article.Module
-                                                    </span>
-                                                    <!--
-                                                    -->
-                                                    <div class="pull-right list-inline" style="width:4%; display:inline-block;">
-                                                        <input data-id="@cr.Article_number" data-discount_type="@article.Discount_type" data-license="@cr.License" data-maintenance="@cr.Maintenance" type="checkbox" />
-                                                    </div>
-                                                </li>
-                                            }
+                                                foreach (view_ContractRow cr in ViewBag.CustomersModules)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:96%; display:inline-block">
+                                                            @{ view_Module article = new view_Module();
+                                                                article.Select("Article_number = " + cr.Article_number);
+                                                            }
+                                                            @article.Module
+                                                        </span>
+                                                        <!--
+                                                        -->
+                                                        <div class="pull-right list-inline" style="width:4%; display:inline-block;">
+                                                            <input data-id="@cr.Article_number" data-discount_type="@article.Discount_type" data-license="@cr.License" data-maintenance="@cr.Maintenance" type="checkbox" />
+                                                        </div>
+                                                    </li>
+                                                }
 
                                             }
                                         </div>
@@ -404,21 +413,21 @@
                                     <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                                         <div id="services-from-contracts" class="list-group">
                                             @{
-                                            foreach (view_ContractConsultantRow service in ViewBag.CustomersServices)
-                                            {
-                                                <li class="list-group-item">
-                                                    <span class="list-inline" style="width:95%; display:inline-block">
-                                                        @{  view_Service s = new view_Service();
-                                                    s.Select("Code = " + service.Code);
-                                                    String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":\"" + (decimal)service.Total_price + "\" }";
-                                                        }
-                                                        @s.Description
-                                                    </span>
-                                                    <!--
-                                                    -->
-                                                    <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
-                                                </li>
-                                            }
+                                                foreach (view_ContractConsultantRow service in ViewBag.CustomersServices)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:95%; display:inline-block">
+                                                            @{ view_Service s = new view_Service();
+                                                                s.Select("Code = " + service.Code);
+                                                                String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":\"" + (decimal)service.Total_price + "\" }";
+                                                            }
+                                                            @s.Description
+                                                        </span>
+                                                        <!--
+                                                        -->
+                                                        <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
+                                                    </li>
+                                                }
                                             }
                                         </div>
                                     </div>
@@ -610,14 +619,14 @@
                                                 CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
                                             }
-                                            @foreach (view_ContractRow or in ViewBag.CustomerContract._ContractRows)
+                                            @foreach (dynamic or in ViewBag.Articles)
                                             {
                                                 // Fetch modules
                                                 view_Module module = new view_Module();
                                                 module.Select("Article_number = " + or.Article_number);
                                                 if (module.Discount == 1)
                                                 {
-                                                    if(module.Discount_type == 1)
+                                                    if (module.Discount_type == 1)
                                                     {
                                                         discountMP += or.License ?? 0;
                                                         discountLP += or.Maintenance ?? 0;
@@ -636,7 +645,7 @@
                                                 {
                                                     License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
                                                     Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
-                                                    if(or.Removed == false)
+                                                    if (or.Removed == false)
                                                     {
                                                         LicenseTotal += Convert.ToDecimal(or.License);
                                                         MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
@@ -656,11 +665,14 @@
                                                         data-selected="true"
                                                         data-discount="@module.Discount"
                                                         data-discount-type="@module.Discount_type"
-                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."))  ; }
+                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
                                                         data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
-                                                        data-alias="@or.Alias"
-                                                        @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; } ; }
-                                                        @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; } ; }
+                                                        data-alias="@or.Module"
+                                                        data-module-text-id="@or.ModuleTextId"
+                                                        data-contract-description="@module.Contract_description"
+                                                        data-contract-id="@or.Id"
+                                                        @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
+                                                        @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; }; }
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
                                                     <table>
                                                         <tr>
@@ -669,36 +681,36 @@
                                                             {
                                                                 if (or.Removed == true)
                                                                 {
-                                                                    if (or.Alias.IsEmpty())
+                                                                    if (or.Module == "")
                                                                     {
                                                                         <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Alias</td>
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Module</td>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (or.Alias.IsEmpty())
+                                                                    if (or.Module == "")
                                                                     {
                                                                         <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@or.Alias</td>
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@or.Module</td>
                                                                     }
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (or.Alias.IsEmpty())
+                                                                if (or.Module == "")
                                                                 {
                                                                     <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@or.Alias</td>
+                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@or.Module</td>
                                                                 }
                                                             }
                                                             @if (module.System != "Lärportal")
@@ -759,7 +771,6 @@
     </div>
 </div>
 <!--#endregion-->
-
 <!-- #region Options -->
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog options-modal" role="document">
@@ -832,53 +843,53 @@
 
                                         </table>
                                         <div class="crm-selected-items list-group" id="selected-options">
-                                        @{
-                                            LicenseTotal = 0;
-                                            MaintenanceTotal = 0;
-                                        }
-                                        @foreach (view_ContractOption or in ViewBag.CustomerContract._ContractOptions)
-                                        {
-                                            // Fetch modules
-                                            view_Module module = new view_Module();
-                                            module.Select("Article_number = " + or.Article_number);
+                                            @{
+                                                LicenseTotal = 0;
+                                                MaintenanceTotal = 0;
+                                            }
+                                            @foreach (view_ContractOption or in ViewBag.CustomerContract._ContractOptions)
+                                            {
+                                                // Fetch modules
+                                                view_Module module = new view_Module();
+                                                module.Select("Article_number = " + or.Article_number);
 
-                                            // Format currency
+                                                // Format currency
 
-                                            String License = String.Format(se, "{0:C2}", or.License);
-                                            String Maintenance = String.Format(se, "{0:C2}", or.Maintenance);
+                                                String License = String.Format(se, "{0:C2}", or.License);
+                                                String Maintenance = String.Format(se, "{0:C2}", or.Maintenance);
 
-                                            LicenseTotal += Convert.ToInt32(or.License);
-                                            MaintenanceTotal += Convert.ToInt32(or.Maintenance);
+                                                LicenseTotal += Convert.ToInt32(or.License);
+                                                MaintenanceTotal += Convert.ToInt32(or.Maintenance);
 
-                                            <button onclick="moveOption(event, this)"
-                                                    type="button"
-                                                    class="list-group-item"
-                                                    data-selected="true"
-                                                    @if (module.System !="Lärportal" ) { @Html.Raw("data-license=" + or.License.ToString().Replace(",", "." )) ; }
-                                                    data-maintenance="@or.Maintenance.ToString().Replace(",", ".")">
-                                                <table>
-                                                    <tr>
-                                                        <td class="art-nr">@or.Article_number</td>
-                                                        <td>@module.Module</td>
-                                                        @if (module.System != "Lärportal")
-                                                        {
-                                                            <td>@License</td>
-                                                            <td>@Maintenance</td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td style='float:right; width:auto;'>@Maintenance</td>
-                                                        }
+                                                <button onclick="moveOption(event, this)"
+                                                        type="button"
+                                                        class="list-group-item"
+                                                        data-selected="true"
+                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
+                                                        data-maintenance="@or.Maintenance.ToString().Replace(",", ".")">
+                                                    <table>
+                                                        <tr>
+                                                            <td class="art-nr">@or.Article_number</td>
+                                                            <td>@module.Module</td>
+                                                            @if (module.System != "Lärportal")
+                                                            {
+                                                                <td>@License</td>
+                                                                <td>@Maintenance</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td style='float:right; width:auto;'>@Maintenance</td>
+                                                            }
 
-                                                    </tr>
-                                                </table>
-                                            </button> 
-                                        }
-                                        @{
-                                            // Format currency
-                                            LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal);
-                                            MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal);
-                                        }
+                                                        </tr>
+                                                    </table>
+                                                </button>
+                                            }
+                                            @{
+                                                // Format currency
+                                                LicenseTotalStr = string.Format(se, "{0:C2}", LicenseTotal);
+                                                MaintenanceTotalStr = string.Format(se, "{0:C2}", MaintenanceTotal);
+                                            }
                                         </div>
                                         <table>
                                             <tr>
@@ -924,13 +935,13 @@
                                     <div class="panel-body" style="overflow-y: scroll; height:52vh;">
                                         <div id="available-services" class="list-group">
                                             @{
-                                                            view_Contract contract = new view_Contract("Contract_id = '" + Request["contract-id"] + "' AND Customer = '" + Request["customer"] + "'");
+                                                view_Contract contract = new view_Contract("Contract_id = '" + Request["contract-id"] + "' AND Customer = '" + Request["customer"] + "'");
                                             }
                                             @foreach (view_Service service in ViewBag.Services)
                                             {
                                                 String price = "";
                                                 int cost = 0;
-                                                if(contract._ContractConsultantRows.Any(c => c.Code == service.Code) )
+                                                if (contract._ContractConsultantRows.Any(c => c.Code == service.Code))
                                                 {
                                                     view_ContractConsultantRow ccr = contract._ContractConsultantRows.First(c => c.Code == service.Code);
                                                     decimal? totPrice = ccr.Amount != 0 ? ccr.Total_price / ccr.Amount : 0;
@@ -944,6 +955,9 @@
                                                     cost = (int)service.Price;
                                                 }
 
+                                                view_ModuleText moduleText = new view_ModuleText();
+                                                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+
                                                 <table>
                                                     <td style="display:inline-block; margin-top: 2vh; cursor: pointer">
                                                         <span onclick="editService(this);" class="glyphicon glyphicon-pencil">
@@ -951,7 +965,16 @@
                                                         </span>
                                                     </td>
                                                     <td style="display:inline-block; float:right; width:95%">
-                                                        <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="false" class="list-group-item">
+                                                        <button style="margin-bottom:25px" 
+                                                                       type="button" 
+                                                                       onclick="newItem(this, @cost)" 
+                                                                       data-contract-id="@contract._ID" 
+                                                                       data-module-type="K" 
+                                                                       data-module-text-id="@moduleText._ID" 
+                                                                       data-code="@service.Code" 
+                                                                       data-selected="false" 
+                                                                       data-contract-description="@service.Contract_description"
+                                                                       class="list-group-item">
                                                             <label>@price</label>
                                                             <span class="service-amount"></span>
                                                             <br />
@@ -959,7 +982,7 @@
                                                         </button>
                                                     </td>
                                                 </table>
-                                                            }
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -986,13 +1009,13 @@
                                                     String price = String.Format(se, "{0:C2}", totPrice);
                                                     int cost = row.Amount != 0 ? Convert.ToInt32(row.Total_price / row.Amount) : 0;
 
-                                                                <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
-                                                                    <label>@price</label>
-                                                                    <span class="service-amount">@row.Amount</span>
-                                                                    <br />
-                                                                    <span id="description-title">@service.Description</span>
-                                                                </button>
-                                                            }
+                                                    <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
+                                                        <label>@price</label>
+                                                        <span class="service-amount">@row.Amount</span>
+                                                        <br />
+                                                        <span id="description-title">@service.Description</span>
+                                                    </button>
+                                                }
                                             }
                                         </div>
                                     </div>
@@ -1072,11 +1095,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="module-info-text" class="col-sm-2 control-label">Module and Services Info</label>
-                        <div class="col-sm-10">
-                            <textarea id="module-info-text" name="Module_info" class="form-control" rows="3"></textarea>
+                            <label for="module-info-header" class="col-sm-2 control-label">Module and Services header</label>
+                            <div class="col-sm-10">
+                                <textarea id="module-info-header" name="Module_info" class="form-control" rows="3"></textarea>
+                            </div>
                         </div>
-                    </div>
                     <div class="form-group">
                         <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
                         <div class="col-sm-10">
@@ -1145,6 +1168,26 @@
 </div>
 
 <!--#endregion-->
+<!-- #region ModuleInfo modal -->
+
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="moduleInfoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog templates-modal" role="document">
+        <div class="modal-content">
+            <div class="crm-pdf-module-info-section">
+                @try
+                {
+                    Html.RenderPartial("_ModuleInfoSection", null, new ViewDataDictionary(ViewData));
+                }
+                catch (Exception ex)
+                {
+                    @Html.Raw(ex);
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--#endregion-->
 <!-- #region TableItems modal -->
 
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="tableItemsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -1159,123 +1202,123 @@
                     <table style="width: 100%;">
                         <tr>
                             @Html.Raw("<td valign=\"top\">")
-@*                            <div class="col-md-6">*@
-                                @{
-                                    foreach (System.Reflection.PropertyInfo pi in ViewBag.TableItems)
+                            @*                            <div class="col-md-6">*@
+                            @{
+                                foreach (System.Reflection.PropertyInfo pi in ViewBag.TableItems)
+                                {
+                                    if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_"))
                                     {
-                                        if (pi.Name != "SSMA_timestamp" && !pi.Name.StartsWith("_"))
+
+                                        String pName = pi.Name.Replace("_", " ");
+
+                                        if (pi.Name == "Main_contract_id")
                                         {
-
-                                            String pName = pi.Name.Replace("_", " ");
-
-                                            if (pi.Name == "Main_contract_id")
-                                            {
-                                                @Html.Raw("</td>")
-                                                @Html.Raw("<td valign=\"top\">")
-                                                @*@Html.Raw("</div><div class='col-md-6'>")*@
-                                            }
-                                            <div class="form-group">
-                                                <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
-                                                <div class="col-sm-10">
-                                                    @if (pi.PropertyType == typeof(bool?) @*|| pi.PropertyType == typeof(bool)*@)
-                                                    {
-                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                            <option value="true">true</option>
-                                                            <option value="false">false</option>
-                                                        </select>
-                                                    }
-                                                    else if (pi.Name == "Summera")
-                                                    {
-                                                        <div class="checkbox">
-                                                            <label>
-                                                                <input id="summera" data-id="summera" name="Summera" type="checkbox" />
-                                                            </label>
-                                                        </div>
-                                                    }
-                                                    else if (pi.Name == "Status")
-                                                    {
-                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                            @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
-                                                            {
-                                                                <option value="@so.Value">@so.Text</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                    else if (pi.Name == "Contract_type")
-                                                    {
-                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                            @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
-                                                            {
-                                                                <option value="@so.Value">@so.Text</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                    else if (pi.Name == "Main_contract_id")
-                                                    {
-                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                            <option value=""></option>
-                                                            @foreach (String types in ViewBag.MainContracts)
-                                                            {
-                                                                <option value="@types">@types</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                    else if (pi.Name == "Sign")
-                                                    {
-                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                            @foreach (String types in ViewBag.Users)
-                                                            {
-                                                                <option value="@types">@types</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                    else if (pi.Name == "Area")
-                                                    {
-                                                        <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                            @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
-                                                            {
-                                                                <option value="@so.Value">@so.Text</option>
-                                                            }
-                                                        </select>
-                                                    }
-                                                    else
-                                                    {
-                                                        String inputType = "";
-                                                        String inputVal = "";
-                                                        if (pi.PropertyType == typeof(DateTime?))
-                                                        {
-                                                            inputType = "date";
-                                                            inputVal = DateTime.Now.ToShortDateString();
-                                                        }
-                                                        else
-                                                        {
-                                                            inputType = "text";
-                                                        }
-                                                        if (pi.Name == "Contract_id")
-                                                        {
-                                                            <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
-                                                        }
-                                                        else
-                                                        {
-                                                            <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
-                                                        }
-
-                                                    }
-                                                </div>
-                                            </div>
+                                            @Html.Raw("</td>")
+                                            @Html.Raw("<td valign=\"top\">")
+                                            @*@Html.Raw("</div><div class='col-md-6'>")*@
                                         }
+                                        <div class="form-group">
+                                            <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
+                                            <div class="col-sm-10">
+                                                @if (pi.PropertyType == typeof(bool?)@*|| pi.PropertyType == typeof(bool)*@)
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    <option value="true">true</option>
+    <option value="false">false</option>
+</select>
+}
+else if (pi.Name == "Summera")
+{
+<div class="checkbox">
+    <label>
+        <input id="summera" data-id="summera" name="Summera" type="checkbox" />
+    </label>
+</div>
+}
+else if (pi.Name == "Status")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
+    {
+        <option value="@so.Value">@so.Text</option>
+    }
+</select>
+}
+else if (pi.Name == "Contract_type")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
+    {
+        <option value="@so.Value">@so.Text</option>
+    }
+</select>
+}
+else if (pi.Name == "Main_contract_id")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    <option value=""></option>
+    @foreach (String types in ViewBag.MainContracts)
+    {
+        <option value="@types">@types</option>
+    }
+</select>
+}
+else if (pi.Name == "Sign")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (String types in ViewBag.Users)
+    {
+        <option value="@types">@types</option>
+    }
+</select>
+}
+else if (pi.Name == "Area")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
+    {
+        <option value="@so.Value">@so.Text</option>
+    }
+</select>
+}
+else
+{
+String inputType = "";
+String inputVal = "";
+if (pi.PropertyType == typeof(DateTime?))
+{
+    inputType = "date";
+    inputVal = DateTime.Now.ToShortDateString();
+}
+else
+{
+    inputType = "text";
+}
+if (pi.Name == "Contract_id")
+{
+    <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+}
+else
+{
+    <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+}
+
+}
+                                            </div>
+                                        </div>
                                     }
                                 }
-                                <div class="form-group">
-                                    <label for="hashtags-text" class="col-sm-2 control-label">Tags</label>
-                                    <div class="col-sm-10">
-                                        <input data-id="" class="form-control" type="text" id="hashtags-text" name="Hashtags" placeholder="Tags" value="" />
-                                    </div>
+                            }
+                            <div class="form-group">
+                                <label for="hashtags-text" class="col-sm-2 control-label">Tags</label>
+                                <div class="col-sm-10">
+                                    <input data-id="" class="form-control" type="text" id="hashtags-text" name="Hashtags" placeholder="Tags" value="" />
                                 </div>
-                          @*</div>*@
-                                @Html.Raw("</td>")
-            </tr>
-            </table>
+                            </div>
+                            @*</div>*@
+                            @Html.Raw("</td>")
+                        </tr>
+                    </table>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1289,26 +1332,7 @@
 <!--#endregion-->
 
 <script type="text/javascript" src="@Url.Content("~/Scripts/tinymce/tinymce.min.js")"></script>
-@*<script type="text/javascript" src="@Url.Content("~/Scripts/tinymce/jquery.tinymce/tinymce.min.js")"></script>*@
 <script type="text/javascript">
-    //tinymce.init({
-    //    selector: "#epilog-text"
-    //});
-    //tinymce.init({
-    //    selector: "#prolog-text"
-    //});
-
-    //$('#mainTemplatesModal').bind('shown', function () {
-    //    console.log(1);
-    //    tinymce.init({
-    //        selector: "#epilog-text"
-    //    });
-    //    tinyMCE.execCommand('mceAddControl', false, 'epilog-text');
-    //});
-    //$('#mainTemplatesModal').bind('shown', function () {
-    //    tinyMCE.execCommand('mceAddControl', false, 'prolog-text');
-    //});
-
     $('#templatesModal').bind('shown.bs.modal', function () {
         loadTextData();
         tinymce.init({
@@ -1340,7 +1364,7 @@
             branding: false
         });
         tinymce.init({
-            selector: "#module-info-text",
+            selector: "#module-info-header",
             plugins: tinyDefaultPlugins,
             toolbar: tinyDefaultToolbars,
             browser_spellcheck: true,
@@ -1368,7 +1392,7 @@
         }
 
         try {
-            tinyMCE.execCommand('mceAddControl', false, 'module-info-text');
+            tinyMCE.execCommand('mceAddControl', false, 'module-info-header');
         } catch (e) {
         }
 
@@ -1433,10 +1457,26 @@
 
     });
     $('#mainTemplatesModal').bind('hidden.bs.modal', function () {
-
-
         tinyMCE.remove();
+    });
 
+    $('#moduleInfoModal').bind('shown.bs.modal', function () {
+
+        tinymce.init({
+        selector: "textarea",
+        plugins: tinyDefaultPlugins,
+        toolbar: tinyDefaultToolbars,
+        branding: false,
+        browser_spellcheck: true
+        });
+
+        try {
+            tinyMCE.execCommand('mceAddControl', false, 'textarea');
+        } catch (error) {
+        }
+    });
+    $('#moduleInfoModal').bind('hidden.bs.modal', function () {
+        tinyMCE.remove();
     });
 </script>
 

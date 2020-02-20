@@ -24,18 +24,10 @@
                     <label for="crm-select-customer">Customer:</label>
                     <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
                         <option value="*">All</option>
-                        @{bool first = true;}
+                        <option selected value="@ViewBag.SelectedCustomer">@ViewBag.SelectedCustomer</option>
                         @foreach (String Customer in ViewBag.Customers)
                         {
-                            if (first)
-                            {
-                                <option selected value="@Customer">@Customer</option>
-                                first = false;
-                            }
-                            else
-                            {
-                                <option value="@Customer">@Customer</option>
-                            }
+                            <option value="@Customer">@Customer</option>
                         }
                     </select>
                 </div>
@@ -408,7 +400,8 @@
             "url": serverPrefix + "CustomerOffer/checkReminder/",
             "type": "POST",
             "data": {
-                "customer": customer
+                "customer": customer,
+                "customerquerystr": "@Request.QueryString["customer"]"
             },
             "success": function(data){
                 if (data == "1") {
@@ -417,6 +410,10 @@
                     if (showModal == true) {
                         $("#reminderModal").appendTo("body").modal("show").draggable();
                     }
+                }
+                else if (data == "2") {
+                    $("#remind-modal-button").show();
+                    loadReminders();
                 }
                 else {
                     $("#remind-modal-button").hide();
@@ -1384,10 +1381,9 @@
         $customerSelect = $("#crm-select-customer");
         $currentUserSelect = $("#crm-select-user");
         //@Html.Raw(@ViewBag.OfferNumber)
-        $customerSelect.val("@Html.Raw(@ViewBag.OfferNumber)");
         @*$currentUserSelect.val("@Html.Raw(@ViewBag.CurrentUser)");*@
         $(".selectpicker").selectpicker("refresh");
-        updateDataTable("@Html.Raw(@ViewBag.OfferNumber)",$currentUserSelect.val() , function(){
+        updateDataTable("@Html.Raw(@ViewBag.SelectedCustomer)",$currentUserSelect.val() , function(){
             drawButtons();
             if($customerSelect.val() == "")
                 $("#crm-add-row").unbind("click");

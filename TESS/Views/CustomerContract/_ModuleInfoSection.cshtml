@@ -1,0 +1,146 @@
+﻿@using TietoCRM.Models;
+@using System.Globalization;
+@{
+    Layout = null;
+}
+
+<!-- Print Products/Modules/Articles -->
+@PrintListContent(ViewBag.ArticleAndServiceDictionary)
+
+@helper PrintListContent(List<KeyValuePair<String, List<dynamic>>> list)
+{
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Module Info</h4>
+    </div>
+    <div id="moduleInfo-modal" class="modal-body">
+        <form id="module-info-form" class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-10">
+                    @{
+                        int count = 1;
+                    }
+                    <table id="modules" class="table table-hover" style="width: 100%">
+                        @foreach (KeyValuePair<String, List<dynamic>> system in list)
+                        {
+                            foreach (var contractInfo in system.Value)
+                            {
+                                <tr>
+                                    <td width="10%">@contractInfo.Article_number</td>
+                                    <td>@contractInfo.System</td>
+                                    <td>@Html.Raw(contractInfo.Module)</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">
+                                        <label for="module-info-text@(count)" class="col-sm-2 control-label">Module and Services info</label>
+                                        <div class="col-sm-10">
+                                            <textarea id="module-info-text@(count)" name="module-info-text@(count)" class="form-control" rows="5">@contractInfo.ContractDescription</textarea>
+                                            <input type="hidden" id="typeId@(count)" name="typeId@(count)" value="@contractInfo.Id">
+                                            <input type="hidden" id="moduleId@(count)" name="moduleId@(count)" value="@contractInfo.Article_number">
+                                            <input type="hidden" id="moduleTextId@(count)" name="moduleTextId@(count)" value="@contractInfo.ModuleTextId">
+                                            <input type="hidden" id="moduleType@(count)" name="moduleType@(count)" value="@contractInfo.ModuleType">
+                                        </div>
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        }
+                    </table>
+                    <input type="hidden" id="moduleCount" name="moduleCount" value="@count">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="save-module-info-changes" @{ if (list.Count == 0) { @Html.Raw("disabled='disabled' ")  ; } } class="btn btn-primary">Save</button>
+    </div>
+}
+
+<script>
+    $("#modules tr:even").addClass("even");
+    $("#modules tr:not(.even)").hide();
+    $("#modules tr:first-child").show();
+
+    $("#modules tr.even").click(function () {
+        var trToToggle = $(this).next("tr");
+        $("#modules tr:not(.even)").not(trToToggle).hide();
+        $(trToToggle).slideToggle("fast");
+        $(this).find(".arrow").toggleClass("up");
+    });
+
+    $("#save-module-info-changes").click(function () {
+        if ($("#moduleInfo-modal form").valid()) {
+            var updateData = {};
+            var $ttForm = $("#module-info-form");
+            var $inputs = $ttForm.find('input, textarea');
+            console.log("Spara");
+            var tinyMCEInputs = [
+                "module-info-text"
+            ];
+            $inputs.each(function () {
+                var $formInput = $(this);
+                var inputProp = $formInput.attr("name");
+                if(inputProp != "Sign" && inputProp != "Template_number" && inputProp != "SSMA_timestamp" && typeof inputProp != 'undefined'){
+                    //console.log($formInput.attr("value"),$formInput.val());
+                    // if input is a TinyMCE field extract the content.
+                    var inputPropOrig = inputProp;
+                    if (inputProp.startsWith("module-info-text")) {
+                        inputProp = inputProp.substr(0, 16);
+                    }
+                    if($.inArray(inputProp, tinyMCEInputs) >= 0){
+
+                        updateData[inputPropOrig] = tinymce.get($formInput.attr("id")).getContent()
+                    }
+                    else{
+                        updateData[inputPropOrig] = $formInput.val();
+                    }
+
+                }
+
+            });
+
+            //updateData["primaryKey"] = contractNumber;
+            var updateDataArr = [];
+            updateDataArr.push(updateData);
+
+
+            $.ajax({
+                "url": serverPrefix + "CustomerContract/SaveModuleInfoTexts/",
+                "type": "POST",
+                "data": {
+                    "object": JSON.stringify(updateDataArr)
+                },
+                dataType: 'text',
+                // iOS 6 has a dreadful bug where POST requests are not sent to the
+                // server if they are in the cache.
+                headers: { 'Cache-Control': 'no-cache' }, // Apple!
+                "success": function (data) {
+                    if (data > 0) {
+                        $.ajax({
+                            "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",
+                            "type": "GET",
+                            "success": function (data) {
+                                $(".crm-pdf-module-section").html(data);
+                                triggerAlert("Successfully saved module texts", "success");
+                                $("#moduleInfoModal").modal("hide");
+                            }
+                        });
+                    }
+
+                    //// Update current values
+                    //currentOfferValues = updateData;
+                    //// Loop through "HTML PDF" and update fields
+                    //$.each(updateData, function(key, val){
+                    //    var $updateTarget = $("#" + key);
+                    //    if($updateTarget.length > 0){
+                    //        $updateTarget.html(val);
+                    //    }
+                    //})
+                }
+            })
+        };
+    });
+
+</script>

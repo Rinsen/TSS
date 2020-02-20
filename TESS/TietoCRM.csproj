@@ -27,6 +27,7 @@
     <UseGlobalApplicationHostFile />
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -274,6 +275,7 @@
     <Compile Include="Models\view_ModuleDiscount.cs" />
     <Compile Include="Models\view_ModuleFeature.cs" />
     <Compile Include="Models\view_ModuleModule.cs" />
+    <Compile Include="Models\view_ModuleText.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
     <Compile Include="Models\view_Reminder.cs" />
     <Compile Include="Models\view_Sector.cs" />
@@ -910,6 +912,7 @@
     <Content Include="Views\ModuleMapping\Index.cshtml" />
     <Content Include="Views\CustomerContract\ShippingListPdf.cshtml" />
     <Content Include="Views\ExportExcel\Index.cshtml" />
+    <Content Include="Views\CustomerContract\_ModuleInfoSection.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -67,7 +67,8 @@ var fillArticleList = function(System, classification){
             "System": System,
             "classification": classification,
             "customer": customerName,
-            "contracttype": ctr
+            "contracttype": ctr,
+            "contractid": contractId
         },
         "success": function (data) {
             if (data.length > 0) {
@@ -243,6 +244,9 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
+                                            data-module-text-id='" + article.Module_text_id + "'                    \
+                                            data-contract-description='" + article.Contract_Description + "'        \
+                                            data-contract-id='" + article.Contract_id + "'                          \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -270,6 +274,9 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
+                                            data-module-text-id='" + article.Module_text_id + "'                    \
+                                            data-contract-description='" + article.Contract_Description + "'        \
+                                            data-contract-id='" + article.Contract_id + "'                          \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -487,7 +494,7 @@ var changePrice = function (event, element) {
 }
 // Move list item from either available-articles to selected-articles or
 // the other way around.
-var moveItem = function(event, element){
+var moveItem = function (event, element) {
     $button = $(element.closest('button'));
     $arttext = $(element);
     //$arttext = $(element.firstElementChild.firstElementChild.firstElementChild.firstElementChild.nextElementSibling);
@@ -499,9 +506,9 @@ var moveItem = function(event, element){
     var buttonLicense = $button.data("license");
     var buttonMaintenance = $button.data("maintenance");
     var buttonid = $button.attr("id");
-    
 
-    if($button.attr("data-selected") == "false") { 
+
+    if ($button.attr("data-selected") == "false") {
         $newButton = $button.clone();
         // Fix to exclude the "used" checkmark on selected items.
         $($newButton).find("td").get(0).remove();
@@ -589,27 +596,26 @@ var moveItem = function(event, element){
         }
         calculateSums();
     }
-}
+};
+
 // Function to show a highlight effect on movement between lists
-var highlightItem = function($item, css)
-{
+var highlightItem = function ($item, css) {
     $item.addClass(css)
-    setTimeout(function () {      
+    setTimeout(function () {
         $item.removeClass(css);
         $item.addClass("highlight-item-fade");
         setTimeout(function () {
             $item.removeClass("highlight-item-fade");
-        }, 600);   
-    }, 600);     
-}
+        }, 600);
+    }, 600);
+};
 
 var saveArticlesFunction = function () {
     $("#choose-selected-articles").button('loading');
     var selectedArticlesArray = [];
     var $selectedList = $("#articlesModal #selected-articles button");
     var selectedListLen = $selectedList.length;
-    for(var i = 0; i < selectedListLen; i++)
-    {
+    for (var i = 0; i < selectedListLen; i++) {
         var $button = $($selectedList[i]);
         var buttonArt = $button.find(".art-nr").html();
         var buttonLicense = $button.data("license");
@@ -617,6 +623,9 @@ var saveArticlesFunction = function () {
         var buttonAlias = $button.data("alias");
         var buttonRowtype = $button.data("rowtype");
         var buttonDiscount = $button.data("discount");
+        var buttonContractDescription = $button.data("contract-description");
+        var buttonModuleTextId = $button.data("module-text-id");
+        var buttonContractId = $button.data("contract-id");
 
         // "Create a new article" to store in an array to use for server side db update.
         var newArticle = {
@@ -625,8 +634,13 @@ var saveArticlesFunction = function () {
             "License": buttonLicense,
             "Maintenance": buttonMaintenance,
             "Rowtype": buttonRowtype,
-            "Discount_type": buttonDiscount
-        }
+            "Discount_type": buttonDiscount,
+            "Contract_description": buttonContractDescription,
+            "Module_text_id": buttonModuleTextId,
+            "Contract_id": buttonContractId,
+            "Module_type": "A" //Artikel
+        };
+
         selectedArticlesArray.push(newArticle);
     }
     $.ajax({
@@ -644,13 +658,39 @@ var saveArticlesFunction = function () {
         headers: { 'Cache-Control': 'no-cache' }, // Apple!
         "success": function (data) {
             if (data > 0) {
+                //Need to save standard texts to moduleinfo
+                $.ajax({
+                    "url": serverPrefix + "CustomerContract/SaveModuleInfoTexts/",
+                    "type": "POST",
+                    "data": {
+                        "object": JSON.stringify(selectedArticlesArray)
+                    },
+                    dataType: 'text',
+                    // iOS 6 has a dreadful bug where POST requests are not sent to the
+                    // server if they are in the cache.
+                    headers: { 'Cache-Control': 'no-cache' }, // Apple!
+                    "success": function (data) {
+                        if (data > 0) {
+                            $.ajax({
+                                "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",
+                                "type": "GET",
+                                "success": function (data) {
+                                    $(".crm-pdf-module-section").html(data);
+                                    updateDoneAjax(0);
+                                    window.location = "ViewPdf?contract-id=" + contractId + "&customer=" + customerName;
+                                }
+                            });
+                        }
+                    }
+                });
+
                 // Success to update db. Now update the preview section.
                 $.ajax({
                     "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_OldModuleSection",
                     "type": "GET",
                     "success": function (data) {
                         $(".crm-pdf-old-module-section").html(data);
-                        updateDoneAjax(0);
+                        updateDoneAjax(1);
                     }
                 });
 
@@ -659,29 +699,32 @@ var saveArticlesFunction = function () {
                     "type": "GET",
                     "success": function (data) {
                         $(".crm-pdf-moduletermination-section").html(data);
-                        updateDoneAjax(1);
-                    }
-                });
-
-                $.ajax({
-                    "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",
-                    "type": "GET",
-                    "success": function (data) {
-                        $(".crm-pdf-module-section").html(data);
                         updateDoneAjax(2);
                     }
                 });
+
+                //Also update dialogs
+                $.ajax({
+                    "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleInfoSection",
+                    "type": "GET",
+                    "success": function (data) {
+                        $(".crm-pdf-module-info-section").html(data);
+                        updateDoneAjax(3);
+                    }
+                });
+
+                window.location = "ViewPdf?contract-id=" + contractId + "&customer=" + customerName;
             }
-            else{
+            else {
                 console.log(data);
                 $("#choose-selected-articles").button('reset');
                 triggerAlert("Failed to add articles", "warning");
             }
         }
-    })
-}
+    });
+};
 
-doneAjax = [false,false,false];
+doneAjax = [false,false,false, false];
 var updateDoneAjax = function(ajaxRequestDone)
 {
     doneAjax[ajaxRequestDone] = true;

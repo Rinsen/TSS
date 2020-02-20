@@ -29,6 +29,16 @@ namespace TietoCRM.Models
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
+        /// <summary>
+        /// Offer description for module, needed for new dialog "Edit Module Info". Not saved to database.
+        /// </summary>
+        public string _OfferDescription { get; set; }
+
+        /// <summary>
+        /// Id for ModuleText, not in DB 
+        /// </summary>
+        public int _ModuleTextId { get; set; }
+
         public view_ConsultantRow()
             : base("ConsultantRow")
         {
@@ -73,20 +83,16 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-
                 // Default query
                 command.CommandText = "SELECT Offer_number ,Code ,Amount ,Total_price ,Include_status, Alias, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ConsultantRow WHERE " + "Offer_number = @offerNumber";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
 
-
                 command.ExecuteNonQuery();
-
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-
                     while (reader.Read())
                     {
                         if (reader.HasRows)
@@ -98,13 +104,22 @@ namespace TietoCRM.Models
                                 t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                 i++;
                             }
+
+                            //Also get Offer Description (ModuleText)
+                            view_Service service = new view_Service();
+                            service.Select("Code = " + t.Code.ToString());
+                            view_ModuleText moduleText = new view_ModuleText();
+                            moduleText.Select("Type = 'O' AND TypeId = " + t.Offer_number.ToString() + " AND ModuleType = 'T' AND ModuleId = " + t.Code.ToString());
+
+                            t._OfferDescription = moduleText.Description;
+                            t._ModuleTextId = moduleText._ID;
+
                             list.Add(t);
                         }
                     }
                 }
-
-
             }
+
             return list;
         }
 

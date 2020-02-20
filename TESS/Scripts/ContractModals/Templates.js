@@ -2,6 +2,19 @@
 
     var frm = $("#templatesModal form");
 
+    $("#moduleInfo-modal-button").click(function () {
+
+        $.ajax({
+            "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleInfoSection",
+            "type": "GET",
+            "success": function (data) {
+                $(".crm-pdf-module-info-section").html(data);
+                $("#moduleInfoModal").appendTo("body").modal("show").find('.modal-content').draggable();
+            }
+        });
+
+    });
+
     $("#textTemplate-modal-button").click(function () {
         
         if (isMainCont == "True") {
@@ -35,7 +48,7 @@
             text["Page_head"] = tinymce.get('page-head-text').getContent();
             //text["Document_foot"] = $("#document-foot-text").val();
             text["Document_foot"] = tinymce.get('document-foot-text').getContent();
-            text["Module_info"] = tinymce.get('module-info-text').getContent();
+            text["Module_header"] = tinymce.get('module-info-header').getContent();
             text["Document_foot_title"] = $("#bodytitle").val(),
             text["Delivery_maint_title"] = tinymce.get("deluhtitle").getContent(),
             //text["Delivery_maint_text"] = $("#deluhtext").val()
@@ -65,7 +78,7 @@
                             if ($updateTarget.length > 0) {
                                 $updateTarget.html(val);
                             }
-                        })
+                        });
 
                         $("#templatesModal").modal("hide");
                         triggerAlert("Successfully updated this contract text", "success");
@@ -173,7 +186,9 @@ var loadTextData = function (templateID) {
                 $("#title-text").val(template.Title);
                 $("#page-head-text").val(template.Page_head);
                 $("#document-foot-text").val(template.Document_foot);
-                $("#module-info-text").val(template.Module_info);
+                if (template.Module_header != undefined) {
+                    $("#module-info-header").val(template.Module_header);
+                }
                 $("#bodytitle").val(template.Document_foot_title);
                 $("#deluhtitle").val(template.Delivery_maint_title);
                 $("#deluhtext").val(template.Delivery_maint_text);
@@ -189,7 +204,6 @@ var loadTextData = function (templateID) {
         }
     });
 };
-
 
 var loadSelectData = function () {
 

@@ -445,6 +445,8 @@ var saveOptions = function () {
                         triggerAlert("Successfully added options", "success");
                     }
                 });
+
+                window.location = "ViewPdf?contract-id=" + contractId + "&customer=" + customerName;
             }
             else {
                 console.log(data);

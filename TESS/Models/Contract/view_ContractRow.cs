@@ -388,9 +388,16 @@ public class view_ContractRow : SQLBaseClass
                 return list;
             }
         }
+
+        /// <summary>
+        /// Hämtar kontraktrader för att bygga ihop modultexter på kontraktet
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="contract_id"></param>
+        /// <returns></returns>
         public List<dynamic> GetContractRowsForModuleInfo(string customer, string contract_id)
         {
-            List<dynamic> list = new List<dynamic>();
+            var list = new List<dynamic>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
@@ -401,7 +408,14 @@ public class view_ContractRow : SQLBaseClass
                 //                        Inner Join  " + databasePrefix + @"Module M On M.Article_number = C.Article_number 
                 //                        Where IsNull(M.Contract_Description,'') <> '' And C.Customer = @customer And C.Contract_id = @contract_id Order By " + GetOrderBy();
 
-                command.CommandText = @"SELECT Alias, Contract_Description FROM qry_ContractArtDescription Where Avtalsid = @contract_id And Kund = @customer Order By Typ, Art_id";
+                command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System FROM qry_ContractArtDescription Q 
+                                        JOIN View_Module M ON M.Article_number = Q.Art_id 
+                                        WHERE Avtalsid = @contract_id AND Kund = @customer 
+                                        UNION
+                                        SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, S.Description AS System FROM qry_ContractArtDescription Q
+                                        JOIN view_Service S ON S.Code = Q.Art_id 
+                                        WHERE Avtalsid = @contract_id AND Kund = @customer 
+                                        ORDER BY " + GetOrderByForQry();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -437,6 +451,16 @@ public class view_ContractRow : SQLBaseClass
             if (ASort == 3) return "Classification, Article_number";
             return "Alias";
         }
+
+        private static string GetOrderByForQry()
+        {
+            ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
+            if (ASort == 1) return "Typ, System, Alias";
+            if (ASort == 2) return "Typ, System, Alias";
+            if (ASort == 3) return "Typ, System, Art_id";
+            return "Typ, System, Alias";
+        }
+
         public static System.Data.DataTable ExportValidContractRowsToExcel(string articleNumber)
         {
             System.Data.DataTable dt = new System.Data.DataTable();

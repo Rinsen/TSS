@@ -42,11 +42,28 @@ namespace TietoCRM.Controllers.List_Management
                 }
                 catch
                 {
-                    return "0";
+                    return "-1";
                 }
 
                 view_Sector Sector = new view_Sector();
                 Sector.Select("ID_PK = " + id_pk);
+
+                object outValue = null;
+                if (variables.TryGetValue("SortNo", out outValue))
+                {
+                    if(Sector.SortNo != Decimal.Parse(outValue.ToString()))
+                    {
+                        //Sort no is updated. Check if it already exist in database!
+                        view_Sector SectorTmp = new view_Sector();
+                        SectorTmp.Select("Sortno = " + outValue.ToString());
+
+                        if (SectorTmp._ID_PK > 0)
+                        {
+                            //Break;
+                            return "0";
+                        }
+                    }
+                }
 
                 foreach (KeyValuePair<String, object> variable in variables)
                 {
@@ -76,6 +93,16 @@ namespace TietoCRM.Controllers.List_Management
                 }
                 catch (Exception e)
                 {
+                    return "-1";
+                }
+
+                //Check if it already exist in database!
+                view_Sector SectorTmp = new view_Sector();
+                SectorTmp.Select("Sortno = " + a.SortNo.ToString());
+
+                if (SectorTmp._ID_PK > 0)
+                {
+                    //Break;
                     return "0";
                 }
 

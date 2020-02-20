@@ -107,6 +107,12 @@ namespace TietoCRM.Models
         private List<view_ContractOption> _contractOptions;
         public List<view_ContractOption> _ContractOptions { get { return _contractOptions; } set { _contractOptions = value; } }
 
+        public List<view_CustomerProductRow> _CustomerProductRows { get; set; }
+        public IEnumerable<Dictionary<String, object>> _CustomerProductRowsSorted { get; set; }
+        public List<view_Module> _MatchedModules { get; set; }
+        public List<String> _OrderedSystemNames { get; set; }
+
+
         public view_Contract()
             : base("Contract")
         {

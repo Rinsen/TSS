@@ -38,14 +38,15 @@
             obj.License = $input.attr("data-license");
             obj.Maintenance = $input.attr("data-maintenance");
             obj.Alias = $input.attr("data-alias");
+            obj.Offer_number = $input.attr("data-offer-number");
             moduleList.push(obj);
         }
 
         $inputs = $("#contractFromOfferModal #services-from-open-offer").find("input:checked");
         length = $inputs.length;
         var serviceList = [];
-        for (var i = 0; i < length; i++) {
-            id = JSON.parse($($inputs[i]).attr("data-id"));
+        for (var j = 0; j < length; j++) {
+            id = JSON.parse($($inputs[j]).attr("data-id"));
             serviceList.push(id);
         }
 
@@ -56,7 +57,7 @@
                 "modules": JSON.stringify(moduleList),
                 "services": JSON.stringify(serviceList),
                 "customer": customerName,
-                "contract-id": contractId,
+                "contract-id": contractId
             },
             "success": function (data) {
                 if (data > 0) {
@@ -71,6 +72,7 @@
                             $(".crm-pdf-module-section").html(data);
                             triggerAlert("Successfully added articles from offer.", "success");
                             $("#contractFromOfferModal").modal("hide");
+                            location.reload(); //För att uppdatera menyer...
                         }
                     });
                     console.log("success");

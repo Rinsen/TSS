@@ -40,11 +40,11 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="module-info-text" class="col-sm-2 control-label">Module and Services info</label>
-            <div class="col-sm-10">
-                <textarea id="module-info-text" name="Module_info" class="form-control" rows="3">@ViewBag.CustomerOffer.Module_info</textarea>
+                <label for="module-info-header" class="col-sm-2 control-label">Module and Services header</label>
+                <div class="col-sm-10">
+                    <textarea id="module-info-header" name="Module_header" class="form-control" rows="3">@ViewBag.CustomerOffer.Module_header</textarea>
+                </div>
             </div>
-        </div>
         <div class="form-group">
             <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
             <div class="col-sm-10">
@@ -82,9 +82,9 @@
                             $formInput.val(data[$formInput.attr("name")]);
                     }
                 });
-            }    
+            }
         }
-        
+
         // Get field data and update modal fields.
         $("#template-number-select").change(function () {
             var $el = $(this);
@@ -117,7 +117,7 @@
             console.log("Spara");
             var tinyMCEInputs = [
                 "Page_head",
-                "Module_info",
+                "Module_header",
                 "Page_foot",
                 "Document_foot",
             ];
@@ -128,17 +128,17 @@
                     //console.log($formInput.attr("value"),$formInput.val());
                     // if input is a TinyMCE field extract the content.
                     if($.inArray(inputProp, tinyMCEInputs) >= 0){
-                        
+
                         updateData[inputProp] = tinymce.get($formInput.attr("id")).getContent()
                     }
                     else{
-                        updateData[inputProp] = $formInput.val(); 
+                        updateData[inputProp] = $formInput.val();
                     }
-                    
+
                 }
-                   
+
             });
-            
+
             updateData["primaryKey"] = offerNumber;
             var updateDataArr = [];
             updateDataArr.push(updateData);
@@ -149,7 +149,7 @@
                 "type": "POST",
                 "data": {
                     "requestData": "update_view_CustomerOffer",
-                    "object": JSON.stringify(updateDataArr)                    
+                    "object": JSON.stringify(updateDataArr)
                 },
                 dataType: 'text',
                 // iOS 6 has a dreadful bug where POST requests are not sent to the
@@ -175,39 +175,39 @@
     <script type="text/javascript" src="~/Scripts/tinymce/tinymce.min.js"></script>
     @*<script type="text/javascript" src="~/Scripts/tinymce/jquery.tinymce.min.js"></script>*@
     <script type="text/javascript">
-    $('.bootbox').bind('hidden.bs.modal', function () {
-        tinyMCE.remove();
-    });
-    tinymce.init({
-        selector: "#page-head-text",
-        plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars,
-        browser_spellcheck: true,
-        branding: false
-    });
-    tinymce.init({
-        selector: "#module-info-text",
-        plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars,
-        browser_spellcheck: true,
-        branding: false
-    });
-    tinymce.init({
-        selector: "#page-foot-text",
-        plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars,
-        browser_spellcheck: true,
-        branding: false
-    });
-    tinymce.init({
-        selector: "#document-foot-text",
-        plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars,
-        browser_spellcheck: true,
-        branding: false
-    });
-    </script>
-    <!-- #endregion -->
+        $('.bootbox').bind('hidden.bs.modal', function () {
+            tinyMCE.remove();
+        });
+        tinymce.init({
+            selector: "#page-head-text",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
+            branding: false
+        });
+        tinymce.init({
+            selector: "#module-info-header",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
+            branding: false
+        });
+        tinymce.init({
+            selector: "#page-foot-text",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
+            branding: false
+        });
+        tinymce.init({
+            selector: "#document-foot-text",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
+            branding: false
+        });
+        </script>
+        <!-- #endregion -->
 }
 
 else if (Request["modal"] == "articles")
@@ -252,10 +252,10 @@ else if (Request["modal"] == "articles")
                                     <th>License</th>
                                     <th>Maintenance</th>
                                 </tr>
-                                
+
                             </table>
                             <div id="available-articles" class="list-group">
-                            </div>     
+                            </div>
                             <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
                         </div>
                     </div>
@@ -274,7 +274,7 @@ else if (Request["modal"] == "articles")
                                     <th >License</th>
                                     <th >Maintenance</th>
                                 </tr>
-                                
+
                             </table>
                             <div id="selected-articles" class="list-group">
                                 @{
@@ -284,13 +284,10 @@ else if (Request["modal"] == "articles")
                                     CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
                                     decimal discountMP = 0;
                                     decimal discountLP = 0;
-                                 }
-                                @foreach (view_OfferRow or in ViewBag.CustomerOffer._OfferRows)
+                                }
+                                @foreach (dynamic or in ViewBag.Articles)
                                 {
-                                    // Fetch modules
-                                    view_Module module = new view_Module();
-                                    module.Select("Article_number = " + or.Article_number);
-                                    if (module.Discount == 1 && module.Discount_type == 1)
+                                    if (or.Discount == 1 && or.Discount_type == 1)
                                     {
                                         discountMP += or.License ?? 0;
                                         discountLP += or.Maintenance ?? 0;
@@ -298,7 +295,7 @@ else if (Request["modal"] == "articles")
                                     String License;
                                     String Maintenance;
                                     // Format currency
-                                    if (module.Discount != 1 || module.Discount_type == 0)
+                                    if (or.Discount != 1 || or.Discount_type == 0)
                                     {
                                         License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
                                         Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
@@ -317,27 +314,25 @@ else if (Request["modal"] == "articles")
                                             type="button"
                                             class="list-group-item"
                                             data-selected="true"
-                                            data-discount="@module.Discount"
-                                            data-discount-type="@module.Discount_type"
-                                            @if (module.System != "Lärportal")
+                                            data-discount="@or.Discount"
+                                            data-discount-type="@or.Discount_type"
+                                            data-module-text-id="@or.ModuleTextId"
+                                            data-offer-description="@or.OfferDescription"
+                                            data-offer-id="@or.Offer_number"
+
+                                            @if (or.System != "Lärportal")
                                             {
                                                 @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."));
                                             }
                                             data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
-                                            data-alias="@or.Alias">
+                                            data-alias="@or.Module">
                                         <table>
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
-                                                @if (or.Alias.IsEmpty())
-                                                {
-                                                    <td>@module.Module</td>
-                                                }
-                                                else
-                                                {
-                                                    <td>@or.Alias</td>
-                                                }
+                                                <td>@or.Module</td>
                                                 
-                                                @if (module.System != "Lärportal")
+
+                                                @if (or.System != "Lärportal")
                                                 {
                                                     <td>@License</td>
                                                     <td>@Maintenance</td>
@@ -346,7 +341,7 @@ else if (Request["modal"] == "articles")
                                                 {
                                                     <td style='float:right; width:auto;'>@Maintenance</td>
                                                 }
-                                                
+
                                             </tr>
                                         </table>
                                     </button>
@@ -377,7 +372,7 @@ else if (Request["modal"] == "articles")
                             </table>
                         </div>
                     </div>
-                   <p>Click on an item above to remove it from the list</p>
+                    <p>Click on an item above to remove it from the list</p>
                 </td>
             </tr>
         </table>
@@ -385,7 +380,7 @@ else if (Request["modal"] == "articles")
 
 
 
-<script>
+    <script>
     var serverPrefix = "@Url.Content("~/")";
 
     // Selectpickers
@@ -452,7 +447,8 @@ else if (Request["modal"] == "articles")
                 "requestData": "get_modules",
                 "System": System,
                 "classification": classification,
-                "customer": "@Html.Raw(ViewBag.CustomerName)"
+                "customer": "@Html.Raw(ViewBag.CustomerName)",
+                "offerNo": "@Html.Raw(ViewBag.OfferNo)",
             },
             "success": function (data) {
                 if (data.length > 0) {
@@ -461,7 +457,7 @@ else if (Request["modal"] == "articles")
                     var $selectedList = $("#selected-articles");
                     $availableList.empty();
                     handleExistingArticle(articles, $availableList, $selectedList);
-                } 
+                }
             }
         });
     }
@@ -495,7 +491,7 @@ else if (Request["modal"] == "articles")
         });
     }
     var editArticle = function(editButton){
-        var $editButton = $(editButton); 
+        var $editButton = $(editButton);
         var $articleBtn = $editButton.parent().parent().parent().find("td button");
         var oldLicenseVal, oldMaintenanceVal;
         if($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0'){
@@ -544,7 +540,7 @@ else if (Request["modal"] == "articles")
                      " + aliasText + " </form>"
                 ,
                 buttons: {
-                    close: {                
+                    close: {
                         label: "Close",
                         className: "btn-default",
                         callback: function(){
@@ -556,7 +552,7 @@ else if (Request["modal"] == "articles")
                         className: "btn-primary",
                         callback: function () {
                             var $licenseEl = $("#license-text");
-                            var $maintenanceEl = $("#maintenance-text");           
+                            var $maintenanceEl = $("#maintenance-text");
                             if ($licenseEl.val() == "") { $licenseEl.val("0") };
                             if ($maintenanceEl.val() == "") {$maintenanceEl.val("0")};
                             var $aliasEl = $("#alias-text");
@@ -579,10 +575,10 @@ else if (Request["modal"] == "articles")
                             $articleBtn.attr("data-alias", $aliasEl.val());
                             $articleBtn.data("alias", $aliasEl.val());
                             $articleBtn.find(".alias").html($aliasEl.val());
-                            
+
 
                             $(".small-modal").remove();
-                            
+
                         },
                     },
                 }
@@ -655,12 +651,15 @@ else if (Request["modal"] == "articles")
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
                                             data-maintenance='" + article.Price_category + "'                       \
-                                            data-alias='" + article.Module + "'                                      \
+                                            data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
+                                            data-offer-description='" + article.Offer_Description + "'              \
+                                            data-module-text-id='" + article.Module_text_id + "'                    \
+                                            data-offer-id='" + article.Offer_id + "'                                \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
-                                            + usedCell + depCell +                                                          
+                                            + usedCell + depCell +
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title='" + artComm + "'>" + article.Module + "</td>                                         \
                                             <td class='maintenance' style='float: right; width:auto;'>" + formatCurrencyNoKr(article.Price_category) + "</td>\
@@ -685,10 +684,13 @@ else if (Request["modal"] == "articles")
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
+                                            data-offer-description='" + article.Offer_Description + "'              \
+                                            data-module-text-id='" + article.Module_text_id + "'                    \
+                                            data-offer-id='" + article.Offer_id + "'                                \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
-                                            + usedCell + depCell +                                                           
+                                            + usedCell + depCell +
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             ";
@@ -700,11 +702,11 @@ else if (Request["modal"] == "articles")
                     button += "<td class='license'>" + article.License + "%</td>        \
                             <td class='maintenance'>" + article.Maintenance + "%</td>";
                 }
-                                            
+
                 button +=                 "</tr>                                                                       \
                                     </table>                                                                        \
                                 </button>";
-                $newButton = $(button); 
+                $newButton = $(button);
             }
             var $buttonContainer = $("<table>                                                                                               \
                                         <tr>                                                                                                \
@@ -723,7 +725,7 @@ else if (Request["modal"] == "articles")
                     var selVal = $artNrs.get(j);
                     var $selectedButton = $(selVal).parent().parent().parent();
                     var selectedButtonArt = $(selVal).html();
-                    
+
                     if(article.Article_number == selectedButtonArt && article.Multiple_type != "1")
                     {
                         $mic.append($newButton.prop("disabled", true));
@@ -731,17 +733,17 @@ else if (Request["modal"] == "articles")
                         $availableList.append($buttonContainer);
                     } else {
                         $mic.append($newButton);
-                      
+
                         $availableList.append($buttonContainer);
                     }
                 }
             } else {
                 $mic.append($newButton);
-              
+
                 $availableList.append($buttonContainer);
-            }  
+            }
         }
-        
+
     }
 
     // Change content of classificationSelect on change
@@ -749,7 +751,7 @@ else if (Request["modal"] == "articles")
         var $el = $(this);
         var System = $el.val();
         fillClassificationSelect(System);
-        
+
     });
 
     // Change content of available-articles on change
@@ -783,7 +785,7 @@ else if (Request["modal"] == "articles")
             }
             else{
                 LicenseTotal += parseFloat(license);
-                MaintenanceTotal += parseFloat(maintenance); 
+                MaintenanceTotal += parseFloat(maintenance);
             }
         }
         var daLenght = discountArr.length;
@@ -806,7 +808,7 @@ else if (Request["modal"] == "articles")
 
         LicenseTotal += discountL.Money;
         MaintenanceTotal += discountM.Money;
-        
+
         LicenseTotal += LicenseTotal * discountL.Percentage / 100;
         MaintenanceTotal += MaintenanceTotal * discountM.Percentage / 100;
         $("#article-license-total").html(formatCurrencyNoKr(LicenseTotal));
@@ -828,7 +830,7 @@ else if (Request["modal"] == "articles")
     // the other way around.
     var moveItem = function(event, element){
         $button = $(element);
-     
+
         $availableArticles = $("#available-articles");
         $selectedArticles = $("#selected-articles");
 
@@ -836,7 +838,7 @@ else if (Request["modal"] == "articles")
         var buttonLicense = $button.data("license");
         var buttonMaintenance = $button.data("maintenance");
 
-        if($button.attr("data-selected") == "false") { 
+        if($button.attr("data-selected") == "false") {
             $newButton = $button.clone();
             // Fix to exclude the "used" checkmark on selected items.
             $($newButton).find("td").get(0).remove();
@@ -859,7 +861,7 @@ else if (Request["modal"] == "articles")
             calculateSums();
         } else {
             $availableArticles.find(".art-nr-" + buttonArt).prop("disabled", false);
-            $button.attr("data-selected", "false");      
+            $button.attr("data-selected", "false");
             $button.remove();
             calculateSums();
         }
@@ -868,13 +870,13 @@ else if (Request["modal"] == "articles")
     var highlightItem = function($item, css)
     {
         $item.addClass(css)
-        setTimeout(function () {      
+        setTimeout(function () {
             $item.removeClass(css);
             $item.addClass("highlight-item-fade");
-            setTimeout(function () {      
+            setTimeout(function () {
                 $item.removeClass("highlight-item-fade");
-            }, 600);   
-        }, 600);     
+            }, 600);
+        }, 600);
     }
 
     var saveFunction = function(){
@@ -889,6 +891,9 @@ else if (Request["modal"] == "articles")
             var buttonMaintenance = $button.data("maintenance");
             var buttonAlias = $button.data("alias");
             var buttonDiscount = $button.data("discount");
+            var buttonOfferDescription = $button.data("offer-description");
+            var buttonModuleTextId = $button.data("module-text-id");
+            var buttonOfferId = $button.data("offer-id");
 
             // "Create a new article" to store in an array to use for server side db update.
             var newArticle = {
@@ -896,12 +901,16 @@ else if (Request["modal"] == "articles")
                 "Alias": buttonAlias,
                 "License": buttonLicense,
                 "Maintenance": buttonMaintenance,
-                "Discount_type": buttonDiscount
+                "Discount_type": buttonDiscount,
+                "Offer_description": buttonOfferDescription,
+                "Module_text_id": buttonModuleTextId,
+                "Offer_id": buttonOfferId,
+                "Module_type": "A" //Artikel
             }
             selectedArticlesArray.push(newArticle);
         }
         console.log(selectedArticlesArray);
-        
+
         $.ajax({
             "url": serverPrefix + "CustomerOffer/JsonData/",
             "type": "POST",
@@ -916,12 +925,29 @@ else if (Request["modal"] == "articles")
             headers: { 'Cache-Control': 'no-cache' }, // Apple!
             "success": function (data) {
                 if (data > 0) {
-                    // Success to update db. Now update the preview section.
+                    //Need to save standard texts to moduleinfo
                     $.ajax({
-                        "url": serverPrefix + "CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
-                        "type": "GET",
+                        "url": serverPrefix + "CustomerOffer/ModuleTextData/",
+                        "type": "POST",
+                        "data": {
+                            "object": JSON.stringify(selectedArticlesArray)
+                        },
+                        dataType: 'text',
+                        // iOS 6 has a dreadful bug where POST requests are not sent to the
+                        // server if they are in the cache.
+                        headers: { 'Cache-Control': 'no-cache' }, // Apple!
                         "success": function (data) {
-                            $(".crm-pdf-offer-section").html(data);
+                            //if (data > 0) {
+                                // Success to update db. Now update the preview section.
+                                $.ajax({
+                                    "url": serverPrefix + "CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
+                                    "type": "GET",
+                                    "success": function (data) {
+                                        $(".crm-pdf-offer-section").html(data);
+                                        location.reload(true);
+                                    }
+                                });
+                            //}
                         }
                     });
                 }
@@ -932,7 +958,7 @@ else if (Request["modal"] == "articles")
         })
     }
 
-</script>
+    </script>
 }
 else if (Request["modal"] == "services")
 {
@@ -968,6 +994,10 @@ else if (Request["modal"] == "services")
                                         cost = (int)service.Price;
                                     }
 
+                                    view_ModuleText moduleText = new view_ModuleText();
+                                    moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+
+
                                     <table style="width: 100%">
                                         <td style="display:inline-block; margin-top: 2vh; cursor: pointer">
                                             <span onclick="editService(this);" class="glyphicon glyphicon-pencil">
@@ -975,16 +1005,26 @@ else if (Request["modal"] == "services")
                                             </span>
                                         </td>
                                         <td style="display:inline-block; float:right; width:95%">
-                                            <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="false" class="list-group-item">
+                                            <button style="margin-bottom:25px" 
+                                                    type="button" 
+                                                    onclick="newItem(this, @cost)" 
+                                                    data-code="@service.Code" 
+                                                    data-selected="false" 
+                                                    data-offer-id="@offer._Offer_number" 
+                                                    data-module-type="K" 
+                                                    data-module-text-id="@moduleText._ID" 
+                                                    data-offer-description="@service.Offer_description"
+                                                    data-service-code="@service.Code"
+                                                    class="list-group-item">
                                                 <label>@price</label>
                                                 <span class="service-amount"></span>
                                                 <br />
                                                 <span id="description-title">@service.Description</span>
-                                              </button>
-  
-                                          </td>
-  
-                                      </table>
+                                            </button>
+
+                                        </td>
+
+                                    </table>
                                 }
                             </div>
                         </div>
@@ -1012,13 +1052,26 @@ else if (Request["modal"] == "services")
                                         String price = String.Format(se, "{0:C2}", row.Total_price / row.Amount);
                                         int cost = Convert.ToInt32(row.Total_price / row.Amount);
 
-                                    <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
-                                        <label>@price</label>
-                                        <span class="service-amount">@row.Amount</span>
-                                        <br />
-                                        <span id="description-title">@service.Description</span>
-                                    </button>
-                                }
+                                        view_ModuleText moduleText = new view_ModuleText();
+                                        moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+
+                                        <button style="margin-bottom:25px" 
+                                                type="button" 
+                                                onclick="newItem(this, @cost)" 
+                                                data-code="@service.Code" 
+                                                data-offer-id="@offer._Offer_number" 
+                                                data-module-type="K" 
+                                                data-module-text-id="@moduleText._ID" 
+                                                data-offer-description="@service.Offer_description"
+                                                data-service-code="@service.Code"
+                                                data-selected="true" 
+                                                class="list-group-item">
+                                            <label>@price</label>
+                                            <span class="service-amount">@row.Amount</span>
+                                            <br />
+                                            <span id="description-title">@service.Description</span>
+                                        </button>
+                                    }
                                 }
                             </div>
                         </div>
@@ -1035,7 +1088,7 @@ else if (Request["modal"] == "services")
 
 
 
-<script>
+    <script>
     var services = [];
     var serverPrefix = "@Url.Content("~/")";
     var addService = function(code, cost, amount, desc)
@@ -1110,7 +1163,7 @@ else if (Request["modal"] == "services")
         var value = $label.html();
         value = value.replace(" kr", "");
         value = value.replace(" ", "");
-    
+
         bootbox.dialog({
             backdrop: false,
             closebutton: false,
@@ -1150,7 +1203,7 @@ else if (Request["modal"] == "services")
                         $label.html(newCost);
                         $desc.html(newAlias);
                         $("#selected-services button[data-code='" + code + "'] label").html(newCost);
-                    
+
                         $button.attr("onclick", "newItem(this, " + $("#cost-text").val() + ");");
 
                         var code = $button.attr("data-code");
@@ -1194,7 +1247,17 @@ else if (Request["modal"] == "services")
                 highlightItem($amountLabel.parent(), "highlight-item-blue");
 
                 setTotalCost(1 ,price);
-                services.push({id:$newButton.attr("data-code"), amount:1, total:price, desc:$button.find("#description-title").html()});
+                services.push({
+                    id: $newButton.attr("data-code"),
+                    amount: 1,
+                    total: price,
+                    desc: $button.find("#description-title").html(),
+                    Offer_description: $newButton.attr("data-offer-description"),
+                    Offer_id: $newButton.attr("data-offer-id"),
+                    Module_text_id: $newButton.attr("data-module-text-id"),
+                    Module_type: $newButton.attr("data-module-type"),
+                    Service_code: $newButton.attr("data-service-code")
+                });
             }
             else{
                 $selectedButton = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']");
@@ -1231,16 +1294,30 @@ else if (Request["modal"] == "services")
         }
     }
 
-    $(document).ready(function () {
+        $(document).ready(function () {
         @{
             foreach (view_ConsultantRow row in offer._ConsultantRows)
             {
                 view_Service service = new view_Service();
                 service.Select("Code = " + row.Code);
 
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+
                 String price = String.Format(se, "{0:C2}", service.Price);
                 int cost = (int)service.Price;
-                @Html.Raw("services.push({id:" + row.Code + ", amount:" + row.Amount + ", total:" + (int)row.Total_price + "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
+
+                var resultString = !string.IsNullOrEmpty(service.Offer_description) ? service.Offer_description : "";
+                
+                @Html.Raw("services.push({id:" + row.Code +
+                                       ", amount:" + row.Amount +
+                                       ", total:" + (int)row.Total_price +
+                                       ", Offer_description:'" + resultString + "'" +
+                                       ", Offer_id:" + row.Offer_number +
+                                       ", Module_text_id:" + moduleText._ID +
+                                       ", Module_type:'K'" +
+                                       ", Service_code:" + service.Code +
+                                       "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
             }
         }
     });
@@ -1261,30 +1338,45 @@ else if (Request["modal"] == "services")
                 headers: { 'Cache-Control': 'no-cache' }, // Apple!
                 "success": function (data) {
                     if (data > 0) {
-                        // Success to update db. Now update the preview section.
+                        //Need to save standard texts to moduleinfo
                         $.ajax({
-                            "url": serverPrefix + "CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
-                            "type": "GET",
+                            "url": serverPrefix + "CustomerOffer/ModuleTextData/",
+                            "type": "POST",
+                            "data": {
+                                "object": JSON.stringify(services)
+                            },
+                            dataType: 'text',
+                            // iOS 6 has a dreadful bug where POST requests are not sent to the
+                            // server if they are in the cache.
+                            headers: { 'Cache-Control': 'no-cache' }, // Apple!
                             "success": function (data) {
-                                $(".crm-pdf-offer-section").html(data);
+                                // Success to update db. Now update the preview section.
+                                $.ajax({
+                                    "url": serverPrefix + "CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
+                                    "type": "GET",
+                                    "success": function (data) {
+                                        $(".crm-pdf-offer-section").html(data);
+                                        location.reload(true);
+                                    }
+                                });
                             }
                         });
                     }
                 }
             })
         }
-</script>
+    </script>
 }
 else if (Request["modal"] == "head-information")
 {
-   
+
     String disabled = "";
     if (ViewBag.CustomerOffer.Offer_status != "Öppen")
     {
         disabled = "disabled";
     }
-        
-  
+
+
 
     <form id="head-information-form" class="form-horizontal">
         <div class="form-group">
@@ -1332,11 +1424,11 @@ else if (Request["modal"] == "head-information")
         <div class="form-group">
             <label for="offer-valid-date" class="col-sm-2 control-label">Offer valid</label>
             <div class="col-sm-10">
-                <input type="date" 
-                       class="form-control" 
-                       name="Offer_valid" 
-                       id="offer-valid-date" 
-                       value="@ViewBag.CustomerOffer.Offer_valid.ToString().Replace(@" 00:00:00", "")" 
+                <input type="date"
+                       class="form-control"
+                       name="Offer_valid"
+                       id="offer-valid-date"
+                       value="@ViewBag.CustomerOffer.Offer_valid.ToString().Replace(@" 00:00:00", "")"
                        placeholder="Offer valid"
                        @Html.Raw(disabled)
                        >
@@ -1522,5 +1614,166 @@ else if (Request["modal"] == "head-information")
                 $("#offer-valid-date").datepicker({ dateFormat: 'yy-mm-dd' });
             }
         });
+    </script>
+}
+else if (Request["modal"] == "module-info")
+{
+    <form id="module-info-form" class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-10">
+                @{
+                    int count = 1;
+                }
+                <table id="modules" class="table table-hover" style="width: 100%">
+                    @foreach (KeyValuePair<String, List<dynamic>> system in ViewBag.ArticleSystemDictionary)
+                    {
+                        foreach (var offerInfo in system.Value)
+                        {
+                            <tr>
+                                <td width="10%">@offerInfo.Article_number</td>
+                                <td>@offerInfo.System</td>
+                                <td>@Html.Raw(offerInfo.Module)</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">
+                                    <label for="module-info-text@(count)" class="col-sm-2 control-label">Module and Services info</label>
+                                    <div class="col-sm-10">
+                                        <textarea id="module-info-text@(count)" name="module-info-text@(count)" class="form-control" rows="5">@offerInfo.OfferDescription</textarea>
+                                        <input type="hidden" id="typeId@(count)" name="typeId@(count)" value="@offerInfo.Offer_number">
+                                        <input type="hidden" id="moduleId@(count)" name="moduleId@(count)" value="@offerInfo.Article_number">
+                                        <input type="hidden" id="moduleTextId@(count)" name="moduleTextId@(count)" value="@offerInfo.ModuleTextId">
+                                        <input type="hidden" id="moduleType@(count)" name="moduleType@(count)" value="@offerInfo.Classification">
+                                    </div>
+                                </td>
+                            </tr>
+                            count++;
+                        }
+                    }
+                </table>
+                <input type="hidden" id="moduleCount" name="moduleCount" value="@count">
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript" src="~/Scripts/tinymce/tinymce.min.js"></script>
+    <script>
+        $('.bootbox').bind('hidden.bs.modal', function () {
+            tinyMCE.remove();
+        });
+        tinymce.init({
+            selector: "textarea",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            browser_spellcheck: true,
+            branding: false
+        });
+
+        $("#modules tr:even").addClass("even");
+        $("#modules tr:not(.even)").hide();
+        $("#modules tr:first-child").show();
+
+        $("#modules tr.even").click(function () {
+            var trToToggle = $(this).next("tr");
+            $("#modules tr:not(.even)").not(trToToggle).hide();
+            $(trToToggle).slideToggle("fast");
+            $(this).find(".arrow").toggleClass("up");
+        });
+
+        var saveFunction = function(offerNumber){
+            var updateData = {};
+            var $ttForm = $("#module-info-form");
+            var $inputs = $ttForm.find('input, textarea');
+            console.log("Spara");
+            var tinyMCEInputs = [
+                "Page_head",
+                "module-info-text",
+                "Page_foot",
+                "Document_foot",
+            ];
+            $inputs.each(function () {
+                var $formInput = $(this);
+                var inputProp = $formInput.attr("name");
+                if(inputProp != "Sign" && inputProp != "Template_number" && inputProp != "SSMA_timestamp" && typeof inputProp != 'undefined'){
+                    //console.log($formInput.attr("value"),$formInput.val());
+                    // if input is a TinyMCE field extract the content.
+                    var inputPropOrig = inputProp;
+                    if (inputProp.startsWith("module-info-text")) {
+                        inputProp = inputProp.substr(0, 16);
+                    }
+                    if($.inArray(inputProp, tinyMCEInputs) >= 0){
+
+                        updateData[inputPropOrig] = tinymce.get($formInput.attr("id")).getContent()
+                    }
+                    else{
+                        updateData[inputPropOrig] = $formInput.val();
+                    }
+
+                }
+
+            });
+
+            updateData["primaryKey"] = offerNumber;
+            var updateDataArr = [];
+            updateDataArr.push(updateData);
+
+
+            $.ajax({
+                "url": serverPrefix + "CustomerOffer/JsonData/",
+                "type": "POST",
+                "data": {
+                    "requestData": "update_view_ModuleText",
+                    "object": JSON.stringify(updateDataArr)
+                },
+                dataType: 'text',
+                // iOS 6 has a dreadful bug where POST requests are not sent to the
+                // server if they are in the cache.
+                headers: { 'Cache-Control': 'no-cache' }, // Apple!
+                "success": function (data) {
+                    if (data > 0) {
+                        $.ajax({
+                        "url": serverPrefix + "CustomerOffer/ViewPdf?selected-offer=@Request["selected-offer"]&offer-section=_OfferHTML_OfferSection",
+                        "type": "GET",
+                        "success": function (data) {
+                            $(".crm-pdf-offer-section").html(data);
+                            triggerAlert("Successfully saved module texts", "success");
+                        }
+                    });
+                        //// Update current values
+                        //currentOfferValues = updateData;
+                        //// Loop through "HTML PDF" and update fields
+                        //$.each(updateData, function(key, val){
+                        //    var $updateTarget = $("#" + key);
+                        //    if($updateTarget.length > 0){
+                        //        $updateTarget.html(val);
+                        //    }
+                        //})
+                    }
+                }
+            })
+        }
+        $('.selectpicker').selectpicker();
+
+        //$('.header').click(function(){
+        //    if($(this).hasClass("collapsed")){
+        //        $(this).nextUntil('tr.header')
+        //        .find('td')
+        //        .parent()
+        //        .find('td > div')
+        //        .slideDown("fast", function(){
+        //            var $set = $(this);
+        //            $set.replaceWith($set.contents());
+        //        });
+        //        $(this).removeClass("collapsed");
+        //    } else {
+        //        $(this).nextUntil('tr.header')
+        //        .find('td')
+        //        .wrapInner('<div style="display: block;" />')
+        //        .parent()
+        //        .find('td > div')
+        //        .slideUp("fast");
+        //        $(this).addClass("collapsed");
+        //    }
+        //});
     </script>
 }
