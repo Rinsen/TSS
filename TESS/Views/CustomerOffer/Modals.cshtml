@@ -469,7 +469,8 @@ else if (Request["modal"] == "articles")
             "data": {
                 "requestData": "get_modules_all",
                 "customer": "@Html.Raw(ViewBag.CustomerName)",
-                "searchtext": $searchText.val()
+                "searchtext": $searchText.val(),
+                "offerNo": "@Html.Raw(ViewBag.OfferNo)",
             },
             "success": function (data) {
                 if (data.length > 0) {

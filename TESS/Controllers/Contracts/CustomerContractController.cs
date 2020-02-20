@@ -1798,18 +1798,33 @@ namespace TietoCRM.Controllers.Contracts
                 String queryText = "";
 
                 if (ctr == "Me")
-                {
-                    queryText = @"SELECT * FROM qry_GetModulesContractTermination
-                                    WHERE Customer = @customer And (Cast(Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(Article_number As Varchar(30)) Else @searchtext End Or
-                                    Module Like Case @searchtext When '' Then Module Else @searchtext End) 
-                                    order by Module asc";
+                {                //qry_GetModulesContractTermination + M.Contract_Description 
+                    queryText = @"Select M.Article_number, M.Module, dbo.view_Tariff.License, dbo.view_Tariff.Maintenance, M.Price_category, M.System, M.Classification, M.Comment, X.Customer, 
+                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(M.Contract_Description, '') AS Contract_Description
+                                  From dbo.view_Module As M 
+                                  Inner Join dbo.view_Tariff On M.Price_category = dbo.view_Tariff.Price_category 
+                                  Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = dbo.view_Tariff.Inhabitant_level 
+                                  Inner Join dbo.view_CustomerProductRow As R On R.Article_number = M.Article_number And R.Customer = X.Customer
+                                  Left Join view_SelectOption O on O.Value = M.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
+                                  Where        (M.Expired = 0) And (R.Discount_type = 0) And (R.status = 'Giltigt') and " + //#qry_GetModulesContractTermination
+
+                                  @"X.Customer = @customer And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
+                                  M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
+                                  order by M.Module asc";
                 }
                 else
-                {
-                    queryText = @"SELECT * FROM qry_GetModulesContractNormal 
-                                    WHERE Customer = @customer And (Cast(Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(Article_number As Varchar(30)) Else @searchtext End Or
-                                    Module Like Case @searchtext When '' Then Module Else @searchtext End) 
-                                    order by Module asc";
+                {                 //qry_GetModulesContractNormal + M.Contract_Description
+                    queryText = @"Select M.Article_number, M.Module, dbo.view_Tariff.License, dbo.view_Tariff.Maintenance, M.Price_category, M.System, M.Classification, M.Comment, X.Customer, 
+                                  M.Multiple_type, M.Fixed_price, M.Area, M.Discount_type, M.Discount, IsNull(M.[Description],'') As [Description], M.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(M.Contract_Description, '') AS Contract_Description
+                                  From dbo.view_Module As M 
+                                  Inner Join dbo.view_Tariff On M.Price_category = dbo.view_Tariff.Price_category 
+                                  Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = dbo.view_Tariff.Inhabitant_level 
+                                  Left Join view_SelectOption O on O.Value = M.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
+                                  Where (M.Expired = 0) and " + //#qry_GetModulesContractNormal
+
+                                  @"X.Customer = @customer And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
+                                  M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
+                                  order by M.Module asc";
                 }
 
 //                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
@@ -1878,6 +1893,20 @@ namespace TietoCRM.Controllers.Contracts
                             }
                             result["License"] = result["License"].ToString().Replace(",", ".");
                             result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
+
+                            //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
+                            //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
+                            view_Contract contract = new view_Contract();
+                            contract.Select("Contract_id = '" + contractid + "'");
+
+                            if (contract._ID > 0)
+                            {
+                                view_ModuleText moduleText = new view_ModuleText();
+                                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleType = 'A' AND ModuleId = " + result["Article_number"].ToString());
+                                result.Add("Module_text_id", moduleText._ID);
+                                result.Add("Contract_id", contract._ID);
+                            }
+
                             view_User user = System.Web.HttpContext.Current.GetUser();
 
                             if (user.Area == result["Area"].ToString() || user.Area == "*")

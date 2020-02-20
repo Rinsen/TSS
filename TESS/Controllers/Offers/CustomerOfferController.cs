@@ -1305,6 +1305,7 @@ namespace TietoCRM.Controllers
         {
             String customer = Request.Form["customer"];
             String searchtext = Request.Form["searchtext"];
+            String offerNo = Request.Form["offerNo"]; //För att kunna läsa upp offerten
 
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
 
@@ -1316,7 +1317,7 @@ namespace TietoCRM.Controllers
                 String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
                                         view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
                                         view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description, 
-                                        view_Module.Module_status, IsNull(O.Text,'') as Module_status_txt
+                                        view_Module.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(view_Module.Offer_Description, '') AS Offer_Description
                                         FROM view_Module                                                                                       
                                         Left JOIN view_Tariff                                                                                       
                                         on view_Module.Price_category = view_Tariff.Price_category
@@ -1383,6 +1384,19 @@ namespace TietoCRM.Controllers
                             }
                             result["License"] = result["License"].ToString().Replace(",", ".");
                             result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
+
+                            //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
+                            //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
+                            view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offerNo);
+
+                            if (customerOffer._ID > 0)
+                            {
+                                view_ModuleText moduleText = new view_ModuleText();
+                                moduleText.Select("Type = 'O' AND TypeId = " + offerNo + " AND ModuleType = 'A' AND ModuleId = " + result["Article_number"].ToString());
+                                result.Add("Module_text_id", moduleText._ID);
+                                result.Add("Code", moduleText.ModuleId);
+                                result.Add("Offer_id", offerNo);
+                            }
 
                             view_User user = System.Web.HttpContext.Current.GetUser();
 
