@@ -490,8 +490,9 @@ var updateSelectedItems = function () {
 }
 
 var changePrice = function (event, element) {
-    console.log("Ändra poris")
-}
+    console.log("Ändra pris");
+};
+
 // Move list item from either available-articles to selected-articles or
 // the other way around.
 var moveItem = function (event, element) {

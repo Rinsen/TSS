@@ -279,7 +279,10 @@ namespace TietoCRM.Controllers.Contracts
                     oldArticles.Add(contractInfo);
                 if (contractRow.Rewritten == true && contractRow.Removed == true)
                     remArticles.Add(contractInfo);
-                if (contractRow.Rewritten == false /* && contractInfo.System != "Lärportal" */)
+
+                if (contractRow.Rewritten == false && contractInfo.System == "Lärportal")
+                    educationPortals.Add(contractInfo);
+                else
                 {
                     articles.Add(contractInfo);
                     if( !articleSystemDic.ContainsKey(contractInfo.System) )
@@ -300,9 +303,6 @@ namespace TietoCRM.Controllers.Contracts
                         articleAndServicesDic[contractInfo.System].Add(contractInfo);
                     }
                 }
-                    
-                else if(contractRow.Rewritten == false && contractInfo.System == "Lärportal")
-                    educationPortals.Add(contractInfo);
             }
 
             foreach (view_ContractConsultantRow consultantRow in contract._ContractConsultantRows)
