@@ -406,7 +406,7 @@ namespace TietoCRM.Controllers
                                     </div>";
             if (user.Use_logo)
                 content += @"<div class='footer-logo'>
-                            <img src='../../Content/img/tieto-logo.png' alt='tieto-logo' />
+                            <img src='../../Content/img/tieto-evry-neutral.png' alt='tieto-logo' />
                         </div>";
             content += @"</div>
                     </body>
@@ -432,7 +432,7 @@ namespace TietoCRM.Controllers
             if (user.Use_logo)
             {
                 content += @"<div class='logo'>
-                            <img src='../../Content/img/tieto-logo-mn.png' />
+                            <img src='../../Content/img/tieto-evry-neutral.png' />
                             </div><br> ";
             }
             content += @"</div>

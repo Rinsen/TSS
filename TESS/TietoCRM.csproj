@@ -440,6 +440,8 @@
     <Content Include="Content\img\Signatures\MSR.PNG" />
     <Content Include="Content\img\Signatures\RJS.png" />
     <Content Include="Content\img\Signatures\SLT.png" />
+    <Content Include="Content\img\tieto-evry-black.png" />
+    <Content Include="Content\img\tieto-evry-neutral.png" />
     <Content Include="Content\img\tieto-logo-com.png" />
     <Content Include="Content\img\tieto-logo-mn.png" />
     <Content Include="Content\img\tieto-logo.png" />
