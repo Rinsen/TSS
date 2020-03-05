@@ -285,22 +285,25 @@ namespace TietoCRM.Controllers.Contracts
                 else
                 {
                     articles.Add(contractInfo);
-                    if( !articleSystemDic.ContainsKey(contractInfo.System) )
+                    if (contractRow.Rewritten == false && contractRow.Removed == false) //Undviker att få med omskrivna och borttagna artiklar i NY-listan på kontraktet
                     {
-                        articleSystemDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
-                    }
-                    else
-                    {
-                        articleSystemDic[contractInfo.System].Add(contractInfo);
-                    }
+                        if (!articleSystemDic.ContainsKey(contractInfo.System))
+                        {
+                            articleSystemDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
+                        }
+                        else
+                        {
+                            articleSystemDic[contractInfo.System].Add(contractInfo);
+                        }
 
-                    if (!articleAndServicesDic.ContainsKey(contractInfo.System))
-                    {
-                        articleAndServicesDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
-                    }
-                    else
-                    {
-                        articleAndServicesDic[contractInfo.System].Add(contractInfo);
+                        if (!articleAndServicesDic.ContainsKey(contractInfo.System))
+                        {
+                            articleAndServicesDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
+                        }
+                        else
+                        {
+                            articleAndServicesDic[contractInfo.System].Add(contractInfo);
+                        }
                     }
                 }
             }

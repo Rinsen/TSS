@@ -10,12 +10,14 @@
     }
 }
 @using TietoCRM.Models;
-@{ 
-    int contractCount = ((IEnumerable<dynamic>)ViewBag.MainContracts).Count()-1;
+@{
+    int contractCount = ((IEnumerable<dynamic>)ViewBag.MainContracts).Count() - 1;
+    int loopCount = 0;
     string pagebreak = "";
 }
 @foreach (view_Contract mainContract in ViewBag.MainContracts)
 {
+    loopCount = 0;
     if (contractCount > 0)
     {
         pagebreak = "page-break-after:always";
@@ -70,8 +72,16 @@
         <br />
         @foreach (String pName in mainContract._OrderedSystemNames)
         {
+            loopCount++;
             var rubrik = pName.Split(new char[] { '#' })[1];
-            <div class="crm-print-block">
+            pagebreak = "";
+            if (loopCount > 1)
+            {
+                pagebreak = "page-break-inside:avoid";
+            }
+
+            <div class="crm-print-block" style=@pagebreak>
+
                 <h2>@rubrik</h2>
                 <table width="100%" class="table table-striped table-bordered" style="font-family: Verdana, Geneva, sans-serif !important;">
                     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
