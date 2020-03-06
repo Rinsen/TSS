@@ -33,11 +33,11 @@ function subst() {
 		margin: auto;
 	}
 	.footer-logo{
-		width: 90px;
+		width: 14%;
 		position: absolute;
 		display: block;
 		bottom: 0;
-        right: 0;
+        right: 50px;
 	}
 	.container{
 		display: block;

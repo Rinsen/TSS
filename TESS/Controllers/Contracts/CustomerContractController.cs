@@ -616,7 +616,7 @@ namespace TietoCRM.Controllers.Contracts
             if (user.Use_logo)
             {
                 content += @"<div class='logo'>
-                            <img src='../../Content/img/tieto-evry-neutral.png' />
+                            <img src='../../Content/img/tieto-evry-blue.png' />
                             </div> ";
             }
             content += @"</div>

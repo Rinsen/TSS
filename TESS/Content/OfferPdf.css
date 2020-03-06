@@ -270,10 +270,10 @@
   height: 80px;
 }
 .crm-pdf div.crm-pdf-foot div.crm-pdf-foot-logo {
-  width: 10%;
+  width: 14%;
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: 30px;
   display: block;
 }
 .crm-pdf div.crm-pdf-subheader_2 table {
