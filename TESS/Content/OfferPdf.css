@@ -421,3 +421,18 @@ button.module-info-default-text-button {
   padding: 5px;
   margin: 6px;
 }
+button.module-info-default-text-button-red {
+  padding: 5px;
+  margin: 6px;
+  color: white;
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+}
+button.module-info-default-text-button-red:hover {
+  background-color: orangered;
+  border-color: orangered;
+}
+button.module-info-default-text-button-red:active {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+}

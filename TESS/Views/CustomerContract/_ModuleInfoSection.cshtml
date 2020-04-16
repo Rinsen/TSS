@@ -16,37 +16,42 @@
     <div id="moduleInfo-modal" class="modal-body">
         <form id="module-info-form" class="form-horizontal">
             <div class="form-group">
-                <div class="col-sm-10">
+                <div class="col-sm-12">
                     @{
                         int count = 1;
                     }
-                    <table id="modules" class="table table-hover" style="width: 100%">
+                    <table border="0" id="modules" class="table table-hover" style="width: 100%; border-top: solid; border-top-width: thin; border-top-color: gainsboro;">
                         @foreach (KeyValuePair<String, List<dynamic>> system in list)
                         {
                             foreach (var contractInfo in system.Value)
                             {
-                                <tr>
-                                    <th width="10%">@contractInfo.Article_number</th>
-                                    <th>@contractInfo.System</th>
-                                    <th>@Html.Raw(contractInfo.Module)</th>
+                                <tr style="width:80%; border-bottom: solid; border-bottom-width: thin; border-bottom-color: gainsboro;">
+                                    <th style="vertical-align:middle" width="10%">@contractInfo.Article_number</th>
+                                    <th style="vertical-align:middle">@contractInfo.System</th>
+                                    <th style="vertical-align:middle">@Html.Raw(contractInfo.Module)</th>
+                                    <th>
+                                        <button id="default-text-@(count)"
+                                                data-id="@contractInfo.Article_number"
+                                                data-type="@contractInfo.ModuleType"
+                                                data-index="@(count)"
+                                                onclick="getModuleInfoDefaultText(this)"
+                                                type="button"
+                                                class="btn btn-primary module-info-default-text-button">
+                                            Get text
+                                        </button>
+                                        <button type="button"
+                                                data-index="@(count)"
+                                                onclick="removeDefaultText(this)"
+                                                class="btn module-info-default-text-button-red">
+                                            Clear text
+                                        </button>
+                                    </th>
                                 </tr>
-
                                 <tr style="background-color:lightgrey">
-                                    <td colspan="3">
+                                    <td colspan="4">
                                         <div class="row">
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-4" style="margin:3px; margin-bottom:5px">
                                                 <label for="module-info-text@(count)" class="control-label">Module and Services info</label>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <button id="default-text-@(count)"
-                                                        data-id="@contractInfo.Article_number"
-                                                        data-type="@contractInfo.ModuleType"
-                                                        data-index="@(count)"
-                                                        onclick="getModuleInfoDefaultText(this)"
-                                                        type="button"
-                                                        class="btn btn-primary module-info-default-text-button">
-                                                    Get default text
-                                                </button>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -182,6 +187,14 @@
                 }
             }
         });
+        event.stopPropagation();
+    }
+
+    var removeDefaultText = function (element) {
+        $button = $(element);
+        var index = $button.data("index");
+        tinymce.get("module-info-text" + index).setContent('');
+        event.stopPropagation();
     }
 
 </script>
