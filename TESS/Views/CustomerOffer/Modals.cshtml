@@ -1313,7 +1313,7 @@ else if (Request["modal"] == "services")
                 @Html.Raw("services.push({id:" + row.Code +
                                        ", amount:" + row.Amount +
                                        ", total:" + (int)row.Total_price +
-                                       ", Offer_description:'" + resultString + "'" +
+                                       //", Offer_description:'" + resultString + "'" + Varför behövs denna? Texten verkar komma fram ändå. Just nu orsakar denna ett fel då texten innehåller något konstigt tecken...
                                        ", Offer_id:" + row.Offer_number +
                                        ", Module_text_id:" + moduleText._ID +
                                        ", Module_type:'K'" +
@@ -1621,30 +1621,44 @@ else if (Request["modal"] == "module-info")
 {
     <form id="module-info-form" class="form-horizontal">
         <div class="form-group">
-            <div class="col-sm-10">
+            <div class="col-sm-12">
                 @{
                     int count = 1;
                 }
-                <table id="modules" class="table table-hover" style="width: 100%">
+                <table border="0" id="modules" class="table table-hover" style="width: 100%">
                     @foreach (KeyValuePair<String, List<dynamic>> system in ViewBag.ArticleSystemDictionary)
                     {
                         foreach (var offerInfo in system.Value)
                         {
                             <tr>
-                                <td width="10%">@offerInfo.Article_number</td>
-                                <td>@offerInfo.System</td>
-                                <td>@Html.Raw(offerInfo.Module)</td>
+                                <th width="10%">@offerInfo.Article_number</th>
+                                <th>@offerInfo.System</th>
+                                <th>@Html.Raw(offerInfo.Module)</th>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td colspan="2">
-                                    <label for="module-info-text@(count)" class="col-sm-2 control-label">Module and Services info</label>
-                                    <div class="col-sm-10">
-                                        <textarea id="module-info-text@(count)" name="module-info-text@(count)" class="form-control" rows="5">@offerInfo.OfferDescription</textarea>
-                                        <input type="hidden" id="typeId@(count)" name="typeId@(count)" value="@offerInfo.Offer_number">
-                                        <input type="hidden" id="moduleId@(count)" name="moduleId@(count)" value="@offerInfo.Article_number">
-                                        <input type="hidden" id="moduleTextId@(count)" name="moduleTextId@(count)" value="@offerInfo.ModuleTextId">
-                                        <input type="hidden" id="moduleType@(count)" name="moduleType@(count)" value="@offerInfo.Classification">
+                            <tr style="background-color:lightgrey">
+                                <td colspan="3">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label for="module-info-text@(count)" class="control-label">Module and Services info</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button id="default-text-@(count)" 
+                                                    data-artno="@offerInfo.Article_number"
+                                                    data-type="@offerInfo.Classification"
+                                                    data-index="@(count)"
+                                                    onclick="getModuleInfoDefaultText(this)"
+                                                    type="button" 
+                                                    class="btn btn-primary module-info-default-text-button">Get default text</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <textarea id="module-info-text@(count)" name="module-info-text@(count)" class="form-control" rows="6">@offerInfo.OfferDescription</textarea>
+                                            <input type="hidden" id="typeId@(count)" name="typeId@(count)" value="@offerInfo.Offer_number">
+                                            <input type="hidden" id="moduleId@(count)" name="moduleId@(count)" value="@offerInfo.Article_number">
+                                            <input type="hidden" id="moduleTextId@(count)" name="moduleTextId@(count)" value="@offerInfo.ModuleTextId">
+                                            <input type="hidden" id="moduleType@(count)" name="moduleType@(count)" value="@offerInfo.Classification">
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -1776,5 +1790,29 @@ else if (Request["modal"] == "module-info")
         //        $(this).addClass("collapsed");
         //    }
         //});
+
+        var getModuleInfoDefaultText = function(element){
+
+            $button = $(element);
+            var articleNumber = $button.data("artno");
+            var type = $button.data("type");
+            var index = $button.data("index");
+            $.ajax({
+                "url": serverPrefix + "CustomerOffer/GetOfferDescriptionDefaultText/",
+                "type": "POST",
+                "data": {
+                    "id": articleNumber,
+                    "type": type
+                },
+                dataType: 'text',
+                headers: { 'Cache-Control': 'no-cache' },
+                "success": function (data) {
+                    if (data != "-1") {
+                        //Update correct editor with returning text...
+                        tinymce.get("module-info-text" + index).setContent(data);
+                    }
+                }
+            });
+        }
     </script>
 }

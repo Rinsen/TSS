@@ -26,20 +26,37 @@
                             foreach (var contractInfo in system.Value)
                             {
                                 <tr>
-                                    <td width="10%">@contractInfo.Article_number</td>
-                                    <td>@contractInfo.System</td>
-                                    <td>@Html.Raw(contractInfo.Module)</td>
+                                    <th width="10%">@contractInfo.Article_number</th>
+                                    <th>@contractInfo.System</th>
+                                    <th>@Html.Raw(contractInfo.Module)</th>
                                 </tr>
-                                <tr>
-                                    <td></td>
-                                    <td colspan="2">
-                                        <label for="module-info-text@(count)" class="col-sm-2 control-label">Module and Services info</label>
-                                        <div class="col-sm-10">
-                                            <textarea id="module-info-text@(count)" name="module-info-text@(count)" class="form-control" rows="5">@contractInfo.ContractDescription</textarea>
-                                            <input type="hidden" id="typeId@(count)" name="typeId@(count)" value="@contractInfo.Id">
-                                            <input type="hidden" id="moduleId@(count)" name="moduleId@(count)" value="@contractInfo.Article_number">
-                                            <input type="hidden" id="moduleTextId@(count)" name="moduleTextId@(count)" value="@contractInfo.ModuleTextId">
-                                            <input type="hidden" id="moduleType@(count)" name="moduleType@(count)" value="@contractInfo.ModuleType">
+
+                                <tr style="background-color:lightgrey">
+                                    <td colspan="3">
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <label for="module-info-text@(count)" class="control-label">Module and Services info</label>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button id="default-text-@(count)"
+                                                        data-id="@contractInfo.Article_number"
+                                                        data-type="@contractInfo.ModuleType"
+                                                        data-index="@(count)"
+                                                        onclick="getModuleInfoDefaultText(this)"
+                                                        type="button"
+                                                        class="btn btn-primary module-info-default-text-button">
+                                                    Get default text
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <textarea id="module-info-text@(count)" name="module-info-text@(count)" class="form-control" rows="6">@contractInfo.ContractDescription</textarea>
+                                                <input type="hidden" id="typeId@(count)" name="typeId@(count)" value="@contractInfo.Id">
+                                                <input type="hidden" id="moduleId@(count)" name="moduleId@(count)" value="@contractInfo.Article_number">
+                                                <input type="hidden" id="moduleTextId@(count)" name="moduleTextId@(count)" value="@contractInfo.ModuleTextId">
+                                                <input type="hidden" id="moduleType@(count)" name="moduleType@(count)" value="@contractInfo.ModuleType">
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -142,5 +159,29 @@
             })
         };
     });
+
+    var getModuleInfoDefaultText = function (element) {
+
+        $button = $(element);
+        var id = $button.data("id");
+        var type = $button.data("type");
+        var index = $button.data("index");
+        $.ajax({
+            "url": serverPrefix + "CustomerContract/GetContractDescriptionDefaultText/",
+            "type": "POST",
+            "data": {
+                "id": id,
+                "type": type
+            },
+            dataType: 'text',
+            headers: { 'Cache-Control': 'no-cache' },
+            "success": function (data) {
+                if (data != "-1") {
+                    //Update correct editor with returning text...
+                    tinymce.get("module-info-text" + index).setContent(data);
+                }
+            }
+        });
+    }
 
 </script>

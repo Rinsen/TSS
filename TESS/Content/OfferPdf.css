@@ -417,3 +417,7 @@ page.A4-scaled {
     padding: 0;
   }
 }
+button.module-info-default-text-button {
+  padding: 5px;
+  margin: 6px;
+}

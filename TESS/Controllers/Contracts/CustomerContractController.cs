@@ -268,7 +268,7 @@ namespace TietoCRM.Controllers.Contracts
                 //New ModuleTexts
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'A' AND ModuleId = " + contractRow.Article_number.ToString());
-                contractInfo.ContractDescription = (moduleText.Description == null) || (moduleText.Description == "") ? module.Contract_description : moduleText.Description;
+                contractInfo.ContractDescription = moduleText.Description == null ? module.Contract_description : moduleText.Description;
                 contractInfo.ModuleTextId = moduleText._ID;
                 contractInfo.ModuleType = "A";
 
@@ -326,7 +326,7 @@ namespace TietoCRM.Controllers.Contracts
                 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
-                contractInfo.ContractDescription = (moduleText.Description == null) || (moduleText.Description == "") ? service.Contract_description : moduleText.Description;
+                contractInfo.ContractDescription = moduleText.Description == null ? service.Contract_description : moduleText.Description;
                 contractInfo.ModuleTextId = moduleText._ID;
 
                 contractInfo.Id = contract._ID;
@@ -2967,5 +2967,44 @@ namespace TietoCRM.Controllers.Contracts
             }
             return moduleInfo;
         }
+
+        /// <summary>
+        /// Reading default contractdescription for an article
+        /// </summary>
+        /// <returns></returns>
+        public string GetContractDescriptionDefaultText()
+        {
+            string idString = Request.Form["id"];
+            string type = Request.Form["type"]; // A = Artikel, K = Konsulttjänst
+            string contractDescription;
+            int id;
+
+            if (int.TryParse(idString, out id) && !string.IsNullOrEmpty(type))
+            {
+                if (type == "A")
+                {
+                    view_Module module = new view_Module();
+                    module.Select("Article_number = " + id);
+                    contractDescription = module.Contract_description;
+                }
+                else if (type == "K")
+                {
+                    view_Service service = new view_Service();
+                    service.Select("Code = " + id);
+                    contractDescription = service.Contract_description;
+                }
+                else
+                {
+                    return "-1";
+                }
+            }
+            else
+            {
+                return "-1";
+            }
+
+            return contractDescription;
+        }
+
     }
 }

@@ -507,7 +507,7 @@ namespace TietoCRM.Controllers
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleType = 'A' AND ModuleId = " + offerRow.Article_number.ToString());
-                offerInfo.OfferDescription = (moduleText.Description == null) || (moduleText.Description == "") ? module.Offer_description : moduleText.Description;
+                offerInfo.OfferDescription = moduleText.Description == null ? module.Offer_description : moduleText.Description;
                 offerInfo.Offer_number = offerRow.Offer_number;
                 offerInfo.ModuleTextId = moduleText._ID;
 
@@ -549,7 +549,7 @@ namespace TietoCRM.Controllers
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'O' AND TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
-                offerInfo.OfferDescription = (moduleText.Description == null) || (moduleText.Description == "") ? service.Offer_description : moduleText.Description;
+                offerInfo.OfferDescription = moduleText.Description == null ? service.Offer_description : moduleText.Description;
                 offerInfo.Offer_number = consultantRow.Offer_number; //??
                 offerInfo.ModuleTextId = moduleText._ID;
 
@@ -1704,6 +1704,44 @@ namespace TietoCRM.Controllers
                 moduleInfo += "<p>" + offerArtDescr.Offer_description + "</p>";
             }
             return moduleInfo;
+        }
+
+        /// <summary>
+        /// Reading default offerdescription for an article
+        /// </summary>
+        /// <returns></returns>
+        public string GetOfferDescriptionDefaultText()
+        {
+            string idString = Request.Form["id"];
+            string type = Request.Form["type"]; // A = Artikel, K = Konsulttjänst
+            string offerDescription;
+            int id;
+
+            if(int.TryParse(idString, out id) && !string.IsNullOrEmpty(type))
+            {
+                if(type == "A")
+                {
+                    view_Module module = new view_Module();
+                    module.Select("Article_number = " + id);
+                    offerDescription = module.Offer_description;
+                }
+                else if(type == "K")
+                {
+                    view_Service service = new view_Service();
+                    service.Select("Code = " + id);
+                    offerDescription = service.Offer_description;
+                }
+                else
+                {
+                    return "-1";
+                }
+            }
+            else
+            {
+                return "-1";
+            }
+
+            return offerDescription;
         }
     }
 }
