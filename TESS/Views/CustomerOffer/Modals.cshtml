@@ -12,7 +12,7 @@
         <div class="form-group">
             <label for="template-number-select" class="col-sm-2 control-label">Offer text template</label>
             <div class="col-sm-10">
-                <select id="template-number-select" name="Template_number" class="form-control selectpicker" >
+                <select id="template-number-select" name="Template_number" class="form-control selectpicker">
                     <option value="current" selected>Current template used on offer</option>
                     @foreach (view_TextTemplate tt in ViewBag.TextTemplates)
                     {
@@ -40,11 +40,11 @@
             </div>
         </div>
         <div class="form-group">
-                <label for="module-info-header" class="col-sm-2 control-label">Module and Services header</label>
-                <div class="col-sm-10">
-                    <textarea id="module-info-header" name="Module_header" class="form-control" rows="3">@ViewBag.CustomerOffer.Module_header</textarea>
-                </div>
+            <label for="module-info-header" class="col-sm-2 control-label">Module and Services header</label>
+            <div class="col-sm-10">
+                <textarea id="module-info-header" name="Module_header" class="form-control" rows="3">@ViewBag.CustomerOffer.Module_header</textarea>
             </div>
+        </div>
         <div class="form-group">
             <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
             <div class="col-sm-10">
@@ -206,8 +206,8 @@
             browser_spellcheck: true,
             branding: false
         });
-        </script>
-        <!-- #endregion -->
+    </script>
+    <!-- #endregion -->
 }
 
 else if (Request["modal"] == "articles")
@@ -241,7 +241,7 @@ else if (Request["modal"] == "articles")
                         <div class="panel-heading">
                             <h3 class="panel-title">Available articles</h3>
                         </div>
-                        <div class="panel-body" style="font-size: 9pt;" >
+                        <div class="panel-body" style="font-size: 9pt;">
                             <table style="margin-left: 0.8em;">
                                 <tr>
                                     <th></th>
@@ -269,10 +269,10 @@ else if (Request["modal"] == "articles")
                         <div class="panel-body" style="font-size: 9pt;">
                             <table style="margin-left: 0.8em;">
                                 <tr>
-                                    <th >Art. nr</th>
-                                    <th >Module</th>
-                                    <th >License</th>
-                                    <th >Maintenance</th>
+                                    <th>Art. nr</th>
+                                    <th>Module</th>
+                                    <th>License</th>
+                                    <th>Maintenance</th>
                                 </tr>
 
                             </table>
@@ -319,18 +319,14 @@ else if (Request["modal"] == "articles")
                                             data-module-text-id="@or.ModuleTextId"
                                             data-offer-description="@or.OfferDescription"
                                             data-offer-id="@or.Offer_number"
-
-                                            @if (or.System != "Lärportal")
-                                            {
-                                                @Html.Raw("data-license=" + or.License.ToString().Replace(",", "."));
-                                            }
+                                            @if (or.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
                                             data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
                                             data-alias="@or.Module">
                                         <table>
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
                                                 <td>@or.Module</td>
-                                                
+
 
                                                 @if (or.System != "Lärportal")
                                                 {
@@ -1006,14 +1002,14 @@ else if (Request["modal"] == "services")
                                             </span>
                                         </td>
                                         <td style="display:inline-block; float:right; width:95%">
-                                            <button style="margin-bottom:25px" 
-                                                    type="button" 
-                                                    onclick="newItem(this, @cost)" 
-                                                    data-code="@service.Code" 
-                                                    data-selected="false" 
-                                                    data-offer-id="@offer._Offer_number" 
-                                                    data-module-type="K" 
-                                                    data-module-text-id="@moduleText._ID" 
+                                            <button style="margin-bottom:25px"
+                                                    type="button"
+                                                    onclick="newItem(this, @cost)"
+                                                    data-code="@service.Code"
+                                                    data-selected="false"
+                                                    data-offer-id="@offer._Offer_number"
+                                                    data-module-type="K"
+                                                    data-module-text-id="@moduleText._ID"
                                                     data-offer-description="@service.Offer_description"
                                                     data-service-code="@service.Code"
                                                     class="list-group-item">
@@ -1056,16 +1052,16 @@ else if (Request["modal"] == "services")
                                         view_ModuleText moduleText = new view_ModuleText();
                                         moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
 
-                                        <button style="margin-bottom:25px" 
-                                                type="button" 
-                                                onclick="newItem(this, @cost)" 
-                                                data-code="@service.Code" 
-                                                data-offer-id="@offer._Offer_number" 
-                                                data-module-type="K" 
-                                                data-module-text-id="@moduleText._ID" 
+                                        <button style="margin-bottom:25px"
+                                                type="button"
+                                                onclick="newItem(this, @cost)"
+                                                data-code="@service.Code"
+                                                data-offer-id="@offer._Offer_number"
+                                                data-module-type="K"
+                                                data-module-text-id="@moduleText._ID"
                                                 data-offer-description="@service.Offer_description"
                                                 data-service-code="@service.Code"
-                                                data-selected="true" 
+                                                data-selected="true"
                                                 class="list-group-item">
                                             <label>@price</label>
                                             <span class="service-amount">@row.Amount</span>
@@ -1309,7 +1305,7 @@ else if (Request["modal"] == "services")
                 int cost = (int)service.Price;
 
                 var resultString = !string.IsNullOrEmpty(service.Offer_description) ? service.Offer_description : "";
-                
+
                 @Html.Raw("services.push({id:" + row.Code +
                                        ", amount:" + row.Amount +
                                        ", total:" + (int)row.Total_price +
@@ -1419,7 +1415,7 @@ else if (Request["modal"] == "head-information")
         <div class="form-group">
             <label for="administration" class="col-sm-2 control-label">Administration</label>
             <div class="col-sm-10">
-                <input class="form-control" id="administration" name="Administration"  value="@ViewBag.CustomerOffer.Administration" />
+                <input class="form-control" id="administration" name="Administration" value="@ViewBag.CustomerOffer.Administration" />
             </div>
         </div>
         <div class="form-group">
@@ -1431,14 +1427,13 @@ else if (Request["modal"] == "head-information")
                        id="offer-valid-date"
                        value="@ViewBag.CustomerOffer.Offer_valid.ToString().Replace(@" 00:00:00", "")"
                        placeholder="Offer valid"
-                       @Html.Raw(disabled)
-                       >
+                       @Html.Raw(disabled)>
             </div>
         </div>
         <div class="form-group">
             <label for="status-select" class="col-sm-2 control-label">Status</label>
             <div class="col-sm-10">
-                <select class="form-control selectpicker" name="Offer_status" id="status-select"  placeholder="Status">
+                <select class="form-control selectpicker" name="Offer_status" id="status-select" placeholder="Status">
                     @foreach (String status in ViewBag.Statuses)
                     {
                         if (ViewBag.CustomerOffer.Offer_status == status)
@@ -1818,9 +1813,15 @@ else if (Request["modal"] == "module-info")
                     if (data != "-1") {
                         //Update correct editor with returning text...
                         tinymce.get("module-info-text" + index).setContent(data);
+                        if (element.style.border == "3px solid rgb(231, 76, 60)") {
+                            element.style.border = "1px solid #0065a0";
+                        } else {
+                            element.style.border = "3px solid rgb(231, 76, 60)";
+                        }
                     }
                 }
             });
+
             event.stopPropagation();
         }
 
@@ -1828,6 +1829,14 @@ else if (Request["modal"] == "module-info")
             $button = $(element);
             var index = $button.data("index");
             tinymce.get("module-info-text" + index).setContent('');
+
+            //triggerAlert("Text removed successfully", "success");
+            if (element.style.border == "3px solid rgb(0, 101, 160)") {
+               element.style.border = "1px solid #e74c3c";
+            } else {
+                element.style.border = "3px solid rgb(0, 101, 160)";
+            }
+
             event.stopPropagation();
         }
     </script>

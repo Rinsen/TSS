@@ -184,6 +184,11 @@
                 if (data != "-1") {
                     //Update correct editor with returning text...
                     tinymce.get("module-info-text" + index).setContent(data);
+                    if (element.style.border == "3px solid rgb(231, 76, 60)") {
+                        element.style.border = "1px solid #0065a0";
+                    } else {
+                        element.style.border = "3px solid rgb(231, 76, 60)";
+                    }
                 }
             }
         });
@@ -194,6 +199,13 @@
         $button = $(element);
         var index = $button.data("index");
         tinymce.get("module-info-text" + index).setContent('');
+
+        if (element.style.border == "3px solid rgb(0, 101, 160)") {
+            element.style.border = "1px solid #e74c3c";
+        } else {
+            element.style.border = "3px solid rgb(0, 101, 160)";
+        }
+
         event.stopPropagation();
     }
 
