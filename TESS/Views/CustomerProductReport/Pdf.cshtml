@@ -114,7 +114,7 @@
                                     {
                                         if ((String)dic.Key == "Module")
                                         {
-                                            if (String.IsNullOrEmpty((String)CPR["Alias"]))
+                                            //if (String.IsNullOrEmpty((String)CPR["Alias"]))
                                             {
                                                 <td>
                                                     <strong>@CPR["Module"]</strong>
@@ -131,22 +131,22 @@
 
                                                 </td>
                                             }
-                                            else
-                                            {
-                                                <td>
-                                                    <strong>@CPR["Alias"]</strong>
-                                                    @if (showDesc)
-                                                    {
-                                                        foreach (view_Module module in mainContract._MatchedModules)
-                                                        {
-                                                            if (module.Article_number.ToString() == CPR["Article_number"].ToString())
-                                                            {
-                                                                <div>@module.Description</div>
-                                                            }
-                                                        }
-                                                    }
-                                                </td>
-                                            }
+                                            //else
+                                            //{
+                                            //    <td>
+                                            //        <strong>@CPR["Alias"]</strong>
+                                            //        @if (showDesc)
+                                            //        {
+                                            //            foreach (view_Module module in mainContract._MatchedModules)
+                                            //            {
+                                            //                if (module.Article_number.ToString() == CPR["Article_number"].ToString())
+                                            //                {
+                                            //                    <div>@module.Description</div>
+                                            //                }
+                                            //            }
+                                            //        }
+                                            //    </td>
+                                            //}
                                         }
                                         else if (dic.Key == "Article_number")
                                         {

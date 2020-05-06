@@ -98,9 +98,9 @@ namespace TietoCRM.Models
             {
                 if (HttpContext.Current.Application["ApplicationName"].ToString().StartsWith("TESS"))
                     //return "Tieto Education AB"
-                    return "Tieto Sweden AB";
+                    return "TietoEVRY, Welfare Nordic ";
                 else
-                    return "Tieto Sweden AB";
+                    return "TietoEVRY, Welfare Nordic ";
             }
             set
             {
