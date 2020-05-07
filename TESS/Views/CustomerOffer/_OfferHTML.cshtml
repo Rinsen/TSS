@@ -77,7 +77,7 @@
                     {
                         <br/>
                     }
-                    <div>TietoEVRY, Welfare Nordic </div>
+                    <div>Tieto Sweden AB</div>
                     <div>@ViewBag.Representative.Address</div>
                     <div>@ViewBag.Representative.City</div>
                 </td>
@@ -115,7 +115,8 @@
                 <div id="Document_foot" >@Html.Raw(@ViewBag.CustomerOffer.Document_foot)</div>
             </div>
             <div id="crm-pdf-footer-regards" class="crm-print-block">
-                <p>Med vänlig hälsning<br />TietoEVRY, Welfare Nordic </p>
+                <p>Med vänlig hälsning</p>
+                <p>Tieto Sweden AB</p>
                 <div class="signature-container">
                     @{
                         String url = "../Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
@@ -131,7 +132,8 @@
                     }
                     
                 </div>
-                <p>@ViewBag.Representative.Name<br />Affärsansvarig</p>
+                <p>@ViewBag.Representative.Name</p>
+                <p>Affärsansvarig</p>
             </div>
         </div>
         @if (!IsPdf())
