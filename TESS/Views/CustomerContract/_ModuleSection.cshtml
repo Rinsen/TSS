@@ -103,21 +103,19 @@ if (list.Count > 0)
                     <div class="@subh1" id="crm-pdf-module-rows-title">
                         <table>
                             <tr>
-                                <td>
-                                    @*@if (canShowTitle)
-                                    {
-                                        canShowTitle = false;*@
-                                        <span style="font-size: 10pt; font-weight: bold">@title</span>
-                                    @*}*@
-                                </td>
-                                <td></td>
                                 @if (currentPriceType != previousPriceType)
-                                {   // Print Price_type only if it differs from previous
+                                {   // Print Header and Price_type only if it differs from previous
+                                    <td>
+                                        <span style="font-size: 10pt; font-weight: bold">@title</span>
+                                    </td>
+                                    <td></td>
                                     <td>@rubEng</td>
                                     <td>@article.Price_type @krRub</td>
                                 }
                                 else
                                 {
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                 }
