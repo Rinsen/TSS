@@ -280,9 +280,7 @@ namespace TietoCRM.Controllers.Contracts
                 if (contractRow.Rewritten == true && contractRow.Removed == true)
                     remArticles.Add(contractInfo);
 
-                if (contractRow.Rewritten == false && contractInfo.System == "Lärportal")
-                    educationPortals.Add(contractInfo);
-                else
+                if (contractRow.Rewritten == false)
                 {
                     articles.Add(contractInfo);
                     if (contractRow.Rewritten == false && contractRow.Removed == false) //Undviker att få med omskrivna och borttagna artiklar i NY-listan på kontraktet
