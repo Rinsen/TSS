@@ -210,7 +210,7 @@ namespace TietoCRM.Controllers
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
 
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -326,7 +326,7 @@ namespace TietoCRM.Controllers
             }
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ToList());
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
 
