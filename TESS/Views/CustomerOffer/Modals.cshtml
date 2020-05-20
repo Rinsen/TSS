@@ -257,6 +257,7 @@ else if (Request["modal"] == "articles")
                             <div id="available-articles" class="list-group">
                             </div>
                             <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
+                            @*<h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-star'></span> are closed modules</h5>*@
                         </div>
                     </div>
                     <p>Click on an item above to add it to the list</p>
@@ -597,17 +598,26 @@ else if (Request["modal"] == "articles")
         var $artNrs = $selectedList.find("button .art-nr");
         var artNrsLen = $artNrs.length;
         var hasFixedRows = false;
-        for(var i = 0; i < aaLen; i++) {
+
+        for (var i = 0; i < aaLen; i++) {
+
             var article = availableArticles[i];
             var usedCell = "<td></td>";
+            //var closedCell = "<td></td>";
             var depCell = "<td></td>";
             var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
             var artClass = article.System + " / " + article.Classification;
+
             console.log(artClass);
-            if(article.Used == true)
-            {
+
+            //if (article.Expired == true) {
+            //    closedCell = "<td><span class='glyphicon glyphicon-star'></span></td>";
+            //}
+            //else
+            if (article.Used == true) {
                 usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
             }
+
             if (article.HasDependencies || article.Description.length > 0 || article.Module_status != "0") {
                 var depTitle = "";
                 if (article.HasDependencies) {

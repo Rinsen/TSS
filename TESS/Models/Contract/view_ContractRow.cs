@@ -199,6 +199,12 @@ public class view_ContractRow : SQLBaseClass
             {
                 connection.Open();
 
+                //Ersätt med denna för att få in status på kontraktet
+                  //SELECT CR.Contract_id, CR.Customer, CR.Article_number, CR.Offer_number, CR.License, CR.Maintenance,
+                  //CR.Delivery_date, CR.Created, CR.Updated, CR.Rewritten, CR.New, CR.Removed, CR.Closure_date, CR.Fixed_price, 
+                  //CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, C.[status] AS Contract_Status FROM view_ContractRow CR
+                  //JOIN view_Contract C on C.Customer = CR.Customer and C.Contract_id = CR.Contract_id
+                  //WHERE CR.Customer = 'Ale kommun'
 
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,

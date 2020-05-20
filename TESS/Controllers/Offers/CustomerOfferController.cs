@@ -1552,6 +1552,9 @@ namespace TietoCRM.Controllers
                         kv.Add("Dependencies", dependencies);
                     }
                 }
+
+                //Nytt urval för utgångna artiklar här. Vilket urval. Avvaktar?
+
                 //Response.Charset = "UTF-8";
                 // this.solve();
                 String resultString = (new JavaScriptSerializer()).Serialize(resultList);

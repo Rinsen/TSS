@@ -247,7 +247,7 @@
             $deluhTextObj.parent().parent().show();
             $bodytitleObj.parent().parent().show();
             $short_descrObj.prop("disabled", false);
-            $titleObj.prop("disabled", true);
+            $titleObj.prop("disabled", false);
            // $openingObj.prop("disabled", false);
             // $bodyObj.prop("disabled", true);
             $bodyObj.parent().parent().hide();
@@ -589,6 +589,7 @@
                     //Template_number: templateNumber,
                     Document_type: $selectType.val(),
                     Short_descr: $("#short_descr5").val(),
+                    Title: $("#title5").val(),
                     Document_head: "",
                     //Page_head: $("#opening5").val(),
                     Page_head: tinyMCE.get('opening5').getContent(),
@@ -688,10 +689,6 @@
                     maxlength: 255
                 },
                 "Opening": {
-                    required: true,
-
-                },
-                "Text": {
                     required: true,
 
                 },
