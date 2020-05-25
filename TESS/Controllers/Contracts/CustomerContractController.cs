@@ -280,28 +280,25 @@ namespace TietoCRM.Controllers.Contracts
                 if (contractRow.Rewritten == true && contractRow.Removed == true)
                     remArticles.Add(contractInfo);
 
-                if (contractRow.Rewritten == false)
+                articles.Add(contractInfo);
+                if (contractRow.Rewritten == false && contractRow.Removed == false) //Undviker att få med omskrivna och borttagna artiklar i NY-listan på kontraktet
                 {
-                    articles.Add(contractInfo);
-                    if (contractRow.Rewritten == false && contractRow.Removed == false) //Undviker att få med omskrivna och borttagna artiklar i NY-listan på kontraktet
+                    if (!articleSystemDic.ContainsKey(contractInfo.System))
                     {
-                        if (!articleSystemDic.ContainsKey(contractInfo.System))
-                        {
-                            articleSystemDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
-                        }
-                        else
-                        {
-                            articleSystemDic[contractInfo.System].Add(contractInfo);
-                        }
+                        articleSystemDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
+                    }
+                    else
+                    {
+                        articleSystemDic[contractInfo.System].Add(contractInfo);
+                    }
 
-                        if (!articleAndServicesDic.ContainsKey(contractInfo.System))
-                        {
-                            articleAndServicesDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
-                        }
-                        else
-                        {
-                            articleAndServicesDic[contractInfo.System].Add(contractInfo);
-                        }
+                    if (!articleAndServicesDic.ContainsKey(contractInfo.System))
+                    {
+                        articleAndServicesDic.Add(contractInfo.System, new List<dynamic> { contractInfo });
+                    }
+                    else
+                    {
+                        articleAndServicesDic[contractInfo.System].Add(contractInfo);
                     }
                 }
             }
