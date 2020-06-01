@@ -186,7 +186,11 @@ var handleExistingOption = function (availableArticles, $availableList, $selecte
     for (var i = 0; i < aaLen; i++) {
         var article = availableArticles[i];
         var usedCell = "<td></td>";
-        if (article.Used == true) {
+
+        if (article.Expired == true) {
+            usedCell = "<td><span class='glyphicon glyphicon-star'></span></td>";
+        }
+        else if (article.Used == true) {
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
         }
         var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
