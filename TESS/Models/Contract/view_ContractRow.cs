@@ -529,6 +529,51 @@ public class view_ContractRow : SQLBaseClass
             }
             return dt;
             }
+
+        /// <summary>
+        /// Hämtar kundens omskrivna OCH avslutade moduler (via avtalstypen modulavslut) för att kunna markera dessa med stjärn-ikon i artikel-dialogen
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
+        public static List<view_ContractRow> GetClosedAndRewrittenContractRows(string customer)
+        {
+            List<view_ContractRow> list = new List<view_ContractRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
+                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ClosedOrRewrittenContractRow WHERE " + "Customer = @customer Order By " + GetOrderBy();
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ContractRow t = new view_ContractRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
     }
 }
 

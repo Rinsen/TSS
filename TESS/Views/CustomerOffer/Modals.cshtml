@@ -257,7 +257,7 @@ else if (Request["modal"] == "articles")
                             <div id="available-articles" class="list-group">
                             </div>
                             <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
-                            @*<h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-star'></span> are closed modules</h5>*@
+                            <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-star'></span> are finalized or re-signed modules</h5>
                         </div>
                     </div>
                     <p>Click on an item above to add it to the list</p>
@@ -603,18 +603,16 @@ else if (Request["modal"] == "articles")
 
             var article = availableArticles[i];
             var usedCell = "<td></td>";
-            //var closedCell = "<td></td>";
             var depCell = "<td></td>";
             var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
             var artClass = article.System + " / " + article.Classification;
 
             console.log(artClass);
 
-            //if (article.Expired == true) {
-            //    closedCell = "<td><span class='glyphicon glyphicon-star'></span></td>";
-            //}
-            //else
-            if (article.Used == true) {
+            if (article.Expired == true) {
+                usedCell = "<td><span class='glyphicon glyphicon-star'></span></td>";
+            }
+            else if (article.Used == true) {
                 usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
             }
 

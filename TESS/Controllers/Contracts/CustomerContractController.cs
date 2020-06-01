@@ -1759,12 +1759,15 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 Response.ContentType = "text/plain";
 
-                List<view_ContractRow> rows = view_ContractRow.GetValidContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+                List<view_ContractRow> usedArticles = view_ContractRow.GetValidContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+                List<view_ContractRow> closedOrRewrittenArticles = view_ContractRow.GetClosedAndRewrittenContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
 
                 foreach (Dictionary<String, dynamic> kv in resultList)
                 {
-                    if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Removed == false) && ctr != "M")
+                    if (usedArticles.Any(cr => cr.Article_number == kv["Article_number"] && cr.Removed == false) && ctr != "M")
                         kv.Add("Used", true);
+                    if (closedOrRewrittenArticles.Any(cr => cr.Article_number == kv["Article_number"] /*&& cr.Removed == false*/) && ctr != "M")
+                        kv.Add("Expired", true);
                     List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
                     if(dependencies.Count > 0)
                     {

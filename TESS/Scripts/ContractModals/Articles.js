@@ -199,7 +199,11 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         var artClass = article.System + " / " + article.Classification;
         var usedCell = "<td></td>";
         var usedDep = "<td></td>";
-        if (article.Used == true) {
+
+        if (article.Expired == true) {
+            usedCell = "<td><span class='glyphicon glyphicon-star'></span></td>";
+        }
+        else if (article.Used == true) {
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
         }
         if (article.HasDependencies || article.Description.length > 0 || article.Module_status != "0") {
