@@ -248,6 +248,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
+                                            data-read-name-from-module='" + article.Read_name_from_module + "'      \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
@@ -278,6 +279,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
+                                            data-read-name-from-module='" + article.Read_name_from_module + "'      \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
@@ -428,6 +430,7 @@ var updateSelectedItems = function () {
                                 data-discount='" + module.Discount + "'                           \
                                 data-discount-type='" + module.Discount_type + "'                  \
                                 data-multiple-select='" + module.Multiple_type + "'                    \
+                                data-read-name-from-module='" + article.Read_name_from_module + "'      \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \

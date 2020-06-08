@@ -28,7 +28,8 @@ namespace TietoCRM.Controllers
             "Discount_type",
             "Status",
             "Alias",
-            "Expired"
+            "Expired",
+            "Read_name_from_module"
         };
 
         // GET: CustomerProductReport
@@ -97,8 +98,8 @@ namespace TietoCRM.Controllers
                             SystemNames.Add(row.SortNo + "#" + row.System);
                             oldSystem = row.System;
                         }
-                       mainContract._MatchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
-                       mainContract._MatchedModules = mainContract._MatchedModules.DistinctBy(m => m.Article_number).ToList();
+                        mainContract._MatchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
+                        mainContract._MatchedModules = mainContract._MatchedModules.DistinctBy(m => m.Article_number).ToList();
                     }
 
                     mainContract._OrderedSystemNames = SystemNames.ToList();
@@ -161,8 +162,11 @@ namespace TietoCRM.Controllers
 
             foreach(view_CustomerProductRow cpr in ProductReportRows)
             {
-                if (!String.IsNullOrEmpty(cpr.Alias))
-                    cpr.Module = cpr.Alias;
+                if(!cpr.Read_name_from_module)
+                {
+                    if (!String.IsNullOrEmpty(cpr.Alias))
+                        cpr.Module = cpr.Alias;
+                }
 
                 uniqueCPR.Add(cpr.Contract_id);
             }
@@ -204,6 +208,11 @@ namespace TietoCRM.Controllers
             {
                 if ((cpr.Status == "Giltigt") && (withoutExpired == "false" || (withoutExpired == "true" && !cpr.Expired)))
                 {
+                    if(!string.IsNullOrEmpty(cpr.Alias) && !cpr.Read_name_from_module)
+                    {
+                        cpr.Module = cpr.Alias;
+                    }
+
                     Dictionary<String, String> dic = new Dictionary<String, String>();
                     foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
                     {

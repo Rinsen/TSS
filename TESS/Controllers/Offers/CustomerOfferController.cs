@@ -178,10 +178,17 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                if (offerRow.Alias == null || offerRow.Alias == "")
+                if(module.Read_name_from_module==1)
+                {
                     offerInfo.Module = module.Module;
+                }
                 else
-                    offerInfo.Module = offerRow.Alias;
+                {
+                    if (offerRow.Alias == null || offerRow.Alias == "")
+                        offerInfo.Module = module.Module;
+                    else
+                        offerInfo.Module = offerRow.Alias;
+                }
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
 
@@ -296,10 +303,17 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                if (offerRow.Alias == null || offerRow.Alias == "")
+                if (module.Read_name_from_module == 1)
+                {
                     offerInfo.Module = module.Module;
+                }
                 else
-                    offerInfo.Module = offerRow.Alias;
+                {
+                    if (offerRow.Alias == null || offerRow.Alias == "")
+                        offerInfo.Module = module.Module;
+                    else
+                        offerInfo.Module = offerRow.Alias;
+                }
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
                 offerInfo.Price_category = module.Price_category;
@@ -492,10 +506,17 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                if (offerRow.Alias == null || offerRow.Alias == "")
+                if (module.Read_name_from_module == 1)
+                {
                     offerInfo.Module = module.Module;
+                }
                 else
-                    offerInfo.Module = offerRow.Alias;
+                {
+                    if (offerRow.Alias == null || offerRow.Alias == "")
+                        offerInfo.Module = module.Module;
+                    else
+                        offerInfo.Module = offerRow.Alias;
+                }
                 offerInfo.System = module.System;
                 offerInfo.Classification = "A";
                 offerInfo.Price_category = module.Price_category;

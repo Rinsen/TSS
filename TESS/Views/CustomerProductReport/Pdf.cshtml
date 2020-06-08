@@ -114,7 +114,7 @@
                                     {
                                         if ((String)dic.Key == "Module")
                                         {
-                                            if (String.IsNullOrEmpty((String)CPR["Alias"]))
+                                            if (String.IsNullOrEmpty((String)CPR["Alias"]) || (bool)(CPR["Read_name_from_module"]))
                                             {
                                                 <td>
                                                     <strong>@CPR["Module"]</strong>
