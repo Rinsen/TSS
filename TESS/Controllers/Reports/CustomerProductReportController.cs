@@ -141,7 +141,7 @@ namespace TietoCRM.Controllers
         {
             String customer = Request["customer"];
             ViewCsvParser<view_CustomerProductRow> vcp = new ViewCsvParser<view_CustomerProductRow>("CustomerProducts");
-            vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null));
+            vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null, null, true, true));
         }
 
         public String CustomerData()
