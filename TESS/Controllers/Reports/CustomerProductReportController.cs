@@ -141,7 +141,10 @@ namespace TietoCRM.Controllers
         {
             String customer = Request["customer"];
             ViewCsvParser<view_CustomerProductRow> vcp = new ViewCsvParser<view_CustomerProductRow>("CustomerProducts");
-            vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null, null, true, true));
+            if(System.Web.HttpContext.Current.GetUser().Area == "EDU") //EDU vill ha ALLA status i rapporten, till skillnad från EC och FC som vill att den ska spegla sökresultatet i vyn.
+                vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null, null, true, true, true));
+            else
+                vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null, null, true, true));
         }
 
         public String CustomerData()
