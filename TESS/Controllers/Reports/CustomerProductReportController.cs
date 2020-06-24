@@ -28,7 +28,8 @@ namespace TietoCRM.Controllers
             "Discount_type",
             "Status",
             "Alias",
-            "Expired"
+            "Expired",
+            "Read_name_from_module"
         };
 
         // GET: CustomerProductReport
@@ -57,7 +58,7 @@ namespace TietoCRM.Controllers
                 String area = System.Web.HttpContext.Current.GetUser().Area;
                 bool withExpired = Request["expired"] == "Ja" ? true : false;
 
-                List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null, area, withExpired);
+                List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(Request["customer"], null, area, withExpired, true);
 
                 // Store all unique Customer name in a set
                 var SystemNames = new HashSet<string>();
@@ -97,8 +98,8 @@ namespace TietoCRM.Controllers
                             SystemNames.Add(row.SortNo + "#" + row.System);
                             oldSystem = row.System;
                         }
-                       mainContract._MatchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
-                       mainContract._MatchedModules = mainContract._MatchedModules.DistinctBy(m => m.Article_number).ToList();
+                        mainContract._MatchedModules.Add(modules.Where(m => m.Article_number == row.Article_number).First());
+                        mainContract._MatchedModules = mainContract._MatchedModules.DistinctBy(m => m.Article_number).ToList();
                     }
 
                     mainContract._OrderedSystemNames = SystemNames.ToList();
@@ -140,7 +141,10 @@ namespace TietoCRM.Controllers
         {
             String customer = Request["customer"];
             ViewCsvParser<view_CustomerProductRow> vcp = new ViewCsvParser<view_CustomerProductRow>("CustomerProducts");
-            vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null));
+            if(System.Web.HttpContext.Current.GetUser().Area == "EDU") //EDU vill ha ALLA status i rapporten, till skillnad från EC och FC som vill att den ska spegla sökresultatet i vyn.
+                vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null, null, true, true, true));
+            else
+                vcp.WriteExcelWithNPOI(view_CustomerProductRow.getAllCustomerProductRows(customer, null, null, true, true));
         }
 
         public String CustomerData()
@@ -161,8 +165,11 @@ namespace TietoCRM.Controllers
 
             foreach(view_CustomerProductRow cpr in ProductReportRows)
             {
-                if (!String.IsNullOrEmpty(cpr.Alias))
-                    cpr.Module = cpr.Alias;
+                if(!cpr.Read_name_from_module)
+                {
+                    if (!String.IsNullOrEmpty(cpr.Alias))
+                        cpr.Module = cpr.Alias;
+                }
 
                 uniqueCPR.Add(cpr.Contract_id);
             }
@@ -204,6 +211,11 @@ namespace TietoCRM.Controllers
             {
                 if ((cpr.Status == "Giltigt") && (withoutExpired == "false" || (withoutExpired == "true" && !cpr.Expired)))
                 {
+                    if(!string.IsNullOrEmpty(cpr.Alias) && !cpr.Read_name_from_module)
+                    {
+                        cpr.Module = cpr.Alias;
+                    }
+
                     Dictionary<String, String> dic = new Dictionary<String, String>();
                     foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
                     {

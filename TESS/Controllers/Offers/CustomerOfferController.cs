@@ -41,9 +41,9 @@ namespace TietoCRM.Controllers
             GlobalVariables.checkIfAuthorized("CustomerOffer");
             this.ViewData.Add("User_level", System.Web.HttpContext.Current.GetUser().User_level);
             if(System.Web.HttpContext.Current.GetUser().User_level > 1)
-                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign).OrderBy(c => c).ToList());
             else
-                this.ViewData.Add("Customers", view_Customer.getCustomerNames());
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames().OrderBy(c => c).ToList());
             this.ViewData.Add("ControllerName", "CustomerOffer");
             this.ViewData.Add("AjaxUrl", "/CustomerOffer/CustomerOfferJsonData/");
             this.ViewData.Add("TargetUrl", "/CustomerOffer/Data/");
@@ -178,10 +178,17 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                if (offerRow.Alias == null || offerRow.Alias == "")
+                if(module.Read_name_from_module==1)
+                {
                     offerInfo.Module = module.Module;
+                }
                 else
-                    offerInfo.Module = offerRow.Alias;
+                {
+                    if (offerRow.Alias == null || offerRow.Alias == "")
+                        offerInfo.Module = module.Module;
+                    else
+                        offerInfo.Module = offerRow.Alias;
+                }
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
 
@@ -296,10 +303,17 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                if (offerRow.Alias == null || offerRow.Alias == "")
+                if (module.Read_name_from_module == 1)
+                {
                     offerInfo.Module = module.Module;
+                }
                 else
-                    offerInfo.Module = offerRow.Alias;
+                {
+                    if (offerRow.Alias == null || offerRow.Alias == "")
+                        offerInfo.Module = module.Module;
+                    else
+                        offerInfo.Module = offerRow.Alias;
+                }
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
                 offerInfo.Price_category = module.Price_category;
@@ -492,10 +506,17 @@ namespace TietoCRM.Controllers
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
                 offerInfo.Article_number = module.Article_number;
-                if (offerRow.Alias == null || offerRow.Alias == "")
+                if (module.Read_name_from_module == 1)
+                {
                     offerInfo.Module = module.Module;
+                }
                 else
-                    offerInfo.Module = offerRow.Alias;
+                {
+                    if (offerRow.Alias == null || offerRow.Alias == "")
+                        offerInfo.Module = module.Module;
+                    else
+                        offerInfo.Module = offerRow.Alias;
+                }
                 offerInfo.System = module.System;
                 offerInfo.Classification = "A";
                 offerInfo.Price_category = module.Price_category;
@@ -1407,12 +1428,16 @@ namespace TietoCRM.Controllers
                 }
                 Response.ContentType = "text/plain";
 
-                List<view_ContractRow> rows = view_ContractRow.GetAllContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+                List<view_ContractRow> usedArticles = view_ContractRow.GetValidContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+                List<view_ContractRow> closedOrRewrittenArticles = view_ContractRow.GetClosedAndRewrittenContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
 
                 foreach (Dictionary<String, dynamic> kv in resultList)
                 {
-                    if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
+                    if (usedArticles.Any(cr => cr.Article_number == kv["Article_number"]))
                         kv.Add("Used", true);
+                    if (closedOrRewrittenArticles.Any(cr => cr.Article_number == kv["Article_number"]))
+                        kv.Add("Expired", true);
+
                     List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
                     if (dependencies.Count > 0)
                     {
@@ -1539,12 +1564,16 @@ namespace TietoCRM.Controllers
                 }
                 Response.ContentType = "text/plain";
 
-                List<view_ContractRow> rows = view_ContractRow.GetAllContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+                List<view_ContractRow> usedArticles = view_ContractRow.GetValidContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
+                List<view_ContractRow> closedOrRewrittenArticles = view_ContractRow.GetClosedAndRewrittenContractRows(customer).DistinctBy(cr => cr.Article_number).ToList();
 
                 foreach (Dictionary<String, dynamic> kv in resultList)
                 {
-                    if (rows.Any(cr => cr.Article_number == kv["Article_number"]))
+                    if (usedArticles.Any(cr => cr.Article_number == kv["Article_number"]))
                         kv.Add("Used", true);
+                    if (closedOrRewrittenArticles.Any(cr => cr.Article_number == kv["Article_number"]))
+                        kv.Add("Expired", true);
+
                     List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
                     if (dependencies.Count > 0)
                     {

@@ -126,6 +126,12 @@
                                             Multiple select
                                         </label>
                                     </div>
+                                    <div class="checkbox">
+                                        <label for="read-name-from-module2">
+                                            <input id="read-name-from-module2" data-id="read-name-from-module2" name="Read_name_from_module" type="checkbox" />
+                                            Always get name from Module register
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -489,6 +495,8 @@
                         $currInput.prop("checked",false);
                     } else if ($currInput.prop("id") == "multiple2") {
                         $currInput.prop("checked",false);
+                    } else if ($currInput.prop("id") == "read-name-from-module2") {
+                        $currInput.prop("checked",true);
                     } else if ($currInput.attr("name") == "Price_category"){
                         $currInput.val("0");
                     } else {
@@ -650,7 +658,7 @@
     //$('#crm-save-btn').on('click', save);
 
     }
-    7
+
     //Kommer hit för varje post som ska skrivas ut i tabellen
     var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -684,7 +692,7 @@
                 i++;
             }
 
-            if (i >= 1 && i < 17) {
+            if (i >= 1 && i < 18) {
                 if (name != "Offer_description" && name != "Contract_description") {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
