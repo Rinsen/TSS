@@ -41,9 +41,9 @@ namespace TietoCRM.Controllers
             GlobalVariables.checkIfAuthorized("CustomerOffer");
             this.ViewData.Add("User_level", System.Web.HttpContext.Current.GetUser().User_level);
             if(System.Web.HttpContext.Current.GetUser().User_level > 1)
-                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign));
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign).OrderBy(c => c).ToList());
             else
-                this.ViewData.Add("Customers", view_Customer.getCustomerNames());
+                this.ViewData.Add("Customers", view_Customer.getCustomerNames().OrderBy(c => c).ToList());
             this.ViewData.Add("ControllerName", "CustomerOffer");
             this.ViewData.Add("AjaxUrl", "/CustomerOffer/CustomerOfferJsonData/");
             this.ViewData.Add("TargetUrl", "/CustomerOffer/Data/");
