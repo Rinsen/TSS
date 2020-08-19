@@ -258,6 +258,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.License = contractRow.License;
                 contractInfo.Maintenance = contractRow.Maintenance;
                 contractInfo.Price_category = module.Price_category;
+                contractInfo.Maint_price_category = module.Maint_price_category;
                 contractInfo.Discount_type = module.Discount_type;
                 contractInfo.Discount = module.Discount;
 
@@ -1196,6 +1197,7 @@ namespace TietoCRM.Controllers.Contracts
                     Maintenance = cRow.Maintenance,
                     License = cRow.License,
                     Price_category = module.Price_category,
+                    Maint_price_category = module.Maint_price_category,
                     System = module.System,
                     Multiple_type = module.Multiple_type,
                     Rewritten = cRow.Rewritten,
@@ -1671,12 +1673,13 @@ namespace TietoCRM.Controllers.Contracts
             {
                 connection.Open();
 
-                String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License, IsNull(O.Text,'') as Module_status_txt
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+                String queryText = @"Select A.*, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, T1.License As License, IsNull(O.Text, '') as Module_status_txt
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
                                                 M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
-	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
+	                                    Left Join view_Tariff T1 On T1.Inhabitant_level = A.Inhabitant_level And T1.Price_category = A.Price_category
+                                        Left Join view_Tariff T2 On T2.Inhabitant_level = A.Inhabitant_level And T2.Price_category = A.Maint_price_category
 	                                    Left Join view_SelectOption O on O.Value = A.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
 	                                    Where A.System = @System AND A.Classification = @classification Order By Module";
 
@@ -1718,6 +1721,7 @@ namespace TietoCRM.Controllers.Contracts
                                 i++;
                             }
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
+                            result["Maint_price_category"] = result["Maint_price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
                             {
@@ -1807,11 +1811,12 @@ namespace TietoCRM.Controllers.Contracts
 
                 if (ctr == "Me")
                 {                //qry_GetModulesContractTermination + M.Contract_Description 
-                    queryText = @"Select M.Article_number, M.Module, dbo.view_Tariff.License, dbo.view_Tariff.Maintenance, M.Price_category, M.System, M.Classification, M.Comment, X.Customer, 
+                    queryText = @"Select M.Article_number, M.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, X.Customer, 
                                   M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(M.Contract_Description, '') AS Contract_Description
                                   From dbo.view_Module As M 
-                                  Inner Join dbo.view_Tariff On M.Price_category = dbo.view_Tariff.Price_category 
-                                  Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = dbo.view_Tariff.Inhabitant_level 
+                                  Inner Join dbo.view_Tariff T1 On M.Price_category = T1.Price_category
+                                  Left Join dbo.view_Tariff T2 On M.Maint_price_category = T2.Price_category and T1.Inhabitant_level = T2.Inhabitant_level
+                                  Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = T1.Inhabitant_level 
                                   Inner Join dbo.view_CustomerProductRow As R On R.Article_number = M.Article_number And R.Customer = X.Customer
                                   Left Join view_SelectOption O on O.Value = M.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
                                   Where        (M.Expired = 0) And (R.Discount_type = 0) And (R.status = 'Giltigt') and " + //#qry_GetModulesContractTermination
@@ -1822,11 +1827,12 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {                 //qry_GetModulesContractNormal + M.Contract_Description
-                    queryText = @"Select M.Article_number, M.Module, dbo.view_Tariff.License, dbo.view_Tariff.Maintenance, M.Price_category, M.System, M.Classification, M.Comment, X.Customer, 
+                    queryText = @"Select M.Article_number, M.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, X.Customer, 
                                   M.Multiple_type, M.Fixed_price, M.Area, M.Discount_type, M.Discount, IsNull(M.[Description],'') As [Description], M.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(M.Contract_Description, '') AS Contract_Description
                                   From dbo.view_Module As M 
-                                  Inner Join dbo.view_Tariff On M.Price_category = dbo.view_Tariff.Price_category 
-                                  Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = dbo.view_Tariff.Inhabitant_level 
+                                  Inner Join dbo.view_Tariff T1 On M.Price_category = T1.Price_category
+                                  Left Join dbo.view_Tariff T2 On M.Maint_price_category = T2.Price_category and T1.Inhabitant_level = T2.Inhabitant_level
+                                  Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = T1.Inhabitant_level 
                                   Left Join view_SelectOption O on O.Value = M.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
                                   Where (M.Expired = 0) and " + //#qry_GetModulesContractNormal
 
@@ -1876,6 +1882,7 @@ namespace TietoCRM.Controllers.Contracts
                                 i++;
                             }
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
+                            result["Maint_price_category"] = result["Maint_price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
                             {

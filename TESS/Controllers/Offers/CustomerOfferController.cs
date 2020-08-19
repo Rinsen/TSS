@@ -196,6 +196,7 @@ namespace TietoCRM.Controllers
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
 
                 offerInfo.Price_category = module.Price_category;
+                offerInfo.Maint_price_category = module.Maint_price_category;
                 offerInfo.Discount_type = module.Discount_type;
                 offerInfo.Discount = module.Discount;
                 offerInfo.Price_type = sector.Price_type;
@@ -317,6 +318,7 @@ namespace TietoCRM.Controllers
                 offerInfo.System = module.System;
                 offerInfo.Classification = module.Classification;
                 offerInfo.Price_category = module.Price_category;
+                offerInfo.Maint_price_category = module.Maint_price_category;
                 offerInfo.Discount_type = module.Discount_type;
                 offerInfo.Discount = module.Discount;
 
@@ -520,6 +522,7 @@ namespace TietoCRM.Controllers
                 offerInfo.System = module.System;
                 offerInfo.Classification = "A";
                 offerInfo.Price_category = module.Price_category;
+                offerInfo.Maint_price_category = module.Maint_price_category;
                 offerInfo.Discount_type = module.Discount_type;
                 offerInfo.Discount = module.Discount;
 
@@ -1335,13 +1338,13 @@ namespace TietoCRM.Controllers
             {
                 connection.Open();
 
-                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
+                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance,
                                         view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
                                         view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description, 
                                         view_Module.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(view_Module.Offer_Description, '') AS Offer_Description
                                         FROM view_Module                                                                                       
-                                        Left JOIN view_Tariff                                                                                       
-                                        on view_Module.Price_category = view_Tariff.Price_category
+                                        Left JOIN view_Tariff T1 on view_Module.Price_category = T1.Price_category
+                                        Left JOIN view_Tariff T2 on view_Module.Maint_price_category = T2.Price_category and T1.Inhabitant_level = T2.Inhabitant_level
                                         Left Join view_SelectOption O on O.Value = view_Module.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
                                         WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
                                         view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
@@ -1380,6 +1383,7 @@ namespace TietoCRM.Controllers
                                 i++;
                             }
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
+                            result["Maint_price_category"] = result["Maint_price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
                             if ((bool)result["Fixed_price"])
                             {
@@ -1477,12 +1481,13 @@ namespace TietoCRM.Controllers
                                     )
                                     order by Article_number asc";*/
 
-                String queryText = @"Select A.*, T.Maintenance as Maintenance, T.License As License, IsNull(O.Text,'') as Module_status_txt
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+                String queryText = @"Select A.*, Case When T2.Maintenance = 0 Then T.Maintenance Else IsNull(T2.Maintenance, T.Maintenance) End As Maintenance, T.License As License, IsNull(O.Text,'') as Module_status_txt
+	                                    From (Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
                                                     M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Offer_Description, '') AS Offer_Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
-	                                    Left Join	view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
+	                                    Left Join view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
+                                        Left Join view_Tariff T2 On T2.Inhabitant_level = A.Inhabitant_level And T2.Price_category = A.Maint_price_category
 	                                    Left Join view_SelectOption O on O.Value = A.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
                                         Where A.System = @System AND A.Classification = @classification Order By A.Module";
 
@@ -1516,6 +1521,7 @@ namespace TietoCRM.Controllers
                                 i++;
                             }
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
+                            result["Maint_price_category"] = result["Maint_price_category"].ToString().Replace(",", ".");
                             result["System"] = result["System"].ToString();
                             // result["Fixed_price"] = ("1" == result["Fixed_price"].ToString());
                             if ((bool)result["Fixed_price"])

@@ -6,6 +6,15 @@
         select += "<option value='" + (int)price.Level + "'>" + (int)price.Level + "</option>";
     }
     select += "</select>";
+
+    String maintSelect = "<select class='form-control selectpicker' name='Maint_price_category' id='maint-price-category2'>";
+    foreach (TietoCRM.Models.view_Price price in prices)
+    {
+        maintSelect += "<option value='" + (int)price.Level + "'>" + (int)price.Level + "</option>";
+    }
+    maintSelect += "</select>";
+
+    String area = System.Web.HttpContext.Current.GetUser().Area;
 }
 @using TietoCRM.Models;
 @using TietoCRM.Extensions;
@@ -59,9 +68,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="price-category2" class="col-sm-2 control-label">Price category</label>
-                                <div class="col-sm-9" id="price-category-container">
-                                    @Html.Raw(select)
+                                <div>
+                                    <label for="price-category2" id="price-category-label" class="col-sm-2 control-label">Price category</label>
+                                    <div class="col-sm-3" id="price-category-container">
+                                        @Html.Raw(select)
+                                    </div>
+                                </div>
+                                <div style="display:none" id="maint-form-group">
+                                    <label for="maint-price-category2" class="col-sm-3 control-label">Maintenance Price category</label>
+                                    <div class="col-sm-3" id="maint-price-category-container">
+                                        @Html.Raw(maintSelect)
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -96,11 +113,26 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-9">
-                                    <div class="radio">
-                                        <label for="none2">
-                                            <input id="none2" data-id="none" checked name="none" type="radio" />
-                                            From price category
-                                        </label>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="radio">
+                                                <label for="none2">
+                                                    <input id="none2" data-id="none" checked name="none" type="radio" />
+                                                    From price category
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @if (area == "EDU")
+                                        {
+                                            <div class="col-sm-4">
+                                                <div class="radio">
+                                                    <label for="startup2">
+                                                        <input id="startup2" data-id="startup2" name="Startup" type="radio" />
+                                                        Startup price category
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
                                     <div class="radio">
                                         <label for="fixed-price2">
@@ -229,7 +261,7 @@
         });
 
         try {
-            tinyMCE.execCommand('mceAddControl', false, 'offer_description2');            
+            tinyMCE.execCommand('mceAddControl', false, 'offer_description2');
         } catch (e) {
         }
 
@@ -290,18 +322,32 @@
         $discount = $("#discount2");
         $fixedPrice = $("#fixed-price2");
         $none = $("#none2");
+        $startup = $("#startup2");
         $container.empty();
-        
+
+        document.getElementById("price-category-label").innerHTML = "Price category";
+
         if($(clicked).attr("name") == "Fixed_price"){
             $discount.prop("checked", false);
             $none.prop("checked", false);
+            $startup.prop("checked", false);
+            $("#maint-price-category2").val(null);
         }
         else if($(clicked).attr("name") == "Discount"){
             $fixedPrice.prop("checked", false);
             $none.prop("checked", false);
+            $startup.prop("checked", false);
+            $("#maint-price-category2").val(null);
         }
         else if($(clicked).attr("name") == "none"){
             $fixedPrice.prop("checked", false);
+            $discount.prop("checked", false);
+            $startup.prop("checked", false);
+            $("#maint-price-category2").val(null);
+        }
+        else if ($(clicked).attr("name") == "Startup") {
+            $fixedPrice.prop("checked", false);
+            $none.prop("checked", false);
             $discount.prop("checked", false);
         }
 
@@ -310,11 +356,26 @@
             $container.prepend("<input class='form-control' name='Price_category' id='price-category2' />");
             $p = $("#price-category2");
             $p.css("width","auto");
-            $p.css("display","inline-block");
+            $p.css("display", "inline-block");
+
+            document.getElementById('maint-form-group').style.display = 'none';
+
             if($discount.is(":checked"))
                 $("#discount-type2").prop('disabled', false);
             else
                 $("#discount-type2").prop('disabled', true);
+        }
+        else if ($startup.is(":checked")) {
+
+            document.getElementById('maint-form-group').style.display = 'block';
+            document.getElementById("price-category-label").innerHTML = "Licence Price category";
+
+            $container.prepend("@Html.Raw(select)");
+            $('#price-category2').selectpicker();
+            $p = $("#price-category2");
+            $p.css("width","100%");
+            $p.css("display","block");
+            $("#discount-type2").prop('disabled', true);
         }
         else{
             $container.prepend("@Html.Raw(select)");
@@ -323,6 +384,9 @@
             $p.css("width","100%");
             $p.css("display","block");
             $("#discount-type2").prop('disabled', true);
+
+            document.getElementById('maint-form-group').style.display = 'none';
+
         }
         handleDiscountTypeCheck();
         $('.selectpicker').selectpicker('refresh');
@@ -351,11 +415,11 @@
                 return "Ändringar ej sparade. Vill du lämna sidan ändå?";
             }
         }
-        
+
         $('#moduleModal').on('hide.bs.modal', function () {
             editModalChanged = 0;
         })
-        
+
         $('#discount2').change(function() {
             handleDiscountCheck(this);
         });
@@ -371,6 +435,11 @@
         $("#none2").change(function() {
             handleDiscountCheck(this);
         });
+
+        $("#startup2").change(function () {
+            handleDiscountCheck(this);
+        });
+
         $("#area2").change(function(){
             getAndFillSystemSelect();
         });
@@ -415,7 +484,7 @@
                     digits: true,
                     remote: {
                         param: {
-                            url: "@Url.Content("~/Module/ModuleDoesNotExist/")",   
+                            url: "@Url.Content("~/Module/ModuleDoesNotExist/")",
                         },
                         depends: function($element){
                             return typeof $("#save-module-changes").attr("data-Article-number") == "undefined";
@@ -555,10 +624,18 @@
                             }
                         }
                         //getTinyMCE();
-
-                        if(noneSelected){
-                            $("#none2").prop("checked", true);
+                        if (noneSelected) {
+                            if ($($selectedTds[17]).text() != "0") {
+                                $("#none2").prop("checked", false);
+                                $("#startup2").prop("checked", true);
+                                $("#maint-price-category2").val($($selectedTds[17]).text());
+                            }
+                            else {
+                                $("#none2").prop("checked", true);
+                                $("#startup2").prop("checked", false);
+                            }
                             $("#discount2").prop("checked", false);
+                            $("#fixed-price2").prop("checked", false);
                             $("#fixed-price2").prop("checked", false);
                         }
                         else{
@@ -685,7 +762,7 @@
                 if( $td.find("input").val() == StateSelid && rowArea == StateArea){
                     selectRow($($td));
                 }
-                else 
+                else
                 if( $td.find("input").val() != selectedId){
                     $td.parent().removeClass("selected");
                 }
