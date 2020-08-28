@@ -66,7 +66,9 @@ namespace TietoCRM.Models
             List<FeatureService.Features> featureList= new List<FeatureService.Features>();
             foreach (view_ModuleFeature moduleFeature in moduleFeaturesList)
             {
-                featureList.Add(FeatureServiceProxy.GetFeaturesClient().GetFeature(moduleFeature.Feature_Id));
+                var client = FeatureServiceProxy.GetFeaturesClient();
+                if(client != null)
+                    featureList.Add(client.GetFeature(moduleFeature.Feature_Id));
             }
             return featureList;
         }

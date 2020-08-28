@@ -24,8 +24,14 @@ namespace TietoCRM.Models
 
         public static IFeatures GetFeaturesClient()
         {
-            var myChannelFactory = new ChannelFactory<IFeatures>(GetBindning(), new EndpointAddress(ServiceUri));
-            return myChannelFactory.CreateChannel();
+            ChannelFactory<IFeatures> myChannelFactory = null;
+            if(ServiceUri != null)
+            {
+                myChannelFactory = new ChannelFactory<IFeatures>(GetBindning(), new EndpointAddress(ServiceUri));
+                return myChannelFactory.CreateChannel();
+            }
+
+            return null;
         }
 
         public static ILicense GetLicenseClient()
