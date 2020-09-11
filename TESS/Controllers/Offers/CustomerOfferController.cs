@@ -1339,7 +1339,7 @@ namespace TietoCRM.Controllers
                 connection.Open();
 
                 String queryText = @"SELECT view_Module.Article_number, view_Module.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance,
-                                        view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
+                                        view_Module.Price_category, IsNull(view_Module.Maint_price_category, 0) As Maint_price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
                                         view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description, 
                                         view_Module.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(view_Module.Offer_Description, '') AS Offer_Description
                                         FROM view_Module                                                                                       
@@ -1348,7 +1348,7 @@ namespace TietoCRM.Controllers
                                         Left Join view_SelectOption O on O.Value = view_Module.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
                                         WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
                                         view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
-                                        AND IsNull(Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
+                                        AND IsNull(T1.Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer)) = (
                                             Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer
@@ -1482,7 +1482,7 @@ namespace TietoCRM.Controllers
                                     order by Article_number asc";*/
 
                 String queryText = @"Select A.*, Case When T2.Maintenance = 0 Then T.Maintenance Else IsNull(T2.Maintenance, T.Maintenance) End As Maintenance, T.License As License, IsNull(O.Text,'') as Module_status_txt
-	                                    From (Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, IsNull(view_Module.Maint_price_category, 0) As Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
                                                     M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Offer_Description, '') AS Offer_Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
