@@ -14,7 +14,7 @@ namespace TietoCRM.Controllers.List_Management
         public ActionResult Index()
         {
 
-            this.ViewData.Add("Properties", typeof(TietoCRM.Models.view_Service).GetProperties());
+            this.ViewData.Add("Properties", typeof(TietoCRM.Models.view_Module).GetProperties());
             this.ViewData["Title"] = "Services";
             return View();
         }
@@ -22,7 +22,7 @@ namespace TietoCRM.Controllers.List_Management
         public String serviceJsonData()
         {
             this.Response.ContentType = "text/plain";
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Service.getAllServices(true)) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Module.getAllModules(true, 2)) + "}";
         }
 
         [HttpPost, ValidateInput(false)]
@@ -44,15 +44,15 @@ namespace TietoCRM.Controllers.List_Management
                     return "0";
                 }
 
-                view_Service service = new view_Service();
-                service.Select("Code = " + code);
+                view_Module service = new view_Module();
+                service.Select("Article_number = " + code);
 
                 foreach (KeyValuePair<String, object> variable in variables)
                 {
                     service.SetValue(variable.Key, variable.Value);
                 }
 
-                service.Update("Code = " + code);
+                service.Update("Article_number = " + code);
 
                 return "1";
             }
@@ -68,19 +68,19 @@ namespace TietoCRM.Controllers.List_Management
             try
             {
                 String json = Request.Form["json"];
-                view_Service a = null;
+                view_Module a = null;
                 try
                 {
-                    a = (view_Service)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Service));
+                    a = (view_Module)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Module));
                 }
                 catch (Exception e)
                 {
                     return "0";
                 }
 
-                List<view_Service> services = view_Service.getAllServices();
+                List<view_Module> services = view_Module.getAllModules(false, 2);
 
-                a.Code = services[services.Count - 1].Code + 1;
+                a.Article_number = services[services.Count - 1].Article_number + 1;
 
                 a.Insert();
 
@@ -96,9 +96,9 @@ namespace TietoCRM.Controllers.List_Management
             try
             {
                 string code = Request.Form["code"];
-                view_Service a = new view_Service();
+                view_Module a = new view_Module();
                 //a.Select("Article_number = " + value);
-                a.Delete("Code = " + code);
+                a.Delete("Article_number = " + code);
             }
             catch (Exception e)
             {
@@ -109,16 +109,13 @@ namespace TietoCRM.Controllers.List_Management
         public String GetTinyMCEData()
         {
             string code = Request.Form["artnr"];
-            view_Service service = new view_Service();
-            service.Select("code = " + code);
-            dynamic j = null;
-
-            j = new
+            view_Module service = new view_Module();
+            service.Select("Article_number = " + code);
+            dynamic j = new
             {
-                Offer_description = service.Offer_description,
-                Contract_description = service.Contract_description
+                service.Offer_description,
+                service.Contract_description
             };
-
             return (new JavaScriptSerializer()).Serialize(j);
         }
     }

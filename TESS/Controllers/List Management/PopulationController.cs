@@ -8,52 +8,53 @@ using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.List_Management
 {
-    public class PopulationController : Controller
+    public class DependencyController : Controller
     {
-        // GET: Population
+        // GET: Dependency
         public ActionResult Index()
         {
-            ViewBag.Properties = typeof(TietoCRM.Models.view_Population).GetProperties();
-            //this.ViewData.Add("Properties", typeof(TietoCRM.Models.view_Population).GetProperties());
-            this.ViewData["title"] = "Population Levels";
+            ViewBag.Properties = typeof(TietoCRM.Models.view_Dependency).GetProperties();
+            //this.ViewData.Add("Properties", typeof(TietoCRM.Models.view_Dependency).GetProperties());
+            this.ViewData["title"] = "Article/Service Dependencies";
 
             return View();
         }
 
-        public String PopulationJsonData()
+        public String DependencyJsonData()
         {
             this.Response.ContentType = "text/plain";
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Population.getAllPopulations()) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_Dependency.getAllDependencies()) + "}";
         }
 
-        public String SavePopulation()
+        public String SaveDependency()
         {
             try
             {
-                String id_pk = Request.Form["id_pk"];
-                String json = Request.Form["json"];
+                var article_number_pk = Request.Form["article_number_pk"];
+                var service_number_pk = Request.Form["service_number_pk"];
+                var json = Request.Form["json"];
 
-                Dictionary<String, Object> variables = null;
+                Dictionary<string, object> variables = null;
 
                 try
                 {
-                    variables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
+                    variables = (Dictionary<string, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<string, dynamic>));
                 }
                 catch
                 {
                     return "0";
                 }
 
-                view_Population Population = new view_Population();
-                Population.Select("ID_PK = " + id_pk);
+                view_Dependency dependency = new view_Dependency();
+                dependency.Select("Article_number = " + article_number_pk + " And Service_number = " + service_number_pk);
 
                 foreach (KeyValuePair<String, object> variable in variables)
                 {
                     if (variable.Key != "id_pk")
-                        Population.SetValue(variable.Key, variable.Value);
+                        dependency.SetValue(variable.Key, variable.Value);
                 }
 
-                Population.Update("ID_PK = " + id_pk);
+                dependency.Update("Article_number = " + article_number_pk + " And Service_number = " + service_number_pk);
 
                 return "1";
             }
@@ -63,22 +64,22 @@ namespace TietoCRM.Controllers.List_Management
             }
         }
 
-        public String InsertPopulation()
+        public String InsertDependency()
         {
             try
             {
                 String json = Request.Form["json"];
-                view_Population a = null;
+                view_Dependency a = null;
                 try
                 {
-                    a = (view_Population)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Population));
+                    a = (view_Dependency)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Dependency));
                 }
                 catch (Exception e)
                 {
                     return "0";
                 }
 
-                List<view_Population> services = view_Population.getAllPopulations();
+                List<view_Dependency> services = view_Dependency.getAllDependencies();
 
                 a.Insert();
 
@@ -90,14 +91,15 @@ namespace TietoCRM.Controllers.List_Management
             }
         }
 
-        public String DeletePopulation()
+        public String DeleteDependency()
         {
             try
             {
-                String id_pk = Request.Form["id_pk"];
-                view_Population a = new view_Population();
+                var article_number_pk = Request.Form["article_number_pk"];
+                var service_number_pk = Request.Form["service_number_pk"];
+                view_Dependency a = new view_Dependency();
                 //a.Select("Article_number = " + value);
-                a.Delete("ID_PK = " + id_pk);
+                a.Delete("Article_number = " + article_number_pk + " And Service_number = " + service_number_pk);
             }
             catch (Exception e)
             {

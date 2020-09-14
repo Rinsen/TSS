@@ -469,7 +469,7 @@ namespace TietoCRM.Controllers
         public ActionResult Modals()
         {
             GlobalVariables.checkIfAuthorized("CustomerOffer");
-            this.ViewData.Add("Services", view_Service.getAllServices());
+            this.ViewData.Add("Services", view_Module.getAllModules(false, 2));
 
             string request = Request["selected-offer"];
 
@@ -557,19 +557,19 @@ namespace TietoCRM.Controllers
 
             foreach (view_ConsultantRow consultantRow in co._ConsultantRows)
             {
-                view_Service service = new view_Service();
-                service.Select("Code = " + consultantRow.Code.ToString());
+                view_Module service = new view_Module();
+                service.Select("Article_number = " + consultantRow.Code.ToString());
 
                 dynamic offerInfo = new ExpandoObject();
 
-                offerInfo.Article_number = service.Code;
+                offerInfo.Article_number = service.Article_number;
                 if (consultantRow.Alias == null || consultantRow.Alias == "")
                     offerInfo.Module = service.Description;
                 else
                     offerInfo.Module = consultantRow.Alias;
                 offerInfo.System = "Konsulttjänster";
                 offerInfo.Classification = "K";
-                offerInfo.Price_category = service.Price;
+                offerInfo.Price_category = service.Price_category;
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'O' AND TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
@@ -580,7 +580,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Price_type = "Övrig"; 
                 //offerInfo.License = offerRow.License;
                 //offerInfo.Maintenance = offerRow.Maintenance;
-                offerInfo.Fixed_price = service.Price;
+                offerInfo.Fixed_price = service.Price_category;
                 offerInfo.Sort_number = "20";
 
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
@@ -1765,8 +1765,8 @@ namespace TietoCRM.Controllers
                 }
                 else if(type == "K")
                 {
-                    view_Service service = new view_Service();
-                    service.Select("Code = " + id);
+                    view_Module service = new view_Module();
+                    service.Select("Article_number = " + id);
                     offerDescription = service.Offer_description;
                 }
                 else

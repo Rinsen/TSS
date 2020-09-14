@@ -106,8 +106,8 @@ namespace TietoCRM.Models
                             }
 
                             //Also get Offer Description (ModuleText)
-                            view_Service service = new view_Service();
-                            service.Select("Code = " + t.Code.ToString());
+                            view_Module service = new view_Module();
+                            service.Select("Article_number = " + t.Code.ToString());
                             view_ModuleText moduleText = new view_ModuleText();
                             moduleText.Select("Type = 'O' AND TypeId = " + t.Offer_number.ToString() + " AND ModuleType = 'T' AND ModuleId = " + t.Code.ToString());
 

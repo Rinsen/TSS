@@ -79,7 +79,7 @@ namespace TietoCRM.Models
         /// Gets all modules
         /// </summary>
         /// <returns>A list of modules</returns>
-        public static List<view_Module> getAllModules(bool withoutFormatted = false)
+        public static List<view_Module> getAllModules(bool withoutFormatted = false, int moduleType = 1)
         {
             List<view_Module> list = new List<view_Module>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -90,22 +90,25 @@ namespace TietoCRM.Models
 
                 if (withoutFormatted == false)
                 {
-                    query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
-                    query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
-                    query += "offer_description, contract_description, Module_status, Read_name_from_module, Maint_price_category, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                    query = "SELECT [Article_number], [Module], [Description], [Price_category], [Area], ";
+                    query += "[System], [Classification], [Fixed_price], [Expired], [Comment], Discount, Discount_type, Multiple_type, ";
+                    query += "offer_description, contract_description, Module_status, Read_name_from_module, Maint_price_category, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
+                    query += "WHERE Module_type = @moduleType";
                 }
                 else
                 {
-                    query = "SELECT [Article_number] ,[Module] ,[Description] ,[Price_category] ,[Area] ,";
-                    query += "[System] ,[Classification] ,[Fixed_price] ,[Expired] ,[Comment], Discount, Discount_type, Multiple_type ,";
-                    query += " Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption,";
-                    query += " Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, Module_status, Read_name_from_module, Maint_price_category,";
-                    query += " CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module";
+                    query = "SELECT [Article_number], [Module], [Description], [Price_category], [Area], ";
+                    query += "[System], [Classification], [Fixed_price], [Expired], [Comment], Discount, Discount_type, Multiple_type, ";
+                    query += "Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption, ";
+                    query += "Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, Module_status, Read_name_from_module, Maint_price_category, ";
+                    query += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
+                    query += "WHERE Module_type = @moduleType";
                 }
 
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
+                command.Parameters.AddWithValue("@moduleType", moduleType);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {

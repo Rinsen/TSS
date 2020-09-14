@@ -43,6 +43,7 @@ var fillArticleSearchList = function () {
         "data": {
             "customer": customerName,
             "searchtext": $searchText.val(),
+            "moduletype": 1, //Articles
             "contracttype": ctr,
             "contractid": contractId
         },

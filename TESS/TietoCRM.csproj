@@ -199,6 +199,7 @@
     <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\List Management\DependencyController.cs" />
     <Compile Include="Controllers\Reports\ExportExcelController.cs" />
     <Compile Include="Controllers\Installations\FeatureMappingController.cs" />
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
@@ -277,6 +278,7 @@
     <Compile Include="Models\view_ModuleModule.cs" />
     <Compile Include="Models\view_ModuleText.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
+    <Compile Include="Models\view_Dependency.cs" />
     <Compile Include="Models\view_Reminder.cs" />
     <Compile Include="Models\view_Sector.cs" />
     <Compile Include="Models\view_Population.cs" />
@@ -917,6 +919,7 @@
     <Content Include="Views\CustomerContract\ShippingListPdf.cshtml" />
     <Content Include="Views\ExportExcel\Index.cshtml" />
     <Content Include="Views\CustomerContract\_ModuleInfoSection.cshtml" />
+    <Content Include="Views\ArticleServiceDependency\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
