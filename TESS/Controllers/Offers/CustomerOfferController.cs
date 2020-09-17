@@ -1482,7 +1482,7 @@ namespace TietoCRM.Controllers
                                     order by Article_number asc";*/
 
                 String queryText = @"Select A.*, Case When T2.Maintenance = 0 Then T.Maintenance Else IsNull(T2.Maintenance, T.Maintenance) End As Maintenance, T.License As License, IsNull(O.Text,'') as Module_status_txt
-	                                    From (Select M.Article_number, M.Module, M.Price_category, IsNull(view_Module.Maint_price_category, 0) As Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, IsNull(M.Maint_price_category, 0) As Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
                                                     M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Offer_Description, '') AS Offer_Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
