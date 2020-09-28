@@ -23,7 +23,7 @@ namespace TietoCRM.Controllers
             ViewData.Add("Modules", modules);
             ViewData.Add("Systems", GetAllSystemNames(System.Web.HttpContext.Current.GetUser().Area));
             //ViewData.Add("Properties", typeof(view_Module).GetProperties());
-            this.ViewData["Title"] = "Article Dependency";
+            this.ViewData["Title"] = "Article and Service Dependency";
             return View();
         }
 
@@ -40,7 +40,8 @@ namespace TietoCRM.Controllers
                         {"Article_number", article.Article_number },
                         {"Module", article.Module},
                         {"System", article.System},
-                        {"Classification", article.Classification}
+                        {"Classification", article.Classification},
+                        {"Module_type", article.Module_type == 1 ? "Article" : "Service"}
                     });
                 }
                 return "{\"data\":" + (new JavaScriptSerializer()).Serialize(Return_List) + "}";
@@ -54,7 +55,8 @@ namespace TietoCRM.Controllers
 
         public JsonResult GetModulesList()
         {
-            String system = null;
+            string system = null;
+            string mapType = null;
 
             if (Request.Form["system"] != null)
             {
@@ -66,7 +68,7 @@ namespace TietoCRM.Controllers
                 };
                 List<Dictionary<String, object>> values = new List<Dictionary<string, object>>();
                 List<view_Module> modules = view_Module
-                                                    .getAllModules()
+                                                    .getAllModules(false,0)
                                                     .Where(m => m.System == system)
                                                     .OrderBy(m => m.Article_number).ToList();
 
@@ -101,39 +103,42 @@ namespace TietoCRM.Controllers
 
         public JsonResult GetMappedModulesList()
         {
-            int parent_article_number = -1;
+            int parent_article_number;
             if (int.TryParse(Request.Form["parent_article_number"], out parent_article_number))
             {
-                List<Dictionary<String, object>> values = new List<Dictionary<string, object>>();
-                List<String> options = new List<string>()
-                {
-                    "Article_number",
-                    "Module"
-                };
+                List<Dictionary<string, object>> values = new List<Dictionary<string, object>>();
+                List<string> options = new List<string>()
+                    {
+                        "Article_number",
+                        "Module"
+                    };
+
                 List<view_Module> mappedModules = view_ModuleModule.getAllChildModules(parent_article_number);
 
                 foreach (view_Module module in mappedModules)
                 {
-                    Dictionary<String, object> value = new Dictionary<string, object>();
-                    foreach (String option in options)
+                    Dictionary<string, object> value = new Dictionary<string, object>();
+                    foreach (string option in options)
                     {
                         value.Add(option, module.GetType().GetProperty(option).GetValue(module, null));
                     }
                     values.Add(value);
                 }
-                return Json(new Dictionary<String, object>() {
-                    {
-                        "options", options
-                    },
-                    {
-                        "values", values
-                    }
+
+                return Json(new Dictionary<string, object>() {
+                {
+                    "options", options
+                },
+                {
+                    "values", values
+                }
                 });
             }
             else
             {
                 Response.StatusCode = 400;
-                return Json(new Dictionary<String, String>() {
+                return Json(new Dictionary<string, string>()
+                {
                     {
                         "error", "Missing parent_article_number parameter"
                     }
@@ -155,8 +160,12 @@ namespace TietoCRM.Controllers
                 // Insert new mappings   
                 foreach (int article_number in maplist)
                 {
+                    var module = new view_Module();
+                    module.Select("Article_number = " + article_number);
+
                     moduleModule.Parent_article_number = parent_article_number;
                     moduleModule.Article_number = article_number;
+                    moduleModule.Module_type = module.Module_type;
                     moduleModule.Insert();
                 }
 

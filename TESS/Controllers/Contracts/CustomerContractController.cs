@@ -1534,6 +1534,25 @@ namespace TietoCRM.Controllers.Contracts
                         moduleText.Deleted = false;
                         moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + contractRow.Article_number.ToString());
                     }
+
+                    //Här ska kontroll in om vi SKA lägga till denna automatiskt. Var ska vi sätta denna "blipp"?
+                    //Eventuellt finns kopplade moduler som också ska läggas in i kontraktet
+                    var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
+
+                    foreach (var mappedModule in mappedModuleList)
+                    {
+                        if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                        {
+                            view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
+                            consultantRow.Contract_id = contract.Contract_id;
+                            consultantRow.Customer = contract.Customer;
+                            consultantRow.Code = (int)mappedModule.Article_number;
+                            consultantRow.Amount = 1;
+                            consultantRow.Total_price = mappedModule.Price_category;
+                            consultantRow.Created = DateTime.Now;
+                            consultantRow.Insert();
+                        }
+                    }
                 }
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");

@@ -41,9 +41,9 @@ namespace TietoCRM.Controllers
             view_User user = System.Web.HttpContext.Current.GetUser();
             List<view_Module> modules;
             if (user.User_level == 2)
-                modules = view_Module.getAllModules(true).Where(d => user.IfSameArea(d.Area)).ToList();
+                modules = view_Module.getAllModules(true, 0).Where(d => user.IfSameArea(d.Area)).ToList();
             else
-                modules = view_Module.getAllModules(true);
+                modules = view_Module.getAllModules(true, 0);
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(modules) + "}";
         }

@@ -773,11 +773,15 @@
                 i++;
             }
 
-            if (i >= 1 && i < 18) {
+            if (i >= 1 && i < 20) {
                 if (name != "Offer_description" && name != "Contract_description") {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
                     $td.html(aData[name]);
+                }
+
+                if (name == "Module_type") {
+                    $td.html(aData[name] == "1" ? "Article": "Service");
                 }
             }
             i++;

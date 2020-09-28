@@ -20,6 +20,10 @@ namespace TietoCRM.Models
         private int article_number;
         public int Article_number { get { return article_number; } set { article_number = value; } }
 
+        private int module_type;
+        public int Module_type { get { return module_type; } set { module_type = value; } }
+
+
         public view_ModuleModule() 
             : base("ModuleModule")
         {
