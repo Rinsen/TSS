@@ -253,6 +253,8 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
+                                            data-automapping='false'                                                \
+                                            data-dependencies='" + article.HasDependencies + "'                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -284,6 +286,8 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
+                                            data-automapping='false'                                                \
+                                            data-dependencies='" + article.HasDependencies + "'                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -427,16 +431,18 @@ var updateSelectedItems = function () {
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
-                                data-alias='" + module.Module + "'                                   \
-                                data-discount='" + module.Discount + "'                           \
-                                data-discount-type='" + module.Discount_type + "'                  \
-                                data-multiple-select='" + module.Multiple_type + "'                    \
-                                data-read-name-from-module='" + article.Read_name_from_module + "'      \
+                                data-alias='" + module.Module + "'                                  \
+                                data-discount='" + module.Discount + "'                             \
+                                data-discount-type='" + module.Discount_type + "'                   \
+                                data-multiple-select='" + module.Multiple_type + "'                 \
+                                data-read-name-from-module='" + article.Read_name_from_module + "'  \
+                                data-automapping='false'                                            \
+                                data-dependencies='" + article.HasDependencies + "'                 \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
                                     <td class='art-nr'>" + module.Article_number + "</td>           \
-                                    <td class='alias'>" + module.Module + "</td>                                 \
+                                    <td class='alias'>" + module.Module + "</td>                    \
                                     <td style='float: right; width:auto;'>" + module.Price_category + "</td>                          \
                                 </tr>                                                               \
                             </table>                                                                \
@@ -450,11 +456,13 @@ var updateSelectedItems = function () {
                                 type='button'                                                       \
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
-                                data-alias='" + module.Module + "'                                   \
+                                data-alias='" + module.Module + "'                                  \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
-                                data-discount='" + module.Discount + "'                           \
-                                data-discount-type='" + module.Discount_type + "'                  \
+                                data-discount='" + module.Discount + "'                             \
+                                data-discount-type='" + module.Discount_type + "'                   \
+                                data-automapping='false'                                            \
+                                data-dependencies='" + article.HasDependencies + "'                 \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
@@ -515,6 +523,7 @@ var moveItem = function (event, element) {
     var buttonLicense = $button.data("license");
     var buttonMaintenance = $button.data("maintenance");
     var buttonid = $button.attr("id");
+    var buttonHasDependencies = $button.data("dependencies");
 
 
     if ($button.attr("data-selected") == "false") {
@@ -537,6 +546,14 @@ var moveItem = function (event, element) {
             $newButton.find('.license').html(buttonLicense + "%");
             $newButton.find('.maintenance').html(buttonMaintenance + "%");
         }
+
+        if (buttonHasDependencies && confirm('Add dependencies automatically to the contract?')) {
+            // Save it!
+            $newButton.attr("data-automapping", "true");
+        } else {
+            $newButton.attr("data-automapping", "false");
+        }
+
         $newButton.appendTo($selectedArticles);
         calculateSums();
     } else {
@@ -635,6 +652,7 @@ var saveArticlesFunction = function () {
         var buttonContractDescription = $button.data("contract-description");
         var buttonModuleTextId = $button.data("module-text-id");
         var buttonContractId = $button.data("contract-id");
+        var buttonAutoMapping = $button.data("automapping");
 
         // "Create a new article" to store in an array to use for server side db update.
         var newArticle = {
@@ -647,7 +665,8 @@ var saveArticlesFunction = function () {
             "Contract_description": buttonContractDescription,
             "Module_text_id": buttonModuleTextId,
             "Contract_id": buttonContractId,
-            "Module_type": "A" //Artikel
+            "Module_type": "A", //Artikel
+            "Automapping": buttonAutoMapping
         };
 
         selectedArticlesArray.push(newArticle);

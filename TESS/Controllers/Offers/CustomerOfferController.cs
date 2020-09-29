@@ -1318,6 +1318,36 @@ namespace TietoCRM.Controllers
                     moduleText.Deleted = false;
                     moduleText.Update("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
                 }
+
+                var automapping = dict["Automapping"];
+                if (automapping != null && Convert.ToBoolean(automapping))
+                {
+                    //Kopplade moduler ska läggas in i kontraktet
+                    var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
+
+                    foreach (var mappedModule in mappedModuleList)
+                    {
+                        if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                        {
+                            try
+                            {
+                                view_ConsultantRow consultantRow = new view_ConsultantRow();
+                                consultantRow.Offer_number = Offer_number;
+                                //consultantRow.Alias = alias;
+                                consultantRow.Code = (int)mappedModule.Article_number;
+                                consultantRow.Amount = 1;
+                                consultantRow.Total_price = mappedModule.Price_category;
+                                consultantRow.Include_status = false;
+                                consultantRow.Insert();
+                            }
+                            catch (Exception)
+                            {
+                                //Already exist on offer
+                                continue;
+                            }
+                        }
+                    }
+                }
             }
 
             customerOffer.Module_info = updateDescriptions(Offer_number);
@@ -1448,6 +1478,8 @@ namespace TietoCRM.Controllers
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
                 }
                 //Response.Charset = "UTF-8";
                 // this.solve();
@@ -1482,7 +1514,7 @@ namespace TietoCRM.Controllers
                                     order by Article_number asc";*/
 
                 String queryText = @"Select A.*, Case When T2.Maintenance = 0 Then T.Maintenance Else IsNull(T2.Maintenance, T.Maintenance) End As Maintenance, T.License As License, IsNull(O.Text,'') as Module_status_txt
-	                                    From (Select M.Article_number, M.Module, M.Price_category, IsNull(view_Module.Maint_price_category, 0) As Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
+	                                    From (Select M.Article_number, M.Module, M.Price_category, IsNull(M.Maint_price_category, 0) As Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
                                                     M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Offer_Description, '') AS Offer_Description
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
@@ -1586,6 +1618,8 @@ namespace TietoCRM.Controllers
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
                 }
 
                 //Nytt urval för utgångna artiklar här. Vilket urval. Avvaktar?

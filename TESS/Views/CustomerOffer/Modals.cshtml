@@ -322,7 +322,8 @@ else if (Request["modal"] == "articles")
                                             data-offer-id="@or.Offer_number"
                                             @if (or.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
                                             data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
-                                            data-alias="@or.Module">
+                                            data-alias="@or.Module"
+                                            data-automapping="false">
                                         <table>
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
@@ -662,6 +663,8 @@ else if (Request["modal"] == "articles")
                                             data-offer-description='" + article.Offer_Description + "'              \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
+                                            data-automapping='false'                                                \
+                                            data-dependencies='" + article.HasDependencies + "'                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -694,6 +697,8 @@ else if (Request["modal"] == "articles")
                                             data-offer-description='" + article.Offer_Description + "'              \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
+                                            data-automapping='false'                                                \
+                                            data-dependencies='" + article.HasDependencies + "'                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -843,6 +848,7 @@ else if (Request["modal"] == "articles")
 
         var buttonArt = $button.find(".art-nr").html();
         var buttonLicense = $button.data("license");
+        var buttonHasDependencies = $button.data("dependencies");
         var buttonMaintenance = $button.data("maintenance");
 
         if($button.attr("data-selected") == "false") {
@@ -864,6 +870,14 @@ else if (Request["modal"] == "articles")
                 $newButton.find('.license').html(buttonLicense + "%");
                 $newButton.find('.maintenance').html(buttonMaintenance + "%");
             }
+
+            if (buttonHasDependencies && confirm('Add dependencies automatically to the offer?')) {
+                // Save it!
+                $newButton.attr("data-automapping", "true");
+            } else {
+                $newButton.attr("data-automapping", "false");
+            }
+
             $newButton.appendTo($selectedArticles);
             calculateSums();
         } else {
@@ -901,6 +915,7 @@ else if (Request["modal"] == "articles")
             var buttonOfferDescription = $button.data("offer-description");
             var buttonModuleTextId = $button.data("module-text-id");
             var buttonOfferId = $button.data("offer-id");
+            var buttonAutoMapping = $button.data("automapping");
 
             // "Create a new article" to store in an array to use for server side db update.
             var newArticle = {
@@ -912,7 +927,8 @@ else if (Request["modal"] == "articles")
                 "Offer_description": buttonOfferDescription,
                 "Module_text_id": buttonModuleTextId,
                 "Offer_id": buttonOfferId,
-                "Module_type": "A" //Artikel
+                "Module_type": "A", //Artikel
+                "Automapping": buttonAutoMapping
             }
             selectedArticlesArray.push(newArticle);
         }

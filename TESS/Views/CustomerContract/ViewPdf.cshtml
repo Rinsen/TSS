@@ -672,6 +672,7 @@
                                                         data-module-text-id="@or.ModuleTextId"
                                                         data-contract-description="@module.Contract_description"
                                                         data-contract-id="@or.Id"
+                                                        data-automapping="false"
                                                         @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
                                                         @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; }; }
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
@@ -716,8 +717,8 @@
                                                             }
                                                             @if (module.System != "Lärportal")
                                                             {
-                                                                <td onclick="editSelectArticle(this)" class="license">@License</td>
-                                                                <td onclick="editSelectArticle(this)" class="maintenance">@Maintenance</td>
+                                                                <td onclick="moveItem(event, this)" class="license">@License</td>
+                                                                <td onclick="moveItem(event, this)" class="maintenance">@Maintenance</td>
                                                             }
                                                             else
                                                             {

@@ -1535,25 +1535,37 @@ namespace TietoCRM.Controllers.Contracts
                         moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + contractRow.Article_number.ToString());
                     }
 
-                    //Här ska kontroll in om vi SKA lägga till denna automatiskt. Var ska vi sätta denna "blipp"?
-                    //Eventuellt finns kopplade moduler som också ska läggas in i kontraktet
-                    var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
-
-                    foreach (var mappedModule in mappedModuleList)
+                    var automapping = dict["Automapping"];
+                    if (automapping != null && Convert.ToBoolean(automapping))
                     {
-                        if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                        //Kopplade moduler ska läggas in i kontraktet
+                        var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
+
+                        foreach (var mappedModule in mappedModuleList)
                         {
-                            view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
-                            consultantRow.Contract_id = contract.Contract_id;
-                            consultantRow.Customer = contract.Customer;
-                            consultantRow.Code = (int)mappedModule.Article_number;
-                            consultantRow.Amount = 1;
-                            consultantRow.Total_price = mappedModule.Price_category;
-                            consultantRow.Created = DateTime.Now;
-                            consultantRow.Insert();
+                            if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                            {
+                                try
+                                {
+                                    view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
+                                    consultantRow.Contract_id = contract.Contract_id;
+                                    consultantRow.Customer = contract.Customer;
+                                    consultantRow.Code = (int)mappedModule.Article_number;
+                                    consultantRow.Amount = 1;
+                                    consultantRow.Total_price = mappedModule.Price_category;
+                                    consultantRow.Created = DateTime.Now;
+                                    consultantRow.Insert();
+                                }
+                                catch (Exception)
+                                {
+                                    //Already exist on contract
+                                    continue;
+                                }
+                            }
                         }
                     }
                 }
+
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
 
@@ -1807,6 +1819,8 @@ namespace TietoCRM.Controllers.Contracts
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
                 }
 
                 //Response.Charset = "UTF-8";
@@ -1983,6 +1997,8 @@ namespace TietoCRM.Controllers.Contracts
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
 
                     //if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Contract_id == contractid && cr.Rewritten == true) && ctr != "M")
                     //    kv.Add("Rewritten", true);
