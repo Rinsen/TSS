@@ -1360,6 +1360,7 @@ namespace TietoCRM.Controllers
             String customer = Request.Form["customer"];
             String searchtext = Request.Form["searchtext"];
             String offerNo = Request.Form["offerNo"]; //För att kunna läsa upp offerten
+            String moduletype = Request.Form["moduletype"];
 
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
 
@@ -1367,8 +1368,20 @@ namespace TietoCRM.Controllers
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
+                String queryText = string.Empty;
 
-                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance,
+                if (moduletype == "2") //Services
+                {
+                    queryText = @"Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, 
+                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description
+                                  From dbo.view_Module As M  
+                                  Where M.Module_type = 2 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
+                                  M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
+                                  Order by M.Article_number asc";
+                }
+                else
+                {
+                    queryText = @"SELECT view_Module.Article_number, view_Module.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance,
                                         view_Module.Price_category, IsNull(view_Module.Maint_price_category, 0) As Maint_price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
                                         view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description, 
                                         view_Module.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(view_Module.Offer_Description, '') AS Offer_Description
@@ -1376,7 +1389,7 @@ namespace TietoCRM.Controllers
                                         Left JOIN view_Tariff T1 on view_Module.Price_category = T1.Price_category
                                         Left JOIN view_Tariff T2 on view_Module.Maint_price_category = T2.Price_category and T1.Inhabitant_level = T2.Inhabitant_level
                                         Left Join view_SelectOption O on O.Value = view_Module.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
-                                        WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
+                                        WHERE Module_type = @moduletype And Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
                                         view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
                                         AND IsNull(T1.Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer)) = (
@@ -1384,6 +1397,7 @@ namespace TietoCRM.Controllers
                                             where Customer = @customer
                                         )
                                         order by Module asc";
+                }
 
                 // Default query
                 command.CommandText = queryText;
@@ -1391,6 +1405,7 @@ namespace TietoCRM.Controllers
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
                 command.Parameters.AddWithValue("@searchtext", "%" + searchtext + "%");
+                command.Parameters.AddWithValue("@moduletype", moduletype);
 
                 command.ExecuteNonQuery();
                 List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
@@ -1487,6 +1502,7 @@ namespace TietoCRM.Controllers
                 return resultString;
             }
         }
+
         private String Json_GetModules()
         {
             String customer = Request.Form["customer"];

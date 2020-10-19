@@ -469,6 +469,7 @@ else if (Request["modal"] == "articles")
                 "customer": "@Html.Raw(ViewBag.CustomerName)",
                 "searchtext": $searchText.val(),
                 "offerNo": "@Html.Raw(ViewBag.OfferNo)",
+                "moduletype": 1, //Articles
             },
             "success": function (data) {
                 if (data.length > 0) {
@@ -617,7 +618,7 @@ else if (Request["modal"] == "articles")
                 usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
             }
 
-            if (article.HasDependencies || article.Description.length > 0 || article.Module_status != "0") {
+            if (article.HasDependencies || (article.Description != null && article.Description.length > 0) || article.Module_status != "0") {
                 var depTitle = "";
                 if (article.HasDependencies) {
                     var depLen = article.Dependencies.length;
@@ -985,8 +986,18 @@ else if (Request["modal"] == "articles")
 }
 else if (Request["modal"] == "services")
 {
-
     <form class="form-inline" id="service-form">
+        <table width="100%">
+            <tr>
+                <td style=" width:100%;">
+                    <div class="text-right" style="margin-bottom:10px">
+                        <label for="service-search">Search services:</label>
+                        <input class="form-control" type="text" id="service-search">
+                        <button id="service-search-button" type="button" class="btn btn-primary">Search</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
         <table>
             <tr>
                 <td style=" width:50%;">
@@ -1318,6 +1329,17 @@ else if (Request["modal"] == "services")
     }
 
         $(document).ready(function () {
+            $("#service-search-button").click(function () {
+                fillServiceSearchList();
+            });
+
+            $('#service-search').keypress(function (e) {
+                if (e.keyCode == 13) {
+                    $('#service-search-button').click();
+                    return false;
+                }
+            });
+
         @{
             foreach (view_ConsultantRow row in offer._ConsultantRows)
             {
@@ -1343,7 +1365,59 @@ else if (Request["modal"] == "services")
                                        "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
             }
         }
-    });
+        });
+
+        //Hämtar samtliga gällande servicear och markerar de i kontraktet befintliga
+        var fillServiceSearchList = function () {
+            var $searchText = $("#service-search");
+            console.log($searchText);
+
+            $availableServices = $("#available-services");
+            $availableServices.html("");
+
+            $.ajax({
+                "url": serverPrefix + "CustomerOffer/JsonData/",
+                "type": "POST",
+                "data": {
+                    "requestData": "get_modules_all",
+                    "customer": "@Html.Raw(ViewBag.CustomerName)",
+                    "searchtext": $searchText.val(),
+                    "moduletype": 2, //Services
+                    "offerNo": "@Html.Raw(ViewBag.OfferNo)"
+                },
+                "success": function (data) {
+                    if (data.length > 0) {
+                        var servicesData = JSON.parse(data);
+                        var length = servicesData.length;
+                        for (var i = 0; i < length; i++) {
+                            service = servicesData[i];
+                            $availableServices.append("                                                                     \
+                        <table>                                                                                     \
+                            <tr>                                                                                    \
+                                <td style='display:inline-block; margin-top: 2vh; cursor:pointer'>                  \
+                                    <span onclick ='editService(this);' class='glyphicon glyphicon-pencil'></span > \
+                                </td>                                                                               \
+                                <td style='display:inline-block; float:right; width:95%'>                           \
+                                    <button style='margin-bottom:25px'                                              \
+                                            type = 'button'                                                         \
+                                            onclick = 'newItem(this, " + service.Price_category + ")'               \
+                                            data-code='" + service.Article_number + "'                              \
+                                            data-selected='false'                                                   \
+                                            class='list-group-item'>                                                \
+                                        <label>" + formatCurrency(service.Price_category) + "</label>               \
+                                        <span class='service-amount'></span>                                        \
+                                        <br />                                                                      \
+                                        <span id='description-title'>" + service.Module + "</span>                  \
+                                    </button >                                                                      \
+                                </td >                                                                              \
+                            </tr>                                                                                   \
+                        </table>                                                                                    \
+                    ");
+                        }
+                    }
+                }
+            });
+        }
 
         var saveFunction = function(){
 

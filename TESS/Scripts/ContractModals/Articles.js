@@ -207,7 +207,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         else if (article.Used == true) {
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
         }
-        if (article.HasDependencies || article.Description.length > 0 || article.Module_status != "0") {
+        if (article.HasDependencies || (article.Description != null && article.Description.length) > 0 || article.Module_status != "0") {
             var depTitle = "";
             if (article.HasDependencies) {
                 var depLen = article.Dependencies.length;
