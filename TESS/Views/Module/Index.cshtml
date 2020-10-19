@@ -34,7 +34,7 @@
                     }
                     else if (@PropertyName == "Module")
                     {
-                        <th data-field="@PropertyInfo.Name" data-sortable="true">Module/Service</th>
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">Module</th>
                     }
                     else
                     {
@@ -58,6 +58,7 @@
             <div id="module-modal" class="modal-body">
                 <div class="row">
                     <form class="form-horizontal">
+                        <input type="hidden" id="Module_type" name="Module_type">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="article-number2" class="col-sm-2 control-label">Article number</label>
@@ -66,7 +67,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="module2" class="col-sm-2 control-label">Module</label>
+                                <label for="module2" class="col-sm-2 control-label" id="module-label">Module</label>
                                 <div class="col-sm-9">
                                     <input class="form-control" name="Module" id="module2">
                                 </div>
@@ -464,8 +465,6 @@
         }
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}
 
-
-
         updateDataTable(handleStates);
 
         drawButtons();
@@ -609,8 +608,9 @@
                             if (name != "Offer_description" && name != "Contract_description") {
                                 for (var j = 0; j < tdLen; j++) {
                                     var $currTD = $($selectedTds[j]);
-                                    if($currTD.data("property") == $currInput.attr("name")){
-                                        if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
+                                    var currName = $currTD.data("property");
+                                    if (currName == name) {
+                                        if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio") {
                                             if ($currTD.text() == "true" || $currTD.text() == "1") {
                                                 $currInput.prop("checked", true);
                                                 if(name == "Discount" || name == "Fixed_price")
@@ -624,9 +624,24 @@
                                             $currInput.val($currTD.text());
                                         }
                                     }
+
                                 }
                             }
                         }
+
+                        //Disabla radioknappar om Service. Endast Fixed price ska vara öppen och klickbar.
+                        var moduleType = $("#Module_type").val();
+                        if (moduleType != undefined && moduleType == "Service") {
+                            $("#none2").attr("disabled", true);
+                            $("#startup2").attr("disabled", true);
+                            document.getElementById("module-label").innerHTML = "Service";
+                        }
+                        else {
+                            $("#none2").attr("disabled", false);
+                            $("#startup2").attr("disabled", false);
+                            document.getElementById("module-label").innerHTML = "Article";
+                        }
+
                         //getTinyMCE();
                         if (noneSelected) {
                             if ($($selectedTds[17]).text() != "0") {
@@ -655,13 +670,13 @@
                         getTinyMCE();
                     });
                 })
-
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
 
         })
     }
+
     var getTinyMCE = function () {
         var $row = $(".selected");
         var pk_id = selectedId;
