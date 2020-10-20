@@ -384,7 +384,8 @@ var fillServiceSearchList = function () {
                                             data-code='" + service.Article_number + "'                              \
                                             data-selected='false'                                                   \
                                             class='list-group-item'>                                                \
-                                        <label>" + formatCurrency(service.Price_category) + "</label>               \
+                                        <label>Service: " + service.Article_number + ", </label>                    \
+                                        <span>" + formatCurrency(service.Price_category) + "</span>                 \
                                         <span class='service-amount'></span>                                        \
                                         <br />                                                                      \
                                         <span id='description-title'>" + service.Module + "</span>                  \

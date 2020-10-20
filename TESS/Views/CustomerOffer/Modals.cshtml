@@ -998,7 +998,7 @@ else if (Request["modal"] == "services")
                 </td>
             </tr>
         </table>
-        <table>
+        <table width="100%">
             <tr>
                 <td style=" width:50%;">
                     <div class="panel panel-default">
@@ -1050,7 +1050,8 @@ else if (Request["modal"] == "services")
                                                     data-offer-description="@service.Offer_description"
                                                     data-service-code="@service.Article_number"
                                                     class="list-group-item">
-                                                <label>@price</label>
+                                                <label>Service: @service.Article_number, </label>
+                                                <span>@price</span>
                                                 <span class="service-amount"></span>
                                                 <br />
                                                 <span id="description-title">@service.Description</span>
@@ -1089,22 +1090,23 @@ else if (Request["modal"] == "services")
                                         view_ModuleText moduleText = new view_ModuleText();
                                         moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Article_number.ToString());
 
-                                        <button style="margin-bottom:25px"
-                                                type="button"
-                                                onclick="newItem(this, @cost)"
-                                                data-code="@service.Article_number"
-                                                data-offer-id="@offer._Offer_number"
-                                                data-module-type="K"
-                                                data-module-text-id="@moduleText._ID"
-                                                data-offer-description="@service.Offer_description"
-                                                data-service-code="@service.Article_number"
-                                                data-selected="true"
-                                                class="list-group-item">
-                                            <label>@price</label>
-                                            <span class="service-amount">@row.Amount</span>
-                                            <br />
-                                            <span id="description-title">@service.Description</span>
-                                        </button>
+                                                                <button style="margin-bottom:25px"
+                                                                        type="button"
+                                                                        onclick="newItem(this, @cost)"
+                                                                        data-code="@service.Article_number"
+                                                                        data-offer-id="@offer._Offer_number"
+                                                                        data-module-type="K"
+                                                                        data-module-text-id="@moduleText._ID"
+                                                                        data-offer-description="@service.Offer_description"
+                                                                        data-service-code="@service.Article_number"
+                                                                        data-selected="true"
+                                                                        class="list-group-item">
+                                                                    <label>Service: @service.Article_number, </label>
+                                                                    <span>@price</span>
+                                                                    <span class="service-amount">@row.Amount</span>
+                                                                    <br />
+                                                                    <span id="description-title">@service.Description</span>
+                                                                </button>
                                     }
                                 }
                             </div>
@@ -1392,8 +1394,7 @@ else if (Request["modal"] == "services")
                         for (var i = 0; i < length; i++) {
                             service = servicesData[i];
                             $availableServices.append("                                                                     \
-                        <table>                                                                                     \
-                            <tr>                                                                                    \
+                        <table style='width:100%'>                                                                                     \
                                 <td style='display:inline-block; margin-top: 2vh; cursor:pointer'>                  \
                                     <span onclick ='editService(this);' class='glyphicon glyphicon-pencil'></span > \
                                 </td>                                                                               \
@@ -1404,13 +1405,13 @@ else if (Request["modal"] == "services")
                                             data-code='" + service.Article_number + "'                              \
                                             data-selected='false'                                                   \
                                             class='list-group-item'>                                                \
-                                        <label>" + formatCurrency(service.Price_category) + "</label>               \
+                                        <label>Service: " + service.Article_number + ", </label>                    \
+                                        <span>" + formatCurrency(service.Price_category) + "</span>                 \
                                         <span class='service-amount'></span>                                        \
                                         <br />                                                                      \
                                         <span id='description-title'>" + service.Module + "</span>                  \
                                     </button >                                                                      \
                                 </td >                                                                              \
-                            </tr>                                                                                   \
                         </table>                                                                                    \
                     ");
                         }

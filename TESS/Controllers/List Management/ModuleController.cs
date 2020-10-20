@@ -172,6 +172,8 @@ namespace TietoCRM.Controllers
                     view_Module module = new view_Module();
                     try
                     {
+                        variables["Module_type"] = variables["Module_type"].ToString() == "Article" ? "1" : "2";
+
                         foreach (KeyValuePair<String, object> variable in variables)
                         {
                             module.SetValue(variable.Key, variable.Value);

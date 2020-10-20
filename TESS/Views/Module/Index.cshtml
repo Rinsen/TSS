@@ -58,7 +58,6 @@
             <div id="module-modal" class="modal-body">
                 <div class="row">
                     <form class="form-horizontal">
-                        <input type="hidden" id="Module_type" name="Module_type">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="article-number2" class="col-sm-2 control-label">Article number</label>
@@ -200,7 +199,18 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="module-status2" class="col-sm-2 control-label">Modul Status</label>
+                                <div>
+                                    <label for="module_type" class="col-sm-2 control-label">Module Type</label>
+                                    <div class="col-sm-3" id="price-category-container">
+                                        <select class='form-control selectpicker' name='Module_type' id='module_type'>
+                                            <option value='Article'>Article</option>
+                                            <option value='Service'>Service</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="module-status2" class="col-sm-2 control-label">Module Status</label>
                                 <div class="col-sm-9">
                                     <select class="form-control selectpicker" name="Module_status" id="module-status2">
                                         @{
@@ -449,6 +459,10 @@
             getAndFillSystemSelect();
         });
 
+        $("#module_type").change(function () {
+            handleModuleTypeChange();
+        });
+
         $("#system2").change(function(){
             console.log(this.value);
             fillClassificationSelect(this.value);
@@ -630,16 +644,15 @@
                         }
 
                         //Disabla radioknappar om Service. Endast Fixed price ska vara öppen och klickbar.
-                        var moduleType = $("#Module_type").val();
+                        var moduleTypeSelect = document.getElementById("module_type");
+                        var moduleType = moduleTypeSelect.value;
                         if (moduleType != undefined && moduleType == "Service") {
                             $("#none2").attr("disabled", true);
                             $("#startup2").attr("disabled", true);
-                            document.getElementById("module-label").innerHTML = "Service";
                         }
                         else {
                             $("#none2").attr("disabled", false);
                             $("#startup2").attr("disabled", false);
-                            document.getElementById("module-label").innerHTML = "Article";
                         }
 
                         //getTinyMCE();
@@ -817,6 +830,24 @@
         }
 
     });
+
+    var handleModuleTypeChange = function () {
+        var moduleType = $('#module_type').val();
+        if (moduleType == "Article") {
+            //Enable radiobuttons
+            $("#none2").attr("disabled", false);
+            $("#startup2").attr("disabled", false);
+        }
+        else if (moduleType == "Service") {
+            //Disable radiobuttons
+            $("#none2").attr("disabled", true);
+            $("#none2").prop("checked", false);
+            $("#startup2").attr("disabled", true);
+            $("#startup2").prop("checked", false);
+            $("#fixed-price2").prop("checked", true);
+            handleDiscountCheck();
+        }
+    }
 
     var getAndFillSystemSelect = function(area, onSuccess){
         var area = area || $('#area2').val();

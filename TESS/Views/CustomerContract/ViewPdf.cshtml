@@ -5,7 +5,7 @@
     bool isSent = ViewBag.CustomerContract.Status == "Sänt";
     bool isValid = ViewBag.CustomerContract.Status == "Giltigt";
     bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
-    bool hasModules = ViewBag.ArticleSystemDictionary.Count > 0 ? true : false;
+    bool hasModules = ViewBag.ArticleAndServiceDictionary.Count > 0 ? true : false;
 }
 @using TietoCRM.Models;
 @section Style
@@ -985,7 +985,8 @@
                                                                 data-selected="false"
                                                                 data-contract-description="@service.Contract_description"
                                                                 class="list-group-item">
-                                                            <label>@price</label>
+                                                            <label>Service: @service.Article_number, </label>
+                                                            <span>@price</span>
                                                             <span class="service-amount"></span>
                                                             <br />
                                                             <span id="description-title">@service.Description</span>
@@ -1020,7 +1021,8 @@
                                                     int cost = row.Amount != 0 ? Convert.ToInt32(row.Total_price / row.Amount) : 0;
 
                                                     <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Article_number" data-selected="true" class="list-group-item">
-                                                        <label>@price</label>
+                                                        <label>Service: @service.Article_number, </label>
+                                                            <span>@price</span>
                                                         <span class="service-amount">@row.Amount</span>
                                                         <br />
                                                         <span id="description-title">@service.Description</span>
