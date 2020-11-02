@@ -313,19 +313,19 @@ namespace TietoCRM.Controllers.Contracts
 
             foreach (view_ContractConsultantRow consultantRow in contract._ContractConsultantRows)
             {
-                view_Service service = new view_Service();
-                service.Select("Code = " + consultantRow.Code.ToString());
+                view_Module service = new view_Module();
+                service.Select("Article_number = " + consultantRow.Code.ToString());
 
                 dynamic contractInfo = new ExpandoObject();
 
-                contractInfo.Article_number = service.Code;
+                contractInfo.Article_number = service.Article_number;
                 if (consultantRow.Alias == null || consultantRow.Alias == "")
                     contractInfo.Module = service.Description;
                 else
                     contractInfo.Module = consultantRow.Alias;
                 contractInfo.System = "Konsulttjänster";
                 contractInfo.ModuleType = "K";                
-                contractInfo.Price_category = service.Price;
+                contractInfo.Price_category = service.Price_category;
                 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
@@ -335,7 +335,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Id = contract._ID;
 
                 contractInfo.Price_type = "Övrig";
-                contractInfo.Fixed_price = service.Price;
+                contractInfo.Fixed_price = service.Price_category;
                 contractInfo.Sort_number = "20";
 
                 if (!articleAndServicesDic.ContainsKey(contractInfo.System))
@@ -492,7 +492,7 @@ namespace TietoCRM.Controllers.Contracts
                 ViewData.Add("OurCity", "");
             }
             
-            this.ViewData.Add("Services", view_Service.getAllServices());
+            this.ViewData.Add("Services", view_Module.getAllModules(false, 2));
 
             List<view_CustomerOffer> openOffers = view_CustomerOffer.getAllCustomerOffers(customer.Customer)
                 .Where(o => o.Offer_status == "Öppen" && o.Area == contract.Area)
@@ -1000,12 +1000,12 @@ namespace TietoCRM.Controllers.Contracts
 
                 foreach(dynamic serviceObj in services)
                 {
-                    view_Service service = new view_Service();
-                    service.Select("Code =  " + serviceObj["code"]);
+                    view_Module service = new view_Module();
+                    service.Select("Article_number =  " + serviceObj["code"]);
 
                     view_ContractConsultantRow ccRow = new view_ContractConsultantRow();
 
-                    ccRow.Code = service.Code;
+                    ccRow.Code = int.Parse(service.Article_number.ToString());
                     ccRow.Customer = contract.Customer;
                     ccRow.Contract_id = contract.Contract_id;
                     ccRow.Created = DateTime.Now;
@@ -1017,14 +1017,14 @@ namespace TietoCRM.Controllers.Contracts
 
                     //Läs upp eventuell modultext
                     view_ModuleText offerModuleText = new view_ModuleText();
-                    offerModuleText.Select("Type = 'O' AND TypeId = " + serviceObj["offer_number"].ToString() + " AND ModuleId = " + service.Code.ToString());
+                    offerModuleText.Select("Type = 'O' AND TypeId = " + serviceObj["offer_number"].ToString() + " AND ModuleId = " + service.Article_number.ToString());
 
                     if (!string.IsNullOrEmpty(offerModuleText.Description)) //Vi har en modultext på offerten, spara den till kontraktet!
                     {
                         //Delete-insert (om modultexten från offerten har ändrats)
                         view_ModuleText contractModuleText = new view_ModuleText();
-                        contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + service.Code.ToString());
-                        InsertModuleText(offerModuleText.Description, "K", contract._ID, service.Code);
+                        contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + service.Article_number.ToString());
+                        InsertModuleText(offerModuleText.Description, "K", contract._ID, int.Parse(service.Article_number.ToString()));
                     }
                 }
                 contract.Updated = System.DateTime.Now;
@@ -1149,12 +1149,12 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 foreach (dynamic serviceObj in services)
                 {
-                    view_Service service = new view_Service();
-                    service.Select("Code =  " + serviceObj["code"]);
+                    view_Module service = new view_Module();
+                    service.Select("Article_number = " + serviceObj["code"]);
 
                     view_ContractConsultantRow ccRow = new view_ContractConsultantRow();
 
-                    ccRow.Code = service.Code;
+                    ccRow.Code = int.Parse(service.Article_number.ToString());
                     ccRow.Customer = contract.Customer;
                     ccRow.Contract_id = contract.Contract_id;
                     ccRow.Created = DateTime.Now;
@@ -1277,22 +1277,22 @@ namespace TietoCRM.Controllers.Contracts
             List<dynamic> services = new List<dynamic>();
             foreach (view_ContractConsultantRow ccRow in contract._ContractConsultantRows)
             {
-                view_Service service = new view_Service();
-                service.Select("Code = " + ccRow.Code);
+                view_Module service = new view_Module();
+                service.Select("Article_number = " + ccRow.Code);
                 if (!String.IsNullOrEmpty(ccRow.Alias))
                 {
-                    service.Description = ccRow.Alias;
+                    service.Module = ccRow.Alias;
                 }
 
                 //Läs upp eventuell modultext för respektive tjänst för att veta om defaulttext eller modultext ska läggas till
                 //då man adderar tjänsten till kontraktet.
                 view_ModuleText moduleText = new view_ModuleText();
-                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Article_number.ToString());
 
 
                 var obj = new
                 {
-                    Code = service.Code,
+                    Code = service.Article_number,
                     Description = service.Description,
                     Price = ccRow.Total_price / ccRow.Amount,
                     Amount = ccRow.Amount,
@@ -1301,7 +1301,7 @@ namespace TietoCRM.Controllers.Contracts
                     Contract_id = contract._ID,
                     Module_text_id = moduleText._ID,
                     Module_type = "K",
-                    Article_number = service.Code
+                    Article_number = service.Article_number
                 };
 
                 services.Add(obj);
@@ -1534,7 +1534,38 @@ namespace TietoCRM.Controllers.Contracts
                         moduleText.Deleted = false;
                         moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + contractRow.Article_number.ToString());
                     }
+
+                    var automapping = dict["Automapping"];
+                    if (automapping != null && Convert.ToBoolean(automapping))
+                    {
+                        //Kopplade moduler ska läggas in i kontraktet
+                        var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
+
+                        foreach (var mappedModule in mappedModuleList)
+                        {
+                            if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                            {
+                                try
+                                {
+                                    view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
+                                    consultantRow.Contract_id = contract.Contract_id;
+                                    consultantRow.Customer = contract.Customer;
+                                    consultantRow.Code = (int)mappedModule.Article_number;
+                                    consultantRow.Amount = 1;
+                                    consultantRow.Total_price = mappedModule.Price_category;
+                                    consultantRow.Created = DateTime.Now;
+                                    consultantRow.Insert();
+                                }
+                                catch (Exception)
+                                {
+                                    //Already exist on contract
+                                    continue;
+                                }
+                            }
+                        }
+                    }
                 }
+
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
 
@@ -1675,13 +1706,16 @@ namespace TietoCRM.Controllers.Contracts
 
                 String queryText = @"Select A.*, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, T1.License As License, IsNull(O.Text, '') as Module_status_txt
 	                                    From (Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
-                                                M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description
+                                                M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description, M.Module_type
 					                                    from view_Module M, view_Customer C
 					                                    Where C.Customer = @customer And M.Expired = 0) A
 	                                    Left Join view_Tariff T1 On T1.Inhabitant_level = A.Inhabitant_level And T1.Price_category = A.Price_category
                                         Left Join view_Tariff T2 On T2.Inhabitant_level = A.Inhabitant_level And T2.Price_category = A.Maint_price_category
 	                                    Left Join view_SelectOption O on O.Value = A.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
-	                                    Where A.System = @System AND A.Classification = @classification Order By Module";
+	                                    Where A.System = @System AND A.Classification = @classification AND A.Module_type = 1 Order By Module";
+
+                //Module_type = 1 = Modules
+                //Module_type = 2 = Services
 
                 //                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance, 
                 //                                    view_Module.Price_category, view_Module.System, view_Module.Classification,view_Module.Comment
@@ -1785,6 +1819,8 @@ namespace TietoCRM.Controllers.Contracts
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
                 }
 
                 //Response.Charset = "UTF-8";
@@ -1800,6 +1836,7 @@ namespace TietoCRM.Controllers.Contracts
             String searchtext = Request.Form["searchtext"];
             String ctr = Request.Form["contracttype"];
             String contractid = Request.Form["contractid"];
+            String moduletype = Request.Form["moduletype"];
 
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
 
@@ -1809,9 +1846,20 @@ namespace TietoCRM.Controllers.Contracts
                 connection.Open();
                 String queryText = "";
 
-                if (ctr == "Me")
-                {                //qry_GetModulesContractTermination + M.Contract_Description 
-                    queryText = @"Select M.Article_number, M.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, X.Customer, 
+                if (moduletype == "2") //Services
+                {
+                    queryText = @"Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, 
+                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description
+                                  From dbo.view_Module As M  
+                                  Where M.Module_type = 2 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
+                                  M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
+                                  Order by M.Article_number asc";
+                }
+                else
+                {
+                    if (ctr == "Me")
+                    {                //qry_GetModulesContractTermination + M.Contract_Description 
+                        queryText = @"Select M.Article_number, M.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, X.Customer, 
                                   M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(M.Contract_Description, '') AS Contract_Description
                                   From dbo.view_Module As M 
                                   Inner Join dbo.view_Tariff T1 On M.Price_category = T1.Price_category
@@ -1819,40 +1867,41 @@ namespace TietoCRM.Controllers.Contracts
                                   Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = T1.Inhabitant_level 
                                   Inner Join dbo.view_CustomerProductRow As R On R.Article_number = M.Article_number And R.Customer = X.Customer
                                   Left Join view_SelectOption O on O.Value = M.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
-                                  Where        (M.Expired = 0) And (R.Discount_type = 0) And (R.status = 'Giltigt') and " + //#qry_GetModulesContractTermination
+                                  Where  (M.Module_type = @moduletype) And (M.Expired = 0) And (R.Discount_type = 0) And (R.status = 'Giltigt') and " + //#qry_GetModulesContractTermination
 
-                                  @"X.Customer = @customer And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
+                                      @"X.Customer = @customer And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
                                   M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
                                   order by M.Module asc";
-                }
-                else
-                {                 //qry_GetModulesContractNormal + M.Contract_Description
-                    queryText = @"Select M.Article_number, M.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, X.Customer, 
+                    }
+                    else
+                    {                 //qry_GetModulesContractNormal + M.Contract_Description
+                        queryText = @"Select M.Article_number, M.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, X.Customer, 
                                   M.Multiple_type, M.Fixed_price, M.Area, M.Discount_type, M.Discount, IsNull(M.[Description],'') As [Description], M.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(M.Contract_Description, '') AS Contract_Description
                                   From dbo.view_Module As M 
                                   Inner Join dbo.view_Tariff T1 On M.Price_category = T1.Price_category
                                   Left Join dbo.view_Tariff T2 On M.Maint_price_category = T2.Price_category and T1.Inhabitant_level = T2.Inhabitant_level
                                   Inner Join (Select Customer, IsNull(Inhabitant_level, 1) As I_level From dbo.view_Customer) As X On X.I_level = T1.Inhabitant_level 
                                   Left Join view_SelectOption O on O.Value = M.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
-                                  Where (M.Expired = 0) and " + //#qry_GetModulesContractNormal
+                                  Where (M.Module_type = @moduletype) And (M.Expired = 0) and " + //#qry_GetModulesContractNormal
 
-                                  @"X.Customer = @customer And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
+                                      @"X.Customer = @customer And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
                                   M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
                                   order by M.Module asc";
+                    }
                 }
 
-//                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
-//                                    view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Comment
-//                                    FROM view_Module                                                                                       
-//                                    JOIN view_Tariff                                                                                       
-//                                    on view_Module.Price_category = view_Tariff.Price_category
-//                                    WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
-//                                    view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
-//                                    AND Inhabitant_level = (
-//                                        Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
-//                                        where Customer = @customer
-//                                    )
-//                                    order by Article_number asc";
+                //                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, view_Tariff.License, view_Tariff.Maintenance,
+                //                                    view_Module.Price_category, view_Module.System, view_Module.Classification, view_Module.Comment
+                //                                    FROM view_Module                                                                                       
+                //                                    JOIN view_Tariff                                                                                       
+                //                                    on view_Module.Price_category = view_Tariff.Price_category
+                //                                    WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
+                //                                    view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
+                //                                    AND Inhabitant_level = (
+                //                                        Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
+                //                                        where Customer = @customer
+                //                                    )
+                //                                    order by Article_number asc";
 
                 // Default query
                 command.CommandText = queryText;
@@ -1860,6 +1909,7 @@ namespace TietoCRM.Controllers.Contracts
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
                 command.Parameters.AddWithValue("@searchtext", "%" + searchtext + "%");
+                command.Parameters.AddWithValue("@moduletype", moduletype);
 
                 command.ExecuteNonQuery();
                 List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
@@ -1947,6 +1997,8 @@ namespace TietoCRM.Controllers.Contracts
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
 
                     //if (rows.Any(cr => cr.Article_number == kv["Article_number"] && cr.Contract_id == contractid && cr.Rewritten == true) && ctr != "M")
                     //    kv.Add("Rewritten", true);
@@ -2522,10 +2574,18 @@ namespace TietoCRM.Controllers.Contracts
                         contractId = Convert.ToInt32(d["Contract_id"]);
 
                         //ModulTextId = 0 (Finns inte sparad sedan tidigare)
-                        if (moduleTextId == 0 && d.TryGetValue("Contract_description", out value) && !string.IsNullOrEmpty(d["Contract_description"].ToString())) //Skapa ny modultext från standardvärden på artikeln
+                        try
                         {
-                            view_ModuleText moduleText = InsertModuleText(d["Contract_description"].ToString(), d["Module_type"].ToString(), Convert.ToInt32(d["Contract_id"]), Convert.ToInt32(d["Article_number"]));
-                            contractId = moduleText.TypeId;
+                            if (moduleTextId == 0 && d.TryGetValue("Contract_description", out value) && !string.IsNullOrEmpty(d["Contract_description"].ToString())) //Skapa ny modultext från standardvärden på artikeln
+                            {
+                                view_ModuleText moduleText = InsertModuleText(d["Contract_description"].ToString(), d["Module_type"].ToString(), Convert.ToInt32(d["Contract_id"]), Convert.ToInt32(d["Article_number"]));
+                                contractId = moduleText.TypeId;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //Troligtvis null-värde i Contract_description. Vi fortsätter loopen utan att skapa upp en modul-text
+                            continue;
                         }
                     }
                     else
@@ -3005,8 +3065,8 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else if (type == "K")
                 {
-                    view_Service service = new view_Service();
-                    service.Select("Code = " + id);
+                    view_Module service = new view_Module();
+                    service.Select("Article_number = " + id);
                     contractDescription = service.Contract_description;
                 }
                 else

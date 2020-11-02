@@ -21,7 +21,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <button id="map-articles-btn" style="margin-top: 1.7em" class="btn btn-default" type="button">Map Articles</button>
+                <button id="map-articles-btn" style="margin-top: 1.7em" class="btn btn-default" type="button">Map Modules</button>
             </div>
         </form>
 
@@ -34,6 +34,7 @@
                     <th data-field="Module" data-sortable="true">Name</th>
                     <th data-field="System" data-sortable="true">System</th>
                     <th data-field="Classification" data-sortable="true">Classification</th>
+                    <th data-field="Module_type" data-sortable="true">Module type</th>
                 </tr>
             </thead>
         </table>
@@ -85,7 +86,7 @@
                             </div>
                             <div class="panel panel-default ">
                                 <div class="panel-heading tss-dark bg">
-                                    <h3 class="panel-title">Available Articles</h3>
+                                    <h3 class="panel-title">Available Modules</h3>
                                 </div>
                                 <div class="panel-body">
                                     <div id="available-articles" class="list-group item-wrapper">
@@ -96,13 +97,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <p>Click on an Article above to map it to an Article</p>
+                            <p>Click on an Module above to map it</p>
                         </div>
                         <div class="col-sm-6">
                             <div class="module-header-container"></div>
                             <div class="panel panel-default ">
                                 <div class="panel-heading tss-dark bg">
-                                    <h3 class="panel-title">Mapped Article</h3>
+                                    <h3 class="panel-title">Mapped module</h3>
                                 </div>
                                 <div class="panel-body">
                                     <div id="mapped-articles" class="list-group item-wrapper">
@@ -111,7 +112,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p>Click on a Article above to remove mapping</p>
+                            <p>Click on a Module above to remove mapping</p>
                         </div>
                     </div>
                 </div>
@@ -132,6 +133,7 @@
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Module" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "System" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Module_type" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(parent_article_number)
     {
@@ -156,7 +158,7 @@
             "scrollX": true,
 
         });
-
+    
     }
     var addToMappedList;
     var removeFromMappedList;
@@ -263,7 +265,7 @@
                 }
             })
         }
-        var getMappedArticleList = function (parent_article_number) {
+        var getMappedModuleList = function (parent_article_number) {
             $.ajax({
                 "url": serverPrefix + "ModuleMapping/GetMappedModulesList/",
                 "type": "POST",
@@ -308,7 +310,7 @@
             }, 20000);
             old_search_data = search_data;
         });
-       
+
         $modalSystemSelect.trigger('change');
 
         // Modal bindings
@@ -319,7 +321,7 @@
             var $selectedElement = $articleContainer.find('option:selected');
             var $selectedArticleDesc = $('#selected-article-description');
             selectedArticleNumber = $articleContainer.val();
- 
+
             $('#selected-article-title').html($selectedElement.data('name'));
             $('#selected-article-system').html($systemContainer.val());
 
@@ -331,7 +333,7 @@
             }
             $modalSystemSelect.trigger('change');
             $("#mappingModal").appendTo("body").modal().draggable();
-            getMappedArticleList(selectedArticleNumber);
+            getMappedModuleList(selectedArticleNumber);
         });
 
         $("#save-module-mapping").bind('click', function () {

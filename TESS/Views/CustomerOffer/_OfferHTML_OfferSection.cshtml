@@ -316,11 +316,11 @@
         @foreach (view_ConsultantRow cr in consultantRows)
         {
             // Fetch Service from DB
-            view_Service Service = new view_Service();
-            Service.Select("Code = " + cr.Code);
+            view_Module service = new view_Module();
+            service.Select("Article_number = " + cr.Code);
             if (!String.IsNullOrEmpty(cr.Alias))
             {
-                Service.Description = cr.Alias;
+                service.Description = cr.Alias;
             }
 
             // Calculate total sums
@@ -355,7 +355,7 @@
             <div class="@subr3">
                 <table>
                     <tr>
-                        <td>@Service.Description.Replace("amp;", "")</td>
+                        <td>@service.Description.Replace("amp;", "")</td>
                         <td>@cr.Amount</td>
                         <td>@Price</td>
                         <td>@TotalPrice</td>

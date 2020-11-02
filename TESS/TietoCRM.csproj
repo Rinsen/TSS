@@ -199,6 +199,7 @@
     <Compile Include="Controllers\Contracts\ContractExpirationListController.cs" />
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\List Management\PopulationController.cs" />
     <Compile Include="Controllers\Reports\ExportExcelController.cs" />
     <Compile Include="Controllers\Installations\FeatureMappingController.cs" />
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
@@ -206,7 +207,6 @@
     <Compile Include="Controllers\List Management\CustomerController.cs" />
     <Compile Include="Controllers\List Management\InformationController.cs" />
     <Compile Include="Controllers\List Management\ModuleDiscountController.cs" />
-    <Compile Include="Controllers\List Management\PopulationController.cs" />
     <Compile Include="Controllers\List Management\PriceController.cs" />
     <Compile Include="Controllers\List Management\ReminderController.cs" />
     <Compile Include="Controllers\List Management\SectorController.cs" />
@@ -431,6 +431,7 @@
     <Content Include="Content\img\Signatures\JAA.png" />
     <Content Include="Content\img\Signatures\CWB.png" />
     <Content Include="Content\img\Signatures\JTH.png" />
+    <Content Include="Content\img\Signatures\LPN.png" />
     <Content Include="Content\img\Signatures\LSJ.png" />
     <Content Include="Content\img\Signatures\ACL.png" />
     <Content Include="Content\img\Signatures\MAT.png" />

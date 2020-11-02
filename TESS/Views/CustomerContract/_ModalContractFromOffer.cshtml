@@ -65,8 +65,8 @@
                                                 {
                                                     <li class="list-group-item">
                                                         <span class="list-inline" style="width:95%; display:inline-block">
-                                                            @{  view_Service s = new view_Service();
-                                                              s.Select("Code = " + service.Code);
+                                                            @{  view_Module s = new view_Module();
+                                                              s.Select("Article_number = " + service.Code);
                                                               String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + ", \"offer_number\":" + service.Offer_number + " }";
                                                             }
                                                             @s.Description

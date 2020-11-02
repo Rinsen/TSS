@@ -322,7 +322,8 @@ else if (Request["modal"] == "articles")
                                             data-offer-id="@or.Offer_number"
                                             @if (or.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
                                             data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
-                                            data-alias="@or.Module">
+                                            data-alias="@or.Module"
+                                            data-automapping="false">
                                         <table>
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
@@ -468,6 +469,7 @@ else if (Request["modal"] == "articles")
                 "customer": "@Html.Raw(ViewBag.CustomerName)",
                 "searchtext": $searchText.val(),
                 "offerNo": "@Html.Raw(ViewBag.OfferNo)",
+                "moduletype": 1, //Articles
             },
             "success": function (data) {
                 if (data.length > 0) {
@@ -616,7 +618,7 @@ else if (Request["modal"] == "articles")
                 usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
             }
 
-            if (article.HasDependencies || article.Description.length > 0 || article.Module_status != "0") {
+            if (article.HasDependencies || (article.Description != null && article.Description.length > 0) || article.Module_status != "0") {
                 var depTitle = "";
                 if (article.HasDependencies) {
                     var depLen = article.Dependencies.length;
@@ -662,6 +664,8 @@ else if (Request["modal"] == "articles")
                                             data-offer-description='" + article.Offer_Description + "'              \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
+                                            data-automapping='false'                                                \
+                                            data-dependencies='" + article.HasDependencies + "'                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -694,6 +698,8 @@ else if (Request["modal"] == "articles")
                                             data-offer-description='" + article.Offer_Description + "'              \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
+                                            data-automapping='false'                                                \
+                                            data-dependencies='" + article.HasDependencies + "'                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -843,6 +849,7 @@ else if (Request["modal"] == "articles")
 
         var buttonArt = $button.find(".art-nr").html();
         var buttonLicense = $button.data("license");
+        var buttonHasDependencies = $button.data("dependencies");
         var buttonMaintenance = $button.data("maintenance");
 
         if($button.attr("data-selected") == "false") {
@@ -864,6 +871,14 @@ else if (Request["modal"] == "articles")
                 $newButton.find('.license').html(buttonLicense + "%");
                 $newButton.find('.maintenance').html(buttonMaintenance + "%");
             }
+
+            if (buttonHasDependencies && confirm('Add dependencies automatically to the offer?')) {
+                // Save it!
+                $newButton.attr("data-automapping", "true");
+            } else {
+                $newButton.attr("data-automapping", "false");
+            }
+
             $newButton.appendTo($selectedArticles);
             calculateSums();
         } else {
@@ -901,6 +916,7 @@ else if (Request["modal"] == "articles")
             var buttonOfferDescription = $button.data("offer-description");
             var buttonModuleTextId = $button.data("module-text-id");
             var buttonOfferId = $button.data("offer-id");
+            var buttonAutoMapping = $button.data("automapping");
 
             // "Create a new article" to store in an array to use for server side db update.
             var newArticle = {
@@ -912,7 +928,8 @@ else if (Request["modal"] == "articles")
                 "Offer_description": buttonOfferDescription,
                 "Module_text_id": buttonModuleTextId,
                 "Offer_id": buttonOfferId,
-                "Module_type": "A" //Artikel
+                "Module_type": "A", //Artikel
+                "Automapping": buttonAutoMapping
             }
             selectedArticlesArray.push(newArticle);
         }
@@ -969,9 +986,19 @@ else if (Request["modal"] == "articles")
 }
 else if (Request["modal"] == "services")
 {
-
     <form class="form-inline" id="service-form">
-        <table>
+        <table width="100%">
+            <tr>
+                <td style=" width:100%;">
+                    <div class="text-right" style="margin-bottom:10px">
+                        <label for="service-search">Search services:</label>
+                        <input class="form-control" type="text" id="service-search">
+                        <button id="service-search-button" type="button" class="btn btn-primary">Search</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table width="100%">
             <tr>
                 <td style=" width:50%;">
                     <div class="panel panel-default">
@@ -984,25 +1011,25 @@ else if (Request["modal"] == "services")
                                     view_CustomerOffer offer = ViewBag.CustomerOffer;
                                     CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
                                 }
-                                @foreach (view_Service service in ViewBag.Services)
+                                @foreach (view_Module service in ViewBag.Services)
                                 {
                                     String price = "";
                                     int cost = 0;
-                                    if (offer._ConsultantRows.Any(c => c.Code == service.Code))
+                                    if (offer._ConsultantRows.Any(c => c.Code == service.Article_number))
                                     {
-                                        view_ConsultantRow ccr = offer._ConsultantRows.First(c => c.Code == service.Code);
+                                        view_ConsultantRow ccr = offer._ConsultantRows.First(c => c.Code == service.Article_number);
 
                                         price = String.Format(se, "{0:C2}", ccr.Total_price / ccr.Amount).Replace(".", " ");
                                         cost = Convert.ToInt32(ccr.Total_price / ccr.Amount);
                                     }
                                     else
                                     {
-                                        price = String.Format(se, "{0:C2}", service.Price).Replace(".", " ");
-                                        cost = (int)service.Price;
+                                        price = String.Format(se, "{0:C2}", service.Price_category).Replace(".", " ");
+                                        cost = (int)service.Price_category;
                                     }
 
                                     view_ModuleText moduleText = new view_ModuleText();
-                                    moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+                                    moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Article_number.ToString());
 
 
                                     <table style="width: 100%">
@@ -1015,15 +1042,16 @@ else if (Request["modal"] == "services")
                                             <button style="margin-bottom:25px"
                                                     type="button"
                                                     onclick="newItem(this, @cost)"
-                                                    data-code="@service.Code"
+                                                    data-code="@service.Article_number"
                                                     data-selected="false"
                                                     data-offer-id="@offer._Offer_number"
                                                     data-module-type="K"
                                                     data-module-text-id="@moduleText._ID"
                                                     data-offer-description="@service.Offer_description"
-                                                    data-service-code="@service.Code"
+                                                    data-service-code="@service.Article_number"
                                                     class="list-group-item">
-                                                <label>@price</label>
+                                                <label>Service: @service.Article_number, </label>
+                                                <span>@price</span>
                                                 <span class="service-amount"></span>
                                                 <br />
                                                 <span id="description-title">@service.Description</span>
@@ -1049,8 +1077,8 @@ else if (Request["modal"] == "services")
                                     //view_CustomerOffer offer = new view_CustomerOffer("Offer_number = " + Request["selected-offer"]);
                                     foreach (view_ConsultantRow row in offer._ConsultantRows)
                                     {
-                                        view_Service service = new view_Service();
-                                        service.Select("Code = " + row.Code);
+                                        view_Module service = new view_Module();
+                                        service.Select("Article_number = " + row.Code);
                                         if (!String.IsNullOrEmpty(row.Alias))
                                         {
                                             service.Description = row.Alias;
@@ -1060,24 +1088,25 @@ else if (Request["modal"] == "services")
                                         int cost = Convert.ToInt32(row.Total_price / row.Amount);
 
                                         view_ModuleText moduleText = new view_ModuleText();
-                                        moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+                                        moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Article_number.ToString());
 
-                                        <button style="margin-bottom:25px"
-                                                type="button"
-                                                onclick="newItem(this, @cost)"
-                                                data-code="@service.Code"
-                                                data-offer-id="@offer._Offer_number"
-                                                data-module-type="K"
-                                                data-module-text-id="@moduleText._ID"
-                                                data-offer-description="@service.Offer_description"
-                                                data-service-code="@service.Code"
-                                                data-selected="true"
-                                                class="list-group-item">
-                                            <label>@price</label>
-                                            <span class="service-amount">@row.Amount</span>
-                                            <br />
-                                            <span id="description-title">@service.Description</span>
-                                        </button>
+                                                                <button style="margin-bottom:25px"
+                                                                        type="button"
+                                                                        onclick="newItem(this, @cost)"
+                                                                        data-code="@service.Article_number"
+                                                                        data-offer-id="@offer._Offer_number"
+                                                                        data-module-type="K"
+                                                                        data-module-text-id="@moduleText._ID"
+                                                                        data-offer-description="@service.Offer_description"
+                                                                        data-service-code="@service.Article_number"
+                                                                        data-selected="true"
+                                                                        class="list-group-item">
+                                                                    <label>Service: @service.Article_number, </label>
+                                                                    <span>@price</span>
+                                                                    <span class="service-amount">@row.Amount</span>
+                                                                    <br />
+                                                                    <span id="description-title">@service.Description</span>
+                                                                </button>
                                     }
                                 }
                             </div>
@@ -1302,17 +1331,28 @@ else if (Request["modal"] == "services")
     }
 
         $(document).ready(function () {
+            $("#service-search-button").click(function () {
+                fillServiceSearchList();
+            });
+
+            $('#service-search').keypress(function (e) {
+                if (e.keyCode == 13) {
+                    $('#service-search-button').click();
+                    return false;
+                }
+            });
+
         @{
             foreach (view_ConsultantRow row in offer._ConsultantRows)
             {
-                view_Service service = new view_Service();
-                service.Select("Code = " + row.Code);
+                view_Module service = new view_Module();
+                service.Select("Article_number = " + row.Code);
 
                 view_ModuleText moduleText = new view_ModuleText();
-                moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+                moduleText.Select("Type = 'O' AND TypeId = " + offer._Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Article_number.ToString());
 
-                String price = String.Format(se, "{0:C2}", service.Price);
-                int cost = (int)service.Price;
+                String price = String.Format(se, "{0:C2}", service.Price_category);
+                int cost = (int)service.Price_category;
 
                 var resultString = !string.IsNullOrEmpty(service.Offer_description) ? service.Offer_description : "";
 
@@ -1323,11 +1363,62 @@ else if (Request["modal"] == "services")
                                        ", Offer_id:" + row.Offer_number +
                                        ", Module_text_id:" + moduleText._ID +
                                        ", Module_type:'K'" +
-                                       ", Service_code:" + service.Code +
+                                       ", Service_code:" + service.Article_number +
                                        "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
             }
         }
-    });
+        });
+
+        //Hämtar samtliga gällande servicear och markerar de i kontraktet befintliga
+        var fillServiceSearchList = function () {
+            var $searchText = $("#service-search");
+            console.log($searchText);
+
+            $availableServices = $("#available-services");
+            $availableServices.html("");
+
+            $.ajax({
+                "url": serverPrefix + "CustomerOffer/JsonData/",
+                "type": "POST",
+                "data": {
+                    "requestData": "get_modules_all",
+                    "customer": "@Html.Raw(ViewBag.CustomerName)",
+                    "searchtext": $searchText.val(),
+                    "moduletype": 2, //Services
+                    "offerNo": "@Html.Raw(ViewBag.OfferNo)"
+                },
+                "success": function (data) {
+                    if (data.length > 0) {
+                        var servicesData = JSON.parse(data);
+                        var length = servicesData.length;
+                        for (var i = 0; i < length; i++) {
+                            service = servicesData[i];
+                            $availableServices.append("                                                                     \
+                        <table style='width:100%'>                                                                                     \
+                                <td style='display:inline-block; margin-top: 2vh; cursor:pointer'>                  \
+                                    <span onclick ='editService(this);' class='glyphicon glyphicon-pencil'></span > \
+                                </td>                                                                               \
+                                <td style='display:inline-block; float:right; width:95%'>                           \
+                                    <button style='margin-bottom:25px'                                              \
+                                            type = 'button'                                                         \
+                                            onclick = 'newItem(this, " + service.Price_category + ")'               \
+                                            data-code='" + service.Article_number + "'                              \
+                                            data-selected='false'                                                   \
+                                            class='list-group-item'>                                                \
+                                        <label>Service: " + service.Article_number + ", </label>                    \
+                                        <span>" + formatCurrency(service.Price_category) + "</span>                 \
+                                        <span class='service-amount'></span>                                        \
+                                        <br />                                                                      \
+                                        <span id='description-title'>" + service.Module + "</span>                  \
+                                    </button >                                                                      \
+                                </td >                                                                              \
+                        </table>                                                                                    \
+                    ");
+                        }
+                    }
+                }
+            });
+        }
 
         var saveFunction = function(){
 

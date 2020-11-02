@@ -5,7 +5,7 @@
     bool isSent = ViewBag.CustomerContract.Status == "Sänt";
     bool isValid = ViewBag.CustomerContract.Status == "Giltigt";
     bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
-    bool hasModules = ViewBag.ArticleSystemDictionary.Count > 0 ? true : false;
+    bool hasModules = ViewBag.ArticleAndServiceDictionary.Count > 0 ? true : false;
 }
 @using TietoCRM.Models;
 @section Style
@@ -247,8 +247,8 @@
                                                 {
                                                     <li class="list-group-item">
                                                         <span class="list-inline" style="width:95%; display:inline-block">
-                                                            @{ view_Service s = new view_Service();
-                                                                s.Select("Code = " + service.Code);
+                                                            @{ view_Module s = new view_Module();
+                                                                s.Select("Article_number = " + service.Code);
                                                                 String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + ", \"offer_number\":" + service.Offer_number + " }";
 
                                                             }
@@ -417,8 +417,8 @@
                                                 {
                                                     <li class="list-group-item">
                                                         <span class="list-inline" style="width:95%; display:inline-block">
-                                                            @{ view_Service s = new view_Service();
-                                                                s.Select("Code = " + service.Code);
+                                                            @{ view_Module s = new view_Module();
+                                                                s.Select("Article_number = " + service.Code);
                                                                 String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":\"" + (decimal)service.Total_price + "\" }";
                                                             }
                                                             @s.Description
@@ -672,6 +672,7 @@
                                                         data-module-text-id="@or.ModuleTextId"
                                                         data-contract-description="@module.Contract_description"
                                                         data-contract-id="@or.Id"
+                                                        data-automapping="false"
                                                         @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
                                                         @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; }; }
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
@@ -716,8 +717,8 @@
                                                             }
                                                             @if (module.System != "Lärportal")
                                                             {
-                                                                <td onclick="editSelectArticle(this)" class="license">@License</td>
-                                                                <td onclick="editSelectArticle(this)" class="maintenance">@Maintenance</td>
+                                                                <td onclick="moveItem(event, this)" class="license">@License</td>
+                                                                <td onclick="moveItem(event, this)" class="maintenance">@Maintenance</td>
                                                             }
                                                             else
                                                             {
@@ -926,6 +927,13 @@
                 <h4 class="modal-title" id="myModalLabel">Services</h4>
             </div>
             <div id="services-modal" class="modal-body modal-select-items">
+                <form class="form-inline">
+                    <div class="col-sm-12 text-right">
+                        <label for="service-search">Search services:</label>
+                        <input class="form-control" type="text" id="service-search">
+                        <button id="service-search-button" type="button" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
                 <form class="form-inline" id="service-form">
                     <table>
                         <tr>
@@ -939,13 +947,13 @@
                                             @{
                                                 view_Contract contract = new view_Contract("Contract_id = '" + Request["contract-id"] + "' AND Customer = '" + Request["customer"] + "'");
                                             }
-                                            @foreach (view_Service service in ViewBag.Services)
+                                            @foreach (view_Module service in ViewBag.Services)
                                             {
                                                 String price = "";
                                                 int cost = 0;
-                                                if (contract._ContractConsultantRows.Any(c => c.Code == service.Code))
+                                                if (contract._ContractConsultantRows.Any(c => c.Code == service.Article_number))
                                                 {
-                                                    view_ContractConsultantRow ccr = contract._ContractConsultantRows.First(c => c.Code == service.Code);
+                                                    view_ContractConsultantRow ccr = contract._ContractConsultantRows.First(c => c.Code == service.Article_number);
                                                     decimal? totPrice = ccr.Amount != 0 ? ccr.Total_price / ccr.Amount : 0;
                                                     price = String.Format(se, "{0:C2}", totPrice).Replace(".", " ");
                                                     // Check so does not divide by zero.
@@ -953,12 +961,12 @@
                                                 }
                                                 else
                                                 {
-                                                    price = String.Format(se, "{0:C2}", service.Price).Replace(".", " ");
-                                                    cost = (int)service.Price;
+                                                    price = String.Format(se, "{0:C2}", service.Price_category).Replace(".", " ");
+                                                    cost = (int)service.Price_category;
                                                 }
 
                                                 view_ModuleText moduleText = new view_ModuleText();
-                                                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Code.ToString());
+                                                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + service.Article_number.ToString());
 
                                                 <table>
                                                     <td style="display:inline-block; margin-top: 2vh; cursor: pointer">
@@ -967,17 +975,18 @@
                                                         </span>
                                                     </td>
                                                     <td style="display:inline-block; float:right; width:95%">
-                                                        <button style="margin-bottom:25px" 
-                                                                       type="button" 
-                                                                       onclick="newItem(this, @cost)" 
-                                                                       data-contract-id="@contract._ID" 
-                                                                       data-module-type="K" 
-                                                                       data-module-text-id="@moduleText._ID" 
-                                                                       data-code="@service.Code" 
-                                                                       data-selected="false" 
-                                                                       data-contract-description="@service.Contract_description"
-                                                                       class="list-group-item">
-                                                            <label>@price</label>
+                                                        <button style="margin-bottom:25px"
+                                                                type="button"
+                                                                onclick="newItem(this, @cost)"
+                                                                data-contract-id="@contract._ID"
+                                                                data-module-type="K"
+                                                                data-module-text-id="@moduleText._ID"
+                                                                data-code="@service.Article_number"
+                                                                data-selected="false"
+                                                                data-contract-description="@service.Contract_description"
+                                                                class="list-group-item">
+                                                            <label>Service: @service.Article_number, </label>
+                                                            <span>@price</span>
                                                             <span class="service-amount"></span>
                                                             <br />
                                                             <span id="description-title">@service.Description</span>
@@ -1000,8 +1009,8 @@
                                             @{
                                                 foreach (view_ContractConsultantRow row in contract._ContractConsultantRows)
                                                 {
-                                                    view_Service service = new view_Service();
-                                                    service.Select("Code = " + row.Code);
+                                                    view_Module service = new view_Module();
+                                                    service.Select("Article_number = " + row.Code);
                                                     if (!String.IsNullOrEmpty(row.Alias))
                                                     {
                                                         service.Description = row.Alias;
@@ -1011,8 +1020,9 @@
                                                     String price = String.Format(se, "{0:C2}", totPrice);
                                                     int cost = row.Amount != 0 ? Convert.ToInt32(row.Total_price / row.Amount) : 0;
 
-                                                    <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Code" data-selected="true" class="list-group-item">
-                                                        <label>@price</label>
+                                                    <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Article_number" data-selected="true" class="list-group-item">
+                                                        <label>Service: @service.Article_number, </label>
+                                                            <span>@price</span>
                                                         <span class="service-amount">@row.Amount</span>
                                                         <br />
                                                         <span id="description-title">@service.Description</span>

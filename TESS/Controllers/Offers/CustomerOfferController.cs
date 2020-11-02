@@ -469,7 +469,7 @@ namespace TietoCRM.Controllers
         public ActionResult Modals()
         {
             GlobalVariables.checkIfAuthorized("CustomerOffer");
-            this.ViewData.Add("Services", view_Service.getAllServices());
+            this.ViewData.Add("Services", view_Module.getAllModules(false, 2));
 
             string request = Request["selected-offer"];
 
@@ -557,19 +557,19 @@ namespace TietoCRM.Controllers
 
             foreach (view_ConsultantRow consultantRow in co._ConsultantRows)
             {
-                view_Service service = new view_Service();
-                service.Select("Code = " + consultantRow.Code.ToString());
+                view_Module service = new view_Module();
+                service.Select("Article_number = " + consultantRow.Code.ToString());
 
                 dynamic offerInfo = new ExpandoObject();
 
-                offerInfo.Article_number = service.Code;
+                offerInfo.Article_number = service.Article_number;
                 if (consultantRow.Alias == null || consultantRow.Alias == "")
                     offerInfo.Module = service.Description;
                 else
                     offerInfo.Module = consultantRow.Alias;
                 offerInfo.System = "Konsulttjänster";
                 offerInfo.Classification = "K";
-                offerInfo.Price_category = service.Price;
+                offerInfo.Price_category = service.Price_category;
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'O' AND TypeId = " + consultantRow.Offer_number.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
@@ -580,7 +580,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Price_type = "Övrig"; 
                 //offerInfo.License = offerRow.License;
                 //offerInfo.Maintenance = offerRow.Maintenance;
-                offerInfo.Fixed_price = service.Price;
+                offerInfo.Fixed_price = service.Price_category;
                 offerInfo.Sort_number = "20";
 
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
@@ -1318,6 +1318,36 @@ namespace TietoCRM.Controllers
                     moduleText.Deleted = false;
                     moduleText.Update("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
                 }
+
+                var automapping = dict["Automapping"];
+                if (automapping != null && Convert.ToBoolean(automapping))
+                {
+                    //Kopplade moduler ska läggas in i kontraktet
+                    var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
+
+                    foreach (var mappedModule in mappedModuleList)
+                    {
+                        if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                        {
+                            try
+                            {
+                                view_ConsultantRow consultantRow = new view_ConsultantRow();
+                                consultantRow.Offer_number = Offer_number;
+                                //consultantRow.Alias = alias;
+                                consultantRow.Code = (int)mappedModule.Article_number;
+                                consultantRow.Amount = 1;
+                                consultantRow.Total_price = mappedModule.Price_category;
+                                consultantRow.Include_status = false;
+                                consultantRow.Insert();
+                            }
+                            catch (Exception)
+                            {
+                                //Already exist on offer
+                                continue;
+                            }
+                        }
+                    }
+                }
             }
 
             customerOffer.Module_info = updateDescriptions(Offer_number);
@@ -1330,6 +1360,7 @@ namespace TietoCRM.Controllers
             String customer = Request.Form["customer"];
             String searchtext = Request.Form["searchtext"];
             String offerNo = Request.Form["offerNo"]; //För att kunna läsa upp offerten
+            String moduletype = Request.Form["moduletype"];
 
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
 
@@ -1337,8 +1368,20 @@ namespace TietoCRM.Controllers
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
+                String queryText = string.Empty;
 
-                String queryText = @"SELECT view_Module.Article_number, view_Module.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance,
+                if (moduletype == "2") //Services
+                {
+                    queryText = @"Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, 
+                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description
+                                  From dbo.view_Module As M  
+                                  Where M.Module_type = 2 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
+                                  M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
+                                  Order by M.Article_number asc";
+                }
+                else
+                {
+                    queryText = @"SELECT view_Module.Article_number, view_Module.Module, T1.License, Case When T2.Maintenance = 0 Then T1.Maintenance Else IsNull(T2.Maintenance, T1.Maintenance) End As Maintenance,
                                         view_Module.Price_category, IsNull(view_Module.Maint_price_category, 0) As Maint_price_category, view_Module.System, view_Module.Classification, view_Module.Fixed_price, 
                                         view_Module.Discount_type, view_Module.Discount, view_Module.Comment, view_Module.Area, view_Module.Multiple_type, view_Module.Description, 
                                         view_Module.Module_status, IsNull(O.Text,'') as Module_status_txt, IsNull(view_Module.Offer_Description, '') AS Offer_Description
@@ -1346,7 +1389,7 @@ namespace TietoCRM.Controllers
                                         Left JOIN view_Tariff T1 on view_Module.Price_category = T1.Price_category
                                         Left JOIN view_Tariff T2 on view_Module.Maint_price_category = T2.Price_category and T1.Inhabitant_level = T2.Inhabitant_level
                                         Left Join view_SelectOption O on O.Value = view_Module.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
-                                        WHERE Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
+                                        WHERE Module_type = @moduletype And Expired = 0 And (Cast(view_Module.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(view_Module.Article_number As Varchar(30)) Else @searchtext End Or
                                         view_Module.Module Like Case @searchtext When '' Then view_Module.Module Else @searchtext End)
                                         AND IsNull(T1.Inhabitant_level,(Select ISNULL(Inhabitant_level, 1) AS I_level from view_Customer
                                             where Customer = @customer)) = (
@@ -1354,6 +1397,7 @@ namespace TietoCRM.Controllers
                                             where Customer = @customer
                                         )
                                         order by Module asc";
+                }
 
                 // Default query
                 command.CommandText = queryText;
@@ -1361,6 +1405,7 @@ namespace TietoCRM.Controllers
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
                 command.Parameters.AddWithValue("@searchtext", "%" + searchtext + "%");
+                command.Parameters.AddWithValue("@moduletype", moduletype);
 
                 command.ExecuteNonQuery();
                 List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
@@ -1448,6 +1493,8 @@ namespace TietoCRM.Controllers
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
                 }
                 //Response.Charset = "UTF-8";
                 // this.solve();
@@ -1455,6 +1502,7 @@ namespace TietoCRM.Controllers
                 return resultString;
             }
         }
+
         private String Json_GetModules()
         {
             String customer = Request.Form["customer"];
@@ -1586,6 +1634,8 @@ namespace TietoCRM.Controllers
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
+                    else
+                        kv.Add("HasDependencies", false);
                 }
 
                 //Nytt urval för utgångna artiklar här. Vilket urval. Avvaktar?
@@ -1765,8 +1815,8 @@ namespace TietoCRM.Controllers
                 }
                 else if(type == "K")
                 {
-                    view_Service service = new view_Service();
-                    service.Select("Code = " + id);
+                    view_Module service = new view_Module();
+                    service.Select("Article_number = " + id);
                     offerDescription = service.Offer_description;
                 }
                 else

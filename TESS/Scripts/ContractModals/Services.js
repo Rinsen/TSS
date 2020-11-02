@@ -6,6 +6,17 @@
         saveFunction();
     });
 
+    $("#service-search-button").click(function () {
+        fillServiceSearchList();
+    });
+
+    $('#service-search').keypress(function (e) {
+        if (e.keyCode == 13) {
+            $('#service-search-button').click();
+            return false;
+        }
+    });
+
     $.ajax({
         "url": serverPrefix + "CustomerContract/GetSelectedServices/",
         "type": "POST",
@@ -335,3 +346,57 @@ var saveFunction = function(){
         }
     })
 }
+
+//Hämtar samtliga gällande servicear och markerar de i kontraktet befintliga 
+var fillServiceSearchList = function () {
+    var $searchText = $("#service-search");
+    console.log($searchText);
+
+    $availableServices = $("#available-services");
+    $availableServices.html("");
+
+    $.ajax({
+        "url": serverPrefix + "CustomerContract/GetModulesAll/",
+        "type": "POST",
+        "data": {
+            "customer": customerName,
+            "searchtext": $searchText.val(),
+            "moduletype": 2, //Services
+            "contracttype": ctr,
+            "contractid": contractId
+        },
+        "success": function (data) {
+            if (data.length > 0) {
+                var servicesData = JSON.parse(data);
+                var length = servicesData.length;
+                for (var i = 0; i < length; i++) {
+                    service = servicesData[i];
+                    $availableServices.append("                                                                     \
+                        <table>                                                                                     \
+                            <tr>                                                                                    \
+                                <td style='display:inline-block; margin-top: 2vh; cursor:pointer'>                  \
+                                    <span onclick ='editService(this);' class='glyphicon glyphicon-pencil'></span > \
+                                </td>                                                                               \
+                                <td style='display:inline-block; float:right; width:95%'>                           \
+                                    <button style='margin-bottom:25px'                                              \
+                                            type = 'button'                                                         \
+                                            onclick = 'newItem(this, " + service.Price_category + ")'               \
+                                            data-code='" + service.Article_number + "'                              \
+                                            data-selected='false'                                                   \
+                                            class='list-group-item'>                                                \
+                                        <label>Service: " + service.Article_number + ", </label>                    \
+                                        <span>" + formatCurrency(service.Price_category) + "</span>                 \
+                                        <span class='service-amount'></span>                                        \
+                                        <br />                                                                      \
+                                        <span id='description-title'>" + service.Module + "</span>                  \
+                                    </button >                                                                      \
+                                </td >                                                                              \
+                            </tr>                                                                                   \
+                        </table>                                                                                    \
+                    ");
+                }
+            }
+        }
+    });
+}
+

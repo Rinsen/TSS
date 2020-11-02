@@ -32,6 +32,10 @@
                     {
                         <th data-field="@PropertyInfo.Name" data-sortable="true">Important Info</th>
                     }
+                    else if (@PropertyName == "Module")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">Module</th>
+                    }
                     else
                     {
                         <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
@@ -62,7 +66,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="module2" class="col-sm-2 control-label">Module</label>
+                                <label for="module2" class="col-sm-2 control-label" id="module-label">Module</label>
                                 <div class="col-sm-9">
                                     <input class="form-control" name="Module" id="module2">
                                 </div>
@@ -195,7 +199,18 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="module-status2" class="col-sm-2 control-label">Modul Status</label>
+                                <div>
+                                    <label for="module_type" class="col-sm-2 control-label">Module Type</label>
+                                    <div class="col-sm-3" id="price-category-container">
+                                        <select class='form-control selectpicker' name='Module_type' id='module_type'>
+                                            <option value='Article'>Article</option>
+                                            <option value='Service'>Service</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="module-status2" class="col-sm-2 control-label">Module Status</label>
                                 <div class="col-sm-9">
                                     <select class="form-control selectpicker" name="Module_status" id="module-status2">
                                         @{
@@ -444,6 +459,10 @@
             getAndFillSystemSelect();
         });
 
+        $("#module_type").change(function () {
+            handleModuleTypeChange();
+        });
+
         $("#system2").change(function(){
             console.log(this.value);
             fillClassificationSelect(this.value);
@@ -459,8 +478,6 @@
             }
         }
         @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-
-
 
         updateDataTable(handleStates);
 
@@ -605,8 +622,9 @@
                             if (name != "Offer_description" && name != "Contract_description") {
                                 for (var j = 0; j < tdLen; j++) {
                                     var $currTD = $($selectedTds[j]);
-                                    if($currTD.data("property") == $currInput.attr("name")){
-                                        if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio" ) {
+                                    var currName = $currTD.data("property");
+                                    if (currName == name) {
+                                        if ($currInput.attr("type") == "checkbox" || $currInput.attr("type") == "radio") {
                                             if ($currTD.text() == "true" || $currTD.text() == "1") {
                                                 $currInput.prop("checked", true);
                                                 if(name == "Discount" || name == "Fixed_price")
@@ -620,9 +638,23 @@
                                             $currInput.val($currTD.text());
                                         }
                                     }
+
                                 }
                             }
                         }
+
+                        //Disabla radioknappar om Service. Endast Fixed price ska vara öppen och klickbar.
+                        var moduleTypeSelect = document.getElementById("module_type");
+                        var moduleType = moduleTypeSelect.value;
+                        if (moduleType != undefined && moduleType == "Service") {
+                            $("#none2").attr("disabled", true);
+                            $("#startup2").attr("disabled", true);
+                        }
+                        else {
+                            $("#none2").attr("disabled", false);
+                            $("#startup2").attr("disabled", false);
+                        }
+
                         //getTinyMCE();
                         if (noneSelected) {
                             if ($($selectedTds[17]).text() != "0") {
@@ -651,13 +683,13 @@
                         getTinyMCE();
                     });
                 })
-
             }
             else
                 triggerAlert("You have to select a row to edit first.", "info");
 
         })
     }
+
     var getTinyMCE = function () {
         var $row = $(".selected");
         var pk_id = selectedId;
@@ -769,11 +801,15 @@
                 i++;
             }
 
-            if (i >= 1 && i < 18) {
+            if (i >= 1 && i < 20) {
                 if (name != "Offer_description" && name != "Contract_description") {
                     $td = $('td:eq(' + i + ')', nRow);
                     $td.attr("data-property", name);
                     $td.html(aData[name]);
+                }
+
+                if (name == "Module_type") {
+                    $td.html(aData[name] == "1" ? "Article": "Service");
                 }
             }
             i++;
@@ -794,6 +830,24 @@
         }
 
     });
+
+    var handleModuleTypeChange = function () {
+        var moduleType = $('#module_type').val();
+        if (moduleType == "Article") {
+            //Enable radiobuttons
+            $("#none2").attr("disabled", false);
+            $("#startup2").attr("disabled", false);
+        }
+        else if (moduleType == "Service") {
+            //Disable radiobuttons
+            $("#none2").attr("disabled", true);
+            $("#none2").prop("checked", false);
+            $("#startup2").attr("disabled", true);
+            $("#startup2").prop("checked", false);
+            $("#fixed-price2").prop("checked", true);
+            handleDiscountCheck();
+        }
+    }
 
     var getAndFillSystemSelect = function(area, onSuccess){
         var area = area || $('#area2').val();
