@@ -215,10 +215,6 @@ namespace TietoCRM.Models
                 command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System FROM qry_OfferArtDescription Q 
                                         JOIN View_Module M ON M.Article_number = Q.Art_id 
                                         WHERE OFFERTNR = @offerNumber 
-                                        UNION
-                                        SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, S.Description AS System FROM qry_OfferArtDescription Q
-                                        JOIN view_Service S ON S.Code = Q.Art_id 
-                                        WHERE OFFERTNR = @offerNumber 
                                         ORDER BY " + GetOrderByForQry();
 
                 command.Prepare();
