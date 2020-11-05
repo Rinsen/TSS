@@ -204,6 +204,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
+                offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
 
                 articles.Add(offerInfo);
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
@@ -330,6 +331,8 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
+                offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
+
                 articles.Add(offerInfo);
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
                 {
@@ -540,6 +543,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
+                offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
 
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
                 {
@@ -1264,6 +1268,32 @@ namespace TietoCRM.Controllers
             // remove all consultant row to later insert the new ones
             foreach (view_OfferRow or in customerOffer._OfferRows)
             {
+                //Kolla först om det finns kopplade tjänster som också ska tas bort.
+                var mappedModuleList = view_ModuleModule.getAllChildModules(or.Article_number);
+
+                foreach (var mappedModule in mappedModuleList)
+                {
+                    if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                    {
+                        view_ConsultantRow consultantRow = new view_ConsultantRow();
+                        
+                        if(consultantRow.Select("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
+                        {
+                            if (consultantRow.Amount > 1)
+                            {
+                                //Minska med 1
+                                consultantRow.Amount = consultantRow.Amount - 1;
+                                consultantRow.Update("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                            }
+                            else
+                            {
+                                //Ta bort post
+                                consultantRow.Delete("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                            }
+                        }
+                    }
+                }
+
                 or.Delete("Offer_number = " + or.Offer_number + " AND Article_number = " + or.Article_number);
 
                 //Sätt eventuell Module_text till Deleted = 1
@@ -1299,6 +1329,8 @@ namespace TietoCRM.Controllers
 
                 String Alias = dict["Alias"].ToString();
 
+                var automapping = dict["Automapping"] != null ?  Convert.ToBoolean(dict["Automapping"]) : false;
+
                 view_OfferRow offerRow = new view_OfferRow();
                 offerRow.Offer_number = Offer_number;
                 offerRow.Article_number = Article_number;
@@ -1306,6 +1338,7 @@ namespace TietoCRM.Controllers
                 offerRow.Maintenance = Convert.ToDecimal(Maintenance);
                 offerRow.Include_status = false;
                 offerRow.Alias = Alias;
+                offerRow.IncludeDependencies = automapping;
                 offerRow.Insert();
 
                 //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
@@ -1319,8 +1352,7 @@ namespace TietoCRM.Controllers
                     moduleText.Update("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
                 }
 
-                var automapping = dict["Automapping"];
-                if (automapping != null && Convert.ToBoolean(automapping))
+                if (automapping)
                 {
                     //Kopplade moduler ska läggas in i kontraktet
                     var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
@@ -1329,9 +1361,10 @@ namespace TietoCRM.Controllers
                     {
                         if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
                         {
+                            view_ConsultantRow consultantRow = new view_ConsultantRow();
+
                             try
-                            {
-                                view_ConsultantRow consultantRow = new view_ConsultantRow();
+                            {                                
                                 consultantRow.Offer_number = Offer_number;
                                 //consultantRow.Alias = alias;
                                 consultantRow.Code = (int)mappedModule.Article_number;
@@ -1342,8 +1375,12 @@ namespace TietoCRM.Controllers
                             }
                             catch (Exception)
                             {
-                                //Already exist on offer
-                                continue;
+                                //Already exist on offer -> Räkna upp Amount!
+                                if(consultantRow.Select("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
+                                {
+                                    consultantRow.Amount = consultantRow.Amount + 1;
+                                    consultantRow.Update("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                                }
                             }
                         }
                     }
@@ -1420,11 +1457,7 @@ namespace TietoCRM.Controllers
                             int i = 0;
                             while (reader.FieldCount > i)
                             {
-
                                 result.Add(reader.GetName(i), reader.GetValue(i));
-
-
-
                                 i++;
                             }
                             result["Price_category"] = result["Price_category"].ToString().Replace(",", ".");
@@ -1434,14 +1467,12 @@ namespace TietoCRM.Controllers
                             {
                                 result["Maintenance"] = "0";
                                 result["License"] = result["Price_category"];
-
                             }
                             if ((Byte)result["Discount"] == 1)
                             {
                                 int length = result["Price_category"].ToString().Length;
                                 result["Maintenance"] = result["Price_category"].ToString().Remove(length - 6, 5);
                                 result["License"] = result["Price_category"].ToString().Remove(length - 6, 5);
-
                             }
                             view_ModuleDiscount moduleDiscount = new view_ModuleDiscount();
                             if (moduleDiscount.Select("Article_number=" + result["Article_number"].ToString()
@@ -1490,11 +1521,22 @@ namespace TietoCRM.Controllers
                     List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
                     if (dependencies.Count > 0)
                     {
+                        if(dependencies.Where(w => w.Module_type == 2).Any())
+                        {
+                            kv.Add("IncludeDependencies", true);
+                        }
+                        else
+                        {
+                            kv.Add("IncludeDependencies", false);
+                        }
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
                     else
+                    {
+                        kv.Add("IncludeDependencies", false);
                         kv.Add("HasDependencies", false);
+                    }
                 }
                 //Response.Charset = "UTF-8";
                 // this.solve();
@@ -1631,11 +1673,23 @@ namespace TietoCRM.Controllers
                     List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
                     if (dependencies.Count > 0)
                     {
+                        if (dependencies.Where(w => w.Module_type == 2).Any())
+                        {
+                            kv.Add("IncludeDependencies", true);
+                        }
+                        else
+                        {
+                            kv.Add("IncludeDependencies", false);
+                        }
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
                     else
+                    {
                         kv.Add("HasDependencies", false);
+                        kv.Add("IncludeDependencies", false);
+                    }
+                        
                 }
 
                 //Nytt urval för utgångna artiklar här. Vilket urval. Avvaktar?

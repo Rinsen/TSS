@@ -232,6 +232,20 @@ namespace TietoCRM.Controllers
                     {
                         foreach (KeyValuePair<String, object> variable in variables)
                         {
+                            if(variable.Key == "Module_type")
+                            {
+                                if(variable.Value.ToString() == "Article")
+                                {
+                                    module.SetValue(variable.Key, 1);
+                                    continue;
+                                }
+                                else
+                                {
+                                    module.SetValue(variable.Key, 2);
+                                    continue;
+                                }
+                            }
+
                             module.SetValue(variable.Key, variable.Value);
                         }
 

@@ -672,7 +672,7 @@
                                                         data-module-text-id="@or.ModuleTextId"
                                                         data-contract-description="@module.Contract_description"
                                                         data-contract-id="@or.Id"
-                                                        data-automapping="false"
+                                                        data-automapping="@or.IncludeDependencies"
                                                         @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
                                                         @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; }; }
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
@@ -985,8 +985,8 @@
                                                                 data-selected="false"
                                                                 data-contract-description="@service.Contract_description"
                                                                 class="list-group-item">
-                                                            <label>Service: @service.Article_number, </label>
-                                                            <span>@price</span>
+                                                            <span style="font-weight:700">Service: @service.Article_number, </span>
+                                                            <label>@price</label>
                                                             <span class="service-amount"></span>
                                                             <br />
                                                             <span id="description-title">@service.Description</span>

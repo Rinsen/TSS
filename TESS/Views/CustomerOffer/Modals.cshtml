@@ -323,7 +323,7 @@ else if (Request["modal"] == "articles")
                                             @if (or.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
                                             data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
                                             data-alias="@or.Module"
-                                            data-automapping="false">
+                                            data-automapping="@or.IncludeDependencies">
                                         <table>
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
@@ -664,8 +664,7 @@ else if (Request["modal"] == "articles")
                                             data-offer-description='" + article.Offer_Description + "'              \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
-                                            data-automapping='false'                                                \
-                                            data-dependencies='" + article.HasDependencies + "'                     \
+                                            data-automapping='" + article.IncludeDependencies + "'                  \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -698,8 +697,7 @@ else if (Request["modal"] == "articles")
                                             data-offer-description='" + article.Offer_Description + "'              \
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
-                                            data-automapping='false'                                                \
-                                            data-dependencies='" + article.HasDependencies + "'                     \
+                                            data-automapping='" + article.IncludeDependencies + "'                  \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -849,7 +847,7 @@ else if (Request["modal"] == "articles")
 
         var buttonArt = $button.find(".art-nr").html();
         var buttonLicense = $button.data("license");
-        var buttonHasDependencies = $button.data("dependencies");
+        var buttonHasAutoMapping = $button.data("automapping");
         var buttonMaintenance = $button.data("maintenance");
 
         if($button.attr("data-selected") == "false") {
@@ -872,7 +870,7 @@ else if (Request["modal"] == "articles")
                 $newButton.find('.maintenance').html(buttonMaintenance + "%");
             }
 
-            if (buttonHasDependencies && confirm('Add dependencies automatically to the offer?')) {
+            if (buttonHasAutoMapping && confirm('Add dependencies automatically to the offer?')) {
                 // Save it!
                 $newButton.attr("data-automapping", "true");
             } else {
@@ -1050,8 +1048,8 @@ else if (Request["modal"] == "services")
                                                     data-offer-description="@service.Offer_description"
                                                     data-service-code="@service.Article_number"
                                                     class="list-group-item">
-                                                <label>Service: @service.Article_number, </label>
-                                                <span>@price</span>
+                                                <span style="font-weight:700">Service: @service.Article_number, </span>
+                                                <label>@price</label>
                                                 <span class="service-amount"></span>
                                                 <br />
                                                 <span id="description-title">@service.Description</span>

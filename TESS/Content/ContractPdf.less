@@ -25,6 +25,7 @@
     .h4, .h5, .h6, h4, h5, h6 {
         margin-bottom: 4px;
     }
+
     .small-divider {
         width: 20%;
         border-bottom: 1px solid black;
@@ -72,31 +73,31 @@
             width: 100%;
         }
 
-            table#crm-pdf-head-table {
-                td {
-                    width: 33.33%;
-                }
-
-                    td.text-center span {
-                        display: block;
-                    }
+        table#crm-pdf-head-table {
+            td {
+                width: 33.33%;
             }
 
-            table#crm-pdf-head-contract-info {
-                font-size: 8pt;
+            td.text-center span {
+                display: block;
+            }
+        }
 
-                td.crm-table-title {
-                    width: 10%;
-                }
+        table#crm-pdf-head-contract-info {
+            font-size: 8pt;
 
-                td {
-                    text-align: right;
+            td.crm-table-title {
+                width: 10%;
+            }
 
-                    span {
-                        padding-left: 1em;
-                    }
+            td {
+                text-align: right;
+
+                span {
+                    padding-left: 1em;
                 }
             }
+        }
 
         span#crm-pdf-todays-date {
             font-size: 12px;
@@ -124,11 +125,11 @@
                 width: 50%;
             }
 
-                td.crm-table-title {
-                    background-color: @row-color;
-                    font-size: 8pt;
-                    font-weight: bold;
-                }
+            td.crm-table-title {
+                background-color: @row-color;
+                font-size: 8pt;
+                font-weight: bold;
+            }
         }
 
         h4 {
@@ -152,7 +153,6 @@
     }
 
     div.crm-pdf-module-info-section {
-
     }
 
     div.crm-pdf-module-section, div.crm-pdf-old-module-section {
@@ -184,13 +184,13 @@
                     width: 100%;
                 }
 
-                    table.crm-pdf-module-row-info {
-                        margin-left: 0.6em;
+                table.crm-pdf-module-row-info {
+                    margin-left: 0.6em;
 
-                        td {
-                            padding: 0.2em;
-                        }
+                    td {
+                        padding: 0.2em;
                     }
+                }
 
                 div.crm-pdf-module-row-name {
                     //font-weight: bold;
@@ -241,7 +241,6 @@
         div#crm-pdf-educational-portal-rows, div#crm-pdf-old-educational-portal-rows {
             page-break-before: auto;
             /*margin-top: 1em;*/
-
             div.price-headings {
                 width: 36%;
                 text-align: right;
@@ -267,13 +266,13 @@
                     width: 100%;
                 }
 
-                    table.crm-pdf-educational-portal-row-info {
-                        margin-left: 0.6em;
+                table.crm-pdf-educational-portal-row-info {
+                    margin-left: 0.6em;
 
-                        td {
-                            padding: 0.2em;
-                        }
+                    td {
+                        padding: 0.2em;
                     }
+                }
 
                 div.crm-pdf-30 {
                     table {
@@ -339,13 +338,13 @@
                     width: 100%;
                 }
 
-                    table.crm-pdf-option-row-info {
-                        margin-left: 0.6em;
+                table.crm-pdf-option-row-info {
+                    margin-left: 0.6em;
 
-                        td {
-                            padding: 0.2em;
-                        }
+                    td {
+                        padding: 0.2em;
                     }
+                }
 
                 div.crm-pdf-30 {
                     table {
@@ -430,12 +429,12 @@
                     width: 100%;
                 }
 
-                    table.crm-pdf-service-row-info {
-                        /*margin-left: 0.6em;*/
-                        td {
-                            padding-bottom: 0.2em;
-                        }
+                table.crm-pdf-service-row-info {
+                    /*margin-left: 0.6em;*/
+                    td {
+                        padding-bottom: 0.2em;
                     }
+                }
 
                 div.crm-pdf-30,
                 div.crm-pdf-40 {
@@ -506,23 +505,23 @@
                 width: 50%;
             }
 
-                td.crm-table-title {
-                    background-color: @row-color;
-                    font-size: 8pt;
-                    font-weight: bold;
-                }
+            td.crm-table-title {
+                background-color: @row-color;
+                font-size: 8pt;
+                font-weight: bold;
+            }
 
-                td.crm-empty-signing-field {
-                    height: 2.5em;
-                    vertical-align: bottom;
+            td.crm-empty-signing-field {
+                height: 2.5em;
+                vertical-align: bottom;
 
-                    span.signing-line {
-                        border-bottom: 1px solid black;
-                        width: 95%;
-                        display: block;
-                        margin-bottom: 0.5em;
-                    }
+                span.signing-line {
+                    border-bottom: 1px solid black;
+                    width: 95%;
+                    display: block;
+                    margin-bottom: 0.5em;
                 }
+            }
         }
     }
 
@@ -546,7 +545,8 @@
             margin-top: 1em;
             width: 100%;
             background-color: @row-color;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 66%;
                 text-align: left;
                 font-weight: bold;
@@ -575,13 +575,15 @@
             }
         }
     }
+
     div.crm-pdf-subheader_1-rubkr {
         table {
             page-break-before: auto;
             margin-top: 1em;
             width: 100%;
             background-color: @row-color;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 72%;
                 text-align: left;
                 font-weight: bold;
@@ -610,13 +612,15 @@
             }
         }
     }
+
     div.crm-pdf-subheader_2 {
         table {
             page-break-before: auto;
             margin-top: 1em;
             width: 100%;
             background-color: @row-color;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 66%;
                 text-align: left;
                 font-weight: bold;
@@ -645,13 +649,15 @@
             }
         }
     }
+
     div.crm-pdf-subheader_2-rubkr {
         table {
             page-break-before: auto;
             margin-top: 1em;
             width: 100%;
             background-color: @row-color;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 72%;
                 text-align: left;
                 font-weight: bold;
@@ -680,15 +686,16 @@
             }
         }
     }
+
     div.crm-pdf-subrows_1 {
         table {
             page-break-before: auto;
             width: 100%;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 66%;
                 text-align: left;
                 font-size: 9.5pt;
-
             }
 
             td:nth-child(2) {
@@ -712,11 +719,13 @@
             }
         }
     }
+
     div.crm-pdf-subrows_2 {
         table {
             page-break-before: auto;
             width: 100%;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 padding-left: 0.5em;
                 width: 6%;
                 text-align: left;
@@ -737,6 +746,7 @@
                 font-size: 9pt;
                 vertical-align: text-top;
             }
+
             td:nth-child(4) {
                 text-align: right;
                 width: 13%;
@@ -752,11 +762,13 @@
             }
         }
     }
+
     div.crm-pdf-subrows_2-rubkr {
         table {
             page-break-before: auto;
             width: 100%;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 padding-left: 0.5em;
                 width: 6%;
                 text-align: left;
@@ -777,6 +789,7 @@
                 font-size: 9pt;
                 vertical-align: text-top;
             }
+
             td:nth-child(4) {
                 text-align: right;
                 width: 10%;
@@ -792,11 +805,13 @@
             }
         }
     }
+
     div.crm-pdf-subrows_3 {
         table {
             page-break-before: auto;
             width: 100%;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 66%;
                 text-align: left;
                 font-size: 9pt;
@@ -825,27 +840,31 @@
             }
         }
     }
+
     div.crm-pdf-subrows_3-rubkr {
         table {
             page-break-before: auto;
             width: 100%;
-           td:nth-child(1) {
-                width: 72%;
+
+            td:nth-child(1) {
+                padding-left: 0.5em;
+                vertical-align: text-top;
+                width: 6%;
                 text-align: left;
                 font-size: 9pt;
                 font-weight: normal;
             }
 
             td:nth-child(2) {
-                width: 8%;
-                text-align: center;
-                vertical-align: text-top;
+                width: 66%;
+                text-align: left;
                 font-size: 9pt;
+                font-weight: normal;
             }
 
             td:nth-child(3) {
-                text-align: right;
-                width: 10%;
+                width: 8%;
+                text-align: center;
                 vertical-align: text-top;
                 font-size: 9pt;
             }
@@ -856,15 +875,25 @@
                 vertical-align: text-top;
                 font-size: 9pt;
             }
+
+            td:nth-child(5) {
+                text-align: right;
+                width: 10%;
+                vertical-align: text-top;
+                font-size: 9pt;
+            }
         }
     }
+
     div.crm-pdf-subsum_1 {
         table {
             page-break-before: auto;
             width: 100%;
-            tr{
+
+            tr {
                 font-size: 10pt;
             }
+
             td:nth-child(1) {
                 width: 40%;
                 text-align: left;
@@ -895,11 +924,13 @@
             }
         }
     }
+
     div.crm-pdf-subsum_1-rubkr {
         table {
             page-break-before: auto;
             width: 100%;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 40%;
                 text-align: left;
                 font-size: 8pt;
@@ -927,12 +958,14 @@
             }
         }
     }
+
     div.crm-pdf-subheader_terminate {
         table {
             page-break-before: auto;
             margin-top: 1em;
             width: 100%;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 40%;
                 text-align: left;
             }
@@ -953,16 +986,18 @@
             }
         }
     }
+
     div.crm-pdf-subrows_terminate {
         table {
             page-break-before: auto;
             width: 100%;
-           td:nth-child(1) {
+
+            td:nth-child(1) {
                 width: 7%;
                 text-align: left;
             }
 
-           td:nth-child(2) {
+            td:nth-child(2) {
                 width: 33%;
                 text-align: left;
             }
@@ -986,7 +1021,6 @@
             }
         }
     }
-
 }
 .area-newline {
     white-space:pre-wrap;

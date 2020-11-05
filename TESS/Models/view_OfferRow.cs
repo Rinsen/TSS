@@ -37,6 +37,9 @@ namespace TietoCRM.Models
         private String area;
         public String Area { get { return area; } set { area = value; } }
 
+        private bool includeDependencies;
+        public bool IncludeDependencies { get { return includeDependencies; } set { includeDependencies = value; } }
+
         private static int ASort { get; set; }
         //private int ASort;
         private static string OrderBy { get; set; }
@@ -104,7 +107,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias , Area FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area Order By " + GetOrderBy();
+                                        ,Alias, Area, IncludeDependencies FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -164,7 +167,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias , Area FROM " + databasePrefix + "OfferRow Order By " + GetOrderBy();
+                                        ,Alias, Area, IncludeDependencies FROM " + databasePrefix + "OfferRow Order By " + GetOrderBy();
 
                 command.Prepare();
 
@@ -276,7 +279,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,alias , Area FROM " + databasePrefix + "OfferRow where Offer_number = @offerNumber Order By " + GetOrderBy();
+                                        ,alias, Area, IncludeDependencies FROM " + databasePrefix + "OfferRow where Offer_number = @offerNumber Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerId);

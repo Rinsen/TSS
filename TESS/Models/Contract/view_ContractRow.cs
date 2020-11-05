@@ -56,6 +56,9 @@ public class view_ContractRow : SQLBaseClass
         private String alias;
         public String Alias { get { return alias; } set { alias = value; } }
 
+        private bool _includeDependencies;
+        public bool IncludeDependencies { get { return _includeDependencies; } set { _includeDependencies = value; } }
+
         private static int ASort { get; set; }
         //private int ASort;
         private static string OrderBy { get; set; }
@@ -103,7 +106,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias], [IncludeDependencies] 
                                         FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer Order By " + GetOrderBy();
 
                 command.Prepare();
@@ -153,7 +156,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] 
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias], [IncludeDependencies] 
                                         FROM " + databasePrefix + "ContractRow Order By " + GetOrderBy();
 
                 command.Prepare();
@@ -209,7 +212,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer Order By " + GetOrderBy();
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias], [IncludeDependencies] FROM " + databasePrefix + "ContractRow WHERE " + "Customer = @customer Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
@@ -299,7 +302,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber Order By " + GetOrderBy();
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias], [IncludeDependencies] FROM qry_ValidContractRow WHERE Article_number=@articleNumber Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@articleNumber", articleNumber);
