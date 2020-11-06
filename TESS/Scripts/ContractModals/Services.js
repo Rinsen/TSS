@@ -120,6 +120,7 @@ var editService = function(span)
     var value = $label.html();
     value = value.replace(" kr", "");
     value = value.replace(" ", "");
+    value = value.replace(",00", "");
     
     bootbox.dialog({
         backdrop: false,
@@ -384,8 +385,8 @@ var fillServiceSearchList = function () {
                                             data-code='" + service.Article_number + "'                              \
                                             data-selected='false'                                                   \
                                             class='list-group-item'>                                                \
-                                        <label>Service: " + service.Article_number + ", </label>                    \
-                                        <span>" + formatCurrency(service.Price_category) + "</span>                 \
+                                        <span style='font-weight:700'>Service: " + service.Article_number + ", </span>                      \
+                                        <label>" + formatCurrency(service.Price_category) + "</label>               \
                                         <span class='service-amount'></span>                                        \
                                         <br />                                                                      \
                                         <span id='description-title'>" + service.Module + "</span>                  \

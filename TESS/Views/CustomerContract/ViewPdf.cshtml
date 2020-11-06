@@ -1021,8 +1021,8 @@
                                                     int cost = row.Amount != 0 ? Convert.ToInt32(row.Total_price / row.Amount) : 0;
 
                                                     <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Article_number" data-selected="true" class="list-group-item">
-                                                        <label>Service: @service.Article_number, </label>
-                                                            <span>@price</span>
+                                                        <span style="font-weight:700">Service: @service.Article_number, </span>
+                                                        <label>@price</label>
                                                         <span class="service-amount">@row.Amount</span>
                                                         <br />
                                                         <span id="description-title">@service.Description</span>
