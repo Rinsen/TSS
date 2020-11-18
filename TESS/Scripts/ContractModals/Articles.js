@@ -227,8 +227,9 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
             }
             if (article.Module_status_txt.length > 0 && article.Module_status != "0") {
                 if (depTitle.length > 0) {
-                    depTitle += "\n";
+                    depTitle += "\n\n";
                 }
+                depTitle += "Restriction:\n";
                 depTitle += article.Module_status_txt;
             }
             usedDep = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
@@ -245,6 +246,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
+                                            data-status='" + article.Module_status + "'                             \
                                             data-alias='" + article.Module + "'                                     \
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
@@ -279,6 +281,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-discount='" + article.Discount + "'                                \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
+                                            data-status='" + article.Module_status + "'                             \
                                             data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             data-read-name-from-module='" + article.Read_name_from_module + "'      \
@@ -429,12 +432,13 @@ var updateSelectedItems = function () {
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
                                 data-maintenance='" + module.Maintenance + "'                       \
+                                data-status='" + module.Module_status + "'                          \
                                 data-alias='" + module.Module + "'                                  \
                                 data-discount='" + module.Discount + "'                             \
                                 data-discount-type='" + module.Discount_type + "'                   \
                                 data-multiple-select='" + module.Multiple_type + "'                 \
-                                data-read-name-from-module='" + article.Read_name_from_module + "'  \
-                                data-automapping='" + article.IncludeDependencies + "'              \
+                                data-read-name-from-module='" + module.Read_name_from_module + "'   \
+                                data-automapping='" + module.IncludeDependencies + "'               \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
@@ -456,9 +460,10 @@ var updateSelectedItems = function () {
                                 data-alias='" + module.Module + "'                                  \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
+                                data-status='" + module.Module_status + "'                          \
                                 data-discount='" + module.Discount + "'                             \
                                 data-discount-type='" + module.Discount_type + "'                   \
-                                data-automapping='" + article.IncludeDependencies + "'              \
+                                data-automapping='" + module.IncludeDependencies + "'               \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
@@ -517,12 +522,21 @@ var moveItem = function (event, element) {
 
     var buttonArt = $button.find(".art-nr").html();
     var buttonLicense = $button.data("license");
+    //var buttonStatus = $button.data("status");
     var buttonMaintenance = $button.data("maintenance");
     var buttonid = $button.attr("id");
     var buttonHasServiceDependencies = $button.data("automapping");
 
 
     if ($button.attr("data-selected") == "false") {
+
+        //if (buttonStatus > 0) {
+        //    //Show dialog
+        //    if (!confirm("Article with restriction! Continue?")) {
+        //        return;
+        //    }
+        //}
+
         $newButton = $button.clone();
         // Fix to exclude the "used" checkmark on selected items.
         $($newButton).find("td").get(0).remove();
@@ -534,6 +548,7 @@ var moveItem = function (event, element) {
         $newButton.attr("data-selected", "true");
         $newButton.attr("data-rowtype", "3");
         $newButton.attr("type", "button");
+
         if ($button.data("discount") != '1' || $button.data("discount-type") == '0') {
             $newButton.find('.license').html(formatCurrency(buttonLicense));
             $newButton.find('.maintenance').html(formatCurrency(buttonMaintenance));

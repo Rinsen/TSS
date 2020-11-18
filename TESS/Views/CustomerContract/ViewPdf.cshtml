@@ -252,7 +252,7 @@
                                                                 String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":" + (int)service.Total_price + ", \"offer_number\":" + service.Offer_number + " }";
 
                                                             }
-                                                            @s.Description
+                                                            @s.Module
                                                         </span>
                                                         <!--
                                                         -->
@@ -421,7 +421,7 @@
                                                                 s.Select("Article_number = " + service.Code);
                                                                 String jsObj = "{\"code\":" + service.Code + ", \"amount\":" + service.Amount + ", \"total_price\":\"" + (decimal)service.Total_price + "\" }";
                                                             }
-                                                            @s.Description
+                                                            @s.Module
                                                         </span>
                                                         <!--
                                                         -->
@@ -950,6 +950,7 @@
                                             @foreach (view_Module service in ViewBag.Services)
                                             {
                                                 String price = "";
+                                                String title = String.IsNullOrEmpty(service.Description) ? "" : "Important info:\n" + service.Description;
                                                 int cost = 0;
                                                 if (contract._ContractConsultantRows.Any(c => c.Code == service.Article_number))
                                                 {
@@ -987,9 +988,13 @@
                                                                 class="list-group-item">
                                                             <span style="font-weight:700">Service: @service.Article_number, </span>
                                                             <label>@price</label>
+                                                            @if (!String.IsNullOrEmpty(title))
+                                                            {
+                                                                <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
+                                                            }
                                                             <span class="service-amount"></span>
                                                             <br />
-                                                            <span id="description-title">@service.Description</span>
+                                                            <span id="description-title">@service.Module</span>
                                                         </button>
                                                     </td>
                                                 </table>
@@ -1013,19 +1018,24 @@
                                                     service.Select("Article_number = " + row.Code);
                                                     if (!String.IsNullOrEmpty(row.Alias))
                                                     {
-                                                        service.Description = row.Alias;
+                                                        service.Module = row.Alias;
                                                     }
 
                                                     decimal? totPrice = row.Amount != 0 ? row.Total_price / row.Amount : 0;
                                                     String price = String.Format(se, "{0:C2}", totPrice);
                                                     int cost = row.Amount != 0 ? Convert.ToInt32(row.Total_price / row.Amount) : 0;
+                                                    String title = String.IsNullOrEmpty(service.Description) ? "" : "Important info:\n" + service.Description;
 
                                                     <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Article_number" data-selected="true" class="list-group-item">
                                                         <span style="font-weight:700">Service: @service.Article_number, </span>
                                                         <label>@price</label>
+                                                        @if(!String.IsNullOrEmpty(title))
+                                                        {
+                                                            <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
+                                                        }
                                                         <span class="service-amount">@row.Amount</span>
                                                         <br />
-                                                        <span id="description-title">@service.Description</span>
+                                                        <span id="description-title">@service.Module</span>
                                                     </button>
                                                 }
                                             }

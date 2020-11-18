@@ -276,14 +276,14 @@ var updateServiceSelected = function () {
                     <label>" + formatCurrency(service.Price) + "</label>                                                                \
                     <span class='service-amount'>" + service.Amount + "</span>                                                          \
                     <br />                                                                                                              \
-                    " + service.Description + "                                                                                         \
+                    " + service.Module + "                                                                                         \
                 </button>                                                                                                               \
                 ");
                 services.push({
                     id: service.Code,
                     amount: service.Amount,
                     total: service.Total,
-                    desc: service.Description,
+                    desc: service.Module,
                     Contract_description: service.Contract_Description,
                     Contract_id: service.Contract_id,
                     Module_text_id: service.Module_text_id,

@@ -1012,6 +1012,7 @@ else if (Request["modal"] == "services")
                                 @foreach (view_Module service in ViewBag.Services)
                                 {
                                     String price = "";
+                                    String title = String.IsNullOrEmpty(service.Description) ? "" : "Important info:\n" + service.Description;
                                     int cost = 0;
                                     if (offer._ConsultantRows.Any(c => c.Code == service.Article_number))
                                     {
@@ -1050,9 +1051,13 @@ else if (Request["modal"] == "services")
                                                     class="list-group-item">
                                                 <span style="font-weight:700">Service: @service.Article_number, </span>
                                                 <label>@price</label>
+                                                @if (!String.IsNullOrEmpty(title))
+                                                {
+                                                    <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
+                                                }
                                                 <span class="service-amount"></span>
                                                 <br />
-                                                <span id="description-title">@service.Description</span>
+                                                <span id="description-title">@service.Module</span>
                                             </button>
 
                                         </td>
@@ -1079,10 +1084,11 @@ else if (Request["modal"] == "services")
                                         service.Select("Article_number = " + row.Code);
                                         if (!String.IsNullOrEmpty(row.Alias))
                                         {
-                                            service.Description = row.Alias;
+                                            service.Module = row.Alias;
                                         }
 
                                         String price = String.Format(se, "{0:C2}", row.Total_price / row.Amount);
+                                        String title = String.IsNullOrEmpty(service.Description) ? "" : "Important info:\n" + service.Description;
                                         int cost = Convert.ToInt32(row.Total_price / row.Amount);
 
                                         view_ModuleText moduleText = new view_ModuleText();
@@ -1101,9 +1107,13 @@ else if (Request["modal"] == "services")
                                                                         class="list-group-item">
                                                                     <span style="font-weight:700">Service: @service.Article_number, </span>
                                                                     <label>@price</label>
+                                                                    @if (!String.IsNullOrEmpty(title))
+                                                                    {
+                                                                        <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
+                                                                    }
                                                                     <span class="service-amount">@row.Amount</span>
                                                                     <br />
-                                                                    <span id="description-title">@service.Description</span>
+                                                                    <span id="description-title">@service.Module</span>
                                                                 </button>
                                     }
                                 }
