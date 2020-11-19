@@ -323,7 +323,8 @@ else if (Request["modal"] == "articles")
                                             @if (or.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
                                             data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
                                             data-alias="@or.Module"
-                                            data-automapping="@or.IncludeDependencies">
+                                            data-automapping="@or.IncludeDependencies"
+                                            data-status="@or.Module_status">
                                         <table>
                                             <tr>
                                                 <td class="art-nr">@or.Article_number</td>
@@ -638,8 +639,9 @@ else if (Request["modal"] == "articles")
                 }
                 if (article.Module_status_txt.length > 0 && article.Module_status != "0" ) {
                     if  (depTitle.length > 0) {
-                        depTitle += "\n";
+                        depTitle += "\n\n";
                     }
+                    depTitle += "Restriction:\n";
                     depTitle += article.Module_status_txt;
                 }
                 depCell = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
@@ -658,6 +660,7 @@ else if (Request["modal"] == "articles")
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
                                             data-maintenance='" + article.Price_category + "'                       \
+                                            data-status='" + article.Module_status + "'                             \
                                             data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             data-read-name-from-module='" + article.Read_name_from_module + "'      \
@@ -691,6 +694,7 @@ else if (Request["modal"] == "articles")
                                             data-discount='" + article.Discount + "'                                \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
+                                            data-status='" + article.Module_status + "'                             \
                                             data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             data-read-name-from-module='" + article.Read_name_from_module + "'      \
@@ -849,8 +853,17 @@ else if (Request["modal"] == "articles")
         var buttonLicense = $button.data("license");
         var buttonHasAutoMapping = $button.data("automapping");
         var buttonMaintenance = $button.data("maintenance");
+        var buttonStatus = $button.data("status");
 
-        if($button.attr("data-selected") == "false") {
+        if ($button.attr("data-selected") == "false") {
+
+            if (buttonStatus > 0) {
+                //Show dialog
+                if (!confirm("Article with restriction! Continue?")) {
+                    return;
+                }
+            }
+
             $newButton = $button.clone();
             // Fix to exclude the "used" checkmark on selected items.
             $($newButton).find("td").get(0).remove();

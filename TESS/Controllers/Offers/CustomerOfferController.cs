@@ -528,6 +528,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Maint_price_category = module.Maint_price_category;
                 offerInfo.Discount_type = module.Discount_type;
                 offerInfo.Discount = module.Discount;
+                offerInfo.Module_status = module.Module_status;
 
                 view_Sector sector = new view_Sector();
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
