@@ -302,7 +302,7 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
                                         [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias], [IncludeDependencies] FROM qry_ValidContractRow WHERE Article_number=@articleNumber Order By " + GetOrderBy();
+                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias] FROM qry_ValidContractRow WHERE Article_number=@articleNumber Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@articleNumber", articleNumber);

@@ -372,7 +372,9 @@ var fillServiceSearchList = function () {
                 var length = servicesData.length;
                 for (var i = 0; i < length; i++) {
                     service = servicesData[i];
-                    $availableServices.append("                                                                     \
+                    var title = "Important info: " + service.Description;
+                    if (service.Description.length > 0) {
+                        $availableServices.append("                                                                     \
                         <table>                                                                                     \
                             <tr>                                                                                    \
                                 <td style='display:inline-block; margin-top: 2vh; cursor:pointer'>                  \
@@ -385,7 +387,32 @@ var fillServiceSearchList = function () {
                                             data-code='" + service.Article_number + "'                              \
                                             data-selected='false'                                                   \
                                             class='list-group-item'>                                                \
-                                        <span style='font-weight:700'>Service: " + service.Article_number + ", </span>                      \
+                                        <span style='font-weight:700'>Service: " + service.Article_number + ", </span> \
+                                        <label>" + formatCurrency(service.Price_category) + "</label>               \
+                                        <span title='" + title + "' style='padding-left: 10px' class='glyphicon glyphicon-exclamation-sign'></span> \
+                                        <span class='service-amount'></span>                                        \
+                                        <br />                                                                      \
+                                        <span id='description-title'>" + service.Module + "</span>                  \
+                                    </button >                                                                      \
+                                </td >                                                                              \
+                            </tr>                                                                                   \
+                        </table>                                                                                    \
+                    ");
+                    } else {
+                        $availableServices.append("                                                                     \
+                        <table>                                                                                     \
+                            <tr>                                                                                    \
+                                <td style='display:inline-block; margin-top: 2vh; cursor:pointer'>                  \
+                                    <span onclick ='editService(this);' class='glyphicon glyphicon-pencil'></span > \
+                                </td>                                                                               \
+                                <td style='display:inline-block; float:right; width:95%'>                           \
+                                    <button style='margin-bottom:25px'                                              \
+                                            type = 'button'                                                         \
+                                            onclick = 'newItem(this, " + service.Price_category + ")'               \
+                                            data-code='" + service.Article_number + "'                              \
+                                            data-selected='false'                                                   \
+                                            class='list-group-item'>                                                \
+                                        <span style='font-weight:700'>Service: " + service.Article_number + ", </span> \
                                         <label>" + formatCurrency(service.Price_category) + "</label>               \
                                         <span class='service-amount'></span>                                        \
                                         <br />                                                                      \
@@ -395,6 +422,9 @@ var fillServiceSearchList = function () {
                             </tr>                                                                                   \
                         </table>                                                                                    \
                     ");
+
+                    }
+
                 }
             }
         }

@@ -568,7 +568,7 @@ namespace TietoCRM.Controllers
 
                 offerInfo.Article_number = service.Article_number;
                 if (consultantRow.Alias == null || consultantRow.Alias == "")
-                    offerInfo.Module = service.Description;
+                    offerInfo.Module = service.Module;
                 else
                     offerInfo.Module = consultantRow.Alias;
                 offerInfo.System = "Konsulttjänster";
@@ -1410,7 +1410,7 @@ namespace TietoCRM.Controllers
                 if (moduletype == "2") //Services
                 {
                     queryText = @"Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, 
-                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description
+                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description, IsNull(M.[Description],'') As [Description] 
                                   From dbo.view_Module As M  
                                   Where M.Module_type = 2 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
                                   M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
