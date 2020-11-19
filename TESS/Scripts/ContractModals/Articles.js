@@ -522,7 +522,7 @@ var moveItem = function (event, element) {
 
     var buttonArt = $button.find(".art-nr").html();
     var buttonLicense = $button.data("license");
-    //var buttonStatus = $button.data("status");
+    var buttonStatus = $button.data("status");
     var buttonMaintenance = $button.data("maintenance");
     var buttonid = $button.attr("id");
     var buttonHasServiceDependencies = $button.data("automapping");
@@ -530,12 +530,12 @@ var moveItem = function (event, element) {
 
     if ($button.attr("data-selected") == "false") {
 
-        //if (buttonStatus > 0) {
-        //    //Show dialog
-        //    if (!confirm("Article with restriction! Continue?")) {
-        //        return;
-        //    }
-        //}
+        if (buttonStatus > 0) {
+            //Show dialog
+            if (!confirm("Article with restriction! Continue?")) {
+                return;
+            }
+        }
 
         $newButton = $button.clone();
         // Fix to exclude the "used" checkmark on selected items.
