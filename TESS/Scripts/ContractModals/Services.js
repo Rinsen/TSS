@@ -34,7 +34,7 @@
                     id: service.Code,
                     amount: service.Amount,
                     total: service.Total,
-                    desc: service.Alias,
+                    desc: service.Module,
                     Contract_description: service.Contract_Description,
                     Contract_id: service.Contract_id,
                     Module_text_id: service.Module_text_id,
