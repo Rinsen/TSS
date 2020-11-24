@@ -638,7 +638,7 @@ namespace TietoCRM.Controllers
         }
 
         public String CustomerOfferJsonData()
-        {
+        { 
             String customer = Request.Form["customer"];
             String representative = Request.Form["representative"];
             view_User user = new view_User();
