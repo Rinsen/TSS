@@ -639,7 +639,7 @@ namespace TietoCRM.Controllers
         }
 
         public String CustomerOfferJsonData()
-        {
+        { 
             String customer = Request.Form["customer"];
             String representative = Request.Form["representative"];
             view_User user = new view_User();
@@ -1283,7 +1283,9 @@ namespace TietoCRM.Controllers
                             if (consultantRow.Amount > 1)
                             {
                                 //Minska med 1
+                                var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
                                 consultantRow.Amount = consultantRow.Amount - 1;
+                                consultantRow.Total_price -= pricePerUnit;
                                 consultantRow.Update("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
                             }
                             else
@@ -1372,6 +1374,7 @@ namespace TietoCRM.Controllers
                                 consultantRow.Amount = 1;
                                 consultantRow.Total_price = mappedModule.Price_category;
                                 consultantRow.Include_status = false;
+                                consultantRow.Alias = mappedModule.Module;
                                 consultantRow.Insert();
                             }
                             catch (Exception)
@@ -1379,7 +1382,9 @@ namespace TietoCRM.Controllers
                                 //Already exist on offer -> Räkna upp Amount!
                                 if(consultantRow.Select("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
                                 {
+                                    var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
                                     consultantRow.Amount = consultantRow.Amount + 1;
+                                    consultantRow.Total_price = consultantRow.Amount * pricePerUnit;
                                     consultantRow.Update("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
                                 }
                             }
@@ -1751,6 +1756,13 @@ namespace TietoCRM.Controllers
                 String alias = "";
                 if (dict.Keys.Contains("desc"))
                     alias = dict["desc"].ToString();
+
+                if (String.IsNullOrEmpty(alias))
+                {
+                    var module = new view_Module();
+                    module.Select("Article_number = " + id);
+                    alias = module.Module;
+                }                    
 
                 view_ConsultantRow consultantRow = new view_ConsultantRow();
                 consultantRow.Offer_number = offer;
