@@ -1153,15 +1153,20 @@
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label for="main-template-number-select" class="col-sm-2 control-label">Contract text template</label>
-                            <div class="col-sm-10">
+                            <div class="col-sm-4">
                                 <select id="main-template-number-select" name="Template_number" class="form-control selectpicker">
-                                    <option value="current" selected>Current text</option>
-                                    <option value="template" selected>Template text</option>
+                                    <option value="current" selected>Current Text</option>
+                                    @foreach (var mainContractTemplate in ViewBag.MainContractTemplates)
+                                    {
+                                        <option value="@mainContractTemplate.ID">@mainContractTemplate.ShortDescription</option>
+                                    }
                                 </select>
                             </div>
                         </div>
                     </form>
-                    <input data-name='rubrik1' type='text' class='form-control main-template-mainhead' id="main-top-head" placeholder="Main contract head" />
+                    <div class="row col-sm-12" style="margin-bottom:30px">
+                        <input data-name='rubrik1' type='text' class='form-control main-template-mainhead' id="main-top-head" placeholder="Main contract head" />
+                    </div>
                     <div class="row col-sm-12" style="margin-bottom:30px">
                         <form>
                             <textarea data-name='Prolog' rows="10" id="prolog-text" class='form-control main-template-text'></textarea>

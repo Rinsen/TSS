@@ -207,7 +207,7 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public static String GetEpilog()
+        public static String GetEpilog(string id)
         {
             String epilog = "";
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
@@ -217,7 +217,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT Epilog FROM dbo.Havtalsmall";
+                command.CommandText = "SELECT Epilog FROM dbo.Havtalsmall where ID = " + id;
 
                 command.Prepare();
 
@@ -238,7 +238,7 @@ namespace TietoCRM.Models
             }
             return epilog;
         }
-        public static String GetProlog()
+        public static String GetProlog(string id)
         {
             String prolog = "";
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
@@ -248,7 +248,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT Prolog FROM dbo.Havtalsmall";
+                command.CommandText = "SELECT Prolog FROM dbo.Havtalsmall where ID = " + id;
 
                 command.Prepare();
 
@@ -270,7 +270,7 @@ namespace TietoCRM.Models
             return prolog;
         }
 
-        public static String GetTitle1()
+        public static String GetTitle1(string id)
         {
             String title = "";
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
@@ -280,7 +280,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT rubrik1 FROM dbo.Havtalsmall";
+                command.CommandText = "SELECT rubrik1 FROM dbo.Havtalsmall where ID = " + id;
 
                 command.Prepare();
 
@@ -301,7 +301,7 @@ namespace TietoCRM.Models
             }
             return title;
         }
-        public static String GetModuleText()
+        public static String GetModuleText(string id)
         {
             String text = "";
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
@@ -311,7 +311,7 @@ namespace TietoCRM.Models
 
 
                 // Default query
-                command.CommandText = "SELECT ModulText FROM dbo.Havtalsmall";
+                command.CommandText = "SELECT ModulText FROM dbo.Havtalsmall where ID = " + id;
 
                 command.Prepare();
 
