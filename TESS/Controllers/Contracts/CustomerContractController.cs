@@ -550,6 +550,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Prolog", this.GetProlog(urlCustomer, urlContractId));
             ViewData.Add("Epilog", this.GetEpilog(urlCustomer, urlContractId));
             ViewData.Add("ModuleText", this.GetModuleText(urlCustomer, urlContractId));
+            ViewData.Add("MainContractTemplates", this.GetAllMainContractTemplates());
             ViewData.Add("Contract_Description", this.GetContract_Description(urlCustomer, urlContractId));
             ViewBag.Area = System.Web.HttpContext.Current.GetUser().Area;
 
@@ -2410,7 +2411,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetProlog();
+                    return MainContractText.GetProlog(from);
                 }
             }
             catch
@@ -2463,7 +2464,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetEpilog();
+                    return MainContractText.GetEpilog(from);
                 }
                
             }
@@ -2790,7 +2791,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetTitle1();
+                    return MainContractText.GetTitle1(from);
                 }
 
             }
@@ -2846,13 +2847,18 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetModuleText();
+                    return MainContractText.GetModuleText(from);
                 }
             }
             catch
             {
                 return "0";
             }
+        }
+
+        private List<view_MainContractTemplate> GetAllMainContractTemplates()
+        {
+            return view_MainContractTemplate.getAllMainContractTemplates();
         }
 
         public String GetContract_Description(String customerP = null, String contractIdP = null)

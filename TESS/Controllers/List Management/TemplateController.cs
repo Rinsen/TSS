@@ -50,13 +50,14 @@ namespace TietoCRM.Controllers.List_Management
 
         public ActionResult MainContractTemplate()
         {
-            //List<MainContractText> list = MainContractText.getAllMainContractTexts();
-            //TreeToHtml(list);
-            //ViewData.Add("Templates", htmlMainTemplate);
-            ViewData.Add("TopTitle", MainContractText.GetTitle1());
-            ViewData.Add("Epilog", MainContractText.GetEpilog());
-            ViewData.Add("Prolog", MainContractText.GetProlog());
-            ViewData.Add("ModuleText", MainContractText.GetModuleText());
+            //Skall skrivas om efter ny mallsida för huvudavtal! 
+            //Nedanstående metoder tar numera ett ID till view_MainContractTemplate som inparameter och vi lägger in "1" så länge för att undvika krasch...
+            //Varför hämtas ett och ett värde istället för hela raden på en gång? Kanske läge att ändra?
+
+            ViewData.Add("TopTitle", MainContractText.GetTitle1("1"));
+            ViewData.Add("Epilog", MainContractText.GetEpilog("1"));
+            ViewData.Add("Prolog", MainContractText.GetProlog("1"));
+            ViewData.Add("ModuleText", MainContractText.GetModuleText("1"));
             return View();
         }
 
