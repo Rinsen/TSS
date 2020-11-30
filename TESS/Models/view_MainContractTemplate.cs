@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace TietoCRM.Models
 {
@@ -69,6 +70,32 @@ namespace TietoCRM.Models
 
             return list;
         }
+        /// <summary>
+        /// Updates the given column name with given value to the database
+        /// </summary>
+        /// <param name="name">The column name in the database</param>
+        /// <param name="value">The value you want for that given column name in the database</param>
+        public static void Update(String name, String value)
+        {
+
+            using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
+            using (SqlCommand command = new SqlCommand(String.Format("UPDATE " + databasePrefix + "MainContractTemplate SET {0}=@value", name), connection))
+            {
+                connection.Open();
+
+                /*SqlParameter nameParam = new SqlParameter("@name", System.Data.SqlDbType.NVarChar, 100);
+                nameParam.Value = name;*/
+                SqlParameter valueParam = new SqlParameter("@value", System.Data.SqlDbType.NVarChar, -1);
+                valueParam.Value = value;
+
+
+                //command.Parameters.Add(nameParam);
+                command.Parameters.Add(valueParam);
+                command.Prepare();
+                int a = command.ExecuteNonQuery();
+            }
+        }
+
     }
 
 }

@@ -7,7 +7,7 @@ using System.Web;
 
 namespace TietoCRM.Models
 {
-    public class view_MainContractTemplate : SQLBaseClass
+    public class view_TemplateMainContract
     {
         public enum MainContractType
         {
@@ -50,7 +50,7 @@ namespace TietoCRM.Models
         /// <param name="name">The column name in the database</param>
         /// <param name="type">The heading type of the object, MainHead, Subheading, Text</param>
         /// <param name="value">The value the database holds</param>
-        public view_MainContractTemplate(String name, MainContractType type, String value)
+        public view_TemplateMainContract(String name, MainContractType type, String value)
         {
             this.Name = name;
             this.Type = type;
@@ -66,7 +66,7 @@ namespace TietoCRM.Models
         {
 
             using (SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString))
-            using (SqlCommand command = new SqlCommand(String.Format("UPDATE dbo.view_MainContractTemplate SET {0}=@value", name), connection))
+            using (SqlCommand command = new SqlCommand(String.Format("UPDATE dbo.Havtalsmall SET {0}=@value", name), connection))
             {
                 connection.Open();
 
