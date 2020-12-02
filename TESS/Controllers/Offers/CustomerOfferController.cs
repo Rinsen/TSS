@@ -1823,7 +1823,7 @@ namespace TietoCRM.Controllers
                             co.SetValue(offerVariable.Key, offerVariable.Value);
                     }
 
-                    //co.Offer_created = DateTime.Today;
+                    co.Offer_created = DateTime.Today;
 
                     co.Update("Offer_number = '" + offerNumber + "'");
                 }
