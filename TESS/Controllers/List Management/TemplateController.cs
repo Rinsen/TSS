@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.List_Management
@@ -50,15 +47,60 @@ namespace TietoCRM.Controllers.List_Management
 
         public ActionResult MainContractTemplate()
         {
-            //Skall skrivas om efter ny mallsida för huvudavtal! 
-            //Nedanstående metoder tar numera ett ID till view_MainContractTemplate som inparameter och vi lägger in "1" så länge för att undvika krasch...
-            //Varför hämtas ett och ett värde istället för hela raden på en gång? Kanske läge att ändra?
+            //Kontrollera om EDU -> Visa list-vy
+            if(System.Web.HttpContext.Current.GetUser().Area == "EDU")
+            {
+                if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                {
+                    return View("Denied");
+                }
 
-            ViewData.Add("TopTitle", MainContractText.GetTitle1("1"));
-            ViewData.Add("Epilog", MainContractText.GetEpilog("1"));
-            ViewData.Add("Prolog", MainContractText.GetProlog("1"));
-            ViewData.Add("ModuleText", MainContractText.GetModuleText("1"));
-            return View();
+                List<String> properties = typeof(TietoCRM.Models.view_MainContractTemplate).GetProperties().Where(p =>
+                    p.Name == "ID" ||
+                    p.Name == "ShortDescription" ||
+                    p.Name == "Description" ||
+                    p.Name == "TopTitle").Select(p => p.Name).ToList();
+                properties.Insert(0, "#");
+                ViewData.Add("Properties", properties);
+
+                this.ViewData.Add("ControllerName", "Template");
+
+                return View("MainContractIndex");
+            }
+            else
+            {
+                //Om VoO eller IFO -> Visa mall-vy (singel)
+                var mainContractTemplate = view_MainContractTemplate.GetMainContractTemplate("1");
+
+                ViewData.Add("TopTitle", mainContractTemplate.TopTitle);
+                ViewData.Add("Epilog", mainContractTemplate.Epilog);
+                ViewData.Add("Prolog", mainContractTemplate.Prolog);
+                ViewData.Add("ModulText", mainContractTemplate.ModulText);
+
+                return View();
+            }
+        }
+
+        public String SpecificMainContractTemplateData()
+        {
+            String id = Request.Form["ID"];
+
+            view_MainContractTemplate template = new view_MainContractTemplate();
+            template.Select("ID = " + id);
+
+            dynamic j = null;
+
+            j = new
+            {
+                template.TopTitle,
+                template.ShortDescription,
+                template.Description,
+                template.Prolog,
+                template.Epilog,
+                ModulText = template.ModulText
+            };
+
+            return (new JavaScriptSerializer()).Serialize(j);
         }
 
         public String SpecificTemplateData()
@@ -116,27 +158,15 @@ namespace TietoCRM.Controllers.List_Management
            }
             
             return (new JavaScriptSerializer()).Serialize(j);
+        }
 
-            // Custom JsonSerializer to support HTML chars.
-            StringBuilder returnString = new StringBuilder();
-            returnString.Append("{");
-            foreach (var prop in j.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
-            {
-                returnString.Append("\"" + prop.Name + "\":\"" + prop.GetValue(j, null) + "\",");
-            }
-            returnString.Remove(returnString.Length - 1, 1);
-            returnString.Append("}");
-            
-           
-            // Replace any carrige return / new lines with a break line instead.
-            if((new Regex(@"<\s*([^ >]+)[^>]*>.*?<\s*/\s*\1\s*>").IsMatch(returnString.ToString())))
-            {
-                return (new Regex("(\r\n|\r|\n)")).Replace(returnString.ToString(), "");
-            }
-            else
-            {
-                return (new Regex("(\r\n|\r|\n)")).Replace(returnString.ToString(), "<br>");
-            }
+        public String MainContractTemplateJsonData()
+        {
+            this.Response.ContentType = "text/plain";
+
+            var l = view_MainContractTemplate.getAllMainContractTemplates().ToList();
+
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
         }
 
         public String TemplateJsonData()
@@ -144,32 +174,92 @@ namespace TietoCRM.Controllers.List_Management
             String sign = Request.Form["sign"];
             //int mode = int.Parse(Request.Form["mode"]);
             this.Response.ContentType = "text/plain";
-            List<view_TextTemplate> l;
-            //if (mode == 1)
-            //{
-            //    l = view_TextTemplate.getAllTextTemplates(sign).Where(t => t.Title != null && t.Title != "").ToList();
-            //    foreach (view_TextTemplate item in l)
-            //    {
-            //        if (item.Document_head == null)
-            //        {
-            //            item.Document_head = item.Title;
-            //        }
-            //    }
-            //}
-            //else
-            {
-                //l = view_TextTemplate.getAllTextTemplates(sign).Where(t => t.Document_head != null && t.Document_type == "Offert").ToList();
-                l = view_TextTemplate.getAllTextTemplates(sign).ToList();
-            }
 
-            foreach (view_TextTemplate lm in l) {
+            var l = view_TextTemplate.getAllTextTemplates(sign).ToList();
+
+            foreach (view_TextTemplate lm in l) 
+            {
                 if (lm.Document_type == "Offert")
                 {
                     lm.Title = lm.Document_head;
                 } 
-
             }
+
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(l) + "}";
+        }
+
+        [HttpPost, ValidateInput(false)]
+        public String SaveMainContractTemplate()
+        {
+            try
+            {
+                String method = Request.Form["method"];
+                String data = "";
+                if (Request.Form["data"] != "" && Request.Form["data"] != null)
+                    data = Request.Form["data"];
+
+                Dictionary<String, Object> dict = null;
+
+                if (method == "update")
+                {
+                    try
+                    {
+                        dict = (Dictionary<String, Object>)(new JavaScriptSerializer()).Deserialize(data, typeof(Dictionary<String, Object>));
+                    }
+                    catch (Exception e)
+                    {
+                        return "0";
+                    }
+
+                    view_MainContractTemplate template = new view_MainContractTemplate();
+                    template.Select("ID = " + dict["Id"]);
+
+                    foreach (KeyValuePair<String, Object> keyValue in dict)
+                    {
+                        template.SetValue(keyValue.Key, keyValue.Value);
+                    }
+
+                    template.Update("ID = " + dict["Id"]);
+
+                    return "1";
+                }
+                else if (method == "delete")
+                {
+                    String id = Request.Form["ID"];
+
+                    view_MainContractTemplate template = new view_MainContractTemplate();
+                    template.Delete("ID = " + id);
+
+                    return "1";
+                }
+                else
+                {
+                    try
+                    {
+                        dict = (Dictionary<String, Object>)(new JavaScriptSerializer()).Deserialize(data, typeof(Dictionary<String, Object>));
+                    }
+                    catch (Exception e)
+                    {
+                        return "0";
+                    }
+
+                    view_MainContractTemplate template = new view_MainContractTemplate();
+
+                    foreach (KeyValuePair<String, Object> keyValue in dict)
+                    {
+                        template.SetValue(keyValue.Key, keyValue.Value);
+                    }
+
+                    template.Insert();
+
+                    return "1";
+                }
+            }
+            catch (Exception ex)
+            {
+                return "-1";
+            }
+
         }
 
         [HttpPost, ValidateInput(false)]
@@ -271,52 +361,31 @@ namespace TietoCRM.Controllers.List_Management
                 String epilog = Request.Form["epilog"];
                 String prolog = Request.Form["prolog"];
                 String topTitle = Request.Form["title"];
-                String moduleText = Request.Form["moduleText"];
-               
+                String modulText = Request.Form["modulText"];
+                String id = Request.Form["id"];
+
                 try
                 {
-                    MainContractText.Update("Epilog", epilog);
-                    MainContractText.Update("Prolog", prolog);
-                    MainContractText.Update("rubrik1",topTitle);
-                    MainContractText.Update("ModulText", moduleText);
+                    var mainContractTemplate = new view_MainContractTemplate();
+                    mainContractTemplate.Select("ID = " + id);
+
+                    mainContractTemplate.Epilog = epilog;
+                    mainContractTemplate.Prolog = prolog;
+                    mainContractTemplate.TopTitle = topTitle;
+                    mainContractTemplate.ModulText = modulText;
+
+                    mainContractTemplate.Update("ID = " + id);
                 }
                 catch (Exception e)
                 {
                     return "0";
                 }
-                    
-
                 
                 return "1";
             }
             catch
             {
                 return "-1";
-            }
-           
-            
-        }
-        private void TreeToHtml(List<MainContractText> textList)
-        {
-            foreach (MainContractText item in textList)
-            {
-                if (item.Type == MainContractText.MainContractType.MainHead)
-                {
-                    htmlMainTemplate += "<input data-name='" + item.Name + "' type='text' class='form-control main-template-mainhead' value='" + item.Value + "'/>";
-                    
-                }
-                else if (item.Type == MainContractText.MainContractType.Subheading)
-                {
-                    htmlMainTemplate += "<input data-name='" + item.Name + "' type='text' class='form-control main-template-subheading' value='" + item.Value.Replace("\t", "") + "'/>";
-                }
-                else if (item.Type == MainContractText.MainContractType.Text)
-                {
-                    htmlMainTemplate += "<textarea data-name='" + item.Name + "' class='form-control main-template-text'>" + item.Value + "</textarea>";
-                }
-                if (item.Children.Count > 0)
-                {
-                    TreeToHtml(item.Children);
-                }
             }
         }
     }

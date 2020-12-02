@@ -192,7 +192,7 @@ namespace TietoCRM.Models
 
                 foreach (PropertyInfo pi in this.propertyInfos)
 	            {
-                    if (pi.Name.ToLower() != "ssma_timestamp" && !pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK"))
+                    if (pi.Name.ToLower() != "ssma_timestamp" && !pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK") && !pi.Name.Equals("ID"))
                     {
                         if(pi.Name.CompareTo("Order") == 0)
                         {
@@ -213,7 +213,7 @@ namespace TietoCRM.Models
 
                 foreach(PropertyInfo pi in this.PropertyInfos)
                 {
-                    if (pi.Name.ToLower() != "ssma_timestamp" && !pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK"))
+                    if (pi.Name.ToLower() != "ssma_timestamp" && !pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK") && !pi.Name.Equals("ID"))
                     {
                         Type t = pi.GetType();
 
@@ -366,7 +366,7 @@ namespace TietoCRM.Models
                         {
                             query += "[Order]" + ",";
                         }
-                        else if ( pi.Name.CompareTo("Id") == 0)
+                        else if ( pi.Name.CompareTo("Id") == 0 || pi.Name.CompareTo("ID") == 0)
                         {
                             continue; //Identity i databasen ska ej göras insert på. Det sköter db.
                         }
@@ -398,7 +398,7 @@ namespace TietoCRM.Models
                 {
                     if (pi.Name.ToLower() == "ssma_timestamp")
                         query += "DEFAULT,";
-                    else if (!pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK"))
+                    else if (!pi.Name.StartsWith("_") && !pi.Name.Equals("ID_PK") && !pi.Name.Equals("ID"))
                         query += "@" + pi.Name + ",";
                 }
                 query = query.Remove(query.Length - 1);

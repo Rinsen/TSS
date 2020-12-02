@@ -2411,7 +2411,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetProlog(from);
+                    return view_MainContractTemplate.GetMainContractTemplate(from).Prolog;
                 }
             }
             catch
@@ -2464,7 +2464,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetEpilog(from);
+                    return view_MainContractTemplate.GetMainContractTemplate(from).Epilog;
                 }
                
             }
@@ -2791,7 +2791,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetTitle1(from);
+                    return view_MainContractTemplate.GetMainContractTemplate(from).TopTitle;
                 }
 
             }
@@ -2847,7 +2847,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 else
                 {
-                    return MainContractText.GetModuleText(from);
+                    return view_MainContractTemplate.GetMainContractTemplate(from).ModulText;
                 }
             }
             catch

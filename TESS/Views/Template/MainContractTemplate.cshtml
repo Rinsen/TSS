@@ -25,7 +25,7 @@
 <p style="color:black">Avtalet omfattar en icke exklusiv, evig, nyttjanderätt till nedan redovisade programprodukter/- moduler. Leverans av programvara sker i objektkod</p>
 <div class="row col-sm-12" style="margin-bottom:20px">
     <form>
-        <textarea data-name='ModuleText' rows="6" id="module-text" class='form-control main-template-text'>@ViewBag.ModuleText</textarea>
+        <textarea data-name='ModuleText' rows="6" id="module-text" class='form-control main-template-text'>@ViewBag.ModulText</textarea>
     </form>
 </div>
 <div class="row col-sm-12">
@@ -88,7 +88,8 @@
                 "epilog": tinymce.get('epilog-text').getContent(),
                 "prolog": tinymce.get('prolog-text').getContent(),
                 "title": $('#top-title-text').val(),
-                "moduleText": tinymce.get('module-text').getContent(),
+                "modulText": tinymce.get('module-text').getContent(),
+                "id": "1" //Här måste vi få in ett id från den sparade mall-raden
 
             },
             success: function (data) {
