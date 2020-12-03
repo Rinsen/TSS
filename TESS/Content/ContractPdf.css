@@ -664,13 +664,13 @@
 }
 .crm-pdf div.crm-pdf-subrows_2 table td:nth-child(1) {
   padding-left: 0.5em;
-  width: 6%;
+  width: 7%;
   text-align: left;
   vertical-align: text-top;
   font-size: 9pt;
 }
 .crm-pdf div.crm-pdf-subrows_2 table td:nth-child(2) {
-  width: 18%;
+  width: 16%;
   text-align: left;
   vertical-align: text-top;
   font-size: 9pt;
