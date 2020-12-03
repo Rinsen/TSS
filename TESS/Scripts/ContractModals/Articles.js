@@ -209,15 +209,28 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         }
         if (article.HasDependencies || (article.Description != null && article.Description.length) > 0 || article.Module_status != "0") {
             var depTitle = "";
+
+            if (article.Module_status_txt.length > 0 && article.Module_status != "0") {
+                depTitle = "Restriction:\n";
+                depTitle += article.Module_status_txt;
+                depTitle += "\n";
+            }
+
             if (article.HasDependencies) {
+                if (depTitle.length > 0) {
+                    depTitle += "\n\n";
+                }
+
                 var depLen = article.Dependencies.length;
-                depTitle = "Depends on:\n";
+                depTitle += "Depends on:\n";
+
                 var depArticle;
                 for (var d = 0; d < depLen; d++) {
                     depArticle = article.Dependencies[d];
                     depTitle += " " + depArticle.Article_number + ": " + depArticle.Module + "\n";
                 }
             }
+
             if (article.Description.length > 0) {
                 if (depTitle.length > 0) {
                     depTitle += "\n";
@@ -225,13 +238,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 depTitle += "Important info:\n";
                 depTitle += article.Description;
             }
-            if (article.Module_status_txt.length > 0 && article.Module_status != "0") {
-                if (depTitle.length > 0) {
-                    depTitle += "\n\n";
-                }
-                depTitle += "Restriction:\n";
-                depTitle += article.Module_status_txt;
-            }
+            
             usedDep = "<td title='" + depTitle + "'><span class='glyphicon glyphicon-exclamation-sign'></span></td>";
         }
         var $newButton;
@@ -247,6 +254,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-selected='false'                                                   \
                                             data-maintenance='" + article.Price_category + "'                       \
                                             data-status='" + article.Module_status + "'                             \
+                                            data-status-text='" + article.Module_status_txt + "'                    \
                                             data-alias='" + article.Module + "'                                     \
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
@@ -282,6 +290,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
                                             data-status='" + article.Module_status + "'                             \
+                                            data-status-text='" + article.Module_status_txt + "'                    \
                                             data-alias='" + article.Module + "'                                     \
                                             data-multiple-select='" + article.Multiple_type + "'                    \
                                             data-read-name-from-module='" + article.Read_name_from_module + "'      \
@@ -522,7 +531,8 @@ var moveItem = function (event, element) {
 
     var buttonArt = $button.find(".art-nr").html();
     var buttonLicense = $button.data("license");
-    //var buttonStatus = $button.data("status");
+    var buttonStatus = $button.data("status");
+    var buttonStatusTxt = $button.data("status-text");
     var buttonMaintenance = $button.data("maintenance");
     var buttonid = $button.attr("id");
     var buttonHasServiceDependencies = $button.data("automapping");
@@ -530,12 +540,12 @@ var moveItem = function (event, element) {
 
     if ($button.attr("data-selected") == "false") {
 
-        //if (buttonStatus > 0) {
-        //    //Show dialog
-        //    if (!confirm("Article with restriction! Continue?")) {
-        //        return;
-        //    }
-        //}
+        if (buttonStatus > 0) {
+            //Show dialog
+            if (!confirm("Article with restriction! Continue?\n\nRestriction:\n" + buttonStatusTxt)) {
+                return;
+            }
+        }
 
         $newButton = $button.clone();
         // Fix to exclude the "used" checkmark on selected items.

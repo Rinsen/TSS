@@ -1295,7 +1295,7 @@ namespace TietoCRM.Controllers.Contracts
                 var obj = new
                 {
                     Code = service.Article_number,
-                    Description = service.Description,
+                    Module = service.Module,
                     Price = ccRow.Total_price / ccRow.Amount,
                     Amount = ccRow.Amount,
                     Total = ccRow.Total_price,
@@ -1309,7 +1309,7 @@ namespace TietoCRM.Controllers.Contracts
                 services.Add(obj);
             }
 
-            return (new JavaScriptSerializer()).Serialize(services.OrderBy(s => s.Description));
+            return (new JavaScriptSerializer()).Serialize(services.OrderBy(s => s.Module));
         }
 
         private List<String> GetStatuses()
@@ -1458,7 +1458,9 @@ namespace TietoCRM.Controllers.Contracts
                                 if (consultantRow.Amount > 1)
                                 {
                                     //Minska med 1
+                                    var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
                                     consultantRow.Amount = consultantRow.Amount - 1;
+                                    consultantRow.Total_price -= pricePerUnit;
                                     consultantRow.Update("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
                                 }
                                 else
@@ -1583,6 +1585,7 @@ namespace TietoCRM.Controllers.Contracts
                                     consultantRow.Amount = 1;
                                     consultantRow.Total_price = mappedModule.Price_category;
                                     consultantRow.Created = DateTime.Now;
+                                    consultantRow.Alias = mappedModule.Module;
                                     consultantRow.Insert();
                                 }
                                 catch (Exception)
@@ -1590,7 +1593,9 @@ namespace TietoCRM.Controllers.Contracts
                                     //Already exist on contract -> Räkna upp Amount!
                                     if(consultantRow.Select("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
                                     {
+                                        var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
                                         consultantRow.Amount = consultantRow.Amount + 1;
+                                        consultantRow.Total_price = consultantRow.Amount * pricePerUnit;                                        
                                         consultantRow.Update("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
                                     }
                                 }
