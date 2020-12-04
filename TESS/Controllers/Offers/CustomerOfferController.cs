@@ -235,6 +235,10 @@ namespace TietoCRM.Controllers
             customer.Select("ID=" + customer._ID);
             ViewData.Add("Customer", customer);
 
+            view_Reminder vR = new view_Reminder();
+            var remindExist = vR.checkIfReminderPerCustomer(co.Customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+            ViewData.Add("ShowReminderButton", remindExist.CompareTo("-1") == 0 ? false : true);
+
             view_User user = new view_User();
             if (System.Web.HttpContext.Current.GetUser().User_level > 1)
                 user = System.Web.HttpContext.Current.GetUser();

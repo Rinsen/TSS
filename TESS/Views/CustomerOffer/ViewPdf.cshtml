@@ -35,6 +35,7 @@
             <button type="button" onclick="window.location ='Index?selected-offer=@Url.Encode(Request["selected-offer"])&search=@Url.Encode(Request["search"])&customer=@Url.Encode(ViewBag.CustomerOffer.Customer)&our_sign=@Url.Encode(ViewBag.CustomerOffer.Our_sign)';" class="btn btn-default navbar-btn">Back</button>
             <span style="margin-left: 1em"></span>
             <a class="btn btn-primary navbar-btn" href="Pdf?selected-offer=@Request["selected-offer"]" target="_blank">PDF</a>
+            <button id="copyReminder" type="button" onclick="copyToClipboard()" style="display:none" class="btn btn-primary navbar-btn">Copy Reminder</button>
         </div><!-- /.container-fluid -->
     </nav>
  @* 
@@ -56,42 +57,71 @@
     Now code for menu selection through bootbox. Complicated!?!
 *@
 
-    <script>
-        var openModal = function (el) {
-            var $el = $(el);
-            console.log($el)
-            bootbox.dialog({
-                title: "Edit " + $el.text(),
-                draggable: true,
-                message: (function () {
-                    var rdata = "";
-                    $.ajax({
-                        "url": "Modals?modal=" + $el.data("modal-target") + "&selected-offer=@Request["selected-offer"]&sign=@ViewBag.Representative.Sign&customer=@Url.Encode(ViewBag.Customer.Customer)",
-                            "success": function (data) { rdata = data },
-                            "error": function (data) { rdata = "<h2>Failed to load modal content, have you lost internet connection?</h2>";},
-                            "async": false,
-                            "headers": { 'Cache-Control': 'no-cache' }
-                        })
-                        return rdata;
-                    }),
-                    buttons: {
-                        close: {                
-                            label: "Close",
-                            className: "btn-default",
-                        },
-                        success: {
-                            label: "Save",
-                            className: "btn-primary",
-                            callback: function () {
-                                var name = $('#name').val();
-                                var answer = $("input[name='awesomeness']:checked").val()
-                                saveFunction(@ViewBag.CustomerOffer._Offer_number);
-                        },
-                    },
-                }
-            }).find('.modal-content').draggable();
-        }
+<script>
 
-    </script>
+    $(document).ready(function () {
+
+        if ("@Html.Raw(ViewBag.ShowReminderButton)" == "True") {
+            $("#copyReminder").show();
+        }
+    });
+
+    var openModal = function (el) {
+        var $el = $(el);
+        console.log($el)
+        bootbox.dialog({
+            title: "Edit " + $el.text(),
+            draggable: true,
+            message: (function () {
+                var rdata = "";
+                $.ajax({
+                    "url": "Modals?modal=" + $el.data("modal-target") + "&selected-offer=@Request["selected-offer"]&sign=@ViewBag.Representative.Sign&customer=@Url.Encode(ViewBag.Customer.Customer)",
+                    "success": function (data) { rdata = data },
+                    "error": function (data) { rdata = "<h2>Failed to load modal content, have you lost internet connection?</h2>";},
+                    "async": false,
+                    "headers": { 'Cache-Control': 'no-cache' }
+                })
+                return rdata;
+            }),
+            buttons: {
+                close: {
+                    label: "Close",
+                    className: "btn-default",
+                },
+                success: {
+                    label: "Save",
+                    className: "btn-primary",
+                    callback: function () {
+                        var name = $('#name').val();
+                        var answer = $("input[name='awesomeness']:checked").val()
+                        saveFunction(@ViewBag.CustomerOffer._Offer_number);
+                    },
+                },
+            }
+        }).find('.modal-content').draggable();
+    }
+
+    function copyToClipboard() {
+        var customer = "@Html.Raw(ViewBag.Customer.Customer)"
+        $.ajax({
+            "url": serverPrefix + "CustomerOffer/GetReminders/",
+            "type": "POST",
+            "data": {
+                "customer": customer,
+            },
+            "success": function (data) {
+                reminders = JSON.parse(data);
+                var remindText = "";
+                for (var i = 0; i < reminders.length; i++) {
+                    var remind = reminders[i];
+                    remindText += remind.Reminder_text + " ";
+                }
+
+                window.prompt("Copy to clipboard: Ctrl+C, Enter", remindText);
+            }
+        });
+    }
+
+</script>
 
 </div>
