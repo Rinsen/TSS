@@ -375,6 +375,10 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("RemEducationPortals", remEducationPortals);
             ViewData.Add("CtrResign", ctrResign);
 
+            view_Reminder vR = new view_Reminder();
+            var remindExist = vR.checkIfReminderPerCustomer(contract.Customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+            ViewData.Add("ShowReminderButton", remindExist.CompareTo("-1") == 0 ? false : true);
+
             //Här styrs sorteringen av artiklarna ut på avtalet av aktuella artiklar.
             if (usr.AvtalSortera == 1)
             {

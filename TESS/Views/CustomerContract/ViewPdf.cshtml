@@ -118,6 +118,7 @@
             <span style="margin-left: 1em"></span>
             <a class="btn btn-primary navbar-btn" href="@Url.Content("~/CustomerContract/Pdf?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))" target="_blank">PDF</a>
             <a class="btn btn-primary navbar-btn" href="@Url.Content("~/CustomerContract/ViewShippingListPdf?contract-id=" + Request["contract-id"] + "&customer=" + Url.Encode(Request["customer"]))" target="_blank">Shipping List</a>
+            <button id="copyReminder" type="button" onclick="copyToClipboard()" style="display:none" class="btn btn-primary navbar-btn">Copy Reminder</button>
         </div><!-- /.container-fluid -->
     </nav>
     <page size="A4">
@@ -1554,6 +1555,11 @@ else
         //    $("#included_ModalContractFromOffer").load("_ModalContractFromOffer.cshtml");
         //});
 
+        if ("@Html.Raw(ViewBag.showReminderButton)" == "True") {
+            $("#copyReminder").show();
+        }
+
+
         function get_browser() {
             var ua = navigator.userAgent,
                 tem,
@@ -1748,9 +1754,8 @@ else
                     }
 
                 }
-        });
-    }
-
+            });
+        }
 
     });
 
@@ -1765,7 +1770,28 @@ else
     var aktStatus = "@Html.Raw(ViewBag.CustomerContract.Status)";
     var contractValidFrom = "@Html.Raw(ViewBag.CustomerContract.Valid_from)";
     var ctrResign = "@Html.Raw(ViewBag.CtrResign)";
-    var our_sign = "@ViewBag.CustomerContract.Sign"
+    var our_sign = "@ViewBag.CustomerContract.Sign";
+    var showReminderButton = "@ViewBag.ShowReminderButton";
+
+    function copyToClipboard() {
+        $.ajax({
+            "url": serverPrefix + "CustomerContract/GetReminders/",
+            "type": "POST",
+            "data": {
+                "customer": customerName,
+            },
+            "success": function (data) {
+                reminders = JSON.parse(data);
+                var remindText = "";
+                for (var i = 0; i < reminders.length; i++) {
+                    var remind = reminders[i];
+                    remindText += remind.Reminder_text + " ";
+                }
+
+                window.prompt("Copy to clipboard: Ctrl+C, Enter", remindText);
+            }
+        });
+    }
 
 </script>
 
