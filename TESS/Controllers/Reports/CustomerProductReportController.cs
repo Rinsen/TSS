@@ -102,6 +102,7 @@ namespace TietoCRM.Controllers
                         mainContract._MatchedModules = mainContract._MatchedModules.DistinctBy(m => m.Article_number).ToList();
                     }
 
+                    oldSystem = "";
                     mainContract._OrderedSystemNames = SystemNames.ToList();
                     mainContract._OrderedSystemNames.Sort();
                     SystemNames.Clear();
