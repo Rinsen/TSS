@@ -5,12 +5,13 @@
         <link rel="stylesheet" media="all" href="@Url.Content("~/Content/OfferPdf.css")" />
         @*<link rel="stylesheet" media="all" href="@Server.MapPath("../Content/OfferPdf.css")" />*@
     }
+    string offerNumber = Convert.ToString(ViewBag.CustomerOffer._Offer_number);
     string offerValid = Convert.ToString(ViewBag.CustomerOffer.Offer_valid);
     if (offerValid != null)
     {
         offerValid = offerValid.Replace(" 00:00:00", "");
     }
-        
+
     string currentDate = DateTime.Now.Date.ToShortDateString();
     @functions{
     
@@ -87,7 +88,7 @@
         @*<span class="clearfix"></span>*@
         <table>
             <tr>
-                <td id="crm-pdf-valid-info"><span>Giltig t.o.m <span id="Offer_valid">@offerValid</span></span></td>
+                <td id="crm-pdf-valid-info"><span><b>Offertnr @offerNumber. Giltig t.o.m <span id="Offer_valid">@offerValid</span></b></span></td>
                 <td id="crm-pdf-representative-info">
                     <div><strong>@ViewBag.Representative.Name</strong></div>
                     <a href="mailto:@ViewBag.Representative.Email" id="Representative_email">@ViewBag.Representative.Email</a>

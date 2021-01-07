@@ -987,15 +987,15 @@
                                                                 data-selected="false"
                                                                 data-contract-description="@service.Contract_description"
                                                                 class="list-group-item">
-                                                            <span style="font-weight:700">Service: @service.Article_number, </span>
-                                                            <label>@price</label>
+                                                            <span style="font-weight:700">@service.Article_number, </span>
+                                                            <label style="font-weight:100">@price</label>
                                                             @if (!String.IsNullOrEmpty(title))
                                                             {
                                                                 <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
                                                             }
                                                             <span class="service-amount"></span>
                                                             <br />
-                                                            <span id="description-title">@service.Module</span>
+                                                            <span id="description-title" style="font-weight:700">@service.Module</span>
                                                         </button>
                                                     </td>
                                                 </table>
@@ -1028,15 +1028,15 @@
                                                     String title = String.IsNullOrEmpty(service.Description) ? "" : "Important info:\n" + service.Description;
 
                                                     <button style="margin-bottom:25px" type="button" onclick="newItem(this, @cost)" data-code="@service.Article_number" data-selected="true" class="list-group-item">
-                                                        <span style="font-weight:700">Service: @service.Article_number, </span>
-                                                        <label>@price</label>
+                                                        <span style="font-weight:700">@service.Article_number, </span>
+                                                        <label style="font-weight:100">@price</label>
                                                         @if(!String.IsNullOrEmpty(title))
                                                         {
                                                             <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
                                                         }
                                                         <span class="service-amount">@row.Amount</span>
                                                         <br />
-                                                        <span id="description-title">@service.Module</span>
+                                                        <span id="description-title" style="font-weight:700">@service.Module</span>
                                                     </button>
                                                 }
                                             }

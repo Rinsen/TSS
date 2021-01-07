@@ -1072,15 +1072,15 @@ else if (Request["modal"] == "services")
                                                     data-offer-description="@service.Offer_description"
                                                     data-service-code="@service.Article_number"
                                                     class="list-group-item">
-                                                <span style="font-weight:700">Service: @service.Article_number, </span>
-                                                <label>@price</label>
+                                                <span style="font-weight:700">@service.Article_number, </span>
+                                                <label style="font-weight:100">@price</label>
                                                 @if (!String.IsNullOrEmpty(title))
                                                 {
                                                     <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
                                                 }
                                                 <span class="service-amount"></span>
                                                 <br />
-                                                <span id="description-title">@service.Module</span>
+                                                <span id="description-title" style="font-weight:700">@service.Module</span>
                                             </button>
 
                                         </td>
@@ -1128,15 +1128,15 @@ else if (Request["modal"] == "services")
                                                                         data-service-code="@service.Article_number"
                                                                         data-selected="true"
                                                                         class="list-group-item">
-                                                                    <span style="font-weight:700">Service: @service.Article_number, </span>
-                                                                    <label>@price</label>
+                                                                    <span style="font-weight:700">@service.Article_number, </span>
+                                                                    <label style="font-weight:100">@price</label>
                                                                     @if (!String.IsNullOrEmpty(title))
                                                                     {
                                                                         <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
                                                                     }
                                                                     <span class="service-amount">@row.Amount</span>
                                                                     <br />
-                                                                    <span id="description-title">@service.Module</span>
+                                                                    <span id="description-title" style="font-weight:700">@service.Module</span>
                                                                 </button>
                                     }
                                 }
