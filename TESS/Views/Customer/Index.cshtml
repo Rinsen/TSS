@@ -60,8 +60,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="short-name-text" class="col-sm-3 control-label">Buyer</label>
-                                <div class="col-sm-9">
+                                <div class="col-sm-6">
                                     <input type="text" class="form-control ignore" name="Short_name" id="short-name-text" placeholder="Buyer">
+                                </div>
+                                <div class="checkbox">
+                                    <label for="use-short-name" class="col-sm-3" style="text-align:left">
+                                        <input id="use-short-name" data-id="use-short-name" name="UseShortNameAsReceiver" type="checkbox" />
+                                        Use Buyer as receiver
+                                    </label>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -222,16 +228,6 @@
                                         }
                                     </select>
                                     @*                                    <input type="text" class="form-control" name="Inhabitant_level" id="inhabitant-level-text" placeholder="Inhabitant level">*@
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-3 col-sm-9">
-                                    <div class="checkbox">
-                                        <label for="use-short-name" class="col-sm-3 control-label" style="text-align:left">
-                                            <input id="use-short-name" data-id="use-short-name" name="UseShortNameAsReceiver" type="checkbox"/>
-                                            Use Buyer as receiver
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
                         </div>
