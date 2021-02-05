@@ -1072,15 +1072,14 @@ else if (Request["modal"] == "services")
                                                     data-offer-description="@service.Offer_description"
                                                     data-service-code="@service.Article_number"
                                                     class="list-group-item">
-                                                <span style="font-weight:700">@service.Article_number, </span>
-                                                <label style="font-weight:100">@price</label>
-                                                @if (!String.IsNullOrEmpty(title))
-                                                {
-                                                    <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
-                                                }
-                                                <span class="service-amount"></span>
-                                                <br />
-                                                <span id="description-title" style="font-weight:700">@service.Module</span>
+                                                        <span id="description-title" style="font-weight:700">@service.Article_number, @service.Module</span>
+                                                        @if (!String.IsNullOrEmpty(title))
+                                                        {
+                                                            <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
+                                                        }
+                                                        <span class="service-amount"></span>
+                                                        <br />
+                                                        <label style="font-weight:100">@price</label>
                                             </button>
 
                                         </td>
@@ -1128,15 +1127,14 @@ else if (Request["modal"] == "services")
                                                                         data-service-code="@service.Article_number"
                                                                         data-selected="true"
                                                                         class="list-group-item">
-                                                                    <span style="font-weight:700">@service.Article_number, </span>
-                                                                    <label style="font-weight:100">@price</label>
+                                                                    <span id="description-title" style="font-weight:700">@service.Article_number, @service.Module</span>
                                                                     @if (!String.IsNullOrEmpty(title))
                                                                     {
                                                                         <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
                                                                     }
                                                                     <span class="service-amount">@row.Amount</span>
                                                                     <br />
-                                                                    <span id="description-title" style="font-weight:700">@service.Module</span>
+                                                                    <label style="font-weight:100">@price</label>
                                                                 </button>
                                     }
                                 }
@@ -1534,113 +1532,119 @@ else if (Request["modal"] == "head-information")
 
 
 
-    <form id="head-information-form" class="form-horizontal">
-        <div class="form-group">
-            <label for="contact-person-select" class="col-sm-2 control-label">Contact Person</label>
-            <div class="col-sm-10">
-                <select class="form-control selectpicker" name="Contact_person" id="contact-person-select" placeholder="Contact person">
-                    @foreach (view_CustomerContact cc in ViewBag.ContactPersons)
+<form id="head-information-form" class="form-horizontal">
+    <div class="form-group">
+        <label for="contact-person-select" class="col-sm-2 control-label">Contact Person</label>
+        <div class="col-sm-10">
+            <select class="form-control selectpicker" name="Contact_person" id="contact-person-select" placeholder="Contact person">
+                @foreach (view_CustomerContact cc in ViewBag.ContactPersons)
+                {
+                    if (ViewBag.CustomerOffer.Contact_person == cc.Contact_person)
                     {
-                        if (ViewBag.CustomerOffer.Contact_person == cc.Contact_person)
-                        {
-                            <option value="@cc.Contact_person" selected>@cc.Contact_person</option>
-                        }
-                        else
-                        {
-                            <option value="@cc.Contact_person">@cc.Contact_person</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="our-sign-select" class="col-sm-2 control-label">Our salesman</label>
-            <div class="col-sm-10">
-                <select class="form-control selectpicker" name="Our_sign" id="our-sign-select" placeholder="Our salesman">
-                    @foreach (string cc in ViewBag.Repr)
-                    {
-                        if (ViewBag.CustomerOffer.Our_sign == cc)
-                        {
-                            <option value="@cc" selected>@cc</option>
-                        }
-                        else
-                        {
-                            <option value="@cc">@cc</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="administration" class="col-sm-2 control-label">Administration</label>
-            <div class="col-sm-10">
-                <input class="form-control" id="administration" name="Administration" value="@ViewBag.CustomerOffer.Administration" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="offer-valid-date" class="col-sm-2 control-label">Offer valid</label>
-            <div class="col-sm-10">
-                <input type="date"
-                       class="form-control"
-                       name="Offer_valid"
-                       id="offer-valid-date"
-                       value="@ViewBag.CustomerOffer.Offer_valid.ToString().Replace(@" 00:00:00", "")"
-                       placeholder="Offer valid"
-                       @Html.Raw(disabled)>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="status-select" class="col-sm-2 control-label">Status</label>
-            <div class="col-sm-10">
-                <select class="form-control selectpicker" name="Offer_status" id="status-select" placeholder="Status">
-                    @foreach (String status in ViewBag.Statuses)
-                    {
-                        if (ViewBag.CustomerOffer.Offer_status == status)
-                        {
-                            <option value="@status" selected>@status</option>
-                        }
-                        else
-                        {
-                            <option value="@status">@status</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="title-text" class="col-sm-2 control-label">Title</label>
-            <div class="col-sm-10">
-                <input id="title-text" name="Title" type="text" class="form-control" value="@ViewBag.CustomerOffer.Title">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="area-text" class="col-sm-2 control-label">Area</label>
-            <div class="col-sm-10">
-                <input id="area-text" name="Area" type="text" class="form-control" value="@ViewBag.CustomerOffer.Area" disabled>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="tags-text" class="col-sm-2 control-label">Tags</label>
-            <div class="col-sm-10">
-                <input id="tags-text" name="Hashtags" type="text" class="form-control" value="@ViewBag.CustomerOffer.HashtagsAsString()">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="summera" class="col-sm-2 control-label">Summera</label>
-            <div class="col-sm-10">
-                <div class="checkbox">
-                    @if (ViewBag.CustomerOffer.Summera == 1)
-                    {
-                        <input id="summera" data-id="summera" name="Summera" type="checkbox" checked />
+                        <option value="@cc.Contact_person" selected>@cc.Contact_person</option>
                     }
                     else
                     {
-                        <input id="summera" data-id="summera" name="Summera" type="checkbox" />
+                        <option value="@cc.Contact_person">@cc.Contact_person</option>
                     }
-                </div>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="our-sign-select" class="col-sm-2 control-label">Our salesman</label>
+        <div class="col-sm-10">
+            <select class="form-control selectpicker" name="Our_sign" id="our-sign-select" placeholder="Our salesman">
+                @foreach (string cc in ViewBag.Repr)
+                {
+                    if (ViewBag.CustomerOffer.Our_sign == cc)
+                    {
+                        <option value="@cc" selected>@cc</option>
+                    }
+                    else
+                    {
+                        <option value="@cc">@cc</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="buyer" class="col-sm-2 control-label">Buyer</label>
+        <div class="col-sm-10">
+            <input class="form-control" id="buyer" name="Buyer" value="@ViewBag.CustomerOffer.Buyer" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="administration" class="col-sm-2 control-label">Administration</label>
+        <div class="col-sm-10">
+            <input class="form-control" id="administration" name="Administration" value="@ViewBag.CustomerOffer.Administration" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="offer-valid-date" class="col-sm-2 control-label">Offer valid</label>
+        <div class="col-sm-10">
+            <input type="date"
+                   class="form-control"
+                   name="Offer_valid"
+                   id="offer-valid-date"
+                   value="@ViewBag.CustomerOffer.Offer_valid.ToString().Replace(@" 00:00:00", "")"
+                   placeholder="Offer valid"
+                   @Html.Raw(disabled)>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="status-select" class="col-sm-2 control-label">Status</label>
+        <div class="col-sm-10">
+            <select class="form-control selectpicker" name="Offer_status" id="status-select" placeholder="Status">
+                @foreach (String status in ViewBag.Statuses)
+                {
+                    if (ViewBag.CustomerOffer.Offer_status == status)
+                    {
+                        <option value="@status" selected>@status</option>
+                    }
+                    else
+                    {
+                        <option value="@status">@status</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="title-text" class="col-sm-2 control-label">Title</label>
+        <div class="col-sm-10">
+            <input id="title-text" name="Title" type="text" class="form-control" value="@ViewBag.CustomerOffer.Title">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="area-text" class="col-sm-2 control-label">Area</label>
+        <div class="col-sm-10">
+            <input id="area-text" name="Area" type="text" class="form-control" value="@ViewBag.CustomerOffer.Area" disabled>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="tags-text" class="col-sm-2 control-label">Tags</label>
+        <div class="col-sm-10">
+            <input id="tags-text" name="Hashtags" type="text" class="form-control" value="@ViewBag.CustomerOffer.HashtagsAsString()">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="summera" class="col-sm-2 control-label">Summera</label>
+        <div class="col-sm-10">
+            <div class="checkbox">
+                @if (ViewBag.CustomerOffer.Summera == 1)
+                {
+                    <input id="summera" data-id="summera" name="Summera" type="checkbox" checked />
+                }
+                else
+                {
+                    <input id="summera" data-id="summera" name="Summera" type="checkbox" />
+                }
             </div>
         </div>
-    </form>
+    </div>
+</form>
 
 
 

@@ -16,6 +16,10 @@
                     {
                         <th class="hidden" data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
                     }
+                    else if (PropertyInfo.Name == "UseShortNameAsReceiver")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">Buyer as receiver</th>
+                    }
                     else
                     {
                         <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
@@ -55,9 +59,9 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="short-name-text" class="col-sm-3 control-label">Short name</label>
+                                <label for="short-name-text" class="col-sm-3 control-label">Buyer</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control ignore" name="Short_name" id="short-name-text" placeholder="Short name">
+                                    <input type="text" class="form-control ignore" name="Short_name" id="short-name-text" placeholder="Buyer">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -217,7 +221,17 @@
                                             <option value="@Level.ID_PK">@Level.MinPopulation - @Level.MaxPopulation</option>
                                         }
                                     </select>
-@*                                    <input type="text" class="form-control" name="Inhabitant_level" id="inhabitant-level-text" placeholder="Inhabitant level">*@
+                                    @*                                    <input type="text" class="form-control" name="Inhabitant_level" id="inhabitant-level-text" placeholder="Inhabitant level">*@
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <div class="checkbox">
+                                        <label for="use-short-name" class="col-sm-3 control-label" style="text-align:left">
+                                            <input id="use-short-name" data-id="use-short-name" name="UseShortNameAsReceiver" type="checkbox"/>
+                                            Use Buyer as receiver
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -406,7 +420,9 @@
             var currentProp = $currentInput.attr("name");
             if(!$currentInput.is(':button') && typeof currentProp != 'undefined')
             {
-
+                if ($currentInput.prop("type") == "checkbox") {
+                    customerData[currentProp] = (($currentInput.prop("checked")) ? "1" : "0");
+                } else
                 if(currentProp == "County" || currentProp == "Municipality")
                 {
                     if($currentInput.val() != null && $currentInput.val().length <= 0)
@@ -527,6 +543,13 @@
                                 $(element).prop("selected", true);
                         });
                         $('#county-text').selectpicker('refresh');
+                    }
+                    else if ($tdProp == "UseShortNameAsReceiver") {
+                        if ($td.text() == "true" || $td.text() == "1") {
+                            $currentInput.prop("checked", true);
+                        } else {
+                            $currentInput.prop("checked", false);
+                        }
                     }
                     else {
                         $currentInput.val($td.html());

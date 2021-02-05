@@ -121,6 +121,7 @@ namespace TietoCRM.Controllers
             columnNames.Add("Summera");
             columnNames.Add("Our_Sign");
             columnNames.Add("Administration");
+            columnNames.Add("Buyer");
             columnNames.Add("Hashtags");
             this.ViewData.Add("Properties", columnNames);
             List<String> offerStatus = new List<String>();
@@ -166,6 +167,12 @@ namespace TietoCRM.Controllers
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             co._ConsultantRows = co._ConsultantRows.OrderBy(o => o.Alias).ToList();
             ViewData.Add("CustomerOffer", co);
+
+            var customer = new view_Customer();
+            customer.Select("Customer = '" + co.Customer.ToString() + "'");
+            ViewData.Add("Customer", customer);
+
+            ViewData.Add("UseShortNameAsReceiver", customer.UseShortNameAsReceiver == 1 ? true : false);
 
             List<dynamic> articles = new List<dynamic>();
             List<dynamic> educationPortals = new List<dynamic>();
@@ -229,11 +236,6 @@ namespace TietoCRM.Controllers
             view_CustomerContact cc = new view_CustomerContact();
             cc.Select("Customer = '" + co.Customer + "' AND Contact_person = '" + co.Contact_person + "'");
             ViewData.Add("CustomerContact", cc);
-
-            view_Customer customer = new view_Customer();
-            customer.Select("Customer = '" + co.Customer.ToString() + "'");
-            customer.Select("ID=" + customer._ID);
-            ViewData.Add("Customer", customer);
 
             view_Reminder vR = new view_Reminder();
             var remindExist = vR.checkIfReminderPerCustomer(co.Customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
@@ -361,6 +363,8 @@ namespace TietoCRM.Controllers
             customer.Select("Customer = '" + co.Customer.ToString() + "'");
             customer.Select("ID=" + customer._ID);
             ViewData.Add("Customer", customer);
+
+            ViewData.Add("UseShortNameAsReceiver", customer.UseShortNameAsReceiver == 1 ? true : false);
 
             view_User user = new view_User();
             if (System.Web.HttpContext.Current.GetUser().User_level > 1)
@@ -713,6 +717,7 @@ namespace TietoCRM.Controllers
                     Summera = co.Summera,
                     Our_Sign = co.Our_sign,
                     Administration = co.Administration,
+                    Buyer = co.Buyer,
                     Hashtags = co.HashtagsAsString()
                 };
                 customers.Add(v);
@@ -1075,6 +1080,14 @@ namespace TietoCRM.Controllers
                 }
                 a.Area = System.Web.HttpContext.Current.GetUser().Area;
                 a.ParseHashtags(Request["hashtags"]);
+
+                var cust = new view_Customer();
+                cust.Select("Customer = '" + a.Customer + "'");
+
+                if(cust.UseShortNameAsReceiver == 1)
+                {
+                    a.Buyer = cust.Short_name;
+                }
 
                 List<view_CustomerOffer> allOffers = view_CustomerOffer.getAllCustomerOffers(a.Customer.ToString());
                 allOffers = allOffers.OrderByDescending(c => c._Offer_number).ToList();

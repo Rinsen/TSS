@@ -94,6 +94,9 @@ namespace TietoCRM.Models
         private int? inhabitant_level;
         public int? Inhabitant_level { get { return inhabitant_level; } set { inhabitant_level = value; } }
 
+        private int useShortNameAsReceiver;
+        public int UseShortNameAsReceiver { get { return useShortNameAsReceiver; } set { useShortNameAsReceiver = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

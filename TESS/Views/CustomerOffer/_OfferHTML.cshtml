@@ -65,7 +65,14 @@
         <table>
             <tr>
                 <td id="crm-pdf-offer-info">
-                    <div><strong>@ViewBag.CustomerOffer.Customer</strong></div>
+                    @if (@ViewBag.UseShortNameAsReceiver && @ViewBag.CustomerOffer.Buyer != null) //Inställning per kund
+                    {
+                        <div><strong>@ViewBag.CustomerOffer.Buyer</strong></div>
+                    }
+                    else
+                    {
+                        <div><strong>@ViewBag.CustomerOffer.Customer</strong></div>
+                    }
                     @if (@ViewBag.CustomerOffer.Administration != "")
                     {
                         <div id="Administration">@ViewBag.CustomerOffer.Administration</div>

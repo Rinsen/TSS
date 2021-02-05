@@ -75,6 +75,9 @@ namespace TietoCRM.Models
         private String administration;
         public String Administration { get { return administration; } set { administration = value; } }
 
+        private String buyer;
+        public String Buyer { get { return buyer; } set { buyer = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

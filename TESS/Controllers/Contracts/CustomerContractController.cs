@@ -539,7 +539,7 @@ namespace TietoCRM.Controllers.Contracts
             }
             else
             {
-                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Sign" || p.Name == "Summera").ToList();
+                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Note" || p.Name == "Sign" || p.Name == "Summera").ToList();
             }
             this.ViewData.Add("TableItems", properties);
             //this.ViewData.Add("Statuses", GetStatuses());
@@ -785,7 +785,7 @@ namespace TietoCRM.Controllers.Contracts
                     customer.Select("Customer = '" + customerString + "'");
                     contractHead.Address = customer.Address;
                     contractHead.City = customer.City;
-                    contractHead.Buyer = customer.Customer;
+                    contractHead.Buyer = customer.UseShortNameAsReceiver == 1 ? customer.Short_name : customer.Customer;
                     contractHead.Zip_code = customer.Zip_code;
                     contractHead.Corporate_identity_number = customer.Corporate_identity_number;
                     contractHead.Administration = customer.Administration;
@@ -869,7 +869,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractHead.Contract_id = a.Contract_id;
                 contractHead.Address = customer.Address;
                 contractHead.City = customer.City;
-                contractHead.Buyer = customer.Customer;
+                contractHead.Buyer = customer.UseShortNameAsReceiver == 1 ? customer.Short_name : customer.Customer;
                 contractHead.Customer = customer.Customer;
                 contractHead.Zip_code = customer.Zip_code;
                 contractHead.Corporate_identity_number = customer.Corporate_identity_number;
