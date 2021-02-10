@@ -200,12 +200,14 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         var artClass = article.System + " / " + article.Classification;
         var usedCell = "<td></td>";
         var usedDep = "<td></td>";
+        var buttonStyle = "";
 
         if (article.Expired == true) {
             usedCell = "<td><span class='glyphicon glyphicon-star'></span></td>";
         }
         else if (article.Used == true) {
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
+            buttonStyle = "style='background-color:#afd1e6'";
         }
         if (article.HasDependencies || (article.Description != null && article.Description.length) > 0 || article.Module_status != "0") {
             var depTitle = "";
@@ -264,10 +266,10 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
-                                            type='button'>                                                          \
+                                            " + buttonStyle + "                                                     \
+                                            type = 'button'>                                                        \
                                     <table>                                                                         \
-                                        <tr>                                                                        "
-                                        + usedCell + usedDep +
+                                        <tr>" + usedCell + usedDep +
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             <td class='maintenance' style='float: right; width:auto;'>" + formatCurrencyNoKr(article.Price_category) + "</td>\
@@ -282,7 +284,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 hasFixedRows = true;
             }
             var button = "";
-            button += "<button onclick='moveItem(event, this)'                                             \
+            button += "<button onclick='moveItem(event, this)'                                                      \
                                             class='list-group-item art-nr-" + article.Article_number + "'           \
                                             data-selected='false'                                                   \
                                             data-discount-type='" + article.Discount_type + "'                      \
@@ -298,10 +300,10 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
+                                            " + buttonStyle + "                                                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
-                                        <tr>                                                                        "
-                                        + usedCell + usedDep +
+                                        <tr>" + usedCell + usedDep +
                                        "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             ";
@@ -548,11 +550,19 @@ var moveItem = function (event, element) {
         }
 
         $newButton = $button.clone();
+
         // Fix to exclude the "used" checkmark on selected items.
         $($newButton).find("td").get(0).remove();
+
         // Fix to exclude the "dep" cell on selected items.
         $($newButton).find("td").get(0).remove();
+
+        // Clear eventual background color of selected row (left side will be green (disabled=true via css...) and right side will be white)
+        $button.attr("style", "");
+        $newButton.attr("style", "");
+
         if ($button.attr("data-multiple-select") != "1") {
+            //Make row green (css logic)
             $button.prop("disabled", true);
         }
         $newButton.attr("data-selected", "true");
@@ -580,7 +590,15 @@ var moveItem = function (event, element) {
     } else {
         // Normal rowtype
         if ($button.attr("data-rowtype") == "3") {
+
+            //Make row white (css logic)
             $availableArticles.find(".art-nr-" + buttonArt).prop("disabled", false);
+
+            var test = $availableArticles.find(".art-nr-" + buttonArt).find("span");
+            if (test.length > 0 && test[0].className == "glyphicon glyphicon-ok") {
+                //Put back backgroundColor lightblue...
+                $availableArticles.find(".art-nr-" + buttonArt).attr("style", "background-color:#afd1e6");
+            }
             $button.attr("data-selected", "false");
             $button.remove();
         }

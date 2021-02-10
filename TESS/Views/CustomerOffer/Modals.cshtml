@@ -256,7 +256,7 @@ else if (Request["modal"] == "articles")
                             </table>
                             <div id="available-articles" class="list-group">
                             </div>
-                            <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
+                            <h5 style="margin-top: 2em;">Blue rows marked with <span class='glyphicon glyphicon-ok'></span> exists in previous contracts</h5>
                             <h5 style="margin-top: 2em;">Rows marked with <span class='glyphicon glyphicon-star'></span> are finalized or re-signed modules</h5>
                         </div>
                     </div>
@@ -609,6 +609,7 @@ else if (Request["modal"] == "articles")
             var depCell = "<td></td>";
             var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
             var artClass = article.System + " / " + article.Classification;
+            var buttonStyle = "";
 
             console.log(artClass);
 
@@ -617,6 +618,7 @@ else if (Request["modal"] == "articles")
             }
             else if (article.Used == true) {
                 usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
+                buttonStyle = "style='background-color:#afd1e6'";
             }
 
             if (article.HasDependencies || (article.Description != null && article.Description.length > 0) || article.Module_status != "0") {
@@ -676,6 +678,7 @@ else if (Request["modal"] == "articles")
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
+                                            " + buttonStyle + "                                                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -711,6 +714,7 @@ else if (Request["modal"] == "articles")
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
+                                            " + buttonStyle + "                                                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
                                         <tr>                                                                        "
@@ -875,10 +879,17 @@ else if (Request["modal"] == "articles")
             }
 
             $newButton = $button.clone();
+
             // Fix to exclude the "used" checkmark on selected items.
             $($newButton).find("td").get(0).remove();
+
             // Fix to exclude the "dep" cell on selected items.
             $($newButton).find("td").get(0).remove();
+
+            // Clear eventual background color of selected row (left side will be green (disabled=true via css...) and right side will be white)
+            $button.attr("style", "");
+            $newButton.attr("style", "");
+
             if($button.attr("data-multiple-select") != "1"){
                 $button.prop("disabled", true);
             }
@@ -904,6 +915,13 @@ else if (Request["modal"] == "articles")
             calculateSums();
         } else {
             $availableArticles.find(".art-nr-" + buttonArt).prop("disabled", false);
+
+            var test = $availableArticles.find(".art-nr-" + buttonArt).find("span");
+            if (test.length > 0 && test[0].className == "glyphicon glyphicon-ok") {
+                //Put back backgroundColor lightblue...
+                $availableArticles.find(".art-nr-" + buttonArt).attr("style", "background-color:#afd1e6");
+            }
+
             $button.attr("data-selected", "false");
             $button.remove();
             calculateSums();
