@@ -1598,7 +1598,7 @@ namespace TietoCRM.Controllers
 	                                    From (Select M.Article_number, M.Module, M.Price_category, IsNull(M.Maint_price_category, 0) As Maint_price_category, M.System, M.Classification, M.Area, M.Fixed_price, M.Discount_type, 
                                                     M.Discount, M.Comment, M.Multiple_type, C.Inhabitant_level, IsNull(M.Description,'') As Description, M.Module_status, IsNull(M.Offer_Description, '') AS Offer_Description
 					                                    from view_Module M, view_Customer C
-					                                    Where C.Customer = @customer And M.Expired = 0) A
+					                                    Where C.Customer = @customer And M.Expired = 0 And M.Module_type = 1) A
 	                                    Left Join view_Tariff T On T.Inhabitant_level = A.Inhabitant_level And T.Price_category = A.Price_category
                                         Left Join view_Tariff T2 On T2.Inhabitant_level = A.Inhabitant_level And T2.Price_category = A.Maint_price_category
 	                                    Left Join view_SelectOption O on O.Value = A.Module_status And O.Model = 'view_Module' And Property = 'Module_status'
