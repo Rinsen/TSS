@@ -343,7 +343,7 @@ if (list.Count > 0)
             service.Select("Article_number = " + cr.Code);
             if (!String.IsNullOrEmpty(cr.Alias))
             {
-                service.Description = cr.Alias;
+                service.Module = cr.Alias;
             }
 
             // Calculate total sums
@@ -379,7 +379,7 @@ if (list.Count > 0)
                 <table>
                     <tr>
                         <td>@service.Article_number</td>
-                        <td>@service.Description.Replace("amp;", "")</td>
+                        <td>@service.Module.Replace("amp;", "")</td>
                         <td>@cr.Amount</td>
                         <td>@Price</td>
                         <td>@TotalPrice</td>

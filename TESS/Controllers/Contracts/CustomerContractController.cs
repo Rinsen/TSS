@@ -1603,6 +1603,10 @@ namespace TietoCRM.Controllers.Contracts
                                         consultantRow.Update("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
                                     }
                                 }
+
+                                //Lägg till eventuella beskrivningstexter i view_ModuleText
+                                InsertModuleText(mappedModule.Contract_description, "K", contract._ID, (int)mappedModule.Article_number);
+                               
                             }
                         }
                     }
@@ -2647,7 +2651,7 @@ namespace TietoCRM.Controllers.Contracts
                                 contractId = moduleText.TypeId;
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             //Troligtvis null-värde i Contract_description. Vi fortsätter loopen utan att skapa upp en modul-text
                             continue;
