@@ -978,6 +978,30 @@ namespace TietoCRM.Controllers
             }
         }
 
+        private static view_ModuleText InsertModuleText(string OfferDescription, string ModuleType, int offerId, int articleNumber)
+        {
+            view_ModuleText moduleText = new view_ModuleText
+            {
+                ChangedBy = System.Web.HttpContext.Current.GetUser().Sign,
+                Changed = DateTime.Now,
+                Description = OfferDescription,
+
+                Type = "O", //Offert
+
+                ModuleType = ModuleType,
+                TypeId = offerId,
+                ModuleId = articleNumber,
+
+                Order = 0, // Sorteringsordning. Lämnar den så länge
+
+                CreatedBy = System.Web.HttpContext.Current.GetUser().Sign,
+                Created = DateTime.Now
+            };
+
+            moduleText.Insert();
+            return moduleText;
+        }
+
         public String SaveContact()
         {
 
@@ -1404,6 +1428,16 @@ namespace TietoCRM.Controllers
                                     consultantRow.Total_price = consultantRow.Amount * pricePerUnit;
                                     consultantRow.Update("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
                                 }
+                            }
+
+                            //Lägg till eventuella beskrivningstexter i view_ModuleText
+                            if (!string.IsNullOrEmpty(mappedModule.Offer_description))
+                            {
+                                //Delete-insert (om modultexten har ändrats)
+                                view_ModuleText offerModuleText = new view_ModuleText();
+                                offerModuleText.Delete("Type = 'O' AND TypeId = " + customerOffer._ID + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+
+                                InsertModuleText(mappedModule.Contract_description, "K", customerOffer._ID, (int)mappedModule.Article_number);
                             }
                         }
                     }

@@ -1605,8 +1605,14 @@ namespace TietoCRM.Controllers.Contracts
                                 }
 
                                 //Lägg till eventuella beskrivningstexter i view_ModuleText
-                                InsertModuleText(mappedModule.Contract_description, "K", contract._ID, (int)mappedModule.Article_number);
-                               
+                                if (!string.IsNullOrEmpty(mappedModule.Offer_description))
+                                {
+                                    //Delete-insert (om modultexten har ändrats)
+                                    view_ModuleText contractModuleText = new view_ModuleText();
+                                    contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+
+                                    InsertModuleText(mappedModule.Contract_description, "K", contract._ID, (int)mappedModule.Article_number);
+                                }
                             }
                         }
                     }
@@ -2760,7 +2766,7 @@ namespace TietoCRM.Controllers.Contracts
                 Changed = DateTime.Now,
                 Description = ContractDescription,
 
-                Type = "A", //Artikel
+                Type = "A", //Avtal
 
                 ModuleType = ModuleType,
                 TypeId = contractId,
