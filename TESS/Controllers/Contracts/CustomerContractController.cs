@@ -497,7 +497,7 @@ namespace TietoCRM.Controllers.Contracts
                 ViewData.Add("OurCity", "");
             }
             
-            this.ViewData.Add("Services", view_Module.getAllModules(false, 2));
+            this.ViewData.Add("Services", view_Module.getAllModules(false, 2).Where(w => !w.Expired.Value)); //Exkludera utgångna tjänster
 
             List<view_CustomerOffer> openOffers = view_CustomerOffer.getAllCustomerOffers(customer.Customer)
                 .Where(o => o.Offer_status == "Öppen" && o.Area == contract.Area)

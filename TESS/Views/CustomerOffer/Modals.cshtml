@@ -1090,7 +1090,8 @@ else if (Request["modal"] == "services")
                                                     data-offer-description="@service.Offer_description"
                                                     data-service-code="@service.Article_number"
                                                     class="list-group-item">
-                                                        <span id="description-title" style="font-weight:700">@service.Article_number, @service.Module</span>
+                                                        <span style="font-weight:700">@service.Article_number, </span>
+                                                        <span id="description-title" style="font-weight:700">@service.Module</span>
                                                         @if (!String.IsNullOrEmpty(title))
                                                         {
                                                             <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
@@ -1145,7 +1146,8 @@ else if (Request["modal"] == "services")
                                                                         data-service-code="@service.Article_number"
                                                                         data-selected="true"
                                                                         class="list-group-item">
-                                                                    <span id="description-title" style="font-weight:700">@service.Article_number, @service.Module</span>
+                                                                    <span style="font-weight:700">@service.Article_number, </span>
+                                                                    <span id="description-title" style="font-weight:700">@service.Module</span>
                                                                     @if (!String.IsNullOrEmpty(title))
                                                                     {
                                                                         <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
@@ -1455,12 +1457,12 @@ else if (Request["modal"] == "services")
                                                         data-code='" + service.Article_number + "'                              \
                                                         data-selected='false'                                                   \
                                                         class='list-group-item'>                                                \
-                                                    <span style='font-weight: 700'>Service: " + service.Article_number + ", </span>  \
-                                                    <label>" + formatCurrency(service.Price_category) + "</label>                 \
+                                                    <span style='font-weight: 700'>" + service.Article_number + ", </span>  \
+                                                    <span style='font-weight: 700' id='description-title'>" + service.Module + "</span>                  \
                                                     <span title='" + title + "' style='padding-left: 10px' class='glyphicon glyphicon-exclamation-sign'></span> \
                                                     <span class='service-amount'></span>                                        \
                                                     <br />                                                                      \
-                                                    <span id='description-title'>" + service.Module + "</span>                  \
+                                                    <label style='font-weight: 100'>" + formatCurrency(service.Price_category) + "</label>                 \
                                                 </button >                                                                      \
                                             </td >                                                                              \
                                     </table>                                                                                    \
@@ -1478,11 +1480,11 @@ else if (Request["modal"] == "services")
                                                         data-code='" + service.Article_number + "'                              \
                                                         data-selected='false'                                                   \
                                                         class='list-group-item'>                                                \
-                                                    <span style='font-weight: 700'>Service: " + service.Article_number + ", </span>  \
-                                                    <label>" + formatCurrency(service.Price_category) + "</label>                 \
+                                                    <span style='font-weight: 700'>" + service.Article_number + ", </span>  \
+                                                    <span style='font-weight: 700' id='description-title'>" + service.Module + "</span>                  \
                                                     <span class='service-amount'></span>                                        \
                                                     <br />                                                                      \
-                                                    <span id='description-title'>" + service.Module + "</span>                  \
+                                                    <label style='font-weight: 100'>" + formatCurrency(service.Price_category) + "</label>                 \
                                                 </button >                                                                      \
                                             </td >                                                                              \
                                     </table>                                                                                    \

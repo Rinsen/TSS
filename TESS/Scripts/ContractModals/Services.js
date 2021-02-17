@@ -387,12 +387,12 @@ var fillServiceSearchList = function () {
                                             data-code='" + service.Article_number + "'                              \
                                             data-selected='false'                                                   \
                                             class='list-group-item'>                                                \
-                                        <span style='font-weight:700'>Service: " + service.Article_number + ", </span> \
-                                        <label>" + formatCurrency(service.Price_category) + "</label>               \
+                                        <span style='font-weight:700'>" + service.Article_number + ", </span> \
+                                        <span id='description-title' style='font-weight:700'>" + service.Module + "</span>                  \
                                         <span title='" + title + "' style='padding-left: 10px' class='glyphicon glyphicon-exclamation-sign'></span> \
                                         <span class='service-amount'></span>                                        \
                                         <br />                                                                      \
-                                        <span id='description-title'>" + service.Module + "</span>                  \
+                                        <label style='font-weight:100'>" + formatCurrency(service.Price_category) + "</label>               \
                                     </button >                                                                      \
                                 </td >                                                                              \
                             </tr>                                                                                   \
@@ -412,11 +412,11 @@ var fillServiceSearchList = function () {
                                             data-code='" + service.Article_number + "'                              \
                                             data-selected='false'                                                   \
                                             class='list-group-item'>                                                \
-                                        <span style='font-weight:700'>Service: " + service.Article_number + ", </span> \
-                                        <label>" + formatCurrency(service.Price_category) + "</label>               \
+                                        <span style='font-weight:700'>" + service.Article_number + ", </span> \
+                                        <span id='description-title' style='font-weight:700'>" + service.Module + "</span>                  \
                                         <span class='service-amount'></span>                                        \
                                         <br />                                                                      \
-                                        <span id='description-title'>" + service.Module + "</span>                  \
+                                        <label style='font-weight:100'>" + formatCurrency(service.Price_category) + "</label>               \
                                     </button >                                                                      \
                                 </td >                                                                              \
                             </tr>                                                                                   \

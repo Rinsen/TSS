@@ -480,7 +480,7 @@ namespace TietoCRM.Controllers
         public ActionResult Modals()
         {
             GlobalVariables.checkIfAuthorized("CustomerOffer");
-            this.ViewData.Add("Services", view_Module.getAllModules(false, 2));
+            this.ViewData.Add("Services", view_Module.getAllModules(false, 2).Where(w => !w.Expired.Value)); //Exkludera utgångna tjänster
 
             string request = Request["selected-offer"];
 
