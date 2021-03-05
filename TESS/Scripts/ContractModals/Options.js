@@ -77,7 +77,8 @@ var fillArticleOptSearchList = function () {
         "type": "POST",
         "data": {
             "customer": customerName,
-            "searchtext": $searchText.val()
+            "searchtext": $searchText.val(),
+            "moduletype": 1 //Articles
         },
         "success": function (data) {
             if (data.length > 0) {
