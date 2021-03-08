@@ -1437,7 +1437,7 @@ namespace TietoCRM.Controllers
                                 view_ModuleText offerModuleText = new view_ModuleText();
                                 offerModuleText.Delete("Type = 'O' AND TypeId = " + customerOffer._ID + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
 
-                                InsertModuleText(mappedModule.Contract_description, "K", customerOffer._ID, (int)mappedModule.Article_number);
+                                InsertModuleText(mappedModule.Offer_description, "K", customerOffer._ID, (int)mappedModule.Article_number);
                             }
                         }
                     }

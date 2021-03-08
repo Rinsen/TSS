@@ -1605,7 +1605,7 @@ namespace TietoCRM.Controllers.Contracts
                                 }
 
                                 //Lägg till eventuella beskrivningstexter i view_ModuleText
-                                if (!string.IsNullOrEmpty(mappedModule.Offer_description))
+                                if (!string.IsNullOrEmpty(mappedModule.Contract_description))
                                 {
                                     //Delete-insert (om modultexten har ändrats)
                                     view_ModuleText contractModuleText = new view_ModuleText();
