@@ -877,7 +877,7 @@ namespace TietoCRM.Controllers
 
                                     ModuleType = d["Module_type"].ToString(),
                                     TypeId = Convert.ToInt32(d["Offer_id"]),
-                                    ModuleId = d.ContainsKey("Service_code") ? Convert.ToInt32(d["Service_code"]) : Convert.ToInt32(d["Article_number"]),
+                                    ModuleId = d.ContainsKey("Service_code") ? Convert.ToInt32(d["Service_code"]) : Convert.ToInt32(d["id"]),
 
                                     Order = 0, // Sorteringsordning. Lämnar den så länge
 
@@ -1467,7 +1467,7 @@ namespace TietoCRM.Controllers
                 if (moduletype == "2") //Services
                 {
                     queryText = @"Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, 
-                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description, IsNull(M.[Description],'') As [Description] 
+                                  M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Offer_Description, '') AS Offer_Description, IsNull(M.[Description],'') As [Description] 
                                   From dbo.view_Module As M  
                                   Where M.Module_type = 2 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
                                   M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
@@ -1550,8 +1550,9 @@ namespace TietoCRM.Controllers
                             if (customerOffer._ID > 0)
                             {
                                 view_ModuleText moduleText = new view_ModuleText();
-                                moduleText.Select("Type = 'O' AND TypeId = " + offerNo + " AND ModuleType = 'A' AND ModuleId = " + result["Article_number"].ToString());
+                                moduleText.Select("Type = 'O' AND TypeId = " + offerNo + " AND ModuleId = " + result["Article_number"].ToString());
                                 result.Add("Module_text_id", moduleText._ID);
+                                result.Add("Module_type", moduletype == "1" ? "A" : "K");
                                 result.Add("Code", moduleText.ModuleId);
                                 result.Add("Offer_id", offerNo);
                             }

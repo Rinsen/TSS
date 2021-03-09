@@ -1710,6 +1710,16 @@ namespace TietoCRM.Controllers.Contracts
             foreach (view_ContractConsultantRow cr in contract._ContractConsultantRows)
             {
                 cr.Delete("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "' AND Code = " + cr.Code);
+
+                //Ta även bort eventuell modultext (deleted = true)
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + cr.Code.ToString());
+                if (moduleText._ID > 0) //Vi har en modultext
+                {
+                    //Den ska delete-markeras
+                    moduleText.Deleted = true;
+                    moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + cr.Code.ToString());
+                }
             }
 
             foreach (Dictionary<String, Object> dict in list)
@@ -1730,6 +1740,17 @@ namespace TietoCRM.Controllers.Contracts
                 consultantRow.Total_price = total;
                 consultantRow.Created = DateTime.Now;
                 consultantRow.Insert();
+
+                //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + consultantRow.Code.ToString());
+
+                if (moduleText._ID > 0)
+                {
+                    //Den ska avmarkeras FRÅN deleted.
+                    moduleText.Deleted = false;
+                    moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + consultantRow.Code.ToString());
+                }
             }
 
             contract.Updated = System.DateTime.Now;
@@ -2031,8 +2052,9 @@ namespace TietoCRM.Controllers.Contracts
                             if (contract._ID > 0)
                             {
                                 view_ModuleText moduleText = new view_ModuleText();
-                                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleType = 'A' AND ModuleId = " + result["Article_number"].ToString());
+                                moduleText.Select("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + result["Article_number"].ToString());
                                 result.Add("Module_text_id", moduleText._ID);
+                                result.Add("Module_type", moduletype == "1" ? "A" : "K");
                                 result.Add("Contract_id", contract._ID);
                             }
 
