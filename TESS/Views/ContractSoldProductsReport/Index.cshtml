@@ -88,10 +88,10 @@
                 DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
             }
         }
-        @{    
+        @{
             DataObject = DataObject.Remove(DataObject.Length - 3);
         }
-       
+
         var updateDataTable = function()
         {
             $('#report-table').DataTable({
@@ -115,10 +115,10 @@
                 "scrollX": true,
 
             });
-            
+
 
         }
-        
+
         // Check if browser is using webkit
         var webkit = get_browser() == "Chrome" ||
             /iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -134,7 +134,7 @@
                 return uri + separator + key + "=" + value;
             }
         }
-        
+
 
         $(document).ready(function () {
             var $startDate = $("#start-date");
@@ -144,7 +144,7 @@
                 var uri = updateQueryStringParameter(updateQueryStringParameter('', "start", $startDate.val()), "stop", $stopDate.val());
                 console.log(window.location.href.split('?')[0] + uri);
                 history.pushState(null, null, uri);
-               
+
                 updateDataTable();
             })
 
@@ -160,16 +160,18 @@
 
             updateDataTable();
            // $('#report-table').fnSort([[0, 'asc']]);
-            
+
             if (!webkit) {
                 $startDate.datepicker({ dateFormat: 'yy-mm-dd' });
                 $stopDate.datepicker({ dateFormat: 'yy-mm-dd' });
             }
             $('#export-excel').click(function () {
+                var start = $startDate.val();
+                var stop = $stopDate.val();
                 var $dt = $('.dataTable').DataTable();
                 var sortArr = $dt.order();
                 var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
-                window.open(serverPrefix + 'ContractSoldProducts/ExportExcel?start=' + start + '&stop=' + stop + sort, "_parent").focus();
+                window.open(serverPrefix + 'ContractSoldProductsReport/ExportExcel?start=' + start + '&stop=' + stop + sort, "_parent").focus();
             })
         });
     </script>

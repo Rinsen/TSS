@@ -365,7 +365,8 @@ public class view_ContractRow : SQLBaseClass
                     view_Contract.Customer=view_ContractRow.Customer and 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                     view_Contract.Valid_from >= @startDate AND
-                    view_Contract.Valid_from <= @stopDate Order By " + GetOrderBy();
+                    view_Contract.Valid_from <= @stopDate AND
+                    view_ContractRow.Rewritten = 0 AND view_ContractRow.Removed = 0 Order By " + GetOrderBy();
                 //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
                 //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
 
@@ -509,8 +510,9 @@ public class view_ContractRow : SQLBaseClass
                     INNER JOIN " + databasePrefix + @"Contract ON 
                     view_Contract.Customer=view_ContractRow.Customer and 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
-                    view_Contract.Valid_from >= @startDate AND
-                    view_Contract.Valid_from <= @stopDate Order By " + GetOrderBy();
+                    view_Contract.Valid_from >= '" + Start.ToShortDateString() + @"' AND
+                    view_Contract.Valid_from <= '" + Stop.ToShortDateString() + @"' AND
+                    view_ContractRow.Rewritten = 0 AND view_ContractRow.Removed = 0Order By " + GetOrderBy();
                 //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
                 //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
 
@@ -523,8 +525,16 @@ public class view_ContractRow : SQLBaseClass
 
                 dt.TableName = "ContractSoldReport";
 
-                SqlDataAdapter da = new SqlDataAdapter(query, connection);
-                da.Fill(dt);
+                try
+                {
+                    SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                    da.Fill(dt);
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
             }
             return dt;
             }

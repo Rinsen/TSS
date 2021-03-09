@@ -182,25 +182,14 @@ namespace TietoCRM.Controllers.Reports
             }
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(this.GetFilteredModules(Start, Stop)) + "}";
         }
-        public string ExportExcel()
+        public string ExportExcel(String start, String stop)
         {
-            String startRe;
-            String stopRe;
             DateTime Start;
             DateTime Stop;
             try
             {
-                if (IsValidSqlDateTimeNative(Request.Form["start"]) && IsValidSqlDateTimeNative(Request.Form["stop"]))
-                {
-                    startRe = Request.Form["start"];
-                    stopRe = Request.Form["stop"];
-                    Start = Convert.ToDateTime(startRe);
-                    Stop = Convert.ToDateTime(stopRe);
-                }
-                else
-                {
-                    return "-1";
-                }
+                Start = Convert.ToDateTime(start);
+                Stop = Convert.ToDateTime(stop);
             }
             catch (Exception ignore)
             {
