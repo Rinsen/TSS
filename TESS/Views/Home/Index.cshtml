@@ -86,9 +86,12 @@
             </div>
         </div>
     </div>
+    <div class="row" id="footer">
+        Version 1.0.0.0
+    </div>
 </div>
 
-<script>
+    <script>
     var serverPrefix = "@Url.Content("~/")";
 
     var getTopFiveCustomers = function()
@@ -191,168 +194,176 @@
         }
     }
 
-</script>
+    </script>
 
 
-<script>
+    <script>
 
-    var handleLoadingIcon = function($widget, action)
-    {
-        var $panelBody = $widget.find('.panel-body');
-        var $laodingContainer = $widget.find('.crm-loading')
-        if(action == 'show')
+        var handleLoadingIcon = function($widget, action)
         {
-            $panelBody.find('span').hide();
-            $laodingContainer.show();
-        }
-        else {
-            $panelBody.find('span').show();
-            $laodingContainer.hide();
-        }
-    }
-    var getStatisticsValue = function(url, $widget)
-    {
-        var $widgetData = $widget.find('.widget-data');
-        $.ajax({
-            "url": serverPrefix + url,
-            "type": "POST",
-            "beforeSend": function(){
-                handleLoadingIcon($widget, "show");
-            },
-            "success": function (data) {
-                $widgetData.html(data);
-                handleLoadingIcon($widget, "hide");
-            },
-            "error": function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                handleLoadingIcon($widget, "hide");
-                triggerAlert("Update failed. Please check your internet connection.", "warning");
-            }
-        });
-    }
-    var handleEmptyInfoMesg = function(show)
-    {
-        var $container = $('.crm-empty-list');
-        if (show == true || show == 'show')
-        {
-            $container.show(); 
-        }         
-        else
-            $container.hide();
-
-        return $container;
-    }
-    var getAllInformation =  function(StatisticsRefresh)
-    {
-        var StatisticsRefresh = StatisticsRefresh === true ? StatisticsRefresh : false;
-
-        var $infoList = $('.crm-info-list');
-        var $laodingContainer = $infoList.find('.crm-loading');
-        var $emptyMsg = $('.crm-empty-list');
-        $infoList.html($laodingContainer);
-        $infoList.append($emptyMsg);
-
-        $.ajax({
-            "url": serverPrefix + "Home/GetAllInformation/",
-            "type": "POST",
-            "dataType": "json",
-            "beforeSend": function () {
+            var $panelBody = $widget.find('.panel-body');
+            var $laodingContainer = $widget.find('.crm-loading')
+            if(action == 'show')
+            {
+                $panelBody.find('span').hide();
                 $laodingContainer.show();
-                handleEmptyInfoMesg('hide');
-            },
-            "success": function (data) {
-                setTimeout(function () {
-                    if (data.length == 0 || data == "" || typeof data == 'undefined')
-                    {
-                        handleEmptyInfoMesg('show');
-                        $laodingContainer.hide();
-                        if (StatisticsRefresh) {
-                            getAllStatistics();
-                        }
-                   
-                    }
-                    else
-                    {
-                        handleEmptyInfoMesg('hide');
-                   
-                        $laodingContainer.hide();
-                        $(data).each(function () {
-                            var infoObj = this;
-                            var infoHtml = createInformationHtml(infoObj);
-                            $infoList.append(infoHtml);
-                               
-                        })
-                        if (StatisticsRefresh) {
-                            getAllStatistics();
-                        }
-                    }  
-                }, 500);
-            },
-            "error": function (jqXHR, textStatus, errorThrown) {
-                $laodingContainer.hide();
-                triggerAlert("Update failed. Please check your internet connection.", "warning");
             }
+            else {
+                $panelBody.find('span').show();
+                $laodingContainer.hide();
+            }
+        }
+        var getStatisticsValue = function(url, $widget)
+        {
+            var $widgetData = $widget.find('.widget-data');
+            $.ajax({
+                "url": serverPrefix + url,
+                "type": "POST",
+                "beforeSend": function(){
+                    handleLoadingIcon($widget, "show");
+                },
+                "success": function (data) {
+                    $widgetData.html(data);
+                    handleLoadingIcon($widget, "hide");
+                },
+                "error": function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    handleLoadingIcon($widget, "hide");
+                    triggerAlert("Update failed. Please check your internet connection.", "warning");
+                }
+            });
+        }
+        var handleEmptyInfoMesg = function(show)
+        {
+            var $container = $('.crm-empty-list');
+            if (show == true || show == 'show')
+            {
+                $container.show();
+            }
+            else
+                $container.hide();
+
+            return $container;
+        }
+        var getAllInformation =  function(StatisticsRefresh)
+        {
+            var StatisticsRefresh = StatisticsRefresh === true ? StatisticsRefresh : false;
+
+            var $infoList = $('.crm-info-list');
+            var $laodingContainer = $infoList.find('.crm-loading');
+            var $emptyMsg = $('.crm-empty-list');
+            $infoList.html($laodingContainer);
+            $infoList.append($emptyMsg);
+
+            $.ajax({
+                "url": serverPrefix + "Home/GetAllInformation/",
+                "type": "POST",
+                "dataType": "json",
+                "beforeSend": function () {
+                    $laodingContainer.show();
+                    handleEmptyInfoMesg('hide');
+                },
+                "success": function (data) {
+                    setTimeout(function () {
+                        if (data.length == 0 || data == "" || typeof data == 'undefined')
+                        {
+                            handleEmptyInfoMesg('show');
+                            $laodingContainer.hide();
+                            if (StatisticsRefresh) {
+                                getAllStatistics();
+                            }
+
+                        }
+                        else
+                        {
+                            handleEmptyInfoMesg('hide');
+
+                            $laodingContainer.hide();
+                            $(data).each(function () {
+                                var infoObj = this;
+                                var infoHtml = createInformationHtml(infoObj);
+                                $infoList.append(infoHtml);
+
+                            })
+                            if (StatisticsRefresh) {
+                                getAllStatistics();
+                            }
+                        }
+                    }, 500);
+                },
+                "error": function (jqXHR, textStatus, errorThrown) {
+                    $laodingContainer.hide();
+                    triggerAlert("Update failed. Please check your internet connection.", "warning");
+                }
+            });
+        }
+
+        var createInformationHtml = function(infoObj)
+        {
+            var rawHtml = "<li class='info-item'>                                               \
+                               <div class='panel panel-default crm-widget'>                     \
+                                   <div class='panel-heading info-title'>                       \
+                                       <span class='info-title-text'></span>                    \
+                                       <span class='glyphicon pull-right'></span>               \
+                                   </div>                                                       \
+                                   <div class='panel-body info-message'></div>                  \
+                                   <div class='panel-footer'>                                   \
+                                       <div class='info-author'></div>                          \
+                                       <div class='info-updated'>Updated: <span></span></div>   \
+                                   </div>                                                       \
+                               </div>                                                           \
+                           </li>";
+            var $htmlObj = $(rawHtml);
+            if (infoObj.Type == "Warning")
+            {
+                $htmlObj.addClass('info-warning');
+                $htmlObj.find('.glyphicon').addClass('glyphicon-warning-sign');
+            }
+            else if(infoObj.Type == "Danger"){
+                $htmlObj.addClass('info-danger');
+                $htmlObj.find('.glyphicon').addClass('glyphicon-danger-sign');
+            }
+            else
+            {
+                $htmlObj.addClass('info-normal');
+                $htmlObj.find('.glyphicon').addClass('glyphicon-info-sign');
+            }
+            $htmlObj.attr("data-info-id", infoObj._ID);
+            $htmlObj.find('.info-title-text').html(infoObj.Title);
+            $htmlObj.find('.info-message').html(infoObj.Message);
+            $htmlObj.find('.info-author').html(infoObj.AuthorFullName);
+            $htmlObj.find('.info-updated span').html(infoObj.Updated);
+            return $htmlObj;
+        }
+
+        var $openOffersWidget = $('#open-offers');
+        var $sentContractsWidget = $('#sent-contracts');
+        var $expiringContractsWidget = $('#expiring-contracts');
+
+        var getAllStatistics = function () {
+            getStatisticsValue("Home/GetAmountOpenOffers/", $openOffersWidget);
+            getStatisticsValue("Home/GetAmountSentContracts/", $sentContractsWidget);
+            getStatisticsValue("Home/GetAmountExpiringContracts/", $expiringContractsWidget);
+        }
+
+        $(document).ready(function () {
+
+            $('#crm-widget-refresh-all').click(getAllStatistics);
+            $('#info-refresh-all').click(getAllInformation);
+            $('#top-five-refresh').click(getTopFiveCustomers);
+
+
+            getAllInformation(true);
+            getTopFiveCustomers();
+
+
         });
-    }
-
-    var createInformationHtml = function(infoObj)
-    {
-        var rawHtml = "<li class='info-item'>                                               \
-                           <div class='panel panel-default crm-widget'>                     \
-                               <div class='panel-heading info-title'>                       \
-                                   <span class='info-title-text'></span>                    \
-                                   <span class='glyphicon pull-right'></span>               \
-                               </div>                                                       \
-                               <div class='panel-body info-message'></div>                  \
-                               <div class='panel-footer'>                                   \
-                                   <div class='info-author'></div>                          \
-                                   <div class='info-updated'>Updated: <span></span></div>   \
-                               </div>                                                       \
-                           </div>                                                           \
-                       </li>";
-        var $htmlObj = $(rawHtml);
-        if (infoObj.Type == "Warning")
-        {
-            $htmlObj.addClass('info-warning');
-            $htmlObj.find('.glyphicon').addClass('glyphicon-warning-sign');
+    </script>
+    <style>
+        #footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px; /* Height of the footer */
         }
-        else if(infoObj.Type == "Danger"){
-            $htmlObj.addClass('info-danger');
-            $htmlObj.find('.glyphicon').addClass('glyphicon-danger-sign');
-        }
-        else
-        {
-            $htmlObj.addClass('info-normal');
-            $htmlObj.find('.glyphicon').addClass('glyphicon-info-sign');
-        }
-        $htmlObj.attr("data-info-id", infoObj._ID);
-        $htmlObj.find('.info-title-text').html(infoObj.Title);
-        $htmlObj.find('.info-message').html(infoObj.Message);
-        $htmlObj.find('.info-author').html(infoObj.AuthorFullName);
-        $htmlObj.find('.info-updated span').html(infoObj.Updated);
-        return $htmlObj;
-    }
-
-    var $openOffersWidget = $('#open-offers');
-    var $sentContractsWidget = $('#sent-contracts');
-    var $expiringContractsWidget = $('#expiring-contracts');
-
-    var getAllStatistics = function () {
-        getStatisticsValue("Home/GetAmountOpenOffers/", $openOffersWidget);
-        getStatisticsValue("Home/GetAmountSentContracts/", $sentContractsWidget);
-        getStatisticsValue("Home/GetAmountExpiringContracts/", $expiringContractsWidget);
-    }
-
-    $(document).ready(function () {
-
-        $('#crm-widget-refresh-all').click(getAllStatistics);
-        $('#info-refresh-all').click(getAllInformation);
-        $('#top-five-refresh').click(getTopFiveCustomers);
-  
-        
-        getAllInformation(true);
-        getTopFiveCustomers();
-        
-        
-    });
-</script>
+    </style>
