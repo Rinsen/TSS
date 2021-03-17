@@ -453,7 +453,7 @@ public class view_ContractRow : SQLBaseClass
         {
             ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
             if (ASort == 1) return "Alias";
-            if (ASort == 2) return "Classification, Alias";
+            if (ASort == 2 || ASort == 4) return "Classification, Alias";
             if (ASort == 3) return "Classification, Article_number";
             return "Alias";
         }

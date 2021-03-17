@@ -269,6 +269,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Price_type = sector.Price_type;
                 contractInfo.Fixed_price = contractRow.Fixed_price;
                 contractInfo.Sort_number = sector.SortNo;
+                contractInfo.Article_Sort_number = module.Sort_order;
                 contractInfo.Expired = module.Expired;
                 contractInfo.Id = contract._ID;
                 contractInfo.Removed = contractRow.Removed;
@@ -352,23 +353,30 @@ namespace TietoCRM.Controllers.Contracts
             view_User usr = System.Web.HttpContext.Current.GetUser();
 
             //Här styrs sorteringen av artiklarna ut på avtalet gamla och borttagna artiklar
-            if (usr.AvtalSortera == 1)
+            if (usr.AvtalSortera == 1) //Article name
             {
                 oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
                 oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
                 remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
             }
-
-            if (usr.AvtalSortera == 2)
+            else if (usr.AvtalSortera == 2) //Classification, Article name
             {
                 oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
                 oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
                 remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
             }
-
-            //oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
-            //oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
-            //remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            else if (usr.AvtalSortera == 3) //Classification, Article-no. Denna sortering styrs från view_ContractRow, GetOrderBy()
+            {
+                //oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+                //oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+                //remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            }
+            else if (usr.AvtalSortera == 4) //Classification, Article_Sort_number
+            {
+                oldArticles = oldArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(m => m.Article_Sort_number).ToList();
+                oldEducationPortals = oldEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(m => m.Article_Sort_number).ToList();
+                remEducationPortals = remEducationPortals.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(m => m.Article_Sort_number).ToList();
+            }
 
             ViewData.Add("OldEducationPortals", oldEducationPortals);
             ViewData.Add("OldArticles", oldArticles);
@@ -380,20 +388,34 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("ShowReminderButton", remindExist.CompareTo("-1") == 0 ? false : true);
 
             //Här styrs sorteringen av artiklarna ut på avtalet av aktuella artiklar.
-            if (usr.AvtalSortera == 1)
+            if (usr.AvtalSortera == 1) //Article name
             {
                 articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
                 remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
             }
-
-            if (usr.AvtalSortera == 2)
+            else if (usr.AvtalSortera == 2) //Classification, Article name
             {
                 articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
                 remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
             }
-
-            //articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
-            //remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            else if (usr.AvtalSortera == 3) //Classification, Article-no. Denna sortering styrs från view_ContractRow, GetOrderBy()
+            {
+                //articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+                //remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+            }
+            else if (usr.AvtalSortera == 4) //Classification, Article sort number
+            {
+                articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(m => m.Article_Sort_number).ToList();
+                remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(m => m.Article_Sort_number).ToList();
+                foreach (var system in articleSystemDic)
+                {
+                    //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
+                    var sortedList = new List<dynamic>();
+                    sortedList.AddRange(system.Value);
+                    system.Value.Clear();
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                }
+            }
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);

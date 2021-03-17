@@ -69,6 +69,9 @@ namespace TietoCRM.Models
         private int module_type;
         public int Module_type { get { return module_type; } set { module_type = value; } }
 
+        private int sort_order;
+        public int Sort_order { get { return sort_order; } set { sort_order = value; } }
+        
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -95,7 +98,7 @@ namespace TietoCRM.Models
                 {
                     query = "SELECT [Article_number], [Module], [Description], [Price_category], [Area], ";
                     query += "[System], [Classification], [Fixed_price], [Expired], [Comment], Discount, Discount_type, Multiple_type, ";
-                    query += "offer_description, contract_description, Module_status, Read_name_from_module, Maint_price_category, Module_type, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
+                    query += "offer_description, contract_description, Module_status, Read_name_from_module, Maint_price_category, Module_type, Sort_order, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
                     if(moduleType > 0)
                         query += "WHERE Module_type = @moduleType";
                 }
@@ -104,7 +107,7 @@ namespace TietoCRM.Models
                     query = "SELECT [Article_number], [Module], [Description], [Price_category], [Area], ";
                     query += "[System], [Classification], [Fixed_price], [Expired], [Comment], Discount, Discount_type, Multiple_type, ";
                     query += "Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption, ";
-                    query += "Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, Module_status, Read_name_from_module, Maint_price_category, Module_type, ";
+                    query += "Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, Module_status, Read_name_from_module, Maint_price_category, Module_type, Sort_order,";
                     query += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
                     if (moduleType > 0) 
                         query += "WHERE Module_type = @moduleType";
