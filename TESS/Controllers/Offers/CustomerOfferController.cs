@@ -877,7 +877,7 @@ namespace TietoCRM.Controllers
 
                                     ModuleType = d["Module_type"].ToString(),
                                     TypeId = Convert.ToInt32(d["Offer_id"]),
-                                    ModuleId = d.ContainsKey("Service_code") ? Convert.ToInt32(d["Service_code"]) : Convert.ToInt32(d["id"]),
+                                    ModuleId = d.ContainsKey("Service_code") ? Convert.ToInt32(d["Service_code"]) : d.ContainsKey("Article_number") ? Convert.ToInt32(d["Article_number"]) : Convert.ToInt32(d["id"]),
 
                                     Order = 0, // Sorteringsordning. Lämnar den så länge
 
@@ -1395,6 +1395,11 @@ namespace TietoCRM.Controllers
                     moduleText.Deleted = false;
                     moduleText.Update("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
                 }
+                //else
+                //{
+                //    //Insert new module text
+                //    InsertModuleText(dict["Offer_description"].ToString(), dict["Module_type"].ToString(), int.Parse(dict["Offer_id"].ToString()), int.Parse(dict["Article_number"].ToString()));
+                //}
 
                 if (automapping)
                 {
@@ -1449,6 +1454,7 @@ namespace TietoCRM.Controllers
 
             return "1";
         }
+
         private String Json_GetModulesAll()
         {
             String customer = Request.Form["customer"];
