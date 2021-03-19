@@ -211,6 +211,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
+                offerInfo.Article_Sort_number = module.Sort_order;
                 offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
 
                 articles.Add(offerInfo);
@@ -226,7 +227,23 @@ namespace TietoCRM.Controllers
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
 
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
+            view_User usr = System.Web.HttpContext.Current.GetUser();
+            if (usr.AvtalSortera == 4)
+            {
+                foreach (var system in articleSystemDic)
+                {
+                    //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
+                    var sortedList = new List<dynamic>();
+                    sortedList.AddRange(system.Value);
+                    system.Value.Clear();
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                }
+                ViewData.Add("ArticleSystemDictionary", articleSystemDic.ToList());
+            }
+            else
+            {
+                ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
+            }
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
@@ -337,6 +354,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
+                offerInfo.Article_Sort_number = module.Sort_order;
                 offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
 
                 articles.Add(offerInfo);
@@ -351,7 +369,25 @@ namespace TietoCRM.Controllers
             }
 
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
+
+            view_User usr = System.Web.HttpContext.Current.GetUser();
+            if (usr.AvtalSortera == 4)
+            {
+                foreach (var system in articleSystemDic)
+                {
+                    //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
+                    var sortedList = new List<dynamic>();
+                    sortedList.AddRange(system.Value);
+                    system.Value.Clear();
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                }
+                ViewData.Add("ArticleSystemDictionary", articleSystemDic.ToList());
+            }
+            else
+            {
+                ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
+            }
+
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
 
