@@ -104,10 +104,12 @@ public class view_ContractRow : SQLBaseClass
                 connection.Open();
 
                 // Default query
-                command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
-                                        [Delivery_date] ,[Created] ,[Updated] ,[Rewritten] ,[New] ,[Removed] ,[Closure_date], [Fixed_price], 
-                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias], [IncludeDependencies] 
-                                        FROM " + databasePrefix + "ContractRow WHERE " + "Contract_id = @contractID AND Customer = @customer Order By " + GetOrderBy();
+                command.CommandText = @"SELECT CR.Contract_id, CR.Customer ,CR.Article_number, CR.Offer_number, CR.License, CR.Maintenance,
+                                        CR.Delivery_date, CR.Created, CR.Updated, CR.Rewritten, CR.New, CR.Removed, CR.Closure_date, CR.Fixed_price, 
+                                        CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, CR.IncludeDependencies 
+                                        FROM " + databasePrefix + "ContractRow CR " +
+                                        "JOIN " + databasePrefix + "Module M on M.Article_number = CR.Article_number " +
+                                        "WHERE " + "CR.Contract_id = @contractID AND CR.Customer = @customer Order By " + GetOrderByForGetAllContractRows();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@contractID", contractID);
@@ -420,7 +422,7 @@ public class view_ContractRow : SQLBaseClass
 
                 command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System FROM qry_ContractArtDescription Q 
                                         JOIN View_Module M ON M.Article_number = Q.Art_id 
-                                        WHERE Avtalsid = @contract_id AND Kund = @customer 
+                                        WHERE Q.Avtalsid = @contract_id AND Q.Kund = @customer 
                                         ORDER BY " + GetOrderByForQry();
 
                 command.Prepare();
@@ -458,12 +460,22 @@ public class view_ContractRow : SQLBaseClass
             return "Alias";
         }
 
+        private static string GetOrderByForGetAllContractRows()
+        {
+            ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
+            if (ASort == 1) return "CR.Alias";
+            if (ASort == 2 || ASort == 4) return "M.Classification, CR.Alias";
+            if (ASort == 3) return "M.Classification, CR.Article_number";
+            return "CR.Alias";
+        }
+
         private static string GetOrderByForQry()
         {
             ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
             if (ASort == 1) return "Typ, System, Alias";
-            if (ASort == 2) return "Typ, System, Alias";
-            if (ASort == 3) return "Typ, System, Art_id";
+            if (ASort == 2) return "M.Classification, Alias";
+            if (ASort == 3) return "M.Classification, Art_id";
+            if (ASort == 4) return "M.Classification, ISNULL(Sort_order, 99), Alias";
             return "Typ, System, Alias";
         }
 
