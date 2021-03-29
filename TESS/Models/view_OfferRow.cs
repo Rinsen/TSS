@@ -103,11 +103,12 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-
                 // Default query
-                command.CommandText = @"SELECT Offer_number, Article_number, License, 
-                                        Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias, Area, IncludeDependencies FROM " + databasePrefix + "OfferRow WHERE Offer_number = @offerNumber AND Area = @area Order By " + GetOrderBy();
+                command.CommandText = @"SELECT Offer_number, O.Article_number, License, 
+                                        Maintenance, Include_status, O.Fixed_price, CAST(O.SSMA_timestamp AS BIGINT) AS SSMA_timestamp
+                                        , Alias, O.Area, IncludeDependencies FROM " + databasePrefix + "OfferRow O " +
+                                        "JOIN " + databasePrefix + "Module M ON M.Article_number = O.Article_number " +
+                                        "WHERE Offer_number = @offerNumber AND O.Area = @area Order By " + GetOrderByForGetAllOfferRows();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -247,10 +248,20 @@ namespace TietoCRM.Models
         private string GetOrderByForQry()
         {
             ASort = HttpContext.Current.GetUser().AvtalSortera;
-            if (ASort == 1) return "Typ, System, Alias";
-            if (ASort == 2) return "Typ, System, Alias";
-            if (ASort == 3) return "Typ, System, Art_id";
-            return "Typ, System, Alias";
+            if (ASort == 1) return "System, Alias";
+            if (ASort == 2) return "Classification, Alias";
+            if (ASort == 3) return "System, Article_number";
+            if (ASort == 4) return "Classification, ISNULL(M.Sort_order, 99), Alias";
+            return "Alias";
+        }
+
+        private static string GetOrderByForGetAllOfferRows()
+        {
+            ASort = HttpContext.Current.GetUser().AvtalSortera;
+            if (ASort == 1) return "Alias";
+            if (ASort == 2) return "M.Classification, Alias";
+            if (ASort == 3) return "M.Classification, Article_number";
+            return "Alias";
         }
 
         private static string GetOrderBy()

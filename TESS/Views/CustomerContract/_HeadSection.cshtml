@@ -49,29 +49,29 @@
                     @if (ViewBag.CustomerContract.Is(ContractType.MainContract))
                     {
                         <tr>
-                            <td class="crm-table-title" style="font-weight: bold">Avtalsbeteckning:</td>
-                            <td>@ViewBag.CustomerContract.Contract_id</td>
+                            <td class="crm-table-title" style="font-weight: bold; white-space:nowrap">Avtalsbeteckning:</td>
+                            <td style="white-space: nowrap">@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }
                     else
                     {
                         <tr>
-                            <td class="crm-table-title" style="font-weight: bold">Huvudavtal:</td>
-                            <td>@ViewBag.CustomerContract.Main_contract_id</td>
+                            <td class="crm-table-title" style="font-weight: bold; white-space:nowrap">Huvudavtal:</td>
+                            <td style="white-space: nowrap">@ViewBag.CustomerContract.Main_contract_id</td>
                         </tr>
                     }
                     @if (ViewBag.CustomerContract.Is(ContractType.SupplementaryContract))
                     {
                         <tr>
-                            <td class="crm-table-title" style="font-weight: bold">Avtalsbeteckning:</td>
-                            <td>@ViewBag.CustomerContract.Contract_id</td>
+                            <td class="crm-table-title" style="font-weight: bold; white-space:nowrap">Avtalsbeteckning:</td>
+                            <td style="white-space: nowrap">@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }
                     @if (ViewBag.CustomerContract.Is(ContractType.ServiceContract))
                     {
                         <tr>
-                            <td class="crm-table-title" style="font-weight: bold">Avtalsbeteckning:</td>
-                            <td>@ViewBag.CustomerContract.Contract_id</td>
+                            <td class="crm-table-title" style="font-weight: bold; white-space:nowrap">Avtalsbeteckning:</td>
+                            <td style="white-space: nowrap">@ViewBag.CustomerContract.Contract_id</td>
                         </tr>
                     }
                 </table>
