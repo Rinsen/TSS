@@ -7,18 +7,23 @@
         <form method="get" action="~/ModuleReport/Pdf" target="_blank" class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">Modules:</label>
-                <select name="module" id="crm-select-module" class="form-control selectpicker" data-live-search="true" data-show-subtext="true">
+                <select name="module" id="crm-select-module" multiple class="form-control selectpicker" data-live-search="true" data-show-subtext="true">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
-                        <option value="@Module.Article_number" data-subtext="@Module.Description">@Module.Article_number - @Module.Module</option>
+                    <option value="@Module.Article_number" data-subtext="@Module.Description">@Module.Article_number - @Module.Module</option>
                     }
                 </select>
             </div>
             <button id="fetch-pdf" style="margin-top: 1.7em" class="btn btn-default" type="button">PDF</button>
             <button id="export-excel" style="margin-top: 1.7em;" class="btn" type="button">Excel</button>
-            <div class="checkbox" style="margin-top: 1.7em">
+            <div class="checkbox" style="margin-top: 1.7em; padding-left:1em">
                 <label>
                     <input type="checkbox" id="desc"> Show module description
+                </label>
+            </div>
+            <div class="checkbox" style="margin-top: 1.7em; padding-left:1em">
+                <label>
+                    <input type="checkbox" id="exportall"> Export all modules
                 </label>
             </div>
         </form>
@@ -30,17 +35,20 @@
                 <tr>
                     <th data-field="Customer" data-sortable="true">Customer</th>
                     <th data-field="Contract_id" data-sortable="true">Contract id</th>
+                    <th data-field="Module" data-sortable="true">Module</th>
                     <th data-field="Representative" data-sortable="true">Representative</th>
                     <th data-field="Classification" data-sortable="true">Classification</th>
                 </tr>
             </thead>
         </table>
     </div>
-    <script>
+
+<script>
     var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Customer" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Contract_id" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Module" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Representative" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
@@ -61,11 +69,8 @@
             },
             "defaultContent": "",
             "order": [[0, "asc"]],
-            "columns": [@Html.Raw(DataObject)
-            ],
-
+            "columns": [@Html.Raw(DataObject)],
             "scrollX": true,
-
         });
 
     }
@@ -79,22 +84,29 @@
         updateDataTable($moduleContainer.val());
 
         $moduleContainer.change(function () {
-            if(this.value != "")
-                updateDataTable(this.value)
+            if (this.value != "") {
+                updateDataTable(JSON.stringify($moduleContainer.val()))
+            }
         });
 
         $('#fetch-pdf').click(function () {
             var module = $('#crm-select-module').val();
+            module = JSON.stringify(module);
             var showDesc = $('#desc').val();
+            var exportAll = $('#exportall').val();
             var $dt = $('.dataTable').DataTable();
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+            
+            var url = "ModuleReport/Pdf?module=" + module + sort;
             if ($('#desc').is(':checked')) {
-                window.open(serverPrefix + 'ModuleReport/Pdf?module=' + module + sort + '&showDesc=1', "_blank");
+                url += "&showDesc=1";
             }
-            else {
-                window.open(serverPrefix + 'ModuleReport/Pdf?module=' + module + sort, "_blank");
+            if ($('#exportall').is(':checked')) {
+                url += "&exportAll=1";
             }
+            
+            window.open(serverPrefix + url, "_blank");
         })
 
         $('#export-excel').click(function () {
@@ -105,9 +117,5 @@
             window.open(serverPrefix + 'ModuleReport/ExportExcel?module=' + module + sort, "_parent").focus();
         })
     });
-
-    </script>
-
-    
-    
+</script>
 </row>

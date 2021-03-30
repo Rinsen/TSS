@@ -489,9 +489,9 @@ public class view_ContractRow : SQLBaseClass
 
 
                 // Default query
-               string query  = @"SELECT Article_number, alias as Module, Customer, Contract_id , Classif as Classification, our_sign as Representative FROM qry_ValidContractRow WHERE Article_number=" + articleNumber + " Order By Customer, Contract_id";
+               string query  = @"SELECT Article_number, alias as Module, Customer, Contract_id , Classif as Classification, our_sign as Representative FROM qry_ValidContractRow WHERE Article_number in (" + articleNumber + ") Order By Customer, Contract_id";
 
-                dt.TableName = "ModuleReport_" + articleNumber.Replace(" ", "_");
+                dt.TableName = "ModuleReport_" + articleNumber.Replace(" ", "_").Replace(",", "_");
 
                 SqlDataAdapter da = new SqlDataAdapter(query, connection);
                 da.Fill(dt);

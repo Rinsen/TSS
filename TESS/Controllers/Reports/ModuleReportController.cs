@@ -30,70 +30,122 @@ namespace TietoCRM.Controllers.Reports
 
         public ActionResult Pdf()
         {
-            String aNumb = Request["module"];
-            List<Dictionary<String, object>> list = generateModuleInfo(aNumb);
+            String articleNumbers = Request["module"];
+            var articleNumbersList = (List<int>)new JavaScriptSerializer().Deserialize(articleNumbers, typeof(List<int>));
 
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
-            if(list.Count != 0){
-                ViewData.Add("Customermodules", (new SortedByColumnCollection(list, sortDir, sortKey)).Collection);
+            String exportAll = Request["exportAll"];
+
+            var customerModulesList = new List<List<Dictionary<string, object>>>();
+
+            var modules = new List<view_Module>();
+
+            if(exportAll == "1") //Export ALL modules to the report...
+            {
+                //Get all article numbers
+                articleNumbersList = view_Module.getAllModules().Select(s => (int)s.Article_number).ToList();
+            }
+
+            List<Dictionary<String, object>> list = generateModuleInfo(articleNumbersList);
+
+            foreach (var article in articleNumbersList)
+            {
+                var customerModules = new List<Dictionary<string, object>>();
+
+                view_Module module = new view_Module();
+                module.Select("Article_number=" + article);
+                modules.Add(module);
+
+                foreach (var item in list)
+                {
+                    object moduleName = "";
+                    if(item.TryGetValue("Module", out moduleName))
+                    {
+                        if (moduleName as string == module.Module)
+                        {
+                            //Match
+                            customerModules.Add(item);
+                        }
+                    }
+                }
+
+                customerModulesList.Add(customerModules);
+            }
+
+            if (list.Count != 0)
+            {
+                ViewData.Add("Customermodules", customerModulesList);//(new SortedByColumnCollection(list, sortDir, sortKey)).Collection);
             }
             else
             {
                 ViewData.Add("Customermodules", new ArrayList());
             }
-            
 
-            view_Module module = new view_Module();
-            module.Select("Article_number=" + aNumb);
-
-            this.ViewData["Title"] = module.Module;
-            this.ViewData["Module"] = module;
+            //this.ViewData["Title"] = module.Module;
+            this.ViewData["Modules"] = modules;
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
-            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Customer Module Report" + "\"";
-            
+            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Customer Module Report" + "\"" + " --header-spacing \"3\"";
+
 
             return pdf;
-
-
         }
 
-        public List<Dictionary<String, object>> generateModuleInfo(String articleNumber)
+        public List<Dictionary<String, object>> generateModuleInfo(List<int> articleNumbers)
         {
-            List<view_ContractRow> ContractRows = view_ContractRow.GetValidContractRows(int.Parse(articleNumber));
-            List<view_Contract> contracts = new List<view_Contract>();
-            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
-            view_Module module = new view_Module();
-            module.Select("Article_number=" + articleNumber);
 
-            if (System.Web.HttpContext.Current.GetUser().IfSameArea(module.Area))
-                foreach (view_ContractRow cr in ContractRows)
+            List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
+            if(articleNumbers != null)
+            {
+                foreach (var articleNumber in articleNumbers)
                 {
-                    Dictionary<String, object> Customers = new Dictionary<String, object>();
-                    if (contracts.FindIndex(m => m.Contract_id == cr.Contract_id) <= 0)
+                    List<view_ContractRow> ContractRows = view_ContractRow.GetValidContractRows(articleNumber);
+                    List<view_Contract> contracts = new List<view_Contract>();
+                    view_Module module = new view_Module();
+                    module.Select("Article_number=" + articleNumber);
+
+                    if (System.Web.HttpContext.Current.GetUser().IfSameArea(module.Area))
                     {
-                        view_Contract c = new view_Contract("Contract_id = '" + cr.Contract_id + "'");
-                        contracts.Add(c);
-                    }
-                    view_Contract contract = contracts[contracts.Count - 1];
-                    if (contract.Status == "Giltigt")
-                    {
-                        Customers.Add("Customer", cr.Customer);
-                        Customers.Add("Contract_id", cr.Contract_id);
-                        Customers.Add("Representative", contract.Sign);
-                        Customers.Add("Classification", module.Classification);
-                        
-                        rows.Add(Customers);
+                        foreach (view_ContractRow cr in ContractRows)
+                        {
+                            Dictionary<String, object> Customers = new Dictionary<String, object>();
+                            if (contracts.FindIndex(m => m.Contract_id == cr.Contract_id) <= 0)
+                            {
+                                view_Contract c = new view_Contract("Contract_id = '" + cr.Contract_id + "'");
+                                contracts.Add(c);
+                            }
+                            view_Contract contract = contracts[contracts.Count - 1];
+                            if (contract.Status == "Giltigt")
+                            {
+                                Customers.Add("Customer", cr.Customer);
+                                Customers.Add("Contract_id", cr.Contract_id);
+                                Customers.Add("Module", module.Module);
+                                Customers.Add("Representative", contract.Sign);
+                                Customers.Add("Classification", module.Classification);
+
+                                rows.Add(Customers);
+                            }
+                        }
                     }
                 }
+            }
+
             return rows;
         }
 
         public String Module()
         {
-            String articleNumber = Request.Form["module"];
+            try
+            {
+                String articleNumbers = Request.Form["module"];
+                var articleNumbersDic = (List<int>) new JavaScriptSerializer().Deserialize(articleNumbers, typeof(List<int>));
 
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(articleNumber)) + "}";
+                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(articleNumbersDic)) + "}";
+            }
+            catch(Exception ex)
+            {
+                return "0";
+            }
         }
         public string ExportExcel()
         {
