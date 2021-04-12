@@ -217,7 +217,8 @@ namespace TietoCRM.Models
                 //command.CommandText = @"SELECT Alias, Description FROM qry_OfferArtDescription Where Offertnr = @offerNumber Order By Typ, Alias";
 
                 command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System FROM qry_OfferArtDescription Q 
-                                        JOIN View_Module M ON M.Article_number = Q.Art_id 
+                                        JOIN " + databasePrefix + @"Module M ON M.Article_number = Q.Art_id
+                                        JOIN " + databasePrefix + @"Sector S ON S.System = M.System and S.Classification = M.Classification
                                         WHERE OFFERTNR = @offerNumber 
                                         ORDER BY " + GetOrderByForQry();
 
@@ -251,7 +252,7 @@ namespace TietoCRM.Models
             if (ASort == 1) return "System, Alias";
             if (ASort == 2) return "Classification, Alias";
             if (ASort == 3) return "System, Article_number";
-            if (ASort == 4) return "Classification, ISNULL(M.Sort_order, 99), Alias";
+            if (ASort == 4) return "S.SortNo, M.Classification, ISNULL(M.Sort_order, 99), Alias";
             return "Alias";
         }
 

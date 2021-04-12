@@ -421,7 +421,8 @@ public class view_ContractRow : SQLBaseClass
                 //                        Where IsNull(M.Contract_Description,'') <> '' And C.Customer = @customer And C.Contract_id = @contract_id Order By " + GetOrderBy();
 
                 command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System FROM qry_ContractArtDescription Q 
-                                        JOIN View_Module M ON M.Article_number = Q.Art_id 
+                                        JOIN " + databasePrefix + @"Module M ON M.Article_number = Q.Art_id
+                                        JOIN " + databasePrefix + @"Sector S ON S.System = M.System and S.Classification = M.Classification
                                         WHERE Q.Avtalsid = @contract_id AND Q.Kund = @customer 
                                         ORDER BY " + GetOrderByForQry();
 
@@ -475,7 +476,7 @@ public class view_ContractRow : SQLBaseClass
             if (ASort == 1) return "Typ, System, Alias";
             if (ASort == 2) return "M.Classification, Alias";
             if (ASort == 3) return "M.Classification, Art_id";
-            if (ASort == 4) return "M.Classification, ISNULL(Sort_order, 99), Alias";
+            if (ASort == 4) return "S.SortNo, M.Classification, ISNULL(Sort_order, 99), Alias";
             return "Typ, System, Alias";
         }
 
