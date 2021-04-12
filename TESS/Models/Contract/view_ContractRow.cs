@@ -480,7 +480,7 @@ public class view_ContractRow : SQLBaseClass
             return "Typ, System, Alias";
         }
 
-        public static System.Data.DataTable ExportValidContractRowsToExcel(string articleNumber)
+        public static System.Data.DataTable ExportValidContractRowsToExcel(string articleNumber, bool allModules)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
@@ -492,7 +492,10 @@ public class view_ContractRow : SQLBaseClass
                 // Default query
                string query  = @"SELECT Article_number, alias as Module, Customer, Contract_id , Classif as Classification, our_sign as Representative FROM qry_ValidContractRow WHERE Article_number in (" + articleNumber + ") Order By Customer, Contract_id";
 
-                dt.TableName = "ModuleReport_" + articleNumber.Replace(" ", "_").Replace(",", "_");
+                if(allModules)
+                    dt.TableName = "ModuleReport_All_Modules";
+                else
+                    dt.TableName = "ModuleReport_" + articleNumber.Replace(" ", "_").Replace(",", "_");
 
                 SqlDataAdapter da = new SqlDataAdapter(query, connection);
                 da.Fill(dt);

@@ -149,7 +149,23 @@ namespace TietoCRM.Controllers.Reports
         }
         public string ExportExcel()
         {
-            System.Data.DataTable dt = view_ContractRow.ExportValidContractRowsToExcel(Request["module"]);
+            String exportAll = Request["exportAll"];
+            var articleNumbers = Request["module"];
+
+            if (exportAll == "1") //Export ALL modules to the report...
+            {
+                //Get all article numbers
+                var articleNumbersList = view_Module.getAllModules().Select(s => (int)s.Article_number).ToList();
+
+                foreach (var number in articleNumbersList)
+                {
+                    articleNumbers += number + ",";
+                }
+
+                articleNumbers = articleNumbers.Substring(0, articleNumbers.Length - 1);
+            }
+
+            System.Data.DataTable dt = view_ContractRow.ExportValidContractRowsToExcel(articleNumbers, exportAll != null ? true : false);
             TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
             return ex.Export(dt, "ModuleReport.xlsx");
         }
