@@ -228,6 +228,7 @@ namespace TietoCRM.Controllers
             articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
 
             view_User usr = System.Web.HttpContext.Current.GetUser();
+
             if (usr.AvtalSortera == 4)
             {
                 foreach (var system in articleSystemDic)
@@ -236,7 +237,7 @@ namespace TietoCRM.Controllers
                     var sortedList = new List<dynamic>();
                     sortedList.AddRange(system.Value);
                     system.Value.Clear();
-                    system.Value.AddRange(sortedList.OrderBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
                 }
                 ViewData.Add("ArticleSystemDictionary", articleSystemDic.ToList());
             }

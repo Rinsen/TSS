@@ -413,7 +413,7 @@ namespace TietoCRM.Controllers.Contracts
                     var sortedList = new List<dynamic>();
                     sortedList.AddRange(system.Value);
                     system.Value.Clear();
-                    system.Value.AddRange(sortedList.OrderBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
                 }
             }
 
