@@ -321,7 +321,7 @@ namespace TietoCRM.Controllers.Contracts
                 dynamic contractInfo = new ExpandoObject();
 
                 contractInfo.Article_number = service.Article_number;
-                if (consultantRow.Alias == null || consultantRow.Alias == "")
+                if (service.Read_name_from_module == 1 || consultantRow.Alias == null || consultantRow.Alias == "")
                     contractInfo.Module = service.Module;
                 else
                     contractInfo.Module = consultantRow.Alias;

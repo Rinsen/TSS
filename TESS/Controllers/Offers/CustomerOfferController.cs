@@ -165,6 +165,18 @@ namespace TietoCRM.Controllers
                 offerID = int.Parse(request);
             }
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
+
+            foreach (var consultantRow in co._ConsultantRows)
+            {
+                view_Module module = new view_Module();
+                module.Select("Article_number = " + consultantRow.Code);
+
+                if(module.Read_name_from_module == 1)
+                {
+                    consultantRow.Alias = module.Module;
+                }
+            }
+
             co._ConsultantRows = co._ConsultantRows.OrderBy(o => o.Alias).ToList();
             ViewData.Add("CustomerOffer", co);
 
@@ -1852,10 +1864,11 @@ namespace TietoCRM.Controllers
                 if (dict.Keys.Contains("desc"))
                     alias = dict["desc"].ToString();
 
-                if (String.IsNullOrEmpty(alias))
+                var module = new view_Module();
+                module.Select("Article_number = " + id);
+
+                if (module.Read_name_from_module == 1 || String.IsNullOrEmpty(alias))
                 {
-                    var module = new view_Module();
-                    module.Select("Article_number = " + id);
                     alias = module.Module;
                 }                    
 

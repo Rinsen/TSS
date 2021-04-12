@@ -341,7 +341,7 @@ if (list.Count > 0)
             // Fetch Service from DB
             view_Module service = new view_Module();
             service.Select("Article_number = " + cr.Code);
-            if (!String.IsNullOrEmpty(cr.Alias))
+            if (service.Read_name_from_module != 1 && !String.IsNullOrEmpty(cr.Alias))
             {
                 service.Module = cr.Alias;
             }

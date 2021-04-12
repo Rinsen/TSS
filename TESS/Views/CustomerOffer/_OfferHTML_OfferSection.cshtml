@@ -320,7 +320,7 @@
             service.Select("Article_number = " + cr.Code);
             if (!String.IsNullOrEmpty(cr.Alias))
             {
-                service.Description = cr.Alias;
+                service.Module = cr.Alias;
             }
 
             // Calculate total sums
