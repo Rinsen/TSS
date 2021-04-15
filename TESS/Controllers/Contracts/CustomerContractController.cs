@@ -413,7 +413,7 @@ namespace TietoCRM.Controllers.Contracts
                     var sortedList = new List<dynamic>();
                     sortedList.AddRange(system.Value);
                     system.Value.Clear();
-                    system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
                 }
             }
 
@@ -421,7 +421,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("Articles", articles);
             ViewData.Add("RemArticles", remArticles);
 
-            ViewData.Add("ArticleSystemDictionary",  articleSystemDic.OrderBy( d => d.Value.First().Price_type).ToList());
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
             ViewData.Add("ArticleAndServiceDictionary", articleAndServicesDic.OrderBy(d => d.Value.First().Price_type).ToList());
 
             List<dynamic> eduOptions = new List<dynamic>();

@@ -249,14 +249,13 @@ namespace TietoCRM.Controllers
                     var sortedList = new List<dynamic>();
                     sortedList.AddRange(system.Value);
                     system.Value.Clear();
+                    //Sorterar moduler inom classification i rätt ordning efter sortno på artikel
                     system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
                 }
-                ViewData.Add("ArticleSystemDictionary", articleSystemDic.ToList());
             }
-            else
-            {
-                ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
-            }
+
+            //Sorterar System/Classification i rätt ordning efter sortno
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
 
             ViewData.Add("EducationPortals", educationPortals);
             ViewData.Add("Articles", articles);
