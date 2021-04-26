@@ -250,7 +250,7 @@ namespace TietoCRM.Models
         {
             ASort = HttpContext.Current.GetUser().AvtalSortera;
             if (ASort == 1) return "System, Alias";
-            if (ASort == 2) return "Classification, Alias";
+            if (ASort == 2) return "M.Classification, Alias";
             if (ASort == 3) return "System, Article_number";
             if (ASort == 4) return "S.SortNo, M.Classification, ISNULL(M.Sort_order, 99), Alias";
             return "Alias";

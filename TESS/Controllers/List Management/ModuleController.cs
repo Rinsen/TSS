@@ -176,7 +176,14 @@ namespace TietoCRM.Controllers
 
                         foreach (KeyValuePair<String, object> variable in variables)
                         {
-                            module.SetValue(variable.Key, variable.Value);
+                            if(variable.Key == "Sort_order" && variable.Value.ToString() == "")
+                            {
+                                module.SetValue(variable.Key, null);
+                            }
+                            else
+                            {
+                                module.SetValue(variable.Key, variable.Value);
+                            }                            
                         }
 
                         module.Insert();

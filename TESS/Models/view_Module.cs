@@ -69,8 +69,8 @@ namespace TietoCRM.Models
         private int module_type;
         public int Module_type { get { return module_type; } set { module_type = value; } }
 
-        private int sort_order;
-        public int Sort_order { get { return sort_order; } set { sort_order = value; } }
+        private int? sort_order;
+        public int? Sort_order { get { return sort_order; } set { sort_order = value; } }
         
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
