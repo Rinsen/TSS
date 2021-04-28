@@ -664,12 +664,12 @@
                         if (moduleType != undefined && moduleType == "Service") {
                             $("#none2").attr("disabled", true);
                             $("#startup2").attr("disabled", true);
-                            $("#sort_order").attr("disabled", true);
+                            //$("#sort_order").attr("disabled", true);
                         }
                         else {
                             $("#none2").attr("disabled", false);
                             $("#startup2").attr("disabled", false);
-                            $("#sort_order").attr("disabled", false);
+                            //$("#sort_order").attr("disabled", false);
                         }
 
                         //getTinyMCE();
@@ -854,7 +854,7 @@
             //Enable radiobuttons
             $("#none2").attr("disabled", false);
             $("#startup2").attr("disabled", false);
-            $("#sort_order").attr("disabled", false);
+            //$("#sort_order").attr("disabled", false);
         }
         else if (moduleType == "Service") {
             //Disable radiobuttons
@@ -863,7 +863,7 @@
             $("#startup2").attr("disabled", true);
             $("#startup2").prop("checked", false);
             $("#fixed-price2").prop("checked", true);
-            $("#sort_order").attr("disabled", true);
+            //$("#sort_order").attr("disabled", true);
             handleDiscountCheck();
         }
     }

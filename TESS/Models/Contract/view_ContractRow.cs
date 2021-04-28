@@ -452,6 +452,7 @@ public class view_ContractRow : SQLBaseClass
             return list;
 
         }
+
         private static string GetOrderBy()
         {
             ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
@@ -474,9 +475,9 @@ public class view_ContractRow : SQLBaseClass
         {
             ASort = System.Web.HttpContext.Current.GetUser().AvtalSortera;
             if (ASort == 1) return "Typ, System, Alias";
-            if (ASort == 2) return "M.Classification, Alias";
-            if (ASort == 3) return "M.Classification, Art_id";
-            if (ASort == 4) return "S.SortNo, M.Classification, ISNULL(Sort_order, 99), Alias";
+            if (ASort == 2) return "Typ, M.Classification, Alias";
+            if (ASort == 3) return "Typ, M.Classification, Art_id";
+            if (ASort == 4) return "Typ, S.SortNo, M.Classification, ISNULL(NULLIF(Sort_order, 0), 99), Alias";
             return "Typ, System, Alias";
         }
 

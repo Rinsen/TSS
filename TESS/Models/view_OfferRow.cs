@@ -249,10 +249,10 @@ namespace TietoCRM.Models
         private string GetOrderByForQry()
         {
             ASort = HttpContext.Current.GetUser().AvtalSortera;
-            if (ASort == 1) return "System, Alias";
-            if (ASort == 2) return "M.Classification, Alias";
-            if (ASort == 3) return "System, Article_number";
-            if (ASort == 4) return "S.SortNo, M.Classification, ISNULL(M.Sort_order, 99), Alias";
+            if (ASort == 1) return "Typ, System, Alias";
+            if (ASort == 2) return "Typ, M.Classification, Alias";
+            if (ASort == 3) return "Typ, System, Article_number";
+            if (ASort == 4) return "Typ, S.SortNo, M.Classification, ISNULL(NULLIF(Sort_order, 0), 99), Alias";
             return "Alias";
         }
 

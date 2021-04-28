@@ -39,6 +39,11 @@ namespace TietoCRM.Models
         /// </summary>
         public int _ModuleTextId { get; set; }
 
+        /// <summary>
+        /// Article sort order, not in DB 
+        /// </summary>
+        public int? _SortOrder { get; set; }
+
         public view_ConsultantRow()
             : base("ConsultantRow")
         {
@@ -84,7 +89,7 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 // Default query
-                command.CommandText = "SELECT Offer_number ,Code ,Amount ,Total_price ,Include_status, Alias, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ConsultantRow WHERE " + "Offer_number = @offerNumber";
+                command.CommandText = "SELECT Offer_number, Code, Amount, Total_price, Include_status, Alias, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "ConsultantRow WHERE " + "Offer_number = @offerNumber";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerNumber);
@@ -105,7 +110,7 @@ namespace TietoCRM.Models
                                 i++;
                             }
 
-                            //Also get Offer Description (ModuleText)
+                            //Also get Offer Description (ModuleText) and sort order
                             view_Module service = new view_Module();
                             service.Select("Article_number = " + t.Code.ToString());
                             view_ModuleText moduleText = new view_ModuleText();
@@ -113,6 +118,7 @@ namespace TietoCRM.Models
 
                             t._OfferDescription = moduleText.Description;
                             t._ModuleTextId = moduleText._ID;
+                            t._SortOrder = service.Sort_order;
 
                             list.Add(t);
                         }

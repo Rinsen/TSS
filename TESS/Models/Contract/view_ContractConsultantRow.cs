@@ -32,6 +32,11 @@ namespace TietoCRM.Models
         private DateTime? updated;
         public DateTime? Updated { get { return updated; } set { updated = value; } }
 
+        /// <summary>
+        /// Article sort order, not in DB 
+        /// </summary>
+        public int? _SortOrder { get; set; }
+
         public view_ContractConsultantRow()
             : base("ContractConsultantRow")
         {
@@ -78,6 +83,11 @@ namespace TietoCRM.Models
                                 t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                 i++;
                             }
+
+                            view_Module service = new view_Module();
+                            service.Select("Article_number = " + t.Code.ToString());
+                            t._SortOrder = service.Sort_order;
+
                             list.Add(t);
                         }
                     }

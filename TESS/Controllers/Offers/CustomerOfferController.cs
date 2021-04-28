@@ -241,7 +241,12 @@ namespace TietoCRM.Controllers
 
             view_User usr = System.Web.HttpContext.Current.GetUser();
 
-            if (usr.AvtalSortera == 4)
+            if (usr.AvtalSortera == 3) //System, Article_number
+            {
+                //Endast tjänster, artiklar sorteras i view_OfferRow.
+                co._ConsultantRows = co._ConsultantRows.OrderBy(a => a.Code).ToList();
+            }
+            else if (usr.AvtalSortera == 4) //Classification, Sort order
             {
                 foreach (var system in articleSystemDic)
                 {
@@ -252,6 +257,8 @@ namespace TietoCRM.Controllers
                     //Sorterar moduler inom classification i rätt ordning efter sortno på artikel
                     system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
                 }
+
+                co._ConsultantRows = co._ConsultantRows.OrderByDescending(a => a._SortOrder > 0).ThenBy(a => a._SortOrder).ToList();
             }
 
             //Sorterar System/Classification i rätt ordning efter sortno

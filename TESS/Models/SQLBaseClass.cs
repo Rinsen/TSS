@@ -478,14 +478,17 @@ namespace TietoCRM.Models
                         int j = 0;
                         for (int i = 0; i < this.propertyInfos.Count; i++)
                         {
-                            if (reader.GetName(j).ToLower() != "ssma_timestamp")
+                            if (!this.propertyInfos[i].Name.StartsWith("_SortOrder")) //Ducka för prop som ej finns i db
                             {
-                                if(this.propertyInfos[i].PropertyType != typeof(ICollection<>))
+                                if (reader.GetName(j).ToLower() != "ssma_timestamp")
                                 {
-                                    this.SetValue(this.propertyInfos[i].Name, reader[j]);
-                                    j++;
+                                    if (this.propertyInfos[i].PropertyType != typeof(ICollection<>))
+                                    {
+                                        this.SetValue(this.propertyInfos[i].Name, reader[j]);
+                                        j++;
+                                    }
                                 }
-                            }                         
+                            }
                         }
                     }
                 }

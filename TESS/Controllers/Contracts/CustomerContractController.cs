@@ -328,7 +328,8 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.System = "Konsulttjänster";
                 contractInfo.ModuleType = "K";                
                 contractInfo.Price_category = service.Price_category;
-                
+                contractInfo.Article_Sort_number = service.Sort_order;
+
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
                 contractInfo.ContractDescription = moduleText.Description == null ? service.Contract_description : moduleText.Description;
@@ -402,6 +403,8 @@ namespace TietoCRM.Controllers.Contracts
             {
                 //articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
                 //remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
+
+                contract._ContractConsultantRows = contract._ContractConsultantRows.OrderBy(a => a.Code).ToList();
             }
             else if (usr.AvtalSortera == 4) //Classification, Article sort number
             {
@@ -413,8 +416,19 @@ namespace TietoCRM.Controllers.Contracts
                     var sortedList = new List<dynamic>();
                     sortedList.AddRange(system.Value);
                     system.Value.Clear();
-                    system.Value.AddRange(sortedList.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                    system.Value.AddRange(sortedList.OrderBy(a => a.ModuleType).ThenBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
                 }
+
+                contract._ContractConsultantRows = contract._ContractConsultantRows.OrderByDescending(a => a._SortOrder > 0).ThenBy(a => a._SortOrder).ToList();
+
+                //foreach (var system in articleAndServicesDic)
+                //{
+                //    //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
+                //    var sortedList = new List<dynamic>();
+                //    sortedList.AddRange(system.Value);
+                //    system.Value.Clear();
+                //    system.Value.AddRange(sortedList.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                //}
             }
 
             ViewData.Add("EducationPortals", educationPortals);
@@ -3148,6 +3162,13 @@ namespace TietoCRM.Controllers.Contracts
             return "1";
 
         }
+
+        /// <summary>
+        /// Bygg ihop Modultexterna för kontraktet
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="contractId"></param>
+        /// <returns></returns>
         private string updateDescriptions(string customer, string contractId)
         {
             var contractRow = new view_ContractRow();
@@ -3156,13 +3177,6 @@ namespace TietoCRM.Controllers.Contracts
 
             foreach (var contractArtDescription in contractArtDescriptionList)
             {
-                //Rubriken skapas nu från annat håll. Läggs ut i _ModuleSection.cshtml och hämtas från ny kolumn i view_ContractText (Module_Header)
-                //if (moduleInfo == "")
-                //{
-                //    //moduleInfo = "<h5><strong>Information produkter</strong></h4>";
-                //    moduleInfo = "<h5>Information produkter</h5>";
-                //}
-                //moduleInfo += "<h6><strong>" + mi.Alias + "</strong></h6>";
                 moduleInfo += "<p>" + contractArtDescription.Contract_description + "</p>";
             }
             return moduleInfo;
