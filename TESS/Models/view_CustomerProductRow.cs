@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 using System.Data;
 using System.Web.Script.Serialization;
 using System.Reflection;
+using System.Web;
+using TietoCRM.Extensions;
 
 namespace TietoCRM.Models
 {
@@ -273,7 +273,12 @@ namespace TietoCRM.Models
                     {
                         command.CommandText += "And CPR.Area = @area ";
                     }
-                    command.CommandText += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, ISNULL(NULLIF(M.Sort_order, 0), 99), CPR.Module";
+                    var ASort = HttpContext.Current.GetUser().AvtalSortera;
+
+                    if (ASort == 4)
+                        command.CommandText += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, ISNULL(NULLIF(M.Sort_order, 0), 99), CPR.Module";
+                    else
+                        command.CommandText += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, CPR.Module";
                 }
 
                 command.Prepare();
@@ -359,8 +364,14 @@ namespace TietoCRM.Models
                 {
                     query += "And CPR.Area = " + area;
                 }
-                query += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, ISNULL(NULLIF(M.Sort_order, 0), 99), CPR.Module";
-               
+
+                var ASort = HttpContext.Current.GetUser().AvtalSortera;
+
+                if (ASort == 4)
+                    query += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, ISNULL(NULLIF(M.Sort_order, 0), 99), CPR.Module";
+                else
+                    query += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, CPR.Module";
+
                 dt.TableName = customer.Replace(" ","_");
 
                 SqlDataAdapter da = new SqlDataAdapter(query, connection);
