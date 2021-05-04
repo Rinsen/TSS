@@ -313,7 +313,7 @@ else if (Request["modal"] == "articles")
 
                                     <button onclick="moveItem(event, this)"
                                             type="button"
-                                            class="list-group-item"
+                                            class="list-group-item art-nr-@or.Article_number"
                                             data-selected="true"
                                             data-discount="@or.Discount"
                                             data-discount-type="@or.Discount_type"
@@ -621,8 +621,10 @@ else if (Request["modal"] == "articles")
                 buttonStyle = "style='background-color:#afd1e6'";
             }
 
+            var depList = "";
             if (article.HasDependencies || (article.Description != null && article.Description.length > 0) || article.Module_status != "0") {
                 var depTitle = "";
+
 
                 if (article.Module_status_txt.length > 0 && article.Module_status != "0") {
                     depTitle = "Restriction:\n";
@@ -642,6 +644,9 @@ else if (Request["modal"] == "articles")
                     for (var d = 0; d < depLen; d++) {
                         depArticle = article.Dependencies[d];
                         depTitle += " " + depArticle.Article_number + ": " + depArticle.Module + "\n";
+
+                        //Save dependency list for easier removal
+                        depList += depArticle.Article_number + "|";
                     }
                 }
 
@@ -678,6 +683,7 @@ else if (Request["modal"] == "articles")
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
+                                            data-deplist='" + depList + "'                                          \
                                             " + buttonStyle + "                                                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
@@ -714,6 +720,7 @@ else if (Request["modal"] == "articles")
                                             data-module-text-id='" + article.Module_text_id + "'                    \
                                             data-offer-id='" + article.Offer_id + "'                                \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
+                                            data-deplist='" + depList + "'                                          \
                                             " + buttonStyle + "                                                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
@@ -756,6 +763,7 @@ else if (Request["modal"] == "articles")
 
                     if(article.Article_number == selectedButtonArt && article.Multiple_type != "1")
                     {
+                        $newButton.attr("style", "");
                         $mic.append($newButton.prop("disabled", true));
 
                         $availableList.append($buttonContainer);
@@ -863,6 +871,7 @@ else if (Request["modal"] == "articles")
         $selectedArticles = $("#selected-articles");
 
         var buttonArt = $button.find(".art-nr").html();
+        var buttonOfferId = $button.data("offer-id");
         var buttonLicense = $button.data("license");
         var buttonHasAutoMapping = $button.data("automapping");
         var buttonMaintenance = $button.data("maintenance");
@@ -905,6 +914,45 @@ else if (Request["modal"] == "articles")
             }
 
             if (buttonHasAutoMapping && confirm('Add dependencies automatically to the offer?')) {
+                var depListArray = $button.data("deplist").split('|');
+                console.log(depListArray);
+                for (i = 0; i < depListArray.length; i++) {
+                    //First check if article already is selected
+                    var modToAddExists = $selectedArticles.find(".art-nr-" + depListArray[i]);
+                    if (modToAddExists.length == 0) {
+
+                        var modToAdd = $availableArticles.find(".art-nr-" + depListArray[i]);
+                        if (modToAdd.length > 0) { //Is dependency module in array of available articles?
+
+                            var depModToAdd = modToAdd.clone();
+
+                            // Fix to exclude the "used" checkmark on selected items.
+                            depModToAdd.find("td").get(0).remove();
+
+                            // Fix to exclude the "dep" cell on selected items.
+                            depModToAdd.find("td").get(0).remove();
+
+                            // Clear eventual background color of selected row (left side will be green (disabled=true via css...) and right side will be white)
+                            modToAdd.attr("style", "");
+                            depModToAdd.attr("style", "");
+
+                            if (modToAdd.attr("data-multiple-select") != "1") {
+                                modToAdd.prop("disabled", true);
+                            }
+
+                            depModToAdd.attr("data-selected", "true");
+                            depModToAdd.attr("type", "button");
+
+                            //Fix colors
+                            depModToAdd.appendTo($selectedArticles);
+                        } else { //No? Get them and create new buttons for them...
+                            if (depListArray[i] != "") {
+                                this.getModuleByArticleNumber(depListArray[i], "@Html.Raw(ViewBag.CustomerName)", buttonOfferId);
+                            }
+                        }
+                    }
+                }
+
                 // Save it!
                 $newButton.attr("data-automapping", "true");
             } else {
@@ -921,15 +969,42 @@ else if (Request["modal"] == "articles")
                 //Put back backgroundColor lightblue...
                 $availableArticles.find(".art-nr-" + buttonArt).attr("style", "background-color:#afd1e6");
             }
+            //console.log(".art-nr-" + buttonArt);
 
             $button.attr("data-selected", "false");
             $button.remove();
+
+            //Also we might need to remove connected articles...
+            if (buttonHasAutoMapping && confirm("Remove all article dependencies?")) {
+                if ($button.data("deplist") != "") {
+                    var depListArray = $button.data("deplist").split('|');
+                    for (i = 0; i < depListArray.length; i++) {
+                        //console.log(test[i]);
+
+                        var modToRem = $selectedArticles.find(".art-nr-" + depListArray[i]);
+                        if (modToRem.length > 0) {
+                            $availableArticles.find(".art-nr-" + depListArray[i]).prop("disabled", false);
+
+                            var test2 = $availableArticles.find(".art-nr-" + depListArray[i]).find("span");
+                            if (test2.length > 0 && test2[0].className == "glyphicon glyphicon-ok") {
+                                //Put back backgroundColor lightblue...
+                                $availableArticles.find(".art-nr-" + depListArray[i]).attr("style", "background-color:#afd1e6");
+                            }
+                            //console.log("Mod to remove:" + ".art-nr-" + depListArray[i]);
+                            //console.log(modToRem);
+                            modToRem.attr("data-selected", "false");
+                            modToRem.remove();
+                        }
+                    }
+                }
+            }
+
             calculateSums();
         }
     }
+
     // Function to show a highlight effect on movement between lists
-    var highlightItem = function($item, css)
-    {
+    var highlightItem = function ($item, css) {
         $item.addClass(css)
         setTimeout(function () {
             $item.removeClass(css);
@@ -939,6 +1014,60 @@ else if (Request["modal"] == "articles")
             }, 600);
         }, 600);
     }
+
+    var getModuleByArticleNumber = function (article_number, customer, offer_id) {
+        // Fetch module for article dependency connection
+        $.ajax({
+            "url": serverPrefix + "CustomerOffer/GetModuleByArticleNumber?article_number=" + article_number + "&customer=" + customer + "&offer_id=" + offer_id,
+            "type": "GET",
+            "success": function (data) {
+                if (data != null && data != "") {
+                    var module = JSON.parse(data);
+                    $selectedArticles = $("#selected-articles");
+                    var html = "";
+                    html += "                                                                   \
+                    <button onclick='moveItem(event, this)'                                     \
+                            type='button'                                                       \
+                            class='list-group-item art-nr-'" + module.Article_number + "'       \
+                            data-selected='true'                                                \
+                            data-alias='" + module.Module + "'                                  \
+                            data-license='" + module.License + "'                               \
+                            data-maintenance='" + module.Maintenance + "'                       \
+                            data-status='" + module.Module_status + "'                          \
+                            data-discount='" + module.Discount + "'                             \
+                            data-discount-type='" + module.Discount_type + "'                   \
+                            data-offer-description='" + module.Offer_description + "'           \
+                            data-module-text-id='" + module.Module_text_id + "'                 \
+                            data-offer-id='" + offer_id + "'                                    \
+                            data-automapping='false'                                            \
+                            data-deplist=''                                                     \
+                            data-rowtype='3'>                                                   \
+                        <table>                                                                 \
+                            <tr>                                                                \
+                                <td class='art-nr'>" + module.Article_number + "</td>";
+                    html += "<td class='alias'>" + module.Module + "</td>";
+
+                    if (module.Discount != '1' || module.Discount_type == '0') {
+                        html += "<td>" + module.License + "</td>                                \
+                                <td>" + module.Maintenance + "</td>                             \
+                            </tr>                                                               \
+                        </table>                                                                \
+                    </button>                                                                   \
+                    ";
+                    }
+                    else {
+                        html += "<td>" + module.License + "%</td>                                \
+                                <td>" + module.Maintenance + "%</td>                             \
+                            </tr>                                                               \
+                        </table>                                                                \
+                    </button>                                                                   \
+                    ";
+                    }
+                    $selectedArticles.append(html);
+                }
+            }
+        });
+    };
 
     var saveFunction = function(){
         var selectedArticlesArray = [];
@@ -956,6 +1085,7 @@ else if (Request["modal"] == "articles")
             var buttonModuleTextId = $button.data("module-text-id");
             var buttonOfferId = $button.data("offer-id");
             var buttonAutoMapping = $button.data("automapping");
+            var buttonDepList = $button.data("deplist");
 
             // "Create a new article" to store in an array to use for server side db update.
             var newArticle = {
@@ -968,7 +1098,8 @@ else if (Request["modal"] == "articles")
                 "Module_text_id": buttonModuleTextId,
                 "Offer_id": buttonOfferId,
                 "Module_type": "A", //Artikel
-                "Automapping": buttonAutoMapping
+                "Automapping": buttonAutoMapping,
+                "Dep_list": buttonDepList
             }
             selectedArticlesArray.push(newArticle);
         }

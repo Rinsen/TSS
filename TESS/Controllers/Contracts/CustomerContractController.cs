@@ -130,6 +130,48 @@ namespace TietoCRM.Controllers.Contracts
             return View();
         }
 
+        /// <summary>
+        /// Get article for article dependency logic in article dialog
+        /// </summary>
+        /// <returns></returns>
+        public string GetModuleByArticleNumber()
+        {
+            string article_number = Request["article_number"];
+            string customer = Request["customer"];
+            string contract_id = Request["contract_id"];
+
+            view_Module module = new view_Module();
+            module.Select("Article_number = " + article_number);
+
+            if(module.Module_type == 1) //Article
+            {
+                view_Customer contractCustomer = new view_Customer("Customer = " + customer);
+
+                view_Tariff tariff = new view_Tariff();
+                tariff.Select("Inhabitant_level = " + contractCustomer.Inhabitant_level + " AND Price_category = " + module.Price_category);
+
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("Type = 'A' AND TypeId = " + contract_id + " AND ModuleType = 'A' AND ModuleId = " + article_number);
+
+                var returnObj = new
+                {
+                    Module = module.Module,
+                    License = tariff.License.HasValue && tariff.License.Value > 0 ? tariff.License.Value.ToString() : "0.00",
+                    Maintenance = tariff.Maintenance.HasValue && tariff.Maintenance.Value > 0 ? tariff.Maintenance.Value.ToString() : "0.00",
+                    Module_status = module.Module_status,
+                    Discount = module.Discount,
+                    Discount_type = module.Discount_type,
+                    Article_number = module.Article_number,
+                    Contract_description = module.Contract_description,
+                    Module_text_id = moduleText._ID
+                };
+
+                return (new JavaScriptSerializer()).Serialize(returnObj);
+            }
+
+            return null;
+        }
+
         public ActionResult ViewPdf()
         {
             GlobalVariables.checkIfAuthorized("CustomerContract");
@@ -261,7 +303,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Maint_price_category = module.Maint_price_category;
                 contractInfo.Discount_type = module.Discount_type;
                 contractInfo.Discount = module.Discount;
-                contractInfo.IncludeDependencies = contractRow.IncludeDependencies;
+                contractInfo.IncludeDependencies = "false"; //We do this so that we don't add dependencies for "old" articles in selected-list. this also means that automatic removal does not work for "old" articles when opening article dialog
 
                 view_Sector sector = new view_Sector();
                 sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
@@ -1507,6 +1549,16 @@ namespace TietoCRM.Controllers.Contracts
                                 {
                                     //Ta bort post
                                     consultantRow.Delete("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+
+                                    //Ta även bort eventuell modultext (deleted = true)
+                                    view_ModuleText moduleServiceText = new view_ModuleText();
+                                    moduleServiceText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+                                    if (moduleServiceText._ID > 0) //Vi har en modultext
+                                    {
+                                        //Den ska delete-markeras
+                                        moduleServiceText.Deleted = true;
+                                        moduleServiceText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+                                    }
                                 }
                             }
                         }

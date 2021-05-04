@@ -209,6 +209,8 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
             buttonStyle = "style='background-color:#afd1e6'";
         }
+
+        var depList = "";
         if (article.HasDependencies || (article.Description != null && article.Description.length) > 0 || article.Module_status != "0") {
             var depTitle = "";
 
@@ -230,6 +232,9 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 for (var d = 0; d < depLen; d++) {
                     depArticle = article.Dependencies[d];
                     depTitle += " " + depArticle.Article_number + ": " + depArticle.Module + "\n";
+
+                    //Save dependency list for easier removal
+                    depList += depArticle.Article_number + "|";
                 }
             }
 
@@ -266,6 +271,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
+                                            data-deplist='" + depList + "'                                          \
                                             " + buttonStyle + "                                                     \
                                             type = 'button'>                                                        \
                                     <table>                                                                         \
@@ -300,6 +306,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-contract-description='" + article.Contract_Description + "'        \
                                             data-contract-id='" + article.Contract_id + "'                          \
                                             data-automapping='" + article.IncludeDependencies + "'                  \
+                                            data-deplist='" + depList + "'                                          \
                                             " + buttonStyle + "                                                     \
                                             type='button'>                                                          \
                                     <table>                                                                         \
@@ -475,6 +482,7 @@ var updateSelectedItems = function () {
                                 data-discount='" + module.Discount + "'                             \
                                 data-discount-type='" + module.Discount_type + "'                   \
                                 data-automapping='" + module.IncludeDependencies + "'               \
+                                data-deplist=''                                                     \
                                 data-rowtype='3'>                                                   \
                             <table>                                                                 \
                                 <tr>                                                                \
@@ -533,6 +541,7 @@ var moveItem = function (event, element) {
 
     var buttonArt = $button.find(".art-nr").html();
     var buttonLicense = $button.data("license");
+    var buttonContractId = $button.data("contract-id");
     var buttonStatus = $button.data("status");
     var buttonStatusTxt = $button.data("status-text");
     var buttonMaintenance = $button.data("maintenance");
@@ -579,6 +588,56 @@ var moveItem = function (event, element) {
         }
 
         if (buttonHasServiceDependencies && confirm('Add dependencies automatically to the contract?')) {
+            var depListArray = $button.data("deplist").split('|');
+            console.log(depListArray);
+            for (i = 0; i < depListArray.length; i++) {
+
+                //First check if article already is selected
+                var modToAddExists = $selectedArticles.find(".art-nr-" + depListArray[i]);
+                if (modToAddExists.length == 0) {
+
+                    var modToAdd = $availableArticles.find(".art-nr-" + depListArray[i]);
+                    if (modToAdd.length > 0) { //Is dependency module in array of available articles?
+
+                        var depModToAdd = modToAdd.clone();
+
+                        // Fix to exclude the "used" checkmark on selected items.
+                        depModToAdd.find("td").get(0).remove();
+
+                        // Fix to exclude the "dep" cell on selected items.
+                        depModToAdd.find("td").get(0).remove();
+
+                        // Clear eventual background color of selected row (left side will be green (disabled=true via css...) and right side will be white)
+                        modToAdd.attr("style", "");
+                        depModToAdd.attr("style", "");
+
+                        if (modToAdd.attr("data-multiple-select") != "1") {
+                            modToAdd.prop("disabled", true);
+                        }
+
+                        depModToAdd.attr("data-selected", "true");
+                        depModToAdd.attr("data-rowtype", "3");
+                        depModToAdd.attr("type", "button");
+
+                        if (modToAdd.data("discount") != '1' || modToAdd.data("discount-type") == '0') {
+                            depModToAdd.find('.license').html(formatCurrency(modToAdd.data("license")));
+                            depModToAdd.find('.maintenance').html(formatCurrency(modToAdd.data("maintenance")));
+                        }
+                        else {
+                            depModToAdd.find('.license').html(modToAdd.data("license") + "%");
+                            depModToAdd.find('.maintenance').html(modToAdd.data("maintenance") + "%");
+                        }
+
+                        //Fix colors
+                        depModToAdd.appendTo($selectedArticles);
+                    } else { //No? Get them and create new buttons for them...
+                        if (depListArray[i] != "") {
+                            this.getModuleByArticleNumber(depListArray[i], customerName, buttonContractId);
+                        }
+                    }
+                }
+            }
+
             // Save it!
             $newButton.attr("data-automapping", "true");
         } else {
@@ -601,6 +660,31 @@ var moveItem = function (event, element) {
             }
             $button.attr("data-selected", "false");
             $button.remove();
+
+            //Also we might need to remove connected articles...
+            if (buttonHasServiceDependencies && confirm("Remove all article dependencies?")) {
+                if ($button.data("deplist") != "") {
+                    var depListArray = $button.data("deplist").split('|');
+                    for (i = 0; i < depListArray.length; i++) {
+                        //console.log(test[i]);
+
+                        var modToRem = $selectedArticles.find(".art-nr-" + depListArray[i]);
+                        if (modToRem.length > 0) {
+                            $availableArticles.find(".art-nr-" + depListArray[i]).prop("disabled", false);
+
+                            var test2 = $availableArticles.find(".art-nr-" + depListArray[i]).find("span");
+                            if (test2.length > 0 && test2[0].className == "glyphicon glyphicon-ok") {
+                                //Put back backgroundColor lightblue...
+                                $availableArticles.find(".art-nr-" + depListArray[i]).attr("style", "background-color:#afd1e6");
+                            }
+                            //console.log("Mod to remove:" + ".art-nr-" + depListArray[i]);
+                            //console.log(modToRem);
+                            modToRem.attr("data-selected", "false");
+                            modToRem.remove();
+                        }
+                    }
+                }
+            }
         }
         else {
             // Removed module
@@ -675,6 +759,61 @@ var highlightItem = function ($item, css) {
     }, 600);
 };
 
+var getModuleByArticleNumber = function (article_number, customer, contract_id) {
+    // Fetch module for article dependency connection
+    $.ajax({
+        "url": serverPrefix + "CustomerContract/GetModuleByArticleNumber?article_number=" + article_number + "&customer=" + customer + "&contract_id=" + contract_id,
+        "type": "GET",
+        "success": function (data) {
+            if (data != null && data != "") {
+                var module = JSON.parse(data);
+                $selectedArticles = $("#articlesModal #selected-articles");
+                var html = "";
+                html += "                                                                           \
+                        <button onclick='moveItem(event, this)'                                     \
+                                type='button'                                                       \
+                                class='list-group-item art-nr-'" + module.Article_number + "'       \
+                                data-selected='true'                                                \
+                                data-alias='" + module.Module + "'                                  \
+                                data-license='" + module.License + "'                               \
+                                data-maintenance='" + module.Maintenance + "'                       \
+                                data-status='" + module.Module_status + "'                          \
+                                data-discount='" + module.Discount + "'                             \
+                                data-discount-type='" + module.Discount_type + "'                   \
+                                data-automapping='false'                                            \
+                                data-contract-id='" + contract_id + "'                              \
+                                data-contract-description='" + module.Contract_description + "'     \
+                                data-module-text-id='" + module.Module_text_id + "'                 \
+                                data-deplist=''                                                     \
+                                data-rowtype='3'>                                                   \
+                            <table>                                                                 \
+                                <tr>                                                                \
+                                    <td class='art-nr'>" + module.Article_number + "</td>";
+                html += "<td class='alias'>" + module.Module + "</td>";
+
+                if (module.Discount != '1' || module.Discount_type == '0') {
+                    html += "<td>" + formatCurrency(module.License) + "</td>                                \
+                                    <td>" + formatCurrency(module.Maintenance) + "</td>                             \
+                                </tr>                                                               \
+                            </table>                                                                \
+                        </button>                                                                   \
+                        ";
+                }
+                else {
+                    html += "<td>" + module.License + "%</td>                                \
+                                    <td>" + module.Maintenance + "%</td>                             \
+                                </tr>                                                               \
+                            </table>                                                                \
+                        </button>                                                                   \
+                        ";
+                }
+                $selectedArticles.append(html);
+                calculateSums();
+            }
+        }
+    });
+};
+
 var saveArticlesFunction = function () {
     $("#choose-selected-articles").button('loading');
     var selectedArticlesArray = [];
@@ -692,6 +831,7 @@ var saveArticlesFunction = function () {
         var buttonModuleTextId = $button.data("module-text-id");
         var buttonContractId = $button.data("contract-id");
         var buttonAutoMapping = $button.data("automapping");
+        var buttonDepList = $button.data("deplist");
 
         // "Create a new article" to store in an array to use for server side db update.
         var newArticle = {
@@ -705,7 +845,8 @@ var saveArticlesFunction = function () {
             "Module_text_id": buttonModuleTextId,
             "Contract_id": buttonContractId,
             "Module_type": "A", //Artikel
-            "Automapping": buttonAutoMapping
+            "Automapping": buttonAutoMapping,
+            "Dep_list": buttonDepList
         };
 
         selectedArticlesArray.push(newArticle);

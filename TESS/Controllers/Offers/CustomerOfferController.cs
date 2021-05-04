@@ -224,7 +224,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
                 offerInfo.Article_Sort_number = module.Sort_order;
-                offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
+                offerInfo.IncludeDependencies = offerRow.IncludeDependencies ? "true" : "false"; //Appears to be case sensitive and a bool turns into "True/False" on javascript side.
 
                 articles.Add(offerInfo);
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
@@ -374,7 +374,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
                 offerInfo.Article_Sort_number = module.Sort_order;
-                offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
+                offerInfo.IncludeDependencies = offerRow.IncludeDependencies ? "true" : "false"; //Appears to be case sensitive and a bool turns into "True/False" on javascript side.
 
                 articles.Add(offerInfo);
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
@@ -607,7 +607,7 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
-                offerInfo.IncludeDependencies = offerRow.IncludeDependencies;
+                offerInfo.IncludeDependencies = "false"; //We do this so that we don't add dependencies for "old" articles in selected-list. this also means that automatic removal does not work for "old" articles when opening article dialog
 
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
                 {
@@ -1271,6 +1271,49 @@ namespace TietoCRM.Controllers
             return offerStatus;
         }
 
+        /// <summary>
+        /// Get article for article dependency logic in article dialog
+        /// </summary>
+        /// <returns></returns>
+        public string GetModuleByArticleNumber()
+        {
+            string article_number = Request["article_number"];
+            string customer = Request["customer"];
+            string offer_id = Request["offer_id"];
+
+            view_Module module = new view_Module();
+            module.Select("Article_number = " + article_number);
+
+            if (module.Module_type == 1) //Article
+            {
+                view_Customer offerCustomer = new view_Customer("Customer = " + customer);
+
+                view_Tariff tariff = new view_Tariff();
+                tariff.Select("Inhabitant_level = " + offerCustomer.Inhabitant_level + " AND Price_category = " + module.Price_category);
+
+                view_ModuleText moduleText = new view_ModuleText();
+                moduleText.Select("Type = 'O' AND TypeId = " + offer_id + " AND ModuleType = 'A' AND ModuleId = " + article_number);
+
+                var returnObj = new
+                {
+                    Module = module.Module,
+                    License = tariff.License.HasValue && tariff.License.Value > 0 ? tariff.License.Value.ToString() : "0.00",
+                    Maintenance = tariff.Maintenance.HasValue && tariff.Maintenance.Value > 0 ? tariff.Maintenance.Value.ToString() : "0.00",
+                    Module_status = module.Module_status,
+                    Discount = module.Discount,
+                    Discount_type = module.Discount_type,
+                    Article_number = module.Article_number,
+                    Offer_description = module.Offer_description,
+                    Module_text_id = moduleText._ID
+                };
+
+                return (new JavaScriptSerializer()).Serialize(returnObj);
+            }
+
+            return null;
+        }
+
+
         [ValidateInput(false)]
         public string checkReminder()
         {
@@ -1362,7 +1405,7 @@ namespace TietoCRM.Controllers
             }
 
             view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + Offer_number);
-            // remove all consultant row to later insert the new ones
+            // remove all consultant rows to later insert the new ones
             foreach (view_OfferRow or in customerOffer._OfferRows)
             {
                 //Kolla först om det finns kopplade tjänster som också ska tas bort.
@@ -1370,7 +1413,7 @@ namespace TietoCRM.Controllers
 
                 foreach (var mappedModule in mappedModuleList)
                 {
-                    if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                    if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2) //Beroende Artikel -> Tjänst
                     {
                         view_ConsultantRow consultantRow = new view_ConsultantRow();
                         
@@ -1388,6 +1431,17 @@ namespace TietoCRM.Controllers
                             {
                                 //Ta bort post
                                 consultantRow.Delete("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+
+                                //Sätt eventuell Module_text till Deleted = 1
+                                view_ModuleText moduleServiceText = new view_ModuleText();
+
+                                moduleServiceText.Select("Type = 'O' AND TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+                                if (moduleServiceText._ID > 0) //Vi har en modultext
+                                {
+                                    //Den ska delete-markeras
+                                    moduleServiceText.Deleted = true;
+                                    moduleServiceText.Update("Type = 'O' AND TypeId = " + or.Offer_number.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+                                }
                             }
                         }
                     }
@@ -1450,6 +1504,7 @@ namespace TietoCRM.Controllers
                     moduleText.Deleted = false;
                     moduleText.Update("Type = 'O' AND TypeId = " + offerRow.Offer_number.ToString() + " AND ModuleId = " + offerRow.Article_number.ToString());
                 }
+                //Modultexter läggs till från annat håll! Json_UpdateModuleRows()
                 //else
                 //{
                 //    //Insert new module text
@@ -1458,7 +1513,7 @@ namespace TietoCRM.Controllers
 
                 if (automapping)
                 {
-                    //Kopplade moduler ska läggas in i kontraktet
+                    //Kopplade moduler ska läggas in i offerten
                     var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
 
                     foreach (var mappedModule in mappedModuleList)
@@ -1500,6 +1555,8 @@ namespace TietoCRM.Controllers
                                 InsertModuleText(mappedModule.Offer_description, "K", customerOffer._ID, (int)mappedModule.Article_number);
                             }
                         }
+
+                        //Articles will be added from the dialog. The logic is fixed in the dialog!
                     }
                 }
             }

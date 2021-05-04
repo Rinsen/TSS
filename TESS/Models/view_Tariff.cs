@@ -68,6 +68,48 @@ namespace TietoCRM.Models
             }
             return list;
         }
-    }
 
+        /// <summary>
+        /// Get Tariff for specific Customer and article
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="article_number"></param>
+        /// <returns></returns>
+        public static view_Tariff GetModuleTariffForCustomer(string customer, float article_number)
+        {
+            view_Tariff t = new view_Tariff();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                command.CommandText = "SELECT T.Inhabitant_level, T.Price_category, T.License, T.Maintenance, T.Valid_through, CAST(T.SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + 
+                                databasePrefix + "Tariff T " +
+                                "JOIN " + databasePrefix + "Customer C ON C.Inhabitant_level = T.Inhabitant_level " +
+                                "JOIN " + databasePrefix + "Module M ON M.Price_category = T.Price_category " + 
+                                "WHERE C.Customer = @customer AND M.Article_number = @article_number";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@article_number", article_number);
+
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int i = 0;
+                        while (reader.FieldCount > i)
+                        {
+                            t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                            i++;
+                        }
+                    }
+                }
+            }
+
+            return t;
+        }
+    }
 }
