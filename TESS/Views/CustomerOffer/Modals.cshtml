@@ -625,7 +625,6 @@ else if (Request["modal"] == "articles")
             if (article.HasDependencies || (article.Description != null && article.Description.length > 0) || article.Module_status != "0") {
                 var depTitle = "";
 
-
                 if (article.Module_status_txt.length > 0 && article.Module_status != "0") {
                     depTitle = "Restriction:\n";
                     depTitle += article.Module_status_txt;
