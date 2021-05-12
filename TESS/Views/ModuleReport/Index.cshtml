@@ -9,7 +9,7 @@
         <form method="get" action="~/ModuleReport/Pdf" target="_blank" class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">Modules:</label>
-                <select name="module" id="crm-select-module" multiple class="form-control selectpicker" data-show-subtext="true">
+                <select name="module" id="crm-select-module" multiple class="form-control selectpicker" data-show-subtext="true" data-live-search="true">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
                     <option value="@Module.Article_number" data-subtext="@Module.Description">@Module.Article_number - @Module.Module</option>
