@@ -348,6 +348,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                 var selectedButtonArt = $(selVal).html();
 
                 if (article.Article_number == selectedButtonArt && article.Multiple_type != "1") {
+                    $newButton.attr("style", "");
                     $mic.append($newButton.prop("disabled", true));
 
                     $availableList.append($buttonContainer);

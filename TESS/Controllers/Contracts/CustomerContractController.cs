@@ -1527,42 +1527,43 @@ namespace TietoCRM.Controllers.Contracts
                 //List<view_ContractRow> rewrittens = new List<view_ContractRow>();
                 foreach (view_ContractRow cr in contract._ContractRows)
                 {
-                    //Kolla först om det finns kopplade tjänster som också ska tas bort.
-                    var mappedModuleList = view_ModuleModule.getAllChildModules(cr.Article_number);
+                    //Vi tar bort automatisk borttagning av kopplade tjänster. Det ställer till det genom att dom inte läggs till igen då "automapping" inte är "true" då man kommer in en andra gång i dialogen...
+                    ////Kolla först om det finns kopplade tjänster som också ska tas bort.
+                    //var mappedModuleList = view_ModuleModule.getAllChildModules(cr.Article_number);
 
-                    foreach (var mappedModule in mappedModuleList)
-                    {
-                        if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
-                        {
-                            view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
-                            if(consultantRow.Select("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
-                            {
-                                if (consultantRow.Amount > 1)
-                                {
-                                    //Minska med 1
-                                    var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
-                                    consultantRow.Amount = consultantRow.Amount - 1;
-                                    consultantRow.Total_price -= pricePerUnit;
-                                    consultantRow.Update("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
-                                }
-                                else
-                                {
-                                    //Ta bort post
-                                    consultantRow.Delete("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                    //foreach (var mappedModule in mappedModuleList)
+                    //{
+                    //    if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                    //    {
+                    //        view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
+                    //        if(consultantRow.Select("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
+                    //        {
+                    //            if (consultantRow.Amount > 1)
+                    //            {
+                    //                //Minska med 1
+                    //                var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
+                    //                consultantRow.Amount = consultantRow.Amount - 1;
+                    //                consultantRow.Total_price -= pricePerUnit;
+                    //                consultantRow.Update("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                    //            }
+                    //            else
+                    //            {
+                    //                //Ta bort post
+                    //                consultantRow.Delete("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
 
-                                    //Ta även bort eventuell modultext (deleted = true)
-                                    view_ModuleText moduleServiceText = new view_ModuleText();
-                                    moduleServiceText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
-                                    if (moduleServiceText._ID > 0) //Vi har en modultext
-                                    {
-                                        //Den ska delete-markeras
-                                        moduleServiceText.Deleted = true;
-                                        moduleServiceText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    //                //Ta även bort eventuell modultext (deleted = true)
+                    //                view_ModuleText moduleServiceText = new view_ModuleText();
+                    //                moduleServiceText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+                    //                if (moduleServiceText._ID > 0) //Vi har en modultext
+                    //                {
+                    //                    //Den ska delete-markeras
+                    //                    moduleServiceText.Deleted = true;
+                    //                    moduleServiceText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //}
 
                     //if (cr.Rewritten == true)
                     //    rewrittens.Add(cr);
@@ -1978,14 +1979,7 @@ namespace TietoCRM.Controllers.Contracts
                     List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
                     if(dependencies.Count > 0)
                     {
-                        if (dependencies.Where(w => w.Module_type == 2).Any())
-                        {
-                            kv.Add("IncludeDependencies", true);
-                        }
-                        else
-                        {
-                            kv.Add("IncludeDependencies", false);
-                        }
+                        kv.Add("IncludeDependencies", true);
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
@@ -2167,15 +2161,8 @@ namespace TietoCRM.Controllers.Contracts
 
                     List<view_Module> dependencies = view_ModuleModule.getAllChildModules(int.Parse(kv["Article_number"].ToString()));
                     if (dependencies.Count > 0)
-                    {
-                        if (dependencies.Where(w => w.Module_type == 2).Any())
-                        {
-                            kv.Add("IncludeDependencies", true);
-                        }
-                        else
-                        {
-                            kv.Add("IncludeDependencies", false);
-                        }
+                    {                        
+                        kv.Add("IncludeDependencies", true);
                         kv.Add("HasDependencies", true);
                         kv.Add("Dependencies", dependencies);
                     }
