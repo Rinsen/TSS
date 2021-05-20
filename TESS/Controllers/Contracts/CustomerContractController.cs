@@ -148,7 +148,7 @@ namespace TietoCRM.Controllers.Contracts
                 view_Customer contractCustomer = new view_Customer("Customer = " + customer);
 
                 view_Tariff tariff = new view_Tariff();
-                tariff.Select("Inhabitant_level = " + contractCustomer.Inhabitant_level + " AND Price_category = " + module.Price_category);
+                tariff.Select("Inhabitant_level = " + contractCustomer.Inhabitant_level + " AND Price_category = " + ((int)module.Price_category.Value).ToString());
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'A' AND TypeId = " + contract_id + " AND ModuleType = 'A' AND ModuleId = " + article_number);
