@@ -1289,7 +1289,7 @@ namespace TietoCRM.Controllers
                 view_Customer offerCustomer = new view_Customer("Customer = " + customer);
 
                 view_Tariff tariff = new view_Tariff();
-                tariff.Select("Inhabitant_level = " + offerCustomer.Inhabitant_level + " AND Price_category = " + module.Price_category);
+                tariff.Select("Inhabitant_level = " + offerCustomer.Inhabitant_level + " AND Price_category = " + ((int)module.Price_category).ToString());
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'O' AND TypeId = " + offer_id + " AND ModuleType = 'A' AND ModuleId = " + article_number);

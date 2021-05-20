@@ -1047,8 +1047,8 @@ else if (Request["modal"] == "articles")
                     html += "<td class='alias'>" + module.Module + "</td>";
 
                     if (module.Discount != '1' || module.Discount_type == '0') {
-                        html += "<td>" + module.License + "</td>                                \
-                                <td>" + module.Maintenance + "</td>                             \
+                        html += "<td>" + formatCurrency(module.License) + "</td>                                \
+                                <td>" + formatCurrency(module.Maintenance) + "</td>                             \
                             </tr>                                                               \
                         </table>                                                                \
                     </button>                                                                   \
