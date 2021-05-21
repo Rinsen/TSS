@@ -400,7 +400,7 @@ namespace TietoCRM.Controllers
                     system.Value.Clear();
                     system.Value.AddRange(sortedList.OrderBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
                 }
-                ViewData.Add("ArticleSystemDictionary", articleSystemDic.ToList());
+                ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
             }
             else
             {
@@ -607,6 +607,8 @@ namespace TietoCRM.Controllers
                 offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
+                offerInfo.Article_Sort_number = module.Sort_order;
+
                 offerInfo.IncludeDependencies = "false"; //We do this so that we don't add dependencies for "old" articles in selected-list. this also means that automatic removal does not work for "old" articles when opening article dialog
 
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
@@ -661,7 +663,29 @@ namespace TietoCRM.Controllers
                 }
             }
 
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().System).ThenBy(d => d.Value.First().Module).ToList());
+            view_User usr = System.Web.HttpContext.Current.GetUser();
+
+            if (usr.AvtalSortera == 3) //System, Article_number
+            {
+                //Endast tjänster, artiklar sorteras i view_OfferRow.
+                co._ConsultantRows = co._ConsultantRows.OrderBy(a => a.Code).ToList();
+            }
+            else if (usr.AvtalSortera == 4) //Classification, Sort order
+            {
+                foreach (var system in articleSystemDic)
+                {
+                    //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
+                    var sortedList = new List<dynamic>();
+                    sortedList.AddRange(system.Value);
+                    system.Value.Clear();
+                    //Sorterar moduler inom classification i rätt ordning efter sortno på artikel
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                }
+
+                co._ConsultantRows = co._ConsultantRows.OrderByDescending(a => a._SortOrder > 0).ThenBy(a => a._SortOrder).ToList();
+            }
+
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
 
             ViewData.Add("Systems", GetAllSystemNames(co.Area));
 

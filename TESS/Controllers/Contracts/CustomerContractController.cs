@@ -371,6 +371,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.ModuleType = "K";                
                 contractInfo.Price_category = service.Price_category;
                 contractInfo.Article_Sort_number = service.Sort_order;
+                contractInfo.Classification = service.Classification;
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleType = 'K' AND ModuleId = " + consultantRow.Code.ToString());
@@ -462,15 +463,6 @@ namespace TietoCRM.Controllers.Contracts
                 }
 
                 contract._ContractConsultantRows = contract._ContractConsultantRows.OrderByDescending(a => a._SortOrder > 0).ThenBy(a => a._SortOrder).ToList();
-
-                //foreach (var system in articleAndServicesDic)
-                //{
-                //    //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
-                //    var sortedList = new List<dynamic>();
-                //    sortedList.AddRange(system.Value);
-                //    system.Value.Clear();
-                //    system.Value.AddRange(sortedList.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
-                //}
             }
 
             ViewData.Add("EducationPortals", educationPortals);
@@ -478,7 +470,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("RemArticles", remArticles);
 
             ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
-            ViewData.Add("ArticleAndServiceDictionary", articleAndServicesDic.OrderBy(d => d.Value.First().Price_type).ToList());
+            ViewData.Add("ArticleAndServiceDictionary", articleAndServicesDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
 
             List<dynamic> eduOptions = new List<dynamic>();
             List<dynamic> options = new List<dynamic>();
