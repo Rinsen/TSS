@@ -652,6 +652,7 @@ namespace TietoCRM.Controllers
                 //offerInfo.Maintenance = offerRow.Maintenance;
                 offerInfo.Fixed_price = service.Price_category;
                 offerInfo.Sort_number = "20";
+                offerInfo.Article_Sort_number = service.Sort_order;
 
                 if (!articleSystemDic.ContainsKey(offerInfo.System))
                 {
