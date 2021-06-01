@@ -573,6 +573,7 @@ namespace TietoCRM.Controllers
                 view_Module module = new view_Module();
                 module.Select("Article_number = " + offerRow.Article_number);
                 dynamic offerInfo = new ExpandoObject();
+                offerInfo.ModuleType = "A";
                 offerInfo.Article_number = module.Article_number;
                 if (module.Read_name_from_module == 1)
                 {
@@ -632,6 +633,7 @@ namespace TietoCRM.Controllers
 
                 dynamic offerInfo = new ExpandoObject();
 
+                offerInfo.ModuleType = "K";
                 offerInfo.Article_number = service.Article_number;
                 if (consultantRow.Alias == null || consultantRow.Alias == "")
                     offerInfo.Module = service.Module;
@@ -680,13 +682,13 @@ namespace TietoCRM.Controllers
                     sortedList.AddRange(system.Value);
                     system.Value.Clear();
                     //Sorterar moduler inom classification i rätt ordning efter sortno på artikel
-                    system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                    system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ThenBy(a => a.Module).ToList());
                 }
 
                 co._ConsultantRows = co._ConsultantRows.OrderByDescending(a => a._SortOrder > 0).ThenBy(a => a._SortOrder).ToList();
             }
 
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
+            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().ModuleType).ThenBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
 
             ViewData.Add("Systems", GetAllSystemNames(co.Area));
 
@@ -1615,6 +1617,7 @@ namespace TietoCRM.Controllers
                                   From dbo.view_Module As M  
                                   Where M.Module_type = 2 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or
                                   M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
+                                  And M.Expired = 0 
                                   Order by M.Article_number asc";
                 }
                 else

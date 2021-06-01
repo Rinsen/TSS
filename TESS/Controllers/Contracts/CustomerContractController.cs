@@ -470,7 +470,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("RemArticles", remArticles);
 
             ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
-            ViewData.Add("ArticleAndServiceDictionary", articleAndServicesDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
+            ViewData.Add("ArticleAndServiceDictionary", articleAndServicesDic.OrderBy(d => d.Value.First().ModuleType).ThenBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
 
             List<dynamic> eduOptions = new List<dynamic>();
             List<dynamic> options = new List<dynamic>();
@@ -2010,7 +2010,7 @@ namespace TietoCRM.Controllers.Contracts
                     queryText = @"Select M.Article_number, M.Module, M.Price_category, M.Maint_price_category, M.System, M.Classification, M.Comment, 
                                   M.Fixed_price, M.Multiple_type, M.Area, M.Discount_type, M.Discount, M.Module_status, IsNull(M.Contract_Description, '') AS Contract_Description, IsNull(M.[Description],'') As [Description] 
                                   From dbo.view_Module As M 
-                                  Where M.Module_type = 2 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or 
+                                  Where M.Module_type = 2 And M.Expired = 0 And (Cast(M.Article_number As Varchar(30)) Like Case @searchtext When '' Then Cast(M.Article_number As Varchar(30)) Else @searchtext End Or 
                                   M.Module Like Case @searchtext When '' Then M.Module Else @searchtext End) 
                                   Order by M.Article_number asc";
                 }
