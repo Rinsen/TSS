@@ -1166,11 +1166,15 @@ namespace TietoCRM.Controllers
             }
         }
 
-        public String Insert()
+        /// <summary>
+        /// Creates a new offer
+        /// </summary>
+        /// <returns></returns>
+        public string Insert()
         {
             try
             {
-                String json = Request.Form["json"];
+                string json = Request.Form["json"];
                 view_CustomerOffer a = null;
                 try
                 {
@@ -1195,9 +1199,16 @@ namespace TietoCRM.Controllers
                     a.Buyer = cust.Short_name;
                 }
 
-                List<view_CustomerOffer> allOffers = view_CustomerOffer.getAllCustomerOffers(a.Customer.ToString());
-                allOffers = allOffers.OrderByDescending(c => c._Offer_number).ToList();
-                int id = a.Insert();
+                //Useless code?
+                //List<view_CustomerOffer> allOffers = view_CustomerOffer.getAllCustomerOffers(a.Customer.ToString());
+                //allOffers = allOffers.OrderByDescending(c => c._Offer_number).ToList();
+                int id = 0;
+                using (var scope = TransactionHelper.CreateTransactionScope())
+                {
+                    id = a.Insert();
+                    new view_AuditLog().Write("C", "view_CustomerOffer", a._Offer_number.ToString(), "", a.Customer);
+                    scope.Complete();
+                }
 
                 return id.ToString();
             }
@@ -1223,11 +1234,15 @@ namespace TietoCRM.Controllers
             return "1";
         }
 
-        public String DeleteOffer()
+        /// <summary>
+        /// Deletes an offer
+        /// </summary>
+        /// <returns></returns>
+        public string DeleteOffer()
         {
             try
             {
-                String value = Request.Form["id"];
+                string value = Request.Form["id"];
                 view_CustomerOffer co = new view_CustomerOffer("Offer_number=" + value);
                 //a.Select("Article_number = " + value);
                 if (co.Offer_status == "Makulerad")
@@ -1235,9 +1250,7 @@ namespace TietoCRM.Controllers
                     using (var scope = TransactionHelper.CreateTransactionScope())
                     {
                         co.Delete("Offer_number=" + value);
-
                         new view_AuditLog().Write("D", "view_CustomerOffer", co._Offer_number.ToString(), "", co.Customer);
-
                         scope.Complete();
                     }                        
                 }
@@ -1249,6 +1262,7 @@ namespace TietoCRM.Controllers
             {
                 return "-1";
             }
+
             return "1";
         }
 

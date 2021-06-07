@@ -887,11 +887,15 @@ namespace TietoCRM.Controllers.Contracts
             }
         }
 
-        public String Insert()
+        /// <summary>
+        /// Creates a contract
+        /// </summary>
+        /// <returns></returns>
+        public string Insert()
         {
             try
             {
-                String json = Request.Form["json"];
+                string json = Request.Form["json"];
                 view_Contract a = null;
                 try
                 {
@@ -899,7 +903,7 @@ namespace TietoCRM.Controllers.Contracts
                     a.ParseHashtags(Request["hashtags"]);
                     int i = 1;
                     bool foundIndex = false;
-                    String contractId = "";
+                    string contractId = "";
                     view_Contract contract = new view_Contract();
                     while(!foundIndex) // make sure that we will get a unique contract id
                     {
@@ -948,10 +952,17 @@ namespace TietoCRM.Controllers.Contracts
                 contractHead.Customer_sign = "";
                 contractHead.Our_sign = System.Web.HttpContext.Current.GetUser().Name.Substring(0, Math.Min(System.Web.HttpContext.Current.GetUser().Name.Length, 50));
                 contractHead.Administration = customer.Administration;
-                
-                contractHead.Insert();
 
-                a.Insert();
+                using (var scope = TransactionHelper.CreateTransactionScope())
+                {
+                    contractHead.Insert();
+
+                    a.Insert();
+
+                    new view_AuditLog().Write("C", "view_Contract", a._ID.ToString(), a.Contract_id + ", " + a.Customer);
+
+                    scope.Complete();
+                }
 
                 return a.Contract_id.ToString();
             }
@@ -3076,53 +3087,54 @@ namespace TietoCRM.Controllers.Contracts
         {
             try
             {
-                using (var scope = TransactionHelper.CreateTransactionScope())
+                string value = Request.Form["id"];
+                string customer = Request.Form["customer"];
+                view_Contract co = new view_Contract("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+                //a.Select("Article_number = " + value);
+                if (co.Status == "Makulerat")
                 {
-                    string value = Request.Form["id"];
-                    string customer = Request.Form["customer"];
-                    view_Contract co = new view_Contract("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
-                    //a.Select("Article_number = " + value);
-                    if (co.Status == "Makulerat")
+                    using (var scope = TransactionHelper.CreateTransactionScope())
                     {
                         co.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
                         new view_AuditLog().Write("D", "view_Contract", co._ID.ToString(), "", co.Contract_id + ", " + co.Customer);
+
+                        try
+                        {
+                            //Ta även bort från tabellen A_huvud (bug-fix)
+                            view_ContractHead coh = new view_ContractHead();
+                            coh.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                            //Ta även bort från tabellen A_avtalsrader (bug-fix)
+                            view_ContractRow cr = new view_ContractRow();
+                            cr.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                            //Ta även bort från tabellen A_konsultrader (bug-fix)
+                            view_ContractConsultantRow ccr = new view_ContractConsultantRow();
+                            ccr.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                            //Ta även bort från tabellen Option (bug-fix)
+                            view_ContractOption copt = new view_ContractOption();
+                            copt.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                            //Ta även bort från tabellen A_H_text (bug-fix)
+                            view_ContractTemplate ct = new view_ContractTemplate();
+                            ct.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+
+                            //Ta även bort från tabellen A_text (bug-fix)
+                            view_ContractText ctxt = new view_ContractText();
+                            ctxt.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
+                        }
+                        catch (Exception)
+                        {
+                            return "-2";
+                        }
+
+                        scope.Complete();
                     }
-                    else
-                        return "-1";
-
-                    try
-                    {
-                        //Ta även bort från tabellen A_huvud (bug-fix)
-                        view_ContractHead coh = new view_ContractHead();
-                        coh.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
-
-                        //Ta även bort från tabellen A_avtalsrader (bug-fix)
-                        view_ContractRow cr = new view_ContractRow();
-                        cr.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
-
-                        //Ta även bort från tabellen A_konsultrader (bug-fix)
-                        view_ContractConsultantRow ccr = new view_ContractConsultantRow();
-                        ccr.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
-
-                        //Ta även bort från tabellen Option (bug-fix)
-                        view_ContractOption copt = new view_ContractOption();
-                        copt.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
-
-                        //Ta även bort från tabellen A_H_text (bug-fix)
-                        view_ContractTemplate ct = new view_ContractTemplate();
-                        ct.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
-
-                        //Ta även bort från tabellen A_text (bug-fix)
-                        view_ContractText ctxt = new view_ContractText();
-                        ctxt.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
-                    }
-                    catch (Exception)
-                    {
-                        return "-2";
-                    }
-
-                    scope.Complete();
                 }
+                else
+                    return "-1";
+
             }
             catch (Exception e)
             {

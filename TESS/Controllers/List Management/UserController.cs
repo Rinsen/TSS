@@ -25,18 +25,22 @@ namespace TietoCRM.Controllers.List_Management
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(view_User.getAllUsers()) + "}";
         }
 
-        public String SaveUser()
+        /// <summary>
+        /// Saves a user
+        /// </summary>
+        /// <returns></returns>
+        public string SaveUser()
         {
             try
             {
-                String sign = Request.Form["sign"];
-                String json = Request.Form["json"];
+                string sign = Request.Form["sign"];
+                string json = Request.Form["json"];
 
-                Dictionary<String, Object> variables = null;
+                Dictionary<string, object> variables = null;
 
                 try
                 {
-                    variables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<String, dynamic>));
+                    variables = (Dictionary<string, dynamic>)(new JavaScriptSerializer()).Deserialize(json, typeof(Dictionary<string, dynamic>));
                 }
                 catch
                 {
@@ -52,7 +56,7 @@ namespace TietoCRM.Controllers.List_Management
 
                     auditLog.LogUserChanges(user, variables);
 
-                    foreach (KeyValuePair<String, object> variable in variables)
+                    foreach (KeyValuePair<string, object> variable in variables)
                     {
                         if (variable.Key != "Sign")
                         {
