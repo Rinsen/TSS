@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using TietoCRM.Models;
@@ -48,13 +46,25 @@ namespace TietoCRM.Controllers.List_Management
                 view_User user = new view_User();
                 user.Select("Sign = " + sign);
 
-                foreach (KeyValuePair<String, object> variable in variables)
+                using (var scope = TransactionHelper.CreateTransactionScope())
                 {
-                    if(variable.Key != "Sign")
-                        user.SetValue(variable.Key, variable.Value);
-                }
+                    var auditLog = new view_AuditLog();
 
-                user.Update("Sign = " + sign);
+                    auditLog.LogUserChanges(user, variables);
+
+                    foreach (KeyValuePair<String, object> variable in variables)
+                    {
+                        if (variable.Key != "Sign")
+                        {
+                            user.SetValue(variable.Key, variable.Value);
+                        }
+
+                    }
+
+                    user.Update("Sign = " + sign);
+
+                    scope.Complete();
+                }
 
                 return "1";
             }
@@ -83,6 +93,9 @@ namespace TietoCRM.Controllers.List_Management
 
                 a.Insert();
 
+                //Insert went well. Write to AuditLog
+                new view_AuditLog().Write("C", "view_User", a.Sign, a.Name);
+
                 return "1";
             }
             catch (Exception e)
@@ -99,12 +112,16 @@ namespace TietoCRM.Controllers.List_Management
                 view_User a = new view_User();
                 //a.Select("Article_number = " + value);
                 a.Delete("Sign = " + sign);
+
+                //Delete went well. Write to AuditLog
+                new view_AuditLog().Write("D", "view_User", a.Sign);
+
+                return "1";
             }
             catch (Exception e)
             {
                 return "-1";
             }
-            return "1";
         }
     }
 }

@@ -195,39 +195,47 @@ namespace TietoCRM.Controllers
         {
             try
             {
-                String customerData = Request.Form["customerData"];
-
-
-                Dictionary<String, Object> customerVariables = null;
-
-                try
+                using (var scope = TransactionHelper.CreateTransactionScope())
                 {
-                    customerVariables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(customerData, typeof(Dictionary<String, dynamic>));
-                }
-                catch
-                {
-                    return "0";
-                }
+                    String customerData = Request.Form["customerData"];
 
-                try
-                {
-                    view_Customer customer = new view_Customer();
 
-                    foreach (KeyValuePair<String, object> customerVariable in customerVariables)
+                    Dictionary<String, Object> customerVariables = null;
+
+                    try
                     {
-                        if(customerVariable.Key != "_Representatives")
-                            customer.SetValue(customerVariable.Key, customerVariable.Value);               
+                        customerVariables = (Dictionary<String, dynamic>)(new JavaScriptSerializer()).Deserialize(customerData, typeof(Dictionary<String, dynamic>));
+                    }
+                    catch
+                    {
+                        return "0";
                     }
 
-                    customer.Insert(((System.Collections.ArrayList)customerVariables["_Representatives"]).Cast<string>().ToList());
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write(ex.Message);
-                    // Return -1 on any possible arror
-                    return "-1";
-                }
-                return "1";
+                    try
+                    {
+                        view_Customer customer = new view_Customer();
+
+                        foreach (KeyValuePair<String, object> customerVariable in customerVariables)
+                        {
+                            if (customerVariable.Key != "_Representatives")
+                                customer.SetValue(customerVariable.Key, customerVariable.Value);
+                        }
+
+                        customer.Insert(((System.Collections.ArrayList)customerVariables["_Representatives"]).Cast<string>().ToList());
+
+                        new view_AuditLog().Write("C", "view_Customer", customer._ID.ToString(), "", customer.Customer);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Write(ex.Message);
+                        // Return -1 on any possible arror
+                        return "-1";
+                    }
+
+                    scope.Complete();
+
+                    return "1";
+                }                
             }
             catch
             {
@@ -299,18 +307,25 @@ namespace TietoCRM.Controllers
         {
             try
             {
-                String json = Request.Form["json"];
-                view_Customer a = null;
-                try
+                using (var scope = TransactionHelper.CreateTransactionScope())
                 {
-                    a = (view_Customer)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Customer));
-                }
-                catch (Exception e)
-                {
-                    return "0";
-                }
+                    String json = Request.Form["json"];
+                    view_Customer a = null;
+                    try
+                    {
+                        a = (view_Customer)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Customer));
+                    }
+                    catch (Exception e)
+                    {
+                        return "0";
+                    }
 
-                a.Insert();
+                    a.Insert();
+
+                    new view_AuditLog().Write("C", "view_Customer", a._ID.ToString(), "", a.Customer);
+
+                    scope.Complete();
+                }
 
                 return "1";
             }
@@ -324,10 +339,17 @@ namespace TietoCRM.Controllers
         {
             try
             {
-                String value = Request.Form["ID"];
-                view_Customer a = new view_Customer();
-                a.Select("Customer = '" + value + "'");
-                a.Delete("Customer = '" + value + "'");
+                using (var scope = TransactionHelper.CreateTransactionScope())
+                {
+                    string value = Request.Form["ID"];
+                    var a = new view_Customer();
+                    a.Select("Customer = '" + value + "'");
+                    a.Delete("Customer = '" + value + "'");
+
+                    new view_AuditLog().Write("D", "view_Customer", a._ID.ToString(), "", a.Customer);
+
+                    scope.Complete();
+                }
             }
             catch (CustomerException e)
             {

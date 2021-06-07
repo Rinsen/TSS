@@ -94,6 +94,7 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -238,6 +239,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\TransactionHelper.cs" />
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\EmailSender.cs" />
     <Compile Include="Models\ExportSentOffersToExcel.cs" />
@@ -278,6 +280,7 @@
     <Compile Include="Models\view_ModuleText.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
     <Compile Include="Models\view_MainContractTemplate.cs" />
+    <Compile Include="Models\view_AuditLog.cs" />
     <Compile Include="Models\view_Reminder.cs" />
     <Compile Include="Models\view_Sector.cs" />
     <Compile Include="Models\view_Population.cs" />

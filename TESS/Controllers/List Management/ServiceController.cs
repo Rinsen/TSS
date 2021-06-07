@@ -93,16 +93,23 @@ namespace TietoCRM.Controllers.List_Management
         }
         public String DeleteService()
         {
-            try
+            using (var scope = TransactionHelper.CreateTransactionScope())
             {
-                string code = Request.Form["code"];
-                view_Module a = new view_Module();
-                //a.Select("Article_number = " + value);
-                a.Delete("Article_number = " + code);
-            }
-            catch (Exception e)
-            {
-                return "-1";
+                try
+                {
+                    string code = Request.Form["code"];
+                    view_Module a = new view_Module();
+                    //a.Select("Article_number = " + value);
+                    a.Delete("Article_number = " + code);
+
+                    new view_AuditLog().Write("D", "view_Module", a.Article_number.ToString(), "", a.Module);
+                }
+                catch (Exception e)
+                {
+                    return "-1";
+                }
+
+                scope.Complete();
             }
             return "1";
         }

@@ -1231,7 +1231,17 @@ namespace TietoCRM.Controllers
                 view_CustomerOffer co = new view_CustomerOffer("Offer_number=" + value);
                 //a.Select("Article_number = " + value);
                 if (co.Offer_status == "Makulerad")
-                    co.Delete("Offer_number=" + value);
+                {
+                    using (var scope = TransactionHelper.CreateTransactionScope())
+                    {
+                        co.Delete("Offer_number=" + value);
+
+                        new view_AuditLog().Write("D", "view_CustomerOffer", co._Offer_number.ToString(), "", co.Customer);
+
+                        scope.Complete();
+                    }                        
+                }
+                    
                 else
                     return "-1";
             }
