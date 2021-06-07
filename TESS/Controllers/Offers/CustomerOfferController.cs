@@ -1572,6 +1572,7 @@ namespace TietoCRM.Controllers
                     {
                         if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
                         {
+                            bool avoidInsert = false;
                             view_ConsultantRow consultantRow = new view_ConsultantRow();
 
                             try
@@ -1587,18 +1588,25 @@ namespace TietoCRM.Controllers
                             }
                             catch (Exception)
                             {
-                                //Already exist on offer -> Räkna upp Amount!
-                                if(consultantRow.Select("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
+                                if(mappedModule.Multiple_type == 1) //We allow multiple presence of this service
                                 {
-                                    var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
-                                    consultantRow.Amount = consultantRow.Amount + 1;
-                                    consultantRow.Total_price = consultantRow.Amount * pricePerUnit;
-                                    consultantRow.Update("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                                    //Already exist on offer -> Räkna upp Amount!
+                                    if (consultantRow.Select("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
+                                    {
+                                        var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
+                                        consultantRow.Amount = consultantRow.Amount + 1;
+                                        consultantRow.Total_price = consultantRow.Amount * pricePerUnit;
+                                        consultantRow.Update("Offer_number = " + Offer_number + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                                    }
+                                }
+                                else
+                                {
+                                    avoidInsert = true;
                                 }
                             }
 
                             //Lägg till eventuella beskrivningstexter i view_ModuleText
-                            if (!string.IsNullOrEmpty(mappedModule.Offer_description))
+                            if (!avoidInsert && !string.IsNullOrEmpty(mappedModule.Offer_description))
                             {
                                 //Delete-insert (om modultexten har ändrats)
                                 view_ModuleText offerModuleText = new view_ModuleText();

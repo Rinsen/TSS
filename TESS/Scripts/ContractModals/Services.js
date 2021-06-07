@@ -219,20 +219,25 @@ var newItem = function(element, price){
                 Article_number: $newButton.attr("data-code")
             });
         }
-        else{
-            $selectedButton = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']");
+        else {
+            if ($button.attr("data-multiple-select") == "1") {
+                $selectedButton = $selectedServices.find(".list-group-item[data-code='" + $button.attr("data-code") + "']");
 
-            $amountLabel = $selectedButton.find(".service-amount");
-            var amount = parseInt($amountLabel.html());
-            amount += 1;
+                $amountLabel = $selectedButton.find(".service-amount");
+                var amount = parseInt($amountLabel.html());
+                amount += 1;
 
-            $amountLabel.html(amount);
-            $amountLabel.parent().removeClass("highlight-item-red");
-            highlightItem($amountLabel.parent(), "highlight-item-blue");
+                $amountLabel.html(amount);
+                $amountLabel.parent().removeClass("highlight-item-red");
+                highlightItem($amountLabel.parent(), "highlight-item-blue");
 
-            $selectedButton.find("#description-title").html($button.find("#description-title").html());
+                $selectedButton.find("#description-title").html($button.find("#description-title").html());
 
-            addService($button.attr("data-code"), price, 1, $button.find("#description-title").html());
+                addService($button.attr("data-code"), price, 1, $button.find("#description-title").html());
+            } else {
+                alert("Multiple select is disabled for this service");
+            }
+            
         }
     }
     else{
@@ -385,6 +390,7 @@ var fillServiceSearchList = function () {
                                             type = 'button'                                                         \
                                             onclick = 'newItem(this, " + service.Price_category + ")'               \
                                             data-code='" + service.Article_number + "'                              \
+                                            data-multiple-select='" + service.Multiple_type + "'                    \
                                             data-contract-description='" + service.Contract_Description + "'        \
                                             data-contract-id='" + service.Contract_id + "'                          \
                                             data-module-type='" + service.Module_type + "'                          \
