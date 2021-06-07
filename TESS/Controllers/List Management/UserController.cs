@@ -118,7 +118,7 @@ namespace TietoCRM.Controllers.List_Management
                 a.Delete("Sign = " + sign);
 
                 //Delete went well. Write to AuditLog
-                new view_AuditLog().Write("D", "view_User", a.Sign);
+                new view_AuditLog().Write("D", "view_User", sign);
 
                 return "1";
             }
