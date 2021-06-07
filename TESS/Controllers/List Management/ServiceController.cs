@@ -102,7 +102,7 @@ namespace TietoCRM.Controllers.List_Management
             {
                 string code = Request.Form["code"];
                 view_Module a = new view_Module();
-                //a.Select("Article_number = " + value);
+                a.Select("Article_number = " + code);
 
                 using (var scope = TransactionHelper.CreateTransactionScope())
                 {

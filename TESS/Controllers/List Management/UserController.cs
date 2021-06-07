@@ -95,10 +95,15 @@ namespace TietoCRM.Controllers.List_Management
 
                 List<view_User> services = view_User.getAllUsers();
 
-                a.Insert();
+                using(var scope = TransactionHelper.CreateTransactionScope())
+                {
+                    a.Insert();
 
-                //Insert went well. Write to AuditLog
-                new view_AuditLog().Write("C", "view_User", a.Sign, a.Name);
+                    //Insert went well. Write to AuditLog
+                    new view_AuditLog().Write("C", "view_User", a.Sign, a.Name);
+
+                    scope.Complete();
+                }
 
                 return "1";
             }
@@ -115,10 +120,16 @@ namespace TietoCRM.Controllers.List_Management
                 String sign = Request.Form["sign"];
                 view_User a = new view_User();
                 //a.Select("Article_number = " + value);
-                a.Delete("Sign = " + sign);
 
-                //Delete went well. Write to AuditLog
-                new view_AuditLog().Write("D", "view_User", sign);
+                using (var scope = TransactionHelper.CreateTransactionScope())
+                {
+                    a.Delete("Sign = " + sign);
+
+                    //Delete went well. Write to AuditLog
+                    new view_AuditLog().Write("D", "view_User", sign);
+
+                    scope.Complete();
+                }
 
                 return "1";
             }
