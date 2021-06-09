@@ -91,7 +91,8 @@ namespace TietoCRM.Controllers
 
                 foreach (var mainContract in mainContracts)
                 {
-                    foreach (view_CustomerProductRow row in mainContract._CustomerProductRows)
+                    var customerProductRows = mainContract._CustomerProductRows.OrderBy(s => s.SortNo);
+                    foreach (view_CustomerProductRow row in customerProductRows)
                     {
                         if (row.Status == "Giltigt" && row.System != oldSystem)
                         {
@@ -104,7 +105,6 @@ namespace TietoCRM.Controllers
 
                     oldSystem = "";
                     mainContract._OrderedSystemNames = SystemNames.ToList();
-                    mainContract._OrderedSystemNames.Sort();
                     SystemNames.Clear();
 
                     string sortDir = Request["sort"];
