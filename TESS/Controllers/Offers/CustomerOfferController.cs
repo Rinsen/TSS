@@ -1254,7 +1254,6 @@ namespace TietoCRM.Controllers
                         scope.Complete();
                     }                        
                 }
-                    
                 else
                     return "-1";
             }

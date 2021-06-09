@@ -70,7 +70,7 @@ namespace TietoCRM.Controllers.Reports
                     }
                 }
 
-                customerModulesList.Add(customerModules);
+                customerModulesList.Add(new SortedByColumnCollection(customerModules, sortDir, sortKey).Collection.ToList());
             }
 
             if (list.Count != 0)
