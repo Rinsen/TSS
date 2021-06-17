@@ -365,11 +365,13 @@ namespace TietoCRM.Models
                     query += "And CPR.Area = " + area;
                 }
 
-                var ASort = HttpContext.Current.GetUser().AvtalSortera;
+                //Tar bort 4-sorteringen då önskemål fanns från Jonas att sortera på System-sortno.
+                //Denna sortering gör det omöjligt att göra egen kolumn-sortering...
+                //var ASort = HttpContext.Current.GetUser().AvtalSortera;
 
-                if (ASort == 4)
-                    query += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, ISNULL(NULLIF(M.Sort_order, 0), 99), CPR.Module";
-                else
+                //if (ASort == 4)
+                    //query += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, ISNULL(NULLIF(M.Sort_order, 0), 99), CPR.Module";
+                //else
                     query += "Order By C.Main_contract_id, CPR.SortNo, CPR.Classification, CPR.Module";
 
                 dt.TableName = customer.Replace(" ","_");

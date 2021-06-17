@@ -169,7 +169,12 @@
             var showClassificationCol = $('#show-classification-column').is(':checked') ? true : false;
             var $dt = $('.dataTable').DataTable();
             var sortArr = $dt.order();
-            var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+            var sort = "";
+            if (sortArr.length > 0) {
+                sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+            } else {
+                sort = "&sort=&prop=";
+            }
             var exp = "Ja"
             if ($('#expired').is(':checked')) {
                 exp = "Nej"
@@ -188,7 +193,12 @@
             var exp = "Ja"
             var $dt = $('.dataTable').DataTable();
             var sortArr = $dt.order();
-            var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+            var sort = "";
+            if (sortArr.length > 0) {
+                sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+            } else {
+                sort = "&sort=&prop=";
+            }
             if ($('#expired').is(':checked')) {
                 exp = "Nej"
             }

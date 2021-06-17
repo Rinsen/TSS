@@ -111,7 +111,14 @@ namespace TietoCRM.Controllers
                     string sortKey = Request["prop"];
                     if(mainContract._CustomerProductRows.Count > 0)
                     {
-                        mainContract._CustomerProductRowsSorted = new SortedByColumnCollection(mainContract._CustomerProductRows.ToList<SQLBaseClass>(), sortDir, sortKey).Collection;
+                        if(string.IsNullOrEmpty(sortDir) && string.IsNullOrEmpty(sortKey)) //No sort
+                        {
+                            mainContract._CustomerProductRowsSorted = new SortedByColumnCollection(mainContract._CustomerProductRows.ToList<SQLBaseClass>(), "asc", "SortNo").Collection;
+                        }
+                        else
+                        {
+                            mainContract._CustomerProductRowsSorted = new SortedByColumnCollection(mainContract._CustomerProductRows.ToList<SQLBaseClass>(), sortDir, sortKey).Collection;
+                        }
                     }
                 }
 
