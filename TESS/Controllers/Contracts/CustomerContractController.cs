@@ -2280,7 +2280,9 @@ namespace TietoCRM.Controllers.Contracts
                 String customer = Request.Form["customer"];
                 String contractId = Request.Form["contract-id"];
                 String selected = Request.Form["selected"];
-                if (selected.StartsWith("c", StringComparison.OrdinalIgnoreCase))
+                String currentContent = Request.Form["contract-cont"];
+
+                if (currentContent.StartsWith("true", StringComparison.OrdinalIgnoreCase) || selected.StartsWith("c", StringComparison.OrdinalIgnoreCase))
                 {
                     view_ContractText text = new view_ContractText();
                     text.Select("Contract_id = '" + contractId + "' AND Customer = '" + customer + "'");
@@ -2295,7 +2297,6 @@ namespace TietoCRM.Controllers.Contracts
                     temp.Select("ID_PK = " + selected);
                     return (new JavaScriptSerializer()).Serialize(temp);
                 }
-                return "1";
             }
             catch
             {

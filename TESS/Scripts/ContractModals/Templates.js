@@ -24,14 +24,14 @@
         }
         else {
             loadSelectData();
-            loadTextData();
+            loadTextData(true);
             $("#templatesModal").appendTo("body").modal("show").find('.modal-content').draggable();
         }
        
     });
 
     $("#template-number-select").bind("change", function () {
-        loadTextData();
+        loadTextData(false);
     });
     $("#main-template-number-select").bind("change", function () {
         loadPrologText();
@@ -161,7 +161,7 @@
 });
 
 
-var loadTextData = function (templateID) {
+var loadTextData = function (contractContent) {
 
 
     $.ajax({
@@ -171,6 +171,7 @@ var loadTextData = function (templateID) {
             "customer": customerName,
             "contract-id": contractId,
             "selected": $("#template-number-select").val(),
+            "contract-cont": contractContent,
         },
         "success": function (data) {
             if (data != "0") {

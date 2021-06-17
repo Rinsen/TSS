@@ -92,6 +92,7 @@
             "processing": true,
             "bFilter": false,
             "bPaginate": false,
+            //"bSort": false, //Enable to get data table sortable
             //"ajax": "/CustomerProductReport/CustomerData/",
             "ajax": {
                 "url": serverPrefix + "CustomerProductReport/Customer/",
@@ -102,7 +103,7 @@
                 }
             },
             "defaultContent": "",
-            "order": [[3, 'asc']], //3 is column order in dt, in this case "System"
+            "order": [], //  We fix order on server... Classification-SortNo order //3 is column order in dt, in this case "System"
             //"order": [[2, 'asc'], [3, 'asc'], [1, 'asc']],
             "columns": [@Html.Raw(DataObject)
             ],

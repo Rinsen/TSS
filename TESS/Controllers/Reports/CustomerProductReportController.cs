@@ -204,7 +204,7 @@ namespace TietoCRM.Controllers
 
             List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows(customer, null, area);
 
-            ProductReportRows.OrderBy(m => m.System);
+            ProductReportRows.OrderBy(m => m.SortNo);
 
             
             List<Dictionary<String,String>> rows = new List<Dictionary<String,String>>();
