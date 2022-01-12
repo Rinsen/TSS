@@ -111,7 +111,7 @@ namespace TietoCRM.Controllers.Reports
                             Dictionary<String, object> Customers = new Dictionary<String, object>();
                             if (contracts.FindIndex(m => m.Contract_id == cr.Contract_id) <= 0)
                             {
-                                view_Contract c = new view_Contract("Contract_id = '" + cr.Contract_id + "'");
+                                view_Contract c = new view_Contract("Contract_id = '" + cr.Contract_id + "' AND Customer = '" + cr.Customer + "'");
                                 contracts.Add(c);
                             }
                             view_Contract contract = contracts[contracts.Count - 1];
