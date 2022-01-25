@@ -494,9 +494,14 @@ public class view_ContractRow : SQLBaseClass
                string query  = @"SELECT Article_number, alias as Module, Customer, Contract_id , Classif as Classification, our_sign as Representative FROM qry_ValidContractRow WHERE Article_number in (" + articleNumber + ") Order By Customer, Contract_id";
 
                 if(allModules)
+                {
+                    //Maximum chars in worksheet name is 31 chars..
                     dt.TableName = "ModuleReport_All_Modules";
+                }
                 else
-                    dt.TableName = "ModuleReport_" + articleNumber.Replace(" ", "_").Replace(",", "_");
+                {
+                    dt.TableName = "ModuleReport_Selection";
+                }
 
                 SqlDataAdapter da = new SqlDataAdapter(query, connection);
                 da.Fill(dt);

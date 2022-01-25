@@ -70,7 +70,15 @@ namespace TietoCRM.Controllers.Reports
                     }
                 }
 
-                customerModulesList.Add(new SortedByColumnCollection(customerModules, sortDir, sortKey).Collection.ToList());
+                if(customerModules.Count > 0)
+                {
+                    customerModulesList.Add(new SortedByColumnCollection(customerModules, sortDir, sortKey).Collection.ToList());
+                }
+                else
+                {
+                    //Add empty entry to handle zero modules
+                    customerModulesList.Add(new List<Dictionary<string, object>>());
+                }
             }
 
             if (list.Count != 0)
@@ -167,7 +175,14 @@ namespace TietoCRM.Controllers.Reports
 
             System.Data.DataTable dt = view_ContractRow.ExportValidContractRowsToExcel(articleNumbers, exportAll != null ? true : false);
             TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
-            return ex.Export(dt, "ModuleReport.xlsx");
+            try
+            {
+                return ex.Export(dt, "ModuleReport.xlsx");
+            }
+            catch (Exception exc)
+            {
+                throw exc;
+            }
         }
     }
 }
