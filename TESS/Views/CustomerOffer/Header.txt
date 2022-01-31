@@ -15,13 +15,23 @@
     margin: 0 1.4cm 0 1.1cm !important;
     padding-top: 1.6cm;
   }
+  .header-report{
+    padding: 1em 0;
+    margin: 0 0 0 0 !important;
+    padding-top: 1.6cm;
+  }
   .date{
     float: left;
     font-size: 16px !important;
   }
   .logo{
-    width: 110px;
+    width: 165px;
     float: right;
+  }
+  .logo-report{
+    width: 165px;
+    float: right;
+    text-align: end;
   }
 </style>
 </head>

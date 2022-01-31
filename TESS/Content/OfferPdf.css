@@ -61,7 +61,7 @@
   float: left;
 }
 .crm-pdf div.crm-pdf-head span#crm-pdf-tieto-logo-com {
-  width: 110px;
+  width: 150px;
   float: right;
   margin-top: -5px;
 }
@@ -273,8 +273,9 @@
   width: 14%;
   position: absolute;
   bottom: 0;
-  right: 30px;
+  right: 0px;
   display: block;
+  text-align: end;
 }
 .crm-pdf div.crm-pdf-subheader_2 table {
   page-break-before: auto;

@@ -38,6 +38,7 @@ function subst() {
 		display: block;
 		bottom: 0;
         right: 50px;
+		text-align: end;
 	}
 	.container{
 		display: block;

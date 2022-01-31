@@ -134,15 +134,48 @@ namespace TietoCRM.Controllers
 
                 ViewAsPdf pdf = new ViewAsPdf("Pdf");
                 pdf.RotativaOptions.PageMargins = new Rotativa.Core.Options.Margins(5, 10, 10, 10);
+
+                String headerPath = Server.MapPath("~/Views/CustomerOffer/Header_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
+                String headerFilePath = "file:///" + headerPath;
+
+                string customSwitches = string.Format("--print-media-type --margin-top 18 --margin-bottom 20 --header-spacing 3 --header-html \"{0}\"", headerFilePath);
+                pdf.RotativaOptions.CustomSwitches = customSwitches;
                 //pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + Request["customer"] + "\"";
                 //pdf.RotativaOptions.CustomSwitches += " --header-center \"Kundens produkter\"";
-              
+                
+                var user = System.Web.HttpContext.Current.GetUser();
+                FileStream hfs = updateReportHeader(headerPath, user);
+                hfs.Close();
+
                 return pdf;
             }
             else
             {
                 return Content("No customer was chosen");
             }
+        }
+
+        public FileStream updateReportHeader(String headerPath, view_User user)
+        {
+            String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
+            String content = System.IO.File.ReadAllText(headerTxtPath);
+            FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
+            content += @"<div class='header-report'>";
+            if (user.Use_logo)
+            {
+                content += @"<div class='logo-report'>
+                            <img src='../../Content/img/TE-Lockup-RGB-BLUE.png' />
+                            </div><br> ";
+            }
+            content += @"</div>
+                        </html>
+                    ";
+            StreamWriter writer = new StreamWriter(fs);
+            writer.Write(String.Empty);
+            writer.Write(content);
+
+            writer.Close();
+            return fs;
         }
 
         public void ExportAsCsv()
