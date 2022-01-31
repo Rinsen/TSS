@@ -100,7 +100,7 @@ namespace TietoCRM.Controllers.Reports
 
 
 
-            string customSwitches = string.Format("--print-media-type --margin-top 18 --margin-bottom 20 --header-spacing 3 --header-html \"{0}\"", headerFilePath);
+            string customSwitches = string.Format("--print-media-type --header-spacing 3 --header-html \"{0}\"", headerFilePath);
             pdf.RotativaOptions.CustomSwitches = customSwitches;
 
             var user = System.Web.HttpContext.Current.GetUser();
@@ -115,7 +115,7 @@ namespace TietoCRM.Controllers.Reports
             String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
             String content = System.IO.File.ReadAllText(headerTxtPath);
             FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
-            content += @"<div class='header-report'>";
+            content += @"<div style='padding-bottom:30px'> <div class='header-report'>";
             if (user.Use_logo)
             {
                 content += @"<div class='logo-report'>
@@ -132,7 +132,7 @@ namespace TietoCRM.Controllers.Reports
                           "<span>" + DateTime.Now.ToString("yyyy-MM-dd") + "</span>" +
                        "</div>";
 
-            content += @"</div>
+            content += @"</div></div>
                         </html>
                     ";
             StreamWriter writer = new StreamWriter(fs);

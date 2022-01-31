@@ -18,7 +18,7 @@
   .header-report{
     padding: 1em 0;
     margin: 0 0 0 0 !important;
-    padding-top: 1.6cm;
+    padding-top: 1cm;
   }
   .date{
     float: left;
