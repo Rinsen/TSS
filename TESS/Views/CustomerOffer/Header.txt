@@ -32,6 +32,16 @@
     width: 165px;
     float: right;
     text-align: end;
+    margin-top: -18px;
+  }
+  .header-report-left{
+    float: left;
+    left: 0;
+  }
+  .header-report-right{
+    float: right;
+    right: 0;
+    position: fixed;
   }
 </style>
 </head>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -93,10 +94,53 @@ namespace TietoCRM.Controllers.Reports
             //this.ViewData["Title"] = module.Module;
             this.ViewData["Modules"] = modules;
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
-            pdf.RotativaOptions.CustomSwitches = "--print-media-type --header-right \"" + DateTime.Now.ToString("yyyy-MM-dd") + "\" --header-left \"" + "Customer Module Report" + "\"" + " --header-spacing \"3\"";
 
+            String headerPath = Server.MapPath("~/Views/CustomerOffer/Header_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
+            String headerFilePath = "file:///" + headerPath;
+
+
+
+            string customSwitches = string.Format("--print-media-type --margin-top 18 --margin-bottom 20 --header-spacing 3 --header-html \"{0}\"", headerFilePath);
+            pdf.RotativaOptions.CustomSwitches = customSwitches;
+
+            var user = System.Web.HttpContext.Current.GetUser();
+            FileStream hfs = updateReportHeader(headerPath, user);
+            hfs.Close();
 
             return pdf;
+        }
+
+        public FileStream updateReportHeader(String headerPath, view_User user)
+        {
+            String headerTxtPath = Server.MapPath("~/Views/CustomerOffer/Header.txt").Replace("\\", "/");
+            String content = System.IO.File.ReadAllText(headerTxtPath);
+            FileStream fs = new FileStream(headerPath, FileMode.Create, FileAccess.Write);
+            content += @"<div class='header-report'>";
+            if (user.Use_logo)
+            {
+                content += @"<div class='logo-report'>
+                                <img src='../../Content/img/TE-Lockup-RGB-BLUE.png' />
+                            </div>
+                          </div>";
+            }
+            
+            content += @"<div class='header-report-left'><div style='font-family:Arial;font-size: 16px; font-weight:bold'>" +
+                          "<span>Customer Module Report</span>" +
+                       "</div></div>";
+
+            content += @"<div class='header-report-right'><div style='font-family:Arial;font-size: 16px; font-weight:bold;'>" +
+                          "<span>" + DateTime.Now.ToString("yyyy-MM-dd") + "</span>" +
+                       "</div>";
+
+            content += @"</div>
+                        </html>
+                    ";
+            StreamWriter writer = new StreamWriter(fs);
+            writer.Write(String.Empty);
+            writer.Write(content);
+
+            writer.Close();
+            return fs;
         }
 
         public List<Dictionary<String, object>> generateModuleInfo(List<int> articleNumbers)
