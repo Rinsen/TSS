@@ -445,12 +445,10 @@
     <Content Include="Content\img\Signatures\MSR.PNG" />
     <Content Include="Content\img\Signatures\RJS.png" />
     <Content Include="Content\img\Signatures\SLT.png" />
-    <Content Include="Content\img\tieto-evry-black.png" />
+    <Content Include="Content\img\TE-Lockup-RGB-BLUE.png" />
+    <Content Include="Content\img\TE-Symbol-RGB-BLUE.png" />
     <Content Include="Content\img\tieto-evry-blue.png" />
     <Content Include="Content\img\tieto-evry-neutral.png" />
-    <Content Include="Content\img\tieto-logo-com.png" />
-    <Content Include="Content\img\tieto-logo-mn.png" />
-    <Content Include="Content\img\tieto-logo.png" />
     <Content Include="Content\img\Tieto_logo_blue.jpg" />
     <Content Include="Content\jquery-ui-timepicker-addon.css" />
     <Content Include="Content\OfferPdf.css" />

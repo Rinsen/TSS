@@ -695,7 +695,7 @@ namespace TietoCRM.Controllers.Contracts
             if (user.Use_logo)
             {
                 content += @"<div class='logo'>
-                            <img src='../../Content/img/tieto-evry-blue.png' />
+                            <img src='../../Content/img/TE-Lockup-RGB-BLUE.png' />
                             </div> ";
             }
             content += @"</div>
@@ -709,8 +709,9 @@ namespace TietoCRM.Controllers.Contracts
             writer.Close();
             return fs;
         }
+
         public ActionResult Header()
-                    {
+        {
             return View("Header");
         }
 
