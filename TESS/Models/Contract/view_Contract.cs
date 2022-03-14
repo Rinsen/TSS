@@ -309,6 +309,76 @@ namespace TietoCRM.Models
         }
 
         /// <summary>
+        /// Gets all main contracts.
+        /// </summary>
+        /// <returns>List of main contracts.</returns>
+        public static List<view_Contract> GetMainContracts(bool noRows = false)
+        {
+            List<view_Contract> list = new List<view_Contract>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = @"SELECT [ID], [Contract_id], [Customer], [Title], [Contract_type],
+                                        [Term_of_notice], [Extension], [Status], [CRM_id], [Valid_from],
+                                        [Valid_through], [Main_contract_id], [Expire], [Observation], [Note],
+                                        [Contact_person], [Created], [Updated], [Option_date], [Sign], Area, 
+                                        Resigned_contract, Summera, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract WHERE Contract_type = 'Huvudavtal'";
+
+                command.Prepare();
+                command.ExecuteNonQuery();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_Contract t = new view_Contract();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+
+                            t.GetHashtags();
+                            list.Add(t);
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
+        public static System.Data.DataTable ExportMainContractsToExcel()
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                // Default query
+                string query = @"SELECT [Customer], [Main_contract_id], [Title], [Contract_type],
+                                        [Status], [Valid_from], [Valid_through], [Expire], [Observation], [Note],
+                                        [Contact_person], [Sign], Area, 
+                                        Resigned_contract FROM " + databasePrefix + "Contract WHERE Contract_type = 'Huvudavtal' AND Status = 'Sänt' ORDER BY Customer, Main_contract_id, Title";
+
+                dt.TableName = "MainContractReport_Selection";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                da.Fill(dt);
+            }
+
+            return dt;
+        }
+
+        /// <summary>
         /// Gets all valid contracts of a client that the specific user is a representative of.
         /// </summary>
         /// <param name="sign">The sign of the user</param>

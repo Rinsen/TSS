@@ -1,0 +1,84 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12">
+        <form method="get" action="~/MainContractsReport/Excel" target="_blank" class="form-inline">
+            <button id="fetch-excel" style="margin-top: 1.7em;" class="btn btn-default" type="button">Excel</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="customer" data-sortable="true">Customer</th>
+                    <th data-field="contract_id" data-sortable="true">Contract id</th>
+                    <th data-field="title" data-sortable="true">Title</th>
+                    <th data-field="representative" data-sortable="true">Expire</th>
+                    <th data-field="representative" data-sortable="true">Note</th>
+                    <th data-field="contact_person" data-sortable="true">Contact Person</th>
+                    <th data-field="contract_type" data-sortable="true">Contract type</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <script>
+    var serverPrefix = "@Url.Content("~/")";
+    @{String DataObject = "\r\n";}
+    @{
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "customer" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contract_id" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "title" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "expire" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "note" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contact_person" + "\"  },\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "contract_type" + "\"  },\r\n";
+    }
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+    var updateDataTable = function(user)
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bPaginate": false,
+            "ajax": {
+                "url": serverPrefix + "MainContractsReport/MainContracts/",
+                "type": "POST",
+                "dataSrc": function (json) {
+                    return json.data;
+                }
+            },
+            "defaultContent": "",
+            "order": [[0, "asc"]],
+            "columns": [@Html.Raw(DataObject)
+            ],
+
+            "scrollX": true,
+
+        });
+
+    }
+    $('document').ready(function () {
+
+        $('.selectpicker').selectpicker();
+
+        $userContainer = $("#crm-select-user");
+
+        updateDataTable($userContainer.val());
+
+        $userContainer.change(function () {
+            updateDataTable(this.value)
+
+        });
+        $('#fetch-excel').click(function () {
+            var $dt = $('.dataTable').DataTable();
+            var sortArr = $dt.order();
+            var sort = "?sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+
+            window.open(serverPrefix + 'MainContractsReport/Excel' + sort, "_blank");
+        })
+    });
+
+        </script>
+</row>

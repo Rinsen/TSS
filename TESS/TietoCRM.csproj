@@ -230,6 +230,7 @@
     <Compile Include="Controllers\Reports\ModuleReportController.cs" />
     <Compile Include="Controllers\Reports\ProductReportController.cs" />
     <Compile Include="Controllers\Reports\SaleReportController.cs" />
+    <Compile Include="Controllers\Reports\MainContractsReportController.cs" />
     <Compile Include="Controllers\Reports\SentContractsReportController.cs" />
     <Compile Include="Controllers\Reports\TopCustomersReportController.cs" />
     <Compile Include="Controllers\Reports\ValidContractsReportController.cs" />
@@ -922,6 +923,7 @@
     <Content Include="Views\CustomerContract\_ModuleInfoSection.cshtml" />
     <Content Include="Views\Template\MainContractIndex.cshtml" />
     <Content Include="Views\Template\Denied.cshtml" />
+    <Content Include="Views\MainContractsReport\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

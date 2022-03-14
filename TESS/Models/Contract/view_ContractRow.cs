@@ -508,6 +508,7 @@ public class view_ContractRow : SQLBaseClass
             }
             return dt;
         }
+
         public static System.Data.DataTable ExportContractRowsByDateIntervalToExcel(DateTime Start, DateTime Stop)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
