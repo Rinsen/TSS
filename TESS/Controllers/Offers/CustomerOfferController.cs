@@ -1338,8 +1338,16 @@ namespace TietoCRM.Controllers
             {
                 view_Customer offerCustomer = new view_Customer("Customer = " + customer);
 
+                decimal? fixedPrice = null;
                 view_Tariff tariff = new view_Tariff();
-                tariff.Select("Inhabitant_level = " + offerCustomer.Inhabitant_level + " AND Price_category = " + ((int)module.Price_category).ToString());
+                if(module.Fixed_price.HasValue && module.Fixed_price.Value)
+                {
+                    fixedPrice = module.Price_category;
+                }
+                else
+                {
+                    tariff.Select("Inhabitant_level = " + offerCustomer.Inhabitant_level + " AND Price_category = " + ((int)module.Price_category).ToString());
+                }
 
                 view_ModuleText moduleText = new view_ModuleText();
                 moduleText.Select("Type = 'O' AND TypeId = " + offer_id + " AND ModuleType = 'A' AND ModuleId = " + article_number);
@@ -1347,8 +1355,8 @@ namespace TietoCRM.Controllers
                 var returnObj = new
                 {
                     Module = module.Module,
-                    License = tariff.License.HasValue && tariff.License.Value > 0 ? tariff.License.Value.ToString() : "0.00",
-                    Maintenance = tariff.Maintenance.HasValue && tariff.Maintenance.Value > 0 ? tariff.Maintenance.Value.ToString() : "0.00",
+                    License = fixedPrice.HasValue ? fixedPrice.ToString() : tariff.License.HasValue && tariff.License.Value > 0 ? tariff.License.Value.ToString() : "0.00",
+                    Maintenance = fixedPrice.HasValue ? "0.00" :tariff.Maintenance.HasValue && tariff.Maintenance.Value > 0 ? tariff.Maintenance.Value.ToString() : "0.00",
                     Module_status = module.Module_status,
                     Discount = module.Discount,
                     Discount_type = module.Discount_type,
