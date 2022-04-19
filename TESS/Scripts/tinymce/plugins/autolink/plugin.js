@@ -1,188 +1,204 @@
 /**
- * Copyright (c) Tiny Technologies, Inc. All rights reserved.
- * Licensed under the LGPL or a commercial license.
- * For LGPL see License.txt in the project root for license information.
- * For commercial licenses see https://www.tiny.cloud/
- *
- * Version: 5.0.5 (2019-05-09)
+ * TinyMCE version 6.0.1 (2022-03-23)
  */
+
 (function () {
-var autolink = (function () {
-    'use strict';
+  'use strict';
 
-    var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
+  var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    var global$1 = tinymce.util.Tools.resolve('tinymce.Env');
+  const link = () => /(?:[A-Za-z][A-Za-z\d.+-]{0,14}:\/\/(?:[-.~*+=!&;:'%@?^${}(),\w]+@)?|www\.|[-;:&=+$,.\w]+@)[A-Za-z\d-]+(?:\.[A-Za-z\d-]+)*(?::\d+)?(?:\/(?:[-+~=.,%()\/\w]*[-+~=%()\/\w])?)?(?:\?(?:[-.~*+=!&;:'%@?^${}(),\/\w]+))?(?:#(?:[-.~*+=!&;:'%@?^${}(),\/\w]+))?/g;
 
-    var getAutoLinkPattern = function (editor) {
-      return editor.getParam('autolink_pattern', /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i);
-    };
-    var getDefaultLinkTarget = function (editor) {
-      return editor.getParam('default_link_target', '');
-    };
-    var Settings = {
-      getAutoLinkPattern: getAutoLinkPattern,
-      getDefaultLinkTarget: getDefaultLinkTarget
-    };
+  const option = name => editor => editor.options.get(name);
+  const register = editor => {
+    const registerOption = editor.options.register;
+    registerOption('autolink_pattern', {
+      processor: 'regexp',
+      default: new RegExp('^' + link().source + '$', 'i')
+    });
+    registerOption('link_default_target', { processor: 'string' });
+    registerOption('link_default_protocol', {
+      processor: 'string',
+      default: 'https'
+    });
+  };
+  const getAutoLinkPattern = option('autolink_pattern');
+  const getDefaultLinkTarget = option('link_default_target');
+  const getDefaultLinkProtocol = option('link_default_protocol');
 
-    var rangeEqualsDelimiterOrSpace = function (rangeString, delimiter) {
-      return rangeString === delimiter || rangeString === ' ' || rangeString.charCodeAt(0) === 160;
-    };
-    var handleEclipse = function (editor) {
-      parseCurrentLine(editor, -1, '(');
-    };
-    var handleSpacebar = function (editor) {
-      parseCurrentLine(editor, 0, '');
-    };
-    var handleEnter = function (editor) {
-      parseCurrentLine(editor, -1, '');
-    };
-    var scopeIndex = function (container, index) {
-      if (index < 0) {
-        index = 0;
+  const hasProto = (v, constructor, predicate) => {
+    var _a;
+    if (predicate(v, constructor.prototype)) {
+      return true;
+    } else {
+      return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+    }
+  };
+  const typeOf = x => {
+    const t = typeof x;
+    if (x === null) {
+      return 'null';
+    } else if (t === 'object' && Array.isArray(x)) {
+      return 'array';
+    } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      return 'string';
+    } else {
+      return t;
+    }
+  };
+  const isType = type => value => typeOf(value) === type;
+  const isString = isType('string');
+
+  const checkRange = (str, substr, start) => substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
+  const contains = (str, substr) => {
+    return str.indexOf(substr) !== -1;
+  };
+  const startsWith = (str, prefix) => {
+    return checkRange(str, prefix, 0);
+  };
+
+  const rangeEqualsBracketOrSpace = rangeString => /^[(\[{ \u00a0]$/.test(rangeString);
+  const isTextNode = node => node.nodeType === 3;
+  const isElement = node => node.nodeType === 1;
+  const handleBracket = editor => parseCurrentLine(editor, -1);
+  const handleSpacebar = editor => parseCurrentLine(editor, 0);
+  const handleEnter = editor => parseCurrentLine(editor, -1);
+  const scopeIndex = (container, index) => {
+    if (index < 0) {
+      index = 0;
+    }
+    if (isTextNode(container)) {
+      const len = container.data.length;
+      if (index > len) {
+        index = len;
       }
-      if (container.nodeType === 3) {
-        var len = container.data.length;
-        if (index > len) {
-          index = len;
-        }
-      }
-      return index;
-    };
-    var setStart = function (rng, container, offset) {
-      if (container.nodeType !== 1 || container.hasChildNodes()) {
-        rng.setStart(container, scopeIndex(container, offset));
-      } else {
-        rng.setStartBefore(container);
-      }
-    };
-    var setEnd = function (rng, container, offset) {
-      if (container.nodeType !== 1 || container.hasChildNodes()) {
-        rng.setEnd(container, scopeIndex(container, offset));
-      } else {
-        rng.setEndAfter(container);
-      }
-    };
-    var parseCurrentLine = function (editor, endOffset, delimiter) {
-      var rng, end, start, endContainer, bookmark, text, matches, prev, len, rngText;
-      var autoLinkPattern = Settings.getAutoLinkPattern(editor);
-      var defaultLinkTarget = Settings.getDefaultLinkTarget(editor);
-      if (editor.selection.getNode().tagName === 'A') {
-        return;
-      }
-      rng = editor.selection.getRng(true).cloneRange();
-      if (rng.startOffset < 5) {
-        prev = rng.endContainer.previousSibling;
-        if (!prev) {
-          if (!rng.endContainer.firstChild || !rng.endContainer.firstChild.nextSibling) {
-            return;
-          }
-          prev = rng.endContainer.firstChild.nextSibling;
-        }
-        len = prev.length;
-        setStart(rng, prev, len);
-        setEnd(rng, prev, len);
-        if (rng.endOffset < 5) {
+    }
+    return index;
+  };
+  const setStart = (rng, container, offset) => {
+    if (!isElement(container) || container.hasChildNodes()) {
+      rng.setStart(container, scopeIndex(container, offset));
+    } else {
+      rng.setStartBefore(container);
+    }
+  };
+  const setEnd = (rng, container, offset) => {
+    if (!isElement(container) || container.hasChildNodes()) {
+      rng.setEnd(container, scopeIndex(container, offset));
+    } else {
+      rng.setEndAfter(container);
+    }
+  };
+  const hasProtocol = url => /^([A-Za-z][A-Za-z\d.+-]*:\/\/)|mailto:/.test(url);
+  const isPunctuation = char => /[?!,.;:]/.test(char);
+  const parseCurrentLine = (editor, endOffset) => {
+    let end, endContainer, bookmark, text, prev, len, rngText;
+    const autoLinkPattern = getAutoLinkPattern(editor);
+    const defaultLinkTarget = getDefaultLinkTarget(editor);
+    if (editor.dom.getParent(editor.selection.getNode(), 'a[href]') !== null) {
+      return;
+    }
+    const rng = editor.selection.getRng().cloneRange();
+    if (rng.startOffset < 5) {
+      prev = rng.endContainer.previousSibling;
+      if (!prev) {
+        if (!rng.endContainer.firstChild || !rng.endContainer.firstChild.nextSibling) {
           return;
         }
-        end = rng.endOffset;
-        endContainer = prev;
-      } else {
-        endContainer = rng.endContainer;
-        if (endContainer.nodeType !== 3 && endContainer.firstChild) {
-          while (endContainer.nodeType !== 3 && endContainer.firstChild) {
-            endContainer = endContainer.firstChild;
-          }
-          if (endContainer.nodeType === 3) {
-            setStart(rng, endContainer, 0);
-            setEnd(rng, endContainer, endContainer.nodeValue.length);
-          }
-        }
-        if (rng.endOffset === 1) {
-          end = 2;
-        } else {
-          end = rng.endOffset - 1 - endOffset;
-        }
+        prev = rng.endContainer.firstChild.nextSibling;
       }
-      start = end;
-      do {
-        setStart(rng, endContainer, end >= 2 ? end - 2 : 0);
-        setEnd(rng, endContainer, end >= 1 ? end - 1 : 0);
-        end -= 1;
-        rngText = rng.toString();
-      } while (rngText !== ' ' && rngText !== '' && rngText.charCodeAt(0) !== 160 && end - 2 >= 0 && rngText !== delimiter);
-      if (rangeEqualsDelimiterOrSpace(rng.toString(), delimiter)) {
-        setStart(rng, endContainer, end);
-        setEnd(rng, endContainer, start);
-        end += 1;
-      } else if (rng.startOffset === 0) {
-        setStart(rng, endContainer, 0);
-        setEnd(rng, endContainer, start);
-      } else {
-        setStart(rng, endContainer, end);
-        setEnd(rng, endContainer, start);
-      }
-      text = rng.toString();
-      if (text.charAt(text.length - 1) === '.') {
-        setEnd(rng, endContainer, start - 1);
-      }
-      text = rng.toString().trim();
-      matches = text.match(autoLinkPattern);
-      if (matches) {
-        if (matches[1] === 'www.') {
-          matches[1] = 'http://www.';
-        } else if (/@$/.test(matches[1]) && !/^mailto:/.test(matches[1])) {
-          matches[1] = 'mailto:' + matches[1];
-        }
-        bookmark = editor.selection.getBookmark();
-        editor.selection.setRng(rng);
-        editor.execCommand('createlink', false, matches[1] + matches[2]);
-        if (defaultLinkTarget) {
-          editor.dom.setAttrib(editor.selection.getNode(), 'target', defaultLinkTarget);
-        }
-        editor.selection.moveToBookmark(bookmark);
-        editor.nodeChanged();
-      }
-    };
-    var setup = function (editor) {
-      var autoUrlDetectState;
-      editor.on('keydown', function (e) {
-        if (e.keyCode === 13) {
-          return handleEnter(editor);
-        }
-      });
-      if (global$1.ie) {
-        editor.on('focus', function () {
-          if (!autoUrlDetectState) {
-            autoUrlDetectState = true;
-            try {
-              editor.execCommand('AutoUrlDetect', false, true);
-            } catch (ex) {
-            }
-          }
-        });
+      len = prev.length;
+      setStart(rng, prev, len);
+      setEnd(rng, prev, len);
+      if (rng.endOffset < 5) {
         return;
       }
-      editor.on('keypress', function (e) {
-        if (e.keyCode === 41) {
-          return handleEclipse(editor);
+      end = rng.endOffset;
+      endContainer = prev;
+    } else {
+      endContainer = rng.endContainer;
+      if (!isTextNode(endContainer) && endContainer.firstChild) {
+        while (!isTextNode(endContainer) && endContainer.firstChild) {
+          endContainer = endContainer.firstChild;
         }
-      });
-      editor.on('keyup', function (e) {
-        if (e.keyCode === 32) {
-          return handleSpacebar(editor);
+        if (isTextNode(endContainer)) {
+          setStart(rng, endContainer, 0);
+          setEnd(rng, endContainer, endContainer.nodeValue.length);
         }
-      });
-    };
-    var Keys = { setup: setup };
-
-    global.add('autolink', function (editor) {
-      Keys.setup(editor);
-    });
-    function Plugin () {
+      }
+      if (rng.endOffset === 1) {
+        end = 2;
+      } else {
+        end = rng.endOffset - 1 - endOffset;
+      }
     }
+    const start = end;
+    do {
+      setStart(rng, endContainer, end >= 2 ? end - 2 : 0);
+      setEnd(rng, endContainer, end >= 1 ? end - 1 : 0);
+      end -= 1;
+      rngText = rng.toString();
+    } while (!rangeEqualsBracketOrSpace(rngText) && end - 2 >= 0);
+    if (rangeEqualsBracketOrSpace(rng.toString())) {
+      setStart(rng, endContainer, end);
+      setEnd(rng, endContainer, start);
+      end += 1;
+    } else if (rng.startOffset === 0) {
+      setStart(rng, endContainer, 0);
+      setEnd(rng, endContainer, start);
+    } else {
+      setStart(rng, endContainer, end);
+      setEnd(rng, endContainer, start);
+    }
+    text = rng.toString();
+    if (isPunctuation(text.charAt(text.length - 1))) {
+      setEnd(rng, endContainer, start - 1);
+    }
+    text = rng.toString().trim();
+    const matches = text.match(autoLinkPattern);
+    const protocol = getDefaultLinkProtocol(editor);
+    if (matches) {
+      let url = matches[0];
+      if (startsWith(url, 'www.')) {
+        url = protocol + '://' + url;
+      } else if (contains(url, '@') && !hasProtocol(url)) {
+        url = 'mailto:' + url;
+      }
+      bookmark = editor.selection.getBookmark();
+      editor.selection.setRng(rng);
+      editor.getDoc().execCommand('createlink', false, url);
+      if (isString(defaultLinkTarget)) {
+        editor.dom.setAttrib(editor.selection.getNode(), 'target', defaultLinkTarget);
+      }
+      editor.selection.moveToBookmark(bookmark);
+      editor.nodeChanged();
+    }
+  };
+  const setup = editor => {
+    editor.on('keydown', e => {
+      if (e.keyCode === 13) {
+        return handleEnter(editor);
+      }
+    });
+    editor.on('keypress', e => {
+      if (e.keyCode === 41 || e.keyCode === 93 || e.keyCode === 125) {
+        return handleBracket(editor);
+      }
+    });
+    editor.on('keyup', e => {
+      if (e.keyCode === 32) {
+        return handleSpacebar(editor);
+      }
+    });
+  };
 
-    return Plugin;
+  var Plugin = () => {
+    global.add('autolink', editor => {
+      register(editor);
+      setup(editor);
+    });
+  };
 
-}());
+  Plugin();
+
 })();
