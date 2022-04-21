@@ -51,7 +51,7 @@
                         @if (ViewBag.Representative.Use_logo)
                         {
                         <span id="crm-pdf-tieto-logo-com">
-                            <img src="@GetWorkingUrl("/Content/img/TE-Lockup-RGB-BLUE.png")" alt="" />
+                            <img src="@GetWorkingUrl("../Content/img/TE-Lockup-RGB-BLUE.png")" alt="" />
                         </span>
                         }
                     </td>
@@ -151,10 +151,10 @@
                 <p>Tieto Sweden AB</p>
                 <div class="signature-container">
                     @{
-                        String url = "~/Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
+                        String url = "../Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
                         if (System.IO.File.Exists(Request.MapPath(url)))
                         {
-                            <img src="@GetWorkingUrl(url.Remove(0,1))" alt="" />
+                            <img src="@GetWorkingUrl(url)" alt="" />
                         }
                         else
                         {
