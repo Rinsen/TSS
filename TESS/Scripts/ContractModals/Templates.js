@@ -1,55 +1,55 @@
 ﻿$(document).ready(function () {
 
-    var frm = $("#templatesModal form");
+    var frm = $('#templatesModal form');
 
-    $("#moduleInfo-modal-button").click(function () {
+    $('#moduleInfo-modal-button').click(function () {
 
         $.ajax({
             "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleInfoSection",
             "type": "GET",
             "success": function (data) {
-                $(".crm-pdf-module-info-section").html(data);
-                $("#moduleInfoModal").appendTo("body").modal("show").find('.modal-content').draggable();
+                $('.crm-pdf-module-info-section').html(data);
+                $('#moduleInfoModal').appendTo("body").modal("show").find('.modal-content').draggable();
             }
         });
 
     });
 
-    $("#textTemplate-modal-button").click(function () {
+    $('#textTemplate-modal-button').click(function () {
         
         if (isMainCont == "True") {
-            $("#main-template-number-select").val("current");
-            $("#mainTemplatesModal").appendTo("body").modal("show").find('.modal-content').draggable();
+            $('#main-template-number-select').val("current");
+            $('#mainTemplatesModal').appendTo("body").modal("show").find('.modal-content').draggable();
             loadTopHeadText();
         }
         else {
             loadSelectData();
             loadTextData(true);
-            $("#templatesModal").appendTo("body").modal("show").find('.modal-content').draggable();
+            $('#templatesModal').appendTo("body").modal("show").find('.modal-content').draggable();
         }
        
     });
 
-    $("#template-number-select").bind("change", function () {
+    $('#template-number-select').bind("change", function () {
         loadTextData(false);
     });
-    $("#main-template-number-select").bind("change", function () {
+    $('#main-template-number-select').bind("change", function () {
         loadPrologText();
         loadEpilogText();
         loadTopHeadText();
         loadModuleText();
     });
-    $("#save-template-changes").click(function () {
-        if ($("#template-modal form").valid()) {
+    $('#save-template-changes').click(function () {
+        if ($('#template-modal form').valid()) {
             var text = {};
-            text["Contract_type"] = $("#document-type-text").val();
-            text["Title"] = $("#title-text").val();
+            text["Contract_type"] = $('#document-type-text').val();
+            text["Title"] = $('#title-text').val();
             //text["Page_head"] = $("#page-head-text").val();
             text["Page_head"] = tinymce.get('page-head-text').getContent();
             //text["Document_foot"] = $("#document-foot-text").val();
             text["Document_foot"] = tinymce.get('document-foot-text').getContent();
             text["Module_header"] = tinymce.get('module-info-header').getContent();
-            text["Document_foot_title"] = $("#bodytitle").val(),
+            text["Document_foot_title"] = $('#bodytitle').val(),
             text["Delivery_maint_title"] = tinymce.get("deluhtitle").getContent(),
             //text["Delivery_maint_text"] = $("#deluhtext").val()
             text["Delivery_maint_text"] = tinymce.get('deluhtext').getContent();
@@ -74,13 +74,13 @@
 
                         console.log("success");
                         $.each(text, function (key, val) {
-                            var $updateTarget = $("#template-" + key);
+                            var $updateTarget = $('#template-' + key);
                             if ($updateTarget.length > 0) {
                                 $updateTarget.html(val);
                             }
                         });
 
-                        $("#templatesModal").modal("hide");
+                        $('#templatesModal').modal("hide");
                         triggerAlert("Successfully updated this contract text", "success");
                     }
                     else {
@@ -94,7 +94,7 @@
         };
     });
 
-    $("#save-main-template-changes").click(function () {
+    $('#save-main-template-changes').click(function () {
 
         $.ajax({
             "url": serverPrefix + "CustomerContract/SaveMainContractText/",
@@ -104,7 +104,7 @@
                 "contract-id": contractId,
                 "epilog": tinymce.get('epilog-text').getContent(),
                 "prolog": tinymce.get('prolog-text').getContent(),
-                "tophead": $("#main-top-head").val(),
+                "tophead": $('#main-top-head').val(),
                 "moduleText": tinymce.get('module-text').getContent()
 
             },
@@ -114,7 +114,7 @@
                     $(".crm-pdf-main-contract-epilog-section").html(tinymce.get('epilog-text').getContent());
                     $(".crm-pdf-main-contract-header-prolog").html(tinymce.get('prolog-text').getContent());
                     $(".crm-pdf-module-section-text").html(tinymce.get('module-text').getContent());
-                    $("#main-top-title-text").html($("#main-top-head").val());
+                    $('#main-top-title-text').html($('#main-top-head').val());
                     $(document).trigger("clear-alerts");
                     $(document).trigger("add-alerts", [
                       {
@@ -122,7 +122,7 @@
                           'priority': 'success'
                       }
                     ]);
-                    $("#mainTemplatesModal").modal("hide");
+                    $('#mainTemplatesModal').modal("hide");
                 }
                 else {
                     $(document).trigger("clear-alerts");
@@ -140,7 +140,7 @@
         });
     });
 
-    $formValidation = $("#templatesModal form").validate({
+    $formValidation = $('#templatesModal form').validate({
         rules: {
             "DeluhTitle": {
                 maxlength: 255
@@ -170,38 +170,35 @@ var loadTextData = function (contractContent) {
         "data": {
             "customer": customerName,
             "contract-id": contractId,
-            "selected": $("#template-number-select").val(),
+            "selected": $('#template-number-select').val(),
             "contract-cont": contractContent,
         },
         "success": function (data) {
             if (data != "0") {
-
                 var template = JSON.parse(data);
                 if (typeof template.Document_type == "undefined") {
-                    $("#document-type-text").val(template.Contract_type);
+                    $('#document-type-text').val(template.Contract_type);
                 }
                 else {
-                    $("#document-type-text").val(template.Document_type);
+                    $('#document-type-text').val(template.Document_type);
                 }
                 
-                $("#title-text").val(template.Title);
-                $("#page-head-text").val(template.Page_head);
-                $("#document-foot-text").val(template.Document_foot);
+                $('#title-text').val(template.Title);
+                $('#page-head-text').val(template.Page_head);
+                $('#document-foot-text').val(template.Document_foot);
                 if (template.Module_header != undefined) {
-                    $("#module-info-header").val(template.Module_header);
+                    $('#module-info-header').val(template.Module_header);
                 }
-                $("#bodytitle").val(template.Document_foot_title);
-                $("#deluhtitle").val(template.Delivery_maint_title);
-                $("#deluhtext").val(template.Delivery_maint_text);
+                $('#bodytitle').val(template.Document_foot_title);
+                $('#deluhtitle').val(template.Delivery_maint_title);
+                $('#deluhtext').val(template.Delivery_maint_text);
 
                 for (var i = 0; i < tinyMCE.editors.length; i++) {
                     var currentED = tinyMCE.editors[i];
+                    console.log("tinyMCE currentED: ", currentED);
                     currentED.setContent($('#' + currentED.id).val());
                 }
-
-
             }
-
         }
     });
 };
@@ -220,11 +217,11 @@ var loadSelectData = function () {
         "success": function (data) {
             if (data != "0") {
                 var numbers = JSON.parse(data);
-                $("#template-number-select option").remove("option.added");
+                $('#template-number-select option').remove("option.added");
                 for (var i = 0; i < numbers.length; i++) {
                     var id = numbers[i].Key;
                     var selectVal = numbers[i].Value
-                    $("#template-number-select").append($("<option class='added'></option>").attr("value", selectVal).html(id));
+                    $('#template-number-select').append($("<option class='added'></option>").attr("value", selectVal).html(id));
                 }
                 
                 $('.selectpicker').selectpicker('refresh');
@@ -243,7 +240,7 @@ var loadPrologText = function () {
         "data": {
             "customer": customerName,
             "contract-id": contractId,
-            "from": $("#main-template-number-select").val()
+            "from": $('#main-template-number-select').val()
         },
         "success": function (data) {
             if (data != "0") {
@@ -266,7 +263,7 @@ var loadModuleText = function () {
         "data": {
             "customer": customerName,
             "contract-id": contractId,
-            "from": $("#main-template-number-select").val()
+            "from": $('#main-template-number-select').val()
         },
         "success": function (data) {
             if (data != "0") {
@@ -289,7 +286,7 @@ var loadEpilogText = function () {
         "data": {
             "customer": customerName,
             "contract-id": contractId,
-            "from": $("#main-template-number-select").val()
+            "from": $('#main-template-number-select').val()
         },
         "success": function (data) {
             if (data != "0") {
@@ -312,12 +309,12 @@ var loadTopHeadText = function () {
         "data": {
             "customer": customerName,
             "contract-id": contractId,
-            "from": $("#main-template-number-select").val()
+            "from": $('#main-template-number-select').val()
         },
         "success": function (data) {
             if (data != "0") {
 
-                $("#main-top-head").val(data);
+                $('#main-top-head').val(data);
 
 
             }

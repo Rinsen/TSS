@@ -160,8 +160,8 @@
                         // Update current values
                         currentOfferValues = updateData;
                         // Loop through "HTML PDF" and update fields
-                        $.each(updateData, function(key, val){
-                            var $updateTarget = $("#" + key);
+                        $.each(updateData, function (key, val) {
+                            var $updateTarget = $('#' + key);
                             if($updateTarget.length > 0){
                                 $updateTarget.html(val);
                             }

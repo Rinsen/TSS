@@ -166,7 +166,7 @@
     {
         var customerID = $(self).parent().parent().parent().parent().find('button').attr('data-id');
         var searchText = $(self).parent().parent().parent().find('.bs-searchbox input').val();
-        var $selectPicker = $("#" + customerID);
+        var $selectPicker = $('#' + customerID);
         $selectPicker.append('<option value="' + searchText + '">' + searchText + '<option>');
         $selectPicker.val(searchText);
         $selectPicker.selectpicker("refresh");

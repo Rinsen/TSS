@@ -547,7 +547,7 @@
 
                 return $(
                         '<li class="ColVis_Special ' + (dt.bJUI ? 'ui-button ui-state-default' : '') + '">' +
-                            '<a href="#">' +
+                            '<a href="javascript:void()">' +
                                 '<div class="checkbox">' +
                                     '<label>' +
                                         '<input type="checkbox">a ' + oGroup.sTitle + 
@@ -592,7 +592,7 @@
 
                 return $(
                         '<li ' + (dt.bJUI ? 'class="ui-button ui-state-default"' : '') + '>' +
-                            '<a href="#">' +
+                            '<a href="javascript:void()">' +
                                 '<div class="checkbox">' +
                                     '<label>' +
                                         '<input style="margin:2px 0 0 -27px" type="checkbox">  ' + title +

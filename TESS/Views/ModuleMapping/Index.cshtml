@@ -203,7 +203,7 @@
                     "Article_number",
                     "Module"
                 ],
-                item:   `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
+                item:   `<a href="javascript:void()" onclick="removeFromMappedList(this)" class="list-group-item">
                             <strong style="width: 45px; display: inline-block;" class ="Article_number"></strong>
                             <strong class ="Module"></strong>
                         </a>`
@@ -249,7 +249,7 @@
                 "success": function (data) {
                     var options = {
                         valueNames: data.options,
-                        item: `<a href="#" onclick="addToMappedList(this)" class="list-group-item">
+                        item: `<a href="javascript:void()" onclick="addToMappedList(this)" class="list-group-item">
                                     <strong style="width: 45px; display: inline-block;" class="Article_number"></strong>
                                     <strong class ="Module"></strong>
                                 </a>`
@@ -276,7 +276,7 @@
                 "success": function (data) {
                     var options = {
                         valueNames: data.options,
-                        item: `<a href="#" onclick="removeFromMappedList(this)" class="list-group-item">
+                        item: `<a href="javascript:void()" onclick="removeFromMappedList(this)" class="list-group-item">
                                     <strong style="width: 45px; display: inline-block;" class="Article_number"></strong>
                                     <strong class="Module"></strong>
                                 </a>`

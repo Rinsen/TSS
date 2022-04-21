@@ -3,21 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
-using System.Web.Http;
-using TietoCRM.Extensions;
 using TietoCRM.Models;
-using System.Configuration;
-using System.IO;
-using ClosedXML.Excel;
-using System.Net.Http;
-using System.Runtime.Caching;
-
-
 
 namespace TietoCRM.Controllers.Reports
 {
@@ -31,7 +20,6 @@ namespace TietoCRM.Controllers.Reports
 
             return View();
         }
-
 
         public ActionResult Pdf()
         {
@@ -61,7 +49,6 @@ namespace TietoCRM.Controllers.Reports
             pdf.RotativaOptions.CustomSwitches += " --header-center \"Sent Offers Report\"";
 
             return pdf;
-
         }
 
         public String User()
@@ -119,6 +106,7 @@ namespace TietoCRM.Controllers.Reports
                     }
                 }
             }
+
             return rows;
         }
 
@@ -126,8 +114,8 @@ namespace TietoCRM.Controllers.Reports
         {
             DataTable dt = view_CustomerOffer.ExportCustomerOffersToExcel(Request["user"]);
             TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
-            return ex.Export(dt, "SentOffers.xlsx");
-            
+
+            return ex.Export(dt, "SentOffers.xlsx");            
         }
 
         //    using (XLWorkbook wb = new XLWorkbook())

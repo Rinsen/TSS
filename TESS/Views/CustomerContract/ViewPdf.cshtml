@@ -75,10 +75,10 @@
                     Add <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" id="articles-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Articles</a></li>
+                    <li><a data-toggle="modal" id="articles-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Articles</a></li>
                     @* <li><a data-toggle="modal" id="articles-search-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Articles by search</a></li>*@
-                    <li><a data-toggle="modal" id="services-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Services</a></li>
-                    <li><a data-toggle="modal" id="options-modal-button" @{ if (isServiceContract || !isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Options</a></li>
+                    <li><a data-toggle="modal" id="services-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Services</a></li>
+                    <li><a data-toggle="modal" id="options-modal-button" @{ if (isServiceContract || !isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Options</a></li>
                 </ul>
             </div>
             <div class="btn-group">
@@ -86,10 +86,10 @@
                     Import <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" id="contractFromOffer-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Items from offers</a></li>
-                    <li><a data-toggle="modal" id="optionsFromActive-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Options from contracts</a></li>
-                    <li><a data-toggle="modal" id="modulesFromContracts-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Items from contracts</a></li>
-                    <li><a data-toggle="modal" id="resign-modal-button" @{ if (!isSent || !isMainContract) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Re-sign contract</a></li>
+                    <li><a data-toggle="modal" id="contractFromOffer-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Items from offers</a></li>
+                    <li><a data-toggle="modal" id="optionsFromActive-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Options from contracts</a></li>
+                    <li><a data-toggle="modal" id="modulesFromContracts-modal-button" @{ if (!isSent || isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Items from contracts</a></li>
+                    <li><a data-toggle="modal" id="resign-modal-button" @{ if (!isSent || !isMainContract) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Re-sign contract</a></li>
                 </ul>
             </div>
             <div class="btn-group">
@@ -97,9 +97,9 @@
                     Edit <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" id="head-info-modal-button" href="#">Contract information</a></li>
-                    <li><a data-toggle="modal" id="contractHead-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Customer information</a></li>
-                    <li><a data-toggle="modal" id="textTemplate-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Text templates</a></li>
+                    <li><a data-toggle="modal" id="head-info-modal-button" href="javascript:void()">Contract information</a></li>
+                    <li><a data-toggle="modal" id="contractHead-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Customer information</a></li>
+                    <li><a data-toggle="modal" id="textTemplate-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Text templates</a></li>
                     <li><a data-toggle="modal" @{ 
                         if (!isSent || !hasModules)
                         { 
@@ -109,7 +109,7 @@
                         {
                             @Html.Raw("id='moduleInfo-modal-button' href='#'");
                         }}>Module Info</a></li>
-                    <li><a data-toggle="modal" id="finalizetermination-modal-button" @{ if (!isValid || !isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="#">Finalize Termination</a></li>
+                    <li><a data-toggle="modal" id="finalizetermination-modal-button" @{ if (!isValid || !isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Finalize Termination</a></li>
 
                 </ul>
             </div>
