@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using TietoCRM.Extensions;
 using System.Dynamic;
+using System.Linq;
 
 namespace TietoCRM.Models
 {
@@ -402,6 +403,102 @@ public class view_ContractRow : SQLBaseClass
         }
 
         /// <summary>
+        /// Gets all ContractRows for a specified DateTime period.
+        /// </summary>
+        /// <param name="Start">Start DateTime</param>
+        /// <param name="Stop">End DateTime</param>
+        /// <param name="customers">Customers</param>
+        /// <param name="articleNumbers">Articles</param>
+        /// <returns>List of ContractRows.</returns>
+        public static List<view_ContractRow> GetContractRowsByDateIntervalCustomersAndArticleNumbers(DateTime Start, DateTime Stop, List<string> customers, List<int> articleNumbers)
+        {
+            List<view_ContractRow> list = new List<view_ContractRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                var customerString = "";
+                var articleNumberString = "";
+
+                if (customers != null && customers.Count > 0)
+                {
+                    customerString = string.Join(",", customers.Select(s => "'" + s + "'").ToArray());
+                }
+                if(articleNumbers != null && articleNumbers.Count > 0)
+                {
+                    articleNumberString = string.Join(",", articleNumbers.Select(n => n.ToString()).ToArray());
+                }
+
+                // Default query
+                command.CommandText = @"SELECT [view_ContractRow].[Contract_id], 
+                    [view_ContractRow].[Customer] ,[view_ContractRow].[Article_number] ,
+                    [view_ContractRow].[Offer_number] ,[view_ContractRow].[License] ,
+                    [view_ContractRow].[Maintenance] ,[view_ContractRow].[Delivery_date] ,
+                    [view_ContractRow].[Created] ,[view_ContractRow].[Updated] ,
+                    [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
+                    [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
+                    [view_ContractRow].[Fixed_price] ,
+                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp ,
+                    [view_ContractRow].[Alias] 
+                    FROM " + databasePrefix + @"ContractRow 
+                    INNER JOIN " + databasePrefix + @"Contract ON 
+                    view_Contract.Customer=view_ContractRow.Customer and 
+                    view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
+                    view_Contract.Valid_from >= @startDate AND
+                    view_Contract.Valid_from <= @stopDate";
+                
+                if(!string.IsNullOrEmpty(customerString))
+                {
+                    command.CommandText += " AND view_ContractRow.Customer IN (" + customerString + ")";
+                }
+                
+                if(!string.IsNullOrEmpty(articleNumberString))
+                {
+                    command.CommandText += " AND view_ContractRow.Article_number IN(" + articleNumberString + ")";
+                }
+                
+                command.CommandText += " ORDER BY (SELECT COUNT(*) FROM [view_ContractRow] countTest INNER JOIN view_Contract C ON" +
+                    " C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id WHERE C.Valid_from >= @startDate AND" +
+                    " C.Valid_from <= @stopDate AND view_ContractRow.Article_number = countTest.Article_number) DESC";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@startDate", Start);
+                command.Parameters.AddWithValue("@stopDate", Stop);
+
+                try
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (reader.HasRows)
+                            {
+                                view_ContractRow t = new view_ContractRow();
+                                int i = 0;
+
+                                while (reader.FieldCount > i)
+                                {
+                                    t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                    i++;
+                                }
+
+                                list.Add(t);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+                return list;
+            }
+        }
+
+        /// <summary>
         /// Hämtar kontraktrader för att bygga ihop modultexter på kontraktet
         /// </summary>
         /// <param name="customer"></param>
@@ -560,6 +657,83 @@ public class view_ContractRow : SQLBaseClass
             }
             return dt;
             }
+
+        public static System.Data.DataTable ExportContractRowsByCustomerArticleAndDateIntervalToExcel(DateTime Start, DateTime Stop, List<string> customers, List<int> articleNumbers)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                var customerString = "";
+                var articleNumberString = "";
+
+                if (customers != null && customers.Count > 0)
+                {
+                    customerString = string.Join(",", customers.Select(s => "'" + s + "'").ToArray());
+                }
+                if (articleNumbers != null && articleNumbers.Count > 0)
+                {
+                    articleNumberString = string.Join(",", articleNumbers.Select(n => n.ToString()).ToArray());
+                }
+
+                // Default query
+                string query = @"SELECT [view_ContractRow].[Contract_id], 
+                    [view_ContractRow].[Customer] ,[view_ContractRow].[Article_number] ,
+                    [view_ContractRow].[Offer_number] ,[view_ContractRow].[License] ,
+                    [view_ContractRow].[Maintenance] ,[view_ContractRow].[Delivery_date] ,
+                    [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
+                    [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
+                    [view_ContractRow].[Alias] 
+                    FROM " + databasePrefix + @"ContractRow 
+                    INNER JOIN " + databasePrefix + @"Contract ON 
+                    view_Contract.Customer=view_ContractRow.Customer and 
+                    view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
+                    view_Contract.Valid_from >= '" + Start.ToShortDateString() + @"' AND
+                    view_Contract.Valid_from <= '" + Stop.ToShortDateString() + @"'";
+
+                if (!string.IsNullOrEmpty(customerString))
+                {
+                    query += " AND view_ContractRow.Customer IN (" + customerString + ")";
+                }
+
+                if (!string.IsNullOrEmpty(articleNumberString))
+                {
+                    query += " AND view_ContractRow.Article_number IN(" + articleNumberString + ")";
+                }
+
+                query += " ORDER BY (SELECT COUNT(*) FROM [view_ContractRow] countTest INNER JOIN view_Contract C ON" +
+                    " C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id WHERE C.Valid_from >= '" + Start.ToShortDateString() + @"' AND" +
+                    " C.Valid_from <= '" + Stop.ToShortDateString() + @"' AND view_ContractRow.Article_number = countTest.Article_number) DESC";
+                
+                //Order By " + GetOrderBy();
+                //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
+                //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
+
+
+                //command.Prepare();
+                //command.Parameters.AddWithValue("@startDate", Start);
+                //command.Parameters.AddWithValue("@stopDate", Stop);
+                ////command.Parameters.AddWithValue("@startDate", Start.ToString("yyyy-MM-dd"));
+                ////command.Parameters.AddWithValue("@endDate", Start.ToString("yyyy-MM-dd")));
+
+                dt.TableName = "CustomerProductGrowthReport";
+
+                try
+                {
+                    SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                    da.Fill(dt);
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+            }
+
+            return dt;
+        }
 
         /// <summary>
         /// Hämtar kundens omskrivna OCH avslutade moduler (via avtalstypen modulavslut) för att kunna markera dessa med stjärn-ikon i artikel-dialogen

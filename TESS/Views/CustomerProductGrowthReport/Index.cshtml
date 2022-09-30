@@ -1,0 +1,225 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DateTime Start;
+    DateTime Stop;
+
+    try
+    {
+        if (Request.Params["start"] != null || Request.Params["stop"] != null)
+        {
+            Start = Convert.ToDateTime(Request.Params["start"]);
+            Stop = Convert.ToDateTime(Request.Params["stop"]);
+        }
+        else
+        {
+            Start = DateTime.Now.AddMonths(-1);
+            Stop = DateTime.Now;
+        }
+    }
+    catch (Exception ignore)
+    {
+        Start = DateTime.Now.AddMonths(-1);
+        Stop = DateTime.Now;
+    }
+}
+
+@using TietoCRM.Extensions;
+
+
+<row>
+    <div class="col-md-12 mb-1">
+        <form method="get" target="_blank" class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-user">Customers:</label>
+                <select name="customer" id="crm-select-customer" multiple class="form-control selectpicker" data-show-subtext="true" data-live-search="true">
+                    @foreach (TietoCRM.Models.view_Customer Customer in ViewBag.Customers)
+                    {
+                        <option value="@Customer.Customer" data-subtext="@Customer.Customer_type">@Customer.Customer</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="crm-select-user">Modules:</label>
+                <select name="module" id="crm-select-module" multiple class="form-control selectpicker" data-show-subtext="true" data-live-search="true">
+                    @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
+                    {
+                        <option value="@Module.Article_number" data-subtext="@Module.Description">@Module.Article_number - @Module.Module</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="start-date" class="center-block">Start date:</label>
+                <input type="date"
+                       class="form-control"
+                       name="start-date"
+                       id="start-date"
+                       value="@Start.ToString("yyyy-MM-dd")"
+                       placeholder="Start date">
+            </div>
+            <div class="form-group">
+                <label for="stop-date" class="center-block">Stop date:</label>
+                <input type="date"
+                       class="form-control"
+                       name="stop-date"
+                       id="stop-date"
+                       value="@Stop.ToString("yyyy-MM-dd")"
+                       placeholder="Stop date">
+            </div>
+            <button id="fetch-data" class="btn btn-default btn-align-bottom" type="button">Search</button>
+            <button id="fetch-pdf" class="btn btn-default btn-align-bottom" type="button">PDF</button>
+            <button id="export-excel" class="btn btn-align-bottom" type="button">Excel</button>
+        </form>
+    </div>
+    <div class="col-md-12">
+        <form method="get" target="_blank" class="form-inline">
+            <div class="form-group">
+                <label for="saved-criterias">Saved search criterias:</label>
+                <select name="saved-criterias" id="saved-criterias" class="form-control selectpicker" @*data-live-search="true"*@>
+                    <option selected value="*">Nothing selected</option>
+                    @*@foreach (TietoCRM.Models.view_User User in ViewBag.Users)
+                {
+                    <option value="@User.Sign">@User.Name</option>
+                }*@
+                </select>
+            </div>
+            <button id="save-search-crit" class="btn btn-default btn-align-bottom" type="button">Save current search values</button>
+            <button id="remove-search-crit" class="btn btn-default btn-align-bottom" type="button">Remove selected search criterias</button>
+            @*<button id="export-excel" class="btn" type="button">Excel</button>*@
+        </form>
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover customer-growth-products" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="Count" data-sortable="true">Qty</th>
+
+                    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+                    {
+                        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+
+                        if (ViewBag.Printable.Contains(PropertyInfo.Name))
+                        {
+                            <th data-field="@PropertyInfo.Name" data-sortable="true">@PropertyName</th>
+                        }
+                    }
+                </tr>
+            </thead>
+        </table>
+    </div>
+</row>
+<script>
+        var serverPrefix = "@Url.Content("~/")";
+        @{
+            String DataObject = "\r\n";
+            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"Count\"  },\r\n";
+        }
+        @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+        {
+            String PropertyName = PropertyInfo.Name.Replace("_", " ");
+            if (ViewBag.Printable.Contains(PropertyInfo.Name))
+            {
+                DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
+            }
+        }
+        @{
+            DataObject = DataObject.Remove(DataObject.Length - 3);
+        }
+
+        var updateDataTable = function()
+        {
+            $('#report-table').DataTable({
+                "destroy": true,
+                "processing": true,
+                "bFilter": true,
+                "bPaginate": false,
+                "ajax": {
+                    "url": serverPrefix + "CustomerProductGrowthReport/FilteredModules/",
+                    "type": "POST",
+                    "data": {
+                        "start": $("#start-date").val(),
+                        "stop": $("#stop-date").val(),
+                        "customers": JSON.stringify($("#crm-select-customer").val()),
+                        "modules": JSON.stringify($("#crm-select-module").val())
+                    }
+                },
+                "defaultContent": "",
+                "columns": [@Html.Raw(DataObject)
+                ],
+                "order": [[ 0, 'desc' ]],
+
+                "scrollX": true,
+
+            });
+
+
+        }
+
+        // Check if browser is using webkit
+        var webkit = get_browser() == "Chrome" ||
+            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            get_browser() == "Opera";
+
+        function updateQueryStringParameter(uri, key, value) {
+            var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+            if (uri.match(re)) {
+                return uri.replace(re, '$1' + key + "=" + value + '$2');
+            }
+            else {
+                return uri + separator + key + "=" + value;
+            }
+        }
+
+
+        $(document).ready(function () {
+            var $startDate = $("#start-date");
+            var $stopDate = $("#stop-date");
+
+            $moduleContainer = $("#crm-select-module");
+            $customerContainer = $("#crm-select-customer");
+
+            var selectedCustomerValue = "";
+            var selectedModuleValue = "";
+
+            //updateDataTable();
+
+            $('#fetch-data').click(function () {
+                var uri = updateQueryStringParameter(updateQueryStringParameter('', "start", $startDate.val()), "stop", $stopDate.val());
+                console.log(window.location.href.split('?')[0] + uri);
+                history.pushState(null, null, uri);
+
+                updateDataTable();
+            })
+
+            $('#fetch-pdf').click(function () {
+                var start = $startDate.val();
+                var stop = $stopDate.val();
+                var customers = $customerContainer.val();
+                var modules = $moduleContainer.val();
+                var $dt = $('.dataTable').DataTable();
+                var sortArr = $dt.order();
+                var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+
+                window.open(serverPrefix + 'CustomerProductGrowthReport/Pdf?start=' + start + '&stop=' + stop + '&customers=' + customers + '&modules=' + modules + sort, "_blank");
+            })
+
+            updateDataTable();
+           // $('#report-table').fnSort([[0, 'asc']]);
+
+            if (!webkit) {
+                $startDate.datepicker({ dateFormat: 'yy-mm-dd' });
+                $stopDate.datepicker({ dateFormat: 'yy-mm-dd' });
+            }
+            $('#export-excel').click(function () {
+                var start = $startDate.val();
+                var stop = $stopDate.val();                
+                var customers = $customerContainer.val();
+                var modules = $moduleContainer.val();
+
+                var $dt = $('.dataTable').DataTable();
+                var sortArr = $dt.order();
+                var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+                window.open(serverPrefix + 'CustomerProductGrowthReport/ExportExcel?start=' + start + '&stop=' + stop + '&customers=' + customers + '&modules=' + modules + sort, "_parent").focus();
+            })
+        });
+</script>

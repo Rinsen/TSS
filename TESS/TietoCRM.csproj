@@ -193,6 +193,7 @@
     <Compile Include="Controllers\Contracts\ContractSupervisionController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\List Management\PopulationController.cs" />
+    <Compile Include="Controllers\Reports\CustomerProductGrowthReportController.cs" />
     <Compile Include="Controllers\Reports\ExportExcelController.cs" />
     <Compile Include="Controllers\Installations\FeatureMappingController.cs" />
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
@@ -992,6 +993,8 @@
     <Content Include="Views\CustomerContract\_ModuleInfoSection.cshtml" />
     <Content Include="Views\Template\MainContractIndex.cshtml" />
     <Content Include="Views\Template\Denied.cshtml" />
+    <Content Include="Views\CustomerProductGrowthReport\Index.cshtml" />
+    <Content Include="Views\CustomerProductGrowthReport\Pdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

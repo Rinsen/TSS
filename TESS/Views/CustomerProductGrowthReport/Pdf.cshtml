@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";   
+}
+
+@using TietoCRM.Models;
+@using System.Globalization;
+
+@if(ViewBag.ValidDate)
+{
+    CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
+
+    <style>
+
+        td:nth-child(1){
+            width: 5em !important;
+        }
+        td:nth-child(2){
+            width: 5em !important;
+        }
+         td:nth-child(3){
+            width: 30em !important;
+        }
+    </style>
+    <div class="crm-print-block">
+        <table class="table table-striped table-bordered cpr-table">
+            <th width="12%;" style="white-space:nowrap">Contract id</th>
+            <th width="20%;" style="white-space:nowrap">Customer</th>
+            <th width="8%;" style="white-space:nowrap">Article number</th>
+            <th width="8%;" style="white-space:nowrap">License</th>
+            <th width="8%;" style="white-space:nowrap">Maintenance</th>
+            <th width="8%;" style="white-space:nowrap">Rewritten</th>
+            <th width="8%;" style="white-space:nowrap">New</th>
+            <th width="8%;" style="white-space:nowrap">Removed</th>
+
+            @foreach (view_ContractRow cr in ViewBag.ReturnRows)
+            {
+                <tr class="">
+                    <td>@cr.Contract_id</td>
+                    <td>@cr.Customer</td>
+                    <td>@cr.Article_number</td>
+                    <td>@String.Format(se, "{0:C2}", @cr.License).Replace(".", " ")</td>
+                    <td>@String.Format(se, "{0:C2}", @cr.Maintenance).Replace(".", " ")</td>
+                    <td>@cr.Rewritten</td>
+                    <td>@cr.New</td>
+                    <td>@cr.Removed</td>
+                </tr>
+            }
+
+        </table>
+</div>
+
+}
+else
+{
+    <h1>Invalid dates.</h1>
+}

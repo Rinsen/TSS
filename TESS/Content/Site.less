@@ -1014,45 +1014,76 @@ a.tooltips > span:after {
    
      
  }
-  /* --------- Appointment Report ----------*/
- #appointment-report-table{
 
-    td,th{
-        &:nth-child(1){
+/* --------- Customer Product Growth Report ----------*/
+#report-table.customer-growth-products {
+
+    td, th {
+        &:nth-child(1) {
+            width: 2% !important;
+            font-size: 70%;
+        }
+    }
+
+    td, th {
+        &:nth-child(2) {
+            font-size: 70%;
+            width: 2% !important;
+        }
+    }
+}
+
+div.mb-1 {
+    margin-bottom: 10px;
+}
+div.mb-2 {
+    margin-bottom: 20px;
+}
+div.mb-3 {
+    margin-bottom: 30px;
+}
+button.btn-align-bottom{
+    vertical-align:bottom;
+}
+
+/* --------- Appointment Report ----------*/
+#appointment-report-table {
+
+    td, th {
+        &:nth-child(1) {
             width: 5% !important;
             font-size: 70%;
         }
-        
     }
-    td,th{
-        &:nth-child(2){
+
+    td, th {
+        &:nth-child(2) {
             font-size: 70%;
             width: 7% !important;
-            
         }
     }
-    td,th{
-        &:nth-child(3){
+
+    td, th {
+        &:nth-child(3) {
             font-size: 70%;
             width: 15% !important;
-            
         }
     }
-    td,th{
-        &:nth-child(4){
+
+    td, th {
+        &:nth-child(4) {
             font-size: 70%;
             width: 15% !important;
-            
         }
     }
-    td,th{
-        &:nth-child(5){
+
+    td, th {
+        &:nth-child(5) {
             font-size: 70%;
             width: 44% !important;
-            
         }
     }
- }
+}
 
  .dataTable tr.selected{
     background-color:lightblue;
