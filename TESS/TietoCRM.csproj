@@ -265,6 +265,7 @@
     <Compile Include="Models\view_CustomerOffer.cs" />
     <Compile Include="Models\view_CustomerProductRow.cs" />
     <Compile Include="Models\view_Help.cs" />
+    <Compile Include="Models\view_CustomerProductGrowthSearchCriterias.cs" />
     <Compile Include="Models\view_Information.cs" />
     <Compile Include="Models\view_Module.cs" />
     <Compile Include="Models\view_ModuleDiscount.cs" />

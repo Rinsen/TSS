@@ -5,33 +5,30 @@
 
     try
     {
-        if (Request.Params["start"] != null || Request.Params["stop"] != null)
-        {
-            Start = Convert.ToDateTime(Request.Params["start"]);
-            Stop = Convert.ToDateTime(Request.Params["stop"]);
-        }
-        else
-        {
+        //if (Request.Params["start"] != null || Request.Params["stop"] != null)
+        //{
+        //    Start = Convert.ToDateTime(Request.Params["start"]);
+        //    Stop = Convert.ToDateTime(Request.Params["stop"]);
+        //}
+        //else
+        //{
             Start = DateTime.Now.AddMonths(-1);
             Stop = DateTime.Now;
-        }
+        //}
     }
-    catch (Exception ignore)
+    catch (Exception)
     {
         Start = DateTime.Now.AddMonths(-1);
         Stop = DateTime.Now;
     }
 }
 
-@using TietoCRM.Extensions;
-
-
 <row>
     <div class="col-md-12 mb-1">
         <form method="get" target="_blank" class="form-inline">
             <div class="form-group">
                 <label for="crm-select-user">Customers:</label>
-                <select name="customer" id="crm-select-customer" multiple class="form-control selectpicker" data-show-subtext="true" data-live-search="true">
+                <select name="customer" id="crm-select-customer" multiple class="form-control selectpicker" data-show-subtext="true">
                     @foreach (TietoCRM.Models.view_Customer Customer in ViewBag.Customers)
                     {
                         <option value="@Customer.Customer" data-subtext="@Customer.Customer_type">@Customer.Customer</option>
@@ -40,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label for="crm-select-user">Modules:</label>
-                <select name="module" id="crm-select-module" multiple class="form-control selectpicker" data-show-subtext="true" data-live-search="true">
+                <select name="module" id="crm-select-module" multiple class="form-control selectpicker" data-show-subtext="true">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {
                         <option value="@Module.Article_number" data-subtext="@Module.Description">@Module.Article_number - @Module.Module</option>
@@ -76,15 +73,14 @@
                 <label for="saved-criterias">Saved search criterias:</label>
                 <select name="saved-criterias" id="saved-criterias" class="form-control selectpicker" @*data-live-search="true"*@>
                     <option selected value="*">Nothing selected</option>
-                    @*@foreach (TietoCRM.Models.view_User User in ViewBag.Users)
-                {
-                    <option value="@User.Sign">@User.Name</option>
-                }*@
+                    @foreach (TietoCRM.Models.view_CustomerProductGrowthSearchCriterias searchCrit in ViewBag.SavedSearchCriterias)
+                    {
+                        <option value="@searchCrit._ID">@searchCrit.Name</option>
+                    }
                 </select>
             </div>
-            <button id="save-search-crit" class="btn btn-default btn-align-bottom" type="button">Save current search values</button>
-            <button id="remove-search-crit" class="btn btn-default btn-align-bottom" type="button">Remove selected search criterias</button>
-            @*<button id="export-excel" class="btn" type="button">Excel</button>*@
+            <button id="save-search-crit-modal" class="btn btn-default btn-align-bottom" type="button">Save</button>
+            <button id="remove-search-crit" class="btn btn-default btn-align-bottom" type="button">Remove</button>
         </form>
     </div>
     <div class="col-md-12">
@@ -107,119 +103,260 @@
         </table>
     </div>
 </row>
+
+<div class="modal fade bs-example-modal-lg" id="saveSearchCritModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" style="width:45%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Save search criteria</h4>
+            </div>
+            <div id="module-modal" class="modal-body">
+                <div class="row">
+                    <form class="form-horizontal">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label for="searchcritname" class="col-sm-2 control-label">Name</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" name="searchcritname" id="searchcritname">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-search-crit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="removeSearchCritModal" data-backdrop="static" draggable="true" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" style="width:45%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title" id="myModalLabel">Remove search criteria</h3>
+            </div>
+            <div id="module-modal" class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <span>Do you want to remove selected search criteria?</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="remove-search-crit-changes" class="btn btn-primary">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-        var serverPrefix = "@Url.Content("~/")";
-        @{
-            String DataObject = "\r\n";
-            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"Count\"  },\r\n";
-        }
-        @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    var serverPrefix = "@Url.Content("~/")";
+    @{
+        String DataObject = "\r\n";
+        DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"Count\"  },\r\n";
+    }
+
+    @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
+    {
+        String PropertyName = PropertyInfo.Name.Replace("_", " ");
+        if (ViewBag.Printable.Contains(PropertyInfo.Name))
         {
-            String PropertyName = PropertyInfo.Name.Replace("_", " ");
-            if (ViewBag.Printable.Contains(PropertyInfo.Name))
-            {
-                DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
-            }
+            DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
         }
-        @{
-            DataObject = DataObject.Remove(DataObject.Length - 3);
+    }
+
+    @{
+        DataObject = DataObject.Remove(DataObject.Length - 3);
+    }
+
+    var updateDataTable = function ()
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bFilter": true,
+            "bPaginate": false,
+            "ajax": {
+                "url": serverPrefix + "CustomerProductGrowthReport/FilteredModules/",
+                "type": "POST",
+                "data": {
+                    "start": $("#start-date").val(),
+                    "stop": $("#stop-date").val(),
+                    "customers": JSON.stringify($("#crm-select-customer").val()),
+                    "modules": JSON.stringify($("#crm-select-module").val())
+                }
+            },
+            "defaultContent": "",
+            "columns": [@Html.Raw(DataObject)],
+            "order": [[ 0, 'desc' ]],
+            "scrollX": true
+        });
+
+        //This because the table stretched outside of the screen downward because of the extra row with search crit elements in the top of the page...
+        $('#report-table').closest('.dataTables_scrollBody').css('max-height', '600px');
+        $('#report-table').DataTable().draw();
+    }
+
+    // Check if browser is using webkit
+    var webkit = get_browser() == "Chrome" || /iPad|iPhone|iPod/.test(navigator.userAgent) || get_browser() == "Opera";
+
+    function updateQueryStringParameter(uri, key, value) {
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+            return uri.replace(re, '$1' + key + "=" + value + '$2');
         }
-
-        var updateDataTable = function()
-        {
-            $('#report-table').DataTable({
-                "destroy": true,
-                "processing": true,
-                "bFilter": true,
-                "bPaginate": false,
-                "ajax": {
-                    "url": serverPrefix + "CustomerProductGrowthReport/FilteredModules/",
-                    "type": "POST",
-                    "data": {
-                        "start": $("#start-date").val(),
-                        "stop": $("#stop-date").val(),
-                        "customers": JSON.stringify($("#crm-select-customer").val()),
-                        "modules": JSON.stringify($("#crm-select-module").val())
-                    }
-                },
-                "defaultContent": "",
-                "columns": [@Html.Raw(DataObject)
-                ],
-                "order": [[ 0, 'desc' ]],
-
-                "scrollX": true,
-
-            });
-
-
+        else {
+            return uri + separator + key + "=" + value;
         }
+    }
 
-        // Check if browser is using webkit
-        var webkit = get_browser() == "Chrome" ||
-            /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-            get_browser() == "Opera";
+    $('#saveSearchCritModal').bind('hidden.bs.modal', function () {
+        console.log("close");
+    });
 
-        function updateQueryStringParameter(uri, key, value) {
-            var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-            var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-            if (uri.match(re)) {
-                return uri.replace(re, '$1' + key + "=" + value + '$2');
-            }
-            else {
-                return uri + separator + key + "=" + value;
-            }
-        }
+    $('#removeSearchCritModal').bind('hidden.bs.modal', function () {
+        console.log("close");
+    });
 
+    $(document).ready(function () {
+        var $startDate = $("#start-date");
+        var $stopDate = $("#stop-date");
 
-        $(document).ready(function () {
-            var $startDate = $("#start-date");
-            var $stopDate = $("#stop-date");
+        $('.dataTables_scrollBody').height('200px');
 
-            $moduleContainer = $("#crm-select-module");
-            $customerContainer = $("#crm-select-customer");
+        $moduleContainer = $("#crm-select-module");
+        $customerContainer = $("#crm-select-customer");
 
-            var selectedCustomerValue = "";
-            var selectedModuleValue = "";
-
-            //updateDataTable();
-
-            $('#fetch-data').click(function () {
-                var uri = updateQueryStringParameter(updateQueryStringParameter('', "start", $startDate.val()), "stop", $stopDate.val());
-                console.log(window.location.href.split('?')[0] + uri);
-                history.pushState(null, null, uri);
-
-                updateDataTable();
-            })
-
-            $('#fetch-pdf').click(function () {
-                var start = $startDate.val();
-                var stop = $stopDate.val();
-                var customers = $customerContainer.val();
-                var modules = $moduleContainer.val();
-                var $dt = $('.dataTable').DataTable();
-                var sortArr = $dt.order();
-                var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
-
-                window.open(serverPrefix + 'CustomerProductGrowthReport/Pdf?start=' + start + '&stop=' + stop + '&customers=' + customers + '&modules=' + modules + sort, "_blank");
-            })
+        $('#fetch-data').click(function () {
+            var uri = updateQueryStringParameter(updateQueryStringParameter('', "start", $startDate.val()), "stop", $stopDate.val());
+            console.log(window.location.href.split('?')[0] + uri);
+            history.pushState(null, null, uri);
 
             updateDataTable();
-           // $('#report-table').fnSort([[0, 'asc']]);
+        })
 
-            if (!webkit) {
-                $startDate.datepicker({ dateFormat: 'yy-mm-dd' });
-                $stopDate.datepicker({ dateFormat: 'yy-mm-dd' });
-            }
-            $('#export-excel').click(function () {
-                var start = $startDate.val();
-                var stop = $stopDate.val();                
-                var customers = $customerContainer.val();
-                var modules = $moduleContainer.val();
+        $('#fetch-pdf').click(function () {
+            var start = $startDate.val();
+            var stop = $stopDate.val();
+            var customers = $customerContainer.val();
+            var modules = $moduleContainer.val();
+            var $dt = $('.dataTable').DataTable();
+            var sortArr = $dt.order();
+            var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-                var $dt = $('.dataTable').DataTable();
-                var sortArr = $dt.order();
-                var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
-                window.open(serverPrefix + 'CustomerProductGrowthReport/ExportExcel?start=' + start + '&stop=' + stop + '&customers=' + customers + '&modules=' + modules + sort, "_parent").focus();
-            })
-        });
+            window.open(serverPrefix + 'CustomerProductGrowthReport/Pdf?start=' + start + '&stop=' + stop + '&customers=' + customers + '&modules=' + modules + sort, "_blank");
+        })
+
+        $('#save-search-crit-modal').click(function () {
+            $("#saveSearchCritModal").modal("toggle");
+        })
+
+        $('#remove-search-crit').click(function () {
+            $("#removeSearchCritModal").modal("toggle");
+        })
+
+        $('#save-search-crit').click(function () {
+            var start = $startDate.val();
+            var stop = $stopDate.val();
+
+            $.ajax({
+                "url": "@Url.Content("~/CustomerProductGrowthReport/SaveSearchCriterias/")",
+                "type": "POST",
+                "data": {
+                    "start": start,
+                    "stop": stop,
+                    "customers": JSON.stringify($("#crm-select-customer").val()),
+                    "modules": JSON.stringify($("#crm-select-module").val()),
+                    "name": JSON.stringify($("#searchcritname").val())
+                },
+                "success": function (data) {
+                    if (data == "1") {
+                        triggerAlert("Successfully updated", "success");
+                        $("#saveSearchCritModal").modal("toggle");
+                        //Gör omläsning för att uppdatera innehållet i selecten...
+                    } else {
+                        triggerAlert("Failed to save changes into database.", "info");
+                        $("#saveSearchCritModal").modal("toggle");
+                    }
+                }
+            });
+        })
+
+        $('#remove-search-crit-changes').click(function () {
+            var selectedId = $('#saved-criterias').val();
+
+            $.ajax({
+                "url": serverPrefix + "CustomerProductGrowthReport/RemoveSearchCriterias?id=" + selectedId,
+                "type": "POST",
+                "success": function (data) {
+                    if (data == "1") {
+                        triggerAlert("Successfully removed", "success");
+                        $("#removeSearchCritModal").modal("toggle");
+                        //Gör omläsning för att uppdatera innehållet i selecten...
+                    } else {
+                        triggerAlert("Failed to remove changes into database.", "info");
+                        $("#removeSearchCritModal").modal("toggle");
+                    }
+                }
+            });
+        })
+
+        updateDataTable();
+
+        if (!webkit) {
+            $startDate.datepicker({ dateFormat: 'yy-mm-dd' });
+            $stopDate.datepicker({ dateFormat: 'yy-mm-dd' });
+        }
+
+        $('#export-excel').click(function () {
+            var start = $startDate.val();
+            var stop = $stopDate.val();
+            var customers = $customerContainer.val();
+            var modules = $moduleContainer.val();
+
+            var $dt = $('.dataTable').DataTable();
+            var sortArr = $dt.order();
+            var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+            window.open(serverPrefix + 'CustomerProductGrowthReport/ExportExcel?start=' + start + '&stop=' + stop + '&customers=' + customers + '&modules=' + modules + sort, "_parent").focus();
+        })
+
+        $('#saved-criterias').change(function () {
+            var selectedId = $('#saved-criterias').val();
+
+            $.ajax({
+                "url": serverPrefix + "CustomerProductGrowthReport/GetSavedSearchCriteria?id=" + selectedId,
+                "type": "GET",
+                "success": function (data) {
+                    if (data != null && data != "") {
+                        //Set data to elements...
+                        var object = JSON.parse(data);
+
+                        document.getElementById('start-date').value = object.Start;
+                        document.getElementById('stop-date').value = object.Stop;
+
+                        var values = object.Customers;
+                        if (values != null) {
+                            var array = values.split(",");
+                            $('#crm-select-customer').val(array);
+                            $("#crm-select-customer").trigger("change")
+                        }
+
+                        values = object.Modules;
+                        if (values != null) {
+                            array = values.split(",");
+                            $('#crm-select-module').val(array);
+                            $("#crm-select-module").trigger("change")
+                        }
+                    }
+                }
+            });
+        })
+    });
 </script>

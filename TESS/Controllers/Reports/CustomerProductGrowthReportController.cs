@@ -55,6 +55,7 @@ namespace TietoCRM.Controllers.Reports
             ViewData.Add("Printable", Printable);
             ViewData.Add("Properties", typeof(view_Module).GetProperties());
             ViewData.Add("Customers", view_Customer.getAllCustomers());
+            ViewData.Add("SavedSearchCriterias", view_CustomerProductGrowthSearchCriterias.getAllSearchCriterias());
 
             List<view_Module> modules = view_Module.getAllModules();
             modules = modules.Where(m => m.Discount_type == 0 &&
@@ -116,10 +117,8 @@ namespace TietoCRM.Controllers.Reports
                 }
                 catch (Exception ex)
                 {
-
                     throw ex;
                 }
-
             }
             else
             {
@@ -131,14 +130,6 @@ namespace TietoCRM.Controllers.Reports
 
         private List<Dictionary<string, object>> GetFilteredModules(DateTime Start, DateTime Stop, List<string> customers, List<int> articleNumbers)
         {
-            //var Printable = new List<string> {
-            //    "Article_number",
-            //    "Module",
-            //    "Price_category",
-            //    "System",
-            //    "Classification"
-            //};
-
             List<view_ContractRow> ContractRows = view_ContractRow.GetContractRowsByDateIntervalCustomersAndArticleNumbers(Start, Stop, customers, articleNumbers);
             List<view_Module> Modules = view_Module.getAllModules();
 
@@ -178,17 +169,8 @@ namespace TietoCRM.Controllers.Reports
             return ReturnModules.Values.ToList();           
         }
 
-
         public string FilteredModules()
         {
-
-            //var Printable = new List<string> {
-            //    "Article_number",
-            //    "Module",
-            //    "Price_category",
-            //    "Classification"
-            //};
-
             string startRe;
             string stopRe;
             DateTime Start;
@@ -222,6 +204,90 @@ namespace TietoCRM.Controllers.Reports
             }
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(GetFilteredModules(Start, Stop, customersDic, articleNumbersDic)) + "}";
+        }
+
+        /// <summary>
+        /// Saving current search criterias for later re-use
+        /// </summary>
+        /// <returns></returns>
+        public int SaveSearchCriterias()
+        {
+            DateTime Start;
+            DateTime Stop;
+
+            try
+            {
+                string start = Request.Form["start"];
+                string stop = Request.Form["stop"];
+                List<string> customers = null; // = Request.Form["customers"];
+                List<string> modules = null; // = Request.Form["modules"];
+                string name;
+
+                Start = Convert.ToDateTime(start);
+                Stop = Convert.ToDateTime(stop);
+
+                if(Request.Form["name"] != null)
+                {
+                    name = (string)new JavaScriptSerializer().Deserialize(Request.Form["name"], typeof(string));
+                    if (Request.Form["customers"] != null)
+                    {
+                        customers = (List<string>)new JavaScriptSerializer().Deserialize(Request.Form["customers"], typeof(List<string>));
+                    }
+                    if(Request.Form["modules"] != null)
+                    {
+                        modules = (List<string>)new JavaScriptSerializer().Deserialize(Request.Form["modules"], typeof(List<string>));
+                    }
+
+                    var searchCrit = new view_CustomerProductGrowthSearchCriterias
+                    {
+                        Name = name,
+                        Start = Start,
+                        Stop = Stop,
+                        Customers = customers != null && customers.Count > 0 ? string.Join(",", customers.Select(s => s).ToArray()) : null,
+                        Modules = modules != null && modules.Count > 0 ? string.Join(",", modules.Select(n => n.ToString()).ToArray()) : null,
+                        CreatedBy = System.Web.HttpContext.Current.GetUser().Name
+                    };
+
+                    var result = searchCrit.Insert();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return 1;
+        }
+
+        public string GetSavedSearchCriteria(string id)
+        {
+            var selectedSearchCrit = new view_CustomerProductGrowthSearchCriterias();
+            selectedSearchCrit.Select("Id = " + id);
+
+            var returnObj = new
+            {
+                Customers = !string.IsNullOrEmpty(selectedSearchCrit.Customers) ? selectedSearchCrit.Customers : null,
+                Modules = selectedSearchCrit.Modules,
+                Start = selectedSearchCrit.Start.ToShortDateString(),
+                Stop = selectedSearchCrit.Stop.ToShortDateString()
+            };
+
+            return (new JavaScriptSerializer()).Serialize(returnObj);
+        }
+
+        public int RemoveSearchCriterias(string id)
+        {
+            try
+            {
+                var searchCrit = new view_CustomerProductGrowthSearchCriterias();
+                searchCrit.Delete("Id=" + id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return 1;
         }
 
         public string ExportExcel(string start, string stop, string customers, string articleNumbers)

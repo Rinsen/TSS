@@ -707,17 +707,6 @@ public class view_ContractRow : SQLBaseClass
                     " C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id WHERE C.Valid_from >= '" + Start.ToShortDateString() + @"' AND" +
                     " C.Valid_from <= '" + Stop.ToShortDateString() + @"' AND view_ContractRow.Article_number = countTest.Article_number) DESC";
                 
-                //Order By " + GetOrderBy();
-                //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
-                //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
-
-
-                //command.Prepare();
-                //command.Parameters.AddWithValue("@startDate", Start);
-                //command.Parameters.AddWithValue("@stopDate", Stop);
-                ////command.Parameters.AddWithValue("@startDate", Start.ToString("yyyy-MM-dd"));
-                ////command.Parameters.AddWithValue("@endDate", Start.ToString("yyyy-MM-dd")));
-
                 dt.TableName = "CustomerProductGrowthReport";
 
                 try
