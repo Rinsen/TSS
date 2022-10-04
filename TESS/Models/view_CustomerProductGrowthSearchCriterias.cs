@@ -46,31 +46,34 @@ namespace TietoCRM.Models
         /// Gets all information.
         /// </summary>
         /// <returns>A lsit of users.</returns>
-        public static List<view_CustomerProductGrowthSearchCriterias> getAllSearchCriterias()
+        public static List<view_CustomerProductGrowthSearchCriterias> getAllSearchCriterias(string username)
         {
             List<view_CustomerProductGrowthSearchCriterias> list = new List<view_CustomerProductGrowthSearchCriterias>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = "SELECT [ID], Name, Customers, Modules, Start, Stop, Created, CreatedBy FROM " + databasePrefix + "CustomerProductGrowthSearchCriterias ";
-
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Prepare();
-
-                using (SqlDataReader reader = command.ExecuteReader())
+                if(!string.IsNullOrEmpty(username))
                 {
-                    while (reader.Read())
+                    string query = "SELECT [ID], Name, Customers, Modules, Start, Stop, Created, CreatedBy FROM " + databasePrefix + "CustomerProductGrowthSearchCriterias WHERE CreatedBy = '" + username + "'";
+
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Prepare();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        view_CustomerProductGrowthSearchCriterias k = new view_CustomerProductGrowthSearchCriterias();
-                        int i = 0;
-                        while (reader.FieldCount > i)
+                        while (reader.Read())
                         {
-                            k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
-                            i++;
+                            view_CustomerProductGrowthSearchCriterias k = new view_CustomerProductGrowthSearchCriterias();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                k.SetValue(k.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(k);
                         }
-                        list.Add(k);
                     }
                 }
             }

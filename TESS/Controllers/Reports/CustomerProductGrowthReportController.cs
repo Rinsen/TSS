@@ -55,7 +55,7 @@ namespace TietoCRM.Controllers.Reports
             ViewData.Add("Printable", Printable);
             ViewData.Add("Properties", typeof(view_Module).GetProperties());
             ViewData.Add("Customers", view_Customer.getAllCustomers());
-            ViewData.Add("SavedSearchCriterias", view_CustomerProductGrowthSearchCriterias.getAllSearchCriterias());
+            ViewData.Add("SavedSearchCriterias", view_CustomerProductGrowthSearchCriterias.getAllSearchCriterias(System.Web.HttpContext.Current.GetUser().Name));
 
             List<view_Module> modules = view_Module.getAllModules();
             modules = modules.Where(m => m.Discount_type == 0 &&
@@ -70,7 +70,7 @@ namespace TietoCRM.Controllers.Reports
 
         public string GetAllSearchCriterias()
         {
-            var list = view_CustomerProductGrowthSearchCriterias.getAllSearchCriterias();
+            var list = view_CustomerProductGrowthSearchCriterias.getAllSearchCriterias(System.Web.HttpContext.Current.GetUser().Name);
             var returnList = new List<object>();
 
             foreach (var item in list)

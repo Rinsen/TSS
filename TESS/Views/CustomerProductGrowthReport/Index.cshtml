@@ -363,12 +363,16 @@
                             if (values != null) {
                                 var array = values.split(",");
                                 $('#crm-select-customer').val(array);
+                            } else {
+                                $('#crm-select-customer').val('default'); //If null, de-select all selected values.
                             }
 
                             values = object.Modules;
                             if (values != null) {
                                 array = values.split(",");
                                 $('#crm-select-module').val(array);
+                            } else {
+                                $('#crm-select-module').val('default'); //If null, de-select all selected values.
                             }
 
                             $('#crm-select-customer').selectpicker('refresh');
