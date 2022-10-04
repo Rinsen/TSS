@@ -75,7 +75,7 @@
                     <option selected value="*">Nothing selected</option>
                     @foreach (TietoCRM.Models.view_CustomerProductGrowthSearchCriterias searchCrit in ViewBag.SavedSearchCriterias)
                     {
-                        <option value="@searchCrit._ID">@searchCrit.Name</option>
+                        <option value="@searchCrit.ID">@searchCrit.Name</option>
                     }
                 </select>
             </div>
@@ -127,7 +127,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="save-search-crit" class="btn btn-primary">Save</button>
+                <button type="button" id="save-search-crit-btn" disabled class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
@@ -259,10 +259,21 @@
         })
 
         $('#remove-search-crit').click(function () {
-            $("#removeSearchCritModal").modal("toggle");
+            var selectedId = $('#saved-criterias').val();
+
+            if (selectedId != null && selectedId > 0) {
+                $("#removeSearchCritModal").modal("toggle");
+            } else {
+                alert("Select a search criteria to be removed")
+            }
         })
 
-        $('#save-search-crit').click(function () {
+        $("#searchcritname").on('keyup blur', function () {
+            //console.log(this.value.trim().length);
+            $("#save-search-crit-btn").prop("disabled", !(this.value.trim().length > 0));
+        });
+
+        $('#save-search-crit-btn').click(function () {
             var start = $startDate.val();
             var stop = $stopDate.val();
 
@@ -281,6 +292,7 @@
                         triggerAlert("Successfully updated", "success");
                         $("#saveSearchCritModal").modal("toggle");
                         //Gör omläsning för att uppdatera innehållet i selecten...
+                        getAllSearchCriterias();
                     } else {
                         triggerAlert("Failed to save changes into database.", "info");
                         $("#saveSearchCritModal").modal("toggle");
@@ -300,6 +312,7 @@
                         triggerAlert("Successfully removed", "success");
                         $("#removeSearchCritModal").modal("toggle");
                         //Gör omläsning för att uppdatera innehållet i selecten...
+                        getAllSearchCriterias();
                     } else {
                         triggerAlert("Failed to remove changes into database.", "info");
                         $("#removeSearchCritModal").modal("toggle");
@@ -328,35 +341,65 @@
         })
 
         $('#saved-criterias').change(function () {
+            getSavedSearchCriterias();
+        })
+
+        function getSavedSearchCriterias(){
             var selectedId = $('#saved-criterias').val();
 
+            if (selectedId != null && selectedId > 0) {
+                $.ajax({
+                    "url": serverPrefix + "CustomerProductGrowthReport/GetSavedSearchCriteria?id=" + selectedId,
+                    "type": "GET",
+                    "success": function (data) {
+                        if (data != null && data != "") {
+                            //Set data to elements...
+                            var object = JSON.parse(data);
+
+                            document.getElementById('start-date').value = object.Start;
+                            document.getElementById('stop-date').value = object.Stop;
+
+                            var values = object.Customers;
+                            if (values != null) {
+                                var array = values.split(",");
+                                $('#crm-select-customer').val(array);
+                            }
+
+                            values = object.Modules;
+                            if (values != null) {
+                                array = values.split(",");
+                                $('#crm-select-module').val(array);
+                            }
+
+                            $('#crm-select-customer').selectpicker('refresh');
+                            $('#crm-select-module').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+        };
+
+        function getAllSearchCriterias() {
             $.ajax({
-                "url": serverPrefix + "CustomerProductGrowthReport/GetSavedSearchCriteria?id=" + selectedId,
+                "url": serverPrefix + "CustomerProductGrowthReport/GetAllSearchCriterias",
                 "type": "GET",
                 "success": function (data) {
                     if (data != null && data != "") {
                         //Set data to elements...
                         var object = JSON.parse(data);
 
-                        document.getElementById('start-date').value = object.Start;
-                        document.getElementById('stop-date').value = object.Stop;
+                        $("#saved-criterias").empty(); //Remove all options
 
-                        var values = object.Customers;
-                        if (values != null) {
-                            var array = values.split(",");
-                            $('#crm-select-customer').val(array);
-                            $("#crm-select-customer").trigger("change")
+                        $("#saved-criterias").append("<option selected=\"\" value=\"*\">Nothing selected</option>");
+                        for (var i = 0; i < object.length; i++) {
+                            var option = $('<option/>').prop('value', object[i].Id).text(object[i].Name);
+                            $("#saved-criterias").append(option); // append new options
                         }
 
-                        values = object.Modules;
-                        if (values != null) {
-                            array = values.split(",");
-                            $('#crm-select-module').val(array);
-                            $("#crm-select-module").trigger("change")
-                        }
+                        $('#saved-criterias').selectpicker('refresh');
                     }
                 }
             });
-        })
+        }
     });
 </script>

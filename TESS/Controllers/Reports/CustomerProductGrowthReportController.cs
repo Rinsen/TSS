@@ -68,6 +68,23 @@ namespace TietoCRM.Controllers.Reports
             return View();
         }
 
+        public string GetAllSearchCriterias()
+        {
+            var list = view_CustomerProductGrowthSearchCriterias.getAllSearchCriterias();
+            var returnList = new List<object>();
+
+            foreach (var item in list)
+            {
+                returnList.Add(new
+                {
+                    Id = item.ID,
+                    Name = item.Name
+                });
+            }
+
+            return (new JavaScriptSerializer()).Serialize(returnList);
+        }
+
         public ActionResult Pdf(string start, string stop, string customers, string modules)
         {
             var Printable = new List<string> {

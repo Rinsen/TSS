@@ -6,30 +6,28 @@ namespace TietoCRM.Models
 {
     public class view_CustomerProductGrowthSearchCriterias : SQLBaseClass
     {
-        int _id;
-        public int _ID { get; set; }
+        /// <summary>
+        /// Identity of table
+        /// </summary>
+        public int ID { get; set; }
 
-        string name;
         public string Name { get; set; }
 
-        string customers;
         public string Customers { get; set; }
 
-        string modules;
         public string Modules { get; set; }
 
-        DateTime start;
         public DateTime Start { get; set; }
 
-        DateTime stop;
         public DateTime Stop { get; set; }
 
-        DateTime created;
         public DateTime Created { get; set; }
 
-        string createdby;
         public string CreatedBy { get; set; }
 
+        /// <summary>
+        /// View against table CustomerProductGrowthSearchCriterias
+        /// </summary>
         public view_CustomerProductGrowthSearchCriterias() : base("CustomerProductGrowthSearchCriterias")
         {
 
@@ -55,7 +53,7 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                String query = "SELECT [ID], Name, Customers, Modules, Start, Stop, Created, CreatedBy FROM " + databasePrefix + "CustomerProductGrowthSearchCriterias ";
+                string query = "SELECT [ID], Name, Customers, Modules, Start, Stop, Created, CreatedBy FROM " + databasePrefix + "CustomerProductGrowthSearchCriterias ";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
