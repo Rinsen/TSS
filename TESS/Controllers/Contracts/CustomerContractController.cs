@@ -47,7 +47,6 @@ namespace TietoCRM.Controllers.Contracts
             "Sign",
             "_ID",
             "Monthly_fee_from",
-            "ExpirationList",
             "SSMA_timestamp"
         };
 
@@ -946,17 +945,6 @@ namespace TietoCRM.Controllers.Contracts
                     if (a.Is(ContractType.MainContract))
                     {
                         a.Main_contract_id = contractId;
-                    }
-
-                    if(!string.IsNullOrEmpty(a.Main_contract_id))
-                    {
-                        var mainContract = new view_Contract("Contract_id = '" + a.Main_contract_id + "'");
-
-                        if(mainContract.ExpirationList.HasValue && mainContract.ExpirationList.Value)
-                        {
-                            //Set flag to Tilläggsavtal as well.
-                            a.ExpirationList = true;
-                        }
                     }
                 }
                 catch (Exception e)
