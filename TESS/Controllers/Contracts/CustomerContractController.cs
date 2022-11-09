@@ -927,10 +927,13 @@ namespace TietoCRM.Controllers.Contracts
                         {
                             contractId = System.Web.HttpContext.Current.GetUser().Area + " " + System.Web.HttpContext.Current.GetUser().Sign + " " + DateTime.Now.ToShortDateString() + " " + i.ToString("00");
                         }
+
                         contract = new view_Contract();
                         contract.Select("Contract_id = '" + contractId + "'");
+
                         if(contract.Contract_id == null)
                             foundIndex = true;
+
                         i++;
                     }
 
@@ -939,9 +942,21 @@ namespace TietoCRM.Controllers.Contracts
                     a.Area = System.Web.HttpContext.Current.GetUser().Area;
                     a.Created = System.DateTime.Now;
                     a.Updated = System.DateTime.Now;
+
                     if (a.Is(ContractType.MainContract))
                     {
                         a.Main_contract_id = contractId;
+                    }
+
+                    if(!string.IsNullOrEmpty(a.Main_contract_id))
+                    {
+                        var mainContract = new view_Contract("Contract_id = '" + a.Main_contract_id + "'");
+
+                        if(mainContract.ExpirationList.HasValue && mainContract.ExpirationList.Value)
+                        {
+                            //Set flag to Tilläggsavtal as well.
+                            a.ExpirationList = true;
+                        }
                     }
                 }
                 catch (Exception e)
@@ -951,7 +966,9 @@ namespace TietoCRM.Controllers.Contracts
 
                 view_ContractHead contractHead = new view_ContractHead();
                 view_Customer customer = new view_Customer();
+
                 customer.Select("Customer = '" + a.Customer + "'");
+
                 contractHead.Contract_id = a.Contract_id;
                 contractHead.Address = customer.Address;
                 contractHead.City = customer.City;
@@ -988,12 +1005,14 @@ namespace TietoCRM.Controllers.Contracts
         {
             String customer = Request.Form["customer"];
             List<view_CustomerContact> l = view_CustomerContact.getAllCustomerContacts(customer);
+
             foreach (view_CustomerContact contact in l)
             {
                 contact.Customer = System.Web.HttpUtility.HtmlEncode(contact.Customer);
                 contact.Contact_person = System.Web.HttpUtility.HtmlEncode(contact.Contact_person);
                 contact.Email = System.Web.HttpUtility.HtmlEncode(contact.Email);
             }
+
             return (new JavaScriptSerializer()).Serialize(l);
         }
         public String SaveContact()
