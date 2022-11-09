@@ -38,7 +38,7 @@ namespace TietoCRM.Controllers.Reports
             String year = Request["year"];
             String sortDirection = Request["sort"];
             String sortKey = Request["prop"];
-            List<Dictionary<String, object>> TC = GenerateTopCustomers(user, area, year, 10);
+            List<Dictionary<String, object>> TC = GenerateTopCustomers(user, area, year, 400);
 
             ViewData.Add("TC", (new SortedByColumnCollection(TC, sortDirection, sortKey)).Collection);
 
@@ -56,7 +56,7 @@ namespace TietoCRM.Controllers.Reports
             String user = Request["user"];
             String area = Request["area"];
             String year = Request["year"];
-            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(GenerateTopCustomers(user, area, year, 10)) + "}";
+            return "{\"data\":" + (new JavaScriptSerializer()).Serialize(GenerateTopCustomers(user, area, year, 400)) + "}";
         }
 
         /// <summary>

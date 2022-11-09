@@ -1631,7 +1631,7 @@ namespace TietoCRM.Controllers.Contracts
                     if (RowType == 3)
                     {
                         contractRow.New = false;
-                        if (urlctrResign == "True")
+                        //if (urlctrResign == "True") //Ska bli nytt även i nya huvudavtal och tilläggsavtal...
                         {
                             contractRow.New = true;
                         }

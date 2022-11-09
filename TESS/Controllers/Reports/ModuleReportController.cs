@@ -12,9 +12,15 @@ using TietoCRM.Models;
 
 namespace TietoCRM.Controllers.Reports
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ModuleReportController : Controller
     {
-        // GET: ModuleReport
+        /// <summary>
+        /// GET: ModuleReport
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             TietoCRM.Models.GlobalVariables.Initializer();
@@ -29,6 +35,10 @@ namespace TietoCRM.Controllers.Reports
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Pdf()
         {
             String articleNumbers = Request["module"];
