@@ -59,6 +59,7 @@ namespace TietoCRM.Models.Contract
         {
             //ctr
         }
+
         public static List<view_ContractExpirationList> GetContractExpirationList(String representative)
         {
             List<view_ContractExpirationList> list = new List<view_ContractExpirationList>();
@@ -105,6 +106,7 @@ namespace TietoCRM.Models.Contract
             }
             return list;
         }
+
         public static int ExtendContract(string avtalsid, string kund ){
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
@@ -112,7 +114,7 @@ namespace TietoCRM.Models.Contract
                 connection.Open();
 
                 // Default query
-                command.CommandText = "Update dbo.A_avtalsregister Set giltigttom = DateAdd(m,förläng,giltigttom), bevakning = DateAdd(m,0-uppsägningstid,DateAdd(m,förläng,giltigttom)) ";
+                command.CommandText = "Update dbo.A_avtalsregister Set giltigttom = DateAdd(m,förläng,giltigttom), bevakning = DateAdd(m,0-uppsägningstid,DateAdd(m,förläng,giltigttom)), ExpirationList = 1";
                 command.CommandText += "Where avtalsid = @avtalsid And Kund = @kund";
 
                 command.Prepare();

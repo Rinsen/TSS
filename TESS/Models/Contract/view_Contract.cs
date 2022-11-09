@@ -94,6 +94,12 @@ namespace TietoCRM.Models
         private int summera;
         public int Summera { get; set; }
 
+        private DateTime? monthly_fee_from;
+        public DateTime? Monthly_fee_from { get; set; }
+
+        private bool? expirationList;
+        public bool? ExpirationList { get; set; }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

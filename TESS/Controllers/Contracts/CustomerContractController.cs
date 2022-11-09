@@ -46,6 +46,8 @@ namespace TietoCRM.Controllers.Contracts
             "Resigned_contract",
             "Sign",
             "_ID",
+            "Monthly_fee_from",
+            "ExpirationList",
             "SSMA_timestamp"
         };
 
@@ -613,7 +615,7 @@ namespace TietoCRM.Controllers.Contracts
                         p.Name == "Contract_id" || p.Name == "Title" || p.Name == "Status" || p.Name == "Main_contract_id" || p.Name == "Contract_type" ||
                         p.Name == "Term_of_notice" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Valid_from" || p.Name == "Valid_through" ||
                         p.Name == "Extension" || p.Name == "Expire" || p.Name == "Observation" || p.Name == "Note" ||
-                        p.Name == "Sign" || p.Name == "Area" || p.Name == "Summera"
+                        p.Name == "Sign" || p.Name == "Area" || p.Name == "Summera" || p.Name == "Monthly_fee_from"
                     ).ToList();
             }
             else
