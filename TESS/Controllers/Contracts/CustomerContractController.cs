@@ -1342,11 +1342,11 @@ namespace TietoCRM.Controllers.Contracts
                     NewMod = cRow.New,
                     Contract_id_key = cRow.Contract_id, //Could be module from other contract if it's been removed...
                     Removed_from_contract_id = cRow.RemovedFromContractId,
-                    Rowtype = cRow.Rewritten.HasValue && cRow.Rewritten.Value && cRow.Removed.HasValue && cRow.Removed.Value ?
-                                "2" :
-                                cRow.Rewritten.HasValue && cRow.Rewritten.Value && cRow.Removed.HasValue && !cRow.Removed.Value ?
-                                "1" : "3"
+                    Rowtype = cRow.Removed.HasValue && cRow.Removed.Value ? "2" : cRow.Rewritten.HasValue && cRow.Rewritten.Value ? "1" : "3"
                 };
+                
+                
+
                 if(System.Web.HttpContext.Current.GetUser().Area == module.Area || System.Web.HttpContext.Current.GetUser().Area == "*")
                     modules.Add(obj);
             }

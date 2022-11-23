@@ -678,9 +678,13 @@
                                                         data-contract-id-key="@or.Contract_id"
                                                         data-automapping="@or.IncludeDependencies"
                                                         data-removed-from-contract-id="@or.RemovedFromContractId"
-                                                        @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
+                                                        @if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2); }
+                                                         else if (or.Rewritten == true) { @Html.Raw("data-rowtype=" + 1); }
+                                                         else { @Html.Raw("data-rowtype=" + 3); }>
+
+                                                        @*@if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
                                                         @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; }; }
-                                                        @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
+                                                        @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>*@
                                                     <table>
                                                         <tr>
                                                             <td class="art-nr">@or.Article_number</td>
@@ -711,13 +715,27 @@
                                                             }
                                                             else
                                                             {
-                                                                if (or.Module == "")
+                                                                if (or.Removed == true)
                                                                 {
-                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
+                                                                    if (or.Module == "")
+                                                                    {
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Module</td>
+                                                                    }
                                                                 }
                                                                 else
                                                                 {
+                                                                    if (or.Module == "")
+                                                                    {
+                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
+                                                                    }
+                                                                    else
+                                                                    {
                                                                     <td onclick="moveItem(event, this)" title="Ny modul">@or.Module</td>
+                                                                    }
                                                                 }
                                                             }
                                                             @if (module.System != "Lärportal")
