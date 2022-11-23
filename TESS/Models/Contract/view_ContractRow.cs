@@ -807,6 +807,24 @@ public class view_ContractRow : SQLBaseClass
                 command.ExecuteNonQuery();
             }
         }
+
+        internal void DeleteContractRow(string customer, string contract_id, int article_number)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = @"DELETE FROM [dbo].[A_avtalsrader] WHERE [Avtalsid] = @contract_id AND [Kund] = @customer AND [Artnr] = @article_number";
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@contract_id", contract_id);
+                command.Parameters.AddWithValue("@article_number", article_number);
+
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }
 
