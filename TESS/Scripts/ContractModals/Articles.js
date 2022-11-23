@@ -472,7 +472,7 @@ var updateSelectedItems = function () {
                 else {
                     var html = "";
                     html += "                                                                       \
-                        <button onclick='moveItem(event, this)'                                     \
+                        <button                                     \
                                 type='button'                                                       \
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
@@ -484,19 +484,22 @@ var updateSelectedItems = function () {
                                 data-discount-type='" + module.Discount_type + "'                   \
                                 data-automapping='" + module.IncludeDependencies + "'               \
                                 data-deplist=''                                                     \
-                                data-rowtype='3'>                                                   \
+                                data-rowtype='" + module.Rowtype + "'                               \
+                                data-contract-id-key='" + module.Contract_id_key + "'               \
+                                data-removed-from-contract-id='" + module.Removed_from_contract_id + "' \
+                                id='selart-" + module.Article_number + "'>                          \
                             <table>                                                                 \
                                 <tr>                                                                \
                                     <td class='art-nr'>" + module.Article_number + "</td>";
                     if (module.Rewritten) {
                         if (module.NewArt) {
-                            html += "<td class='alias'>New " + module.Module + "</td>";
+                            html += "<td onclick='moveItem(event, this)' class='alias'>New " + module.Module + "</td>";
                         }
                         else if (module.Removed) {
-                            html += "<td class='alias'> Del " + module.Module + "</td>";
+                            html += "<td onclick='moveItem(event, this)' class='RewrittenRemoved' title='Avslutad modul'>" + module.Module + "</td>";
                         }
                         else {
-                            html += "<td class='alias'>" + module.Module + "</td>";
+                            html += "<td onclick='moveItem(event, this)' class='alias'>" + module.Module + "</td>";
                         }
                     }
                     else {
@@ -815,6 +818,58 @@ var getModuleByArticleNumber = function (article_number, customer, contract_id) 
     });
 };
 
+var removeArticlesFunction = function () {
+    var $inputs = $("#modules-from-contracts2").find("input:checked");
+    var length = $inputs.length;
+    var moduleList = [];
+    for (var i = 0; i < length; i++) {
+        var obj = {}
+        $input = $($inputs[i]);
+        obj.Article_number = $input.attr("data-id");
+        obj.Customer = $input.attr("data-customer");
+        obj.Contract_id = $input.attr("data-contract-id");
+
+        moduleList.push(obj);
+    }
+
+    $.ajax({
+        "url": serverPrefix + "CustomerContract/RemoveItemsFromContracts/",
+        "type": "POST",
+        "data": {
+            "contract-id": contractId,
+            "modules": JSON.stringify(moduleList)
+        },
+        "success": function (data) {
+            if (data == 1) {
+
+                $.ajax({
+                    "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_ModuleSection",
+                    "type": "GET",
+                    "success": function (data) {
+                        $(".crm-pdf-module-section").html(data);
+                    }
+                });
+                $.ajax({
+                    "url": serverPrefix + "CustomerContract/ViewPdf?contract-id=" + contractId + "&customer=" + customerName + "&contract-section=_OldModuleSection",
+                    "type": "GET",
+                    "success": function (data) {
+                        $(".crm-pdf-old-module-section").html(data);
+                        window.location = "ViewPdf?contract-id=" + contractId + "&customer=" + customerName; //Detta triggar omläsning/refresh av bl.a. dialog-vyer
+                        triggerAlert("Successfully removed articles from contracts.", "success");
+                        $("#removeArticlesModal").modal("hide");
+                    }
+                });
+                updateSelectedItems();
+                console.log("success");
+            }
+            else {
+                triggerAlert("Failed to remove articles from contracts.", "warning");
+                console.log("failure");
+            }
+        }
+    });
+};
+
 var saveArticlesFunction = function () {
     $("#choose-selected-articles").button('loading');
     var selectedArticlesArray = [];
@@ -830,9 +885,11 @@ var saveArticlesFunction = function () {
         var buttonDiscount = $button.data("discount");
         var buttonContractDescription = $button.data("contract-description");
         var buttonModuleTextId = $button.data("module-text-id");
+        var buttonContractIdKey = $button.data("contract-id-key");
         var buttonContractId = $button.data("contract-id");
         var buttonAutoMapping = $button.data("automapping");
         var buttonDepList = $button.data("deplist");
+        var removedFromContractId = $button.data("removed-from-contract-id");
 
         // "Create a new article" to store in an array to use for server side db update.
         var newArticle = {
@@ -844,10 +901,12 @@ var saveArticlesFunction = function () {
             "Discount_type": buttonDiscount,
             "Contract_description": buttonContractDescription,
             "Module_text_id": buttonModuleTextId,
+            "Contract_id_key": buttonContractIdKey,
             "Contract_id": buttonContractId,
             "Module_type": "A", //Artikel
             "Automapping": buttonAutoMapping,
-            "Dep_list": buttonDepList
+            "Dep_list": buttonDepList,
+            "Removed_from_contract_id": removedFromContractId
         };
 
         selectedArticlesArray.push(newArticle);
@@ -1005,15 +1064,37 @@ $(document).ready(function () {
         }
     });
 
+    //Add articles
     $("#articles-modal-button").click(function () {
         $("#articlesModal").appendTo("body").modal("show").find('.modal-content').draggable();
     });
-
     $("#articlesModal #choose-selected-articles").click(function () {
         saveArticlesFunction();
     });
     $("#articlesModal #sum-zero-button").click(function () {
         zeroArticlesFunction();
     });
+
+    //Remove articlews
+    $("#remove-articles-modal-button").click(function () {
+        $("#removeArticlesModal").appendTo("body").modal("show").find('.modal-content').draggable();
+    });
+    $("#removeArticlesModal #remove-selected-articles").click(function () {
+        removeArticlesFunction();
+    });
+
+    $("#removeArticlesModal #check-all-modules").click(function () {
+        var $inputs = $("#modules-from-contracts2").find(":input");
+        if (this.innerHTML == "Check all") {
+            $inputs.prop('checked', true);
+            this.innerHTML = "Uncheck all";
+        }
+        else {
+            $inputs.prop('checked', false);
+            this.innerHTML = "Check all";
+        }
+    });
+    
+
 });
 

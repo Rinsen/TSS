@@ -5,7 +5,7 @@
     bool isSent = ViewBag.CustomerContract.Status == "Sänt";
     bool isValid = ViewBag.CustomerContract.Status == "Giltigt";
     bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
-    bool hasModules = ViewBag.ArticleAndServiceDictionary.Count > 0 ? true : false;
+    bool hasModules = ViewBag.ArticleAndServiceDictionary.Count > 0 || ViewBag.RemArticles.Count > 0 || ViewBag.OldArticles.Count > 0 ? true : false;
 }
 @using TietoCRM.Models;
 @section Style
@@ -83,6 +83,14 @@
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Remove <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a data-toggle="modal" id="remove-articles-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Articles</a></li>
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Import <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
@@ -100,15 +108,9 @@
                     <li><a data-toggle="modal" id="head-info-modal-button" href="javascript:void()">Contract information</a></li>
                     <li><a data-toggle="modal" id="contractHead-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Customer information</a></li>
                     <li><a data-toggle="modal" id="textTemplate-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Text templates</a></li>
-                    <li><a data-toggle="modal" @{ 
-                        if (!isSent || !hasModules)
-                        { 
-                            @Html.Raw("id='' class='disabled-link'"); //Inga moduler eller fel status -> Ej klickbar länk
-                        }
-                        else
-                        {
-                            @Html.Raw("id='moduleInfo-modal-button' href='#'");
-                        }}>Module Info</a></li>
+                    <li>
+                        <a data-toggle="modal" @{ if (!isSent || !hasModules) { @Html.Raw("id='' class='disabled-link'") ; } else { @Html.Raw("id='moduleInfo-modal-button' href=''") ; }}>Module Info</a>
+                    </li>
                     <li><a data-toggle="modal" id="finalizetermination-modal-button" @{ if (!isValid || !isModuleTermination) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Finalize Termination</a></li>
 
                 </ul>
@@ -673,7 +675,9 @@
                                                         data-module-text-id="@or.ModuleTextId"
                                                         data-contract-description="@module.Contract_description"
                                                         data-contract-id="@or.Id"
+                                                        data-contract-id-key="@or.Contract_id"
                                                         data-automapping="@or.IncludeDependencies"
+                                                        data-removed-from-contract-id="@or.RemovedFromContractId"
                                                         @if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
                                                         @if (or.Rewritten == true) { if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2) ; }; }
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>
@@ -774,6 +778,67 @@
     </div>
 </div>
 <!--#endregion-->
+<!-- #region Remove articles -->
+<div class="modal fade bd-example-modal-lg" data-backdrop="static" id="removeArticlesModal" role="dialog" aria-labelledby="myLargeModalLabel2">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Remove Articles</h4>
+            </div>
+            <div id="remove-article-modal" class="modal-body">
+                <form id="remove-articles-form">
+                    <table id="remove-articles-table" width="100%">
+                        <tr>
+                            <td valign="top">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-modules">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Articles:</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="modules-from-contracts2" class="list-group">
+                                            @{
+                                                foreach (view_ContractRow cr in ViewBag.ActiveCustomerModules)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:30%; display:inline-block">
+                                                            @{ view_Module article = new view_Module();
+                                                                article.Select("Article_number = " + cr.Article_number);
+                                                            }
+                                                            @article.Article_number.ToString() - @article.Module
+                                                        </span>
+                                                        <span class="list-inline" style="width:66%; display:inline-block">@cr.Contract_id</span>
+                                                        <!---->
+                                                        <div class="pull-right list-inline" style="width:4%; display:inline-block;">
+                                                            <input data-id="@cr.Article_number" data-customer="@cr.Customer" data-contract-id="@cr.Contract_id" type="checkbox" />
+                                                        </div>
+                                                    </li>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" data-loading-text="Loading..." id="remove-selected-articles" data-id="@ViewBag.CustomerContract.SSMA_timestamp" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #endregion -->
 <!-- #region Options -->
 <div class="modal fade bs-example-modal-lg" data-backdrop="static" id="optionsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog options-modal" role="document">
@@ -1028,24 +1093,24 @@
                                                     int cost = row.Amount != 0 ? Convert.ToInt32(row.Total_price / row.Amount) : 0;
                                                     String title = String.IsNullOrEmpty(service.Description) ? "" : "Important info:\n" + service.Description;
 
-                                                                                        <button style="margin-bottom:25px"
-                                                                                                type="button"
-                                                                                                onclick="newItem(this, @cost)"
-                                                                                                data-code="@service.Article_number"
-                                                                                                data-selected="true"
-                                                                                                class="list-group-item">
-                                                                                            <span style="font-weight:700">@service.Article_number, </span>
-                                                                                            <span id="description-title" style="font-weight:700">@service.Module</span>
-                                                                                            @if (!String.IsNullOrEmpty(title))
-                                                                                            {
-                                                                                                <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
-                                                                                            }
-                                                                                            <span class="service-amount">@row.Amount</span>
-                                                                                            <br />
-                                                                                            <label style="font-weight:100">@price</label>
-                                                                                        </button>
-                                                    }
+                                                    <button style="margin-bottom:25px"
+                                                            type="button"
+                                                            onclick="newItem(this, @cost)"
+                                                            data-code="@service.Article_number"
+                                                            data-selected="true"
+                                                            class="list-group-item">
+                                                        <span style="font-weight:700">@service.Article_number, </span>
+                                                        <span id="description-title" style="font-weight:700">@service.Module</span>
+                                                        @if (!String.IsNullOrEmpty(title))
+                                                        {
+                                                            <span title="@title" style="padding-left:10px" class='glyphicon glyphicon-exclamation-sign'></span>
+                                                        }
+                                                        <span class="service-amount">@row.Amount</span>
+                                                        <br />
+                                                        <label style="font-weight:100">@price</label>
+                                                    </button>
                                                 }
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -1124,11 +1189,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                            <label for="module-info-header" class="col-sm-2 control-label">Module and Services header</label>
-                            <div class="col-sm-10">
-                                <textarea id="module-info-header" name="Module_info" class="form-control" rows="3"></textarea>
-                            </div>
+                        <label for="module-info-header" class="col-sm-2 control-label">Module and Services header</label>
+                        <div class="col-sm-10">
+                            <textarea id="module-info-header" name="Module_info" class="form-control" rows="3"></textarea>
                         </div>
+                    </div>
                     <div class="form-group">
                         <label for="document-foot-text" class="col-sm-2 control-label">Document foot</label>
                         <div class="col-sm-10">
@@ -1236,7 +1301,6 @@
                     <table style="width: 100%;">
                         <tr>
                             @Html.Raw("<td valign=\"top\">")
-                            @*                            <div class="col-md-6">*@
                             @{
                                 foreach (System.Reflection.PropertyInfo pi in ViewBag.TableItems)
                                 {
@@ -1249,95 +1313,94 @@
                                         {
                                             @Html.Raw("</td>")
                                             @Html.Raw("<td valign=\"top\">")
-                                            @*@Html.Raw("</div><div class='col-md-6'>")*@
                                         }
                                         <div class="form-group">
                                             <label for="@pi.Name.ToLower()-text" class="col-sm-2 control-label">@pName</label>
                                             <div class="col-sm-10">
                                                 @if (pi.PropertyType == typeof(bool?)@*|| pi.PropertyType == typeof(bool)*@)
-                                                {
-                                                <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                    <option value="true">true</option>
-                                                    <option value="false">false</option>
-                                                </select>
-                                                }
-                                                else if (pi.Name == "Summera")
-                                                {
-                                                <div class="checkbox">
-                                                    <label>
-                                                        <input id="summera" data-id="summera" name="Summera" type="checkbox" />
-                                                    </label>
-                                                </div>
-                                                }
-                                                else if (pi.Name == "Status")
-                                                {
-                                                <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                    @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
-                                                    {
-                                                        <option value="@so.Value">@so.Text</option>
-                                                    }
-                                                </select>
-                                                }
-                                                else if (pi.Name == "Contract_type")
-                                                {
-                                                <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                    @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
-                                                    {
-                                                        <option value="@so.Value">@so.Text</option>
-                                                    }
-                                                </select>
-                                                }
-                                                else if (pi.Name == "Main_contract_id")
-                                                {
-                                                <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                    <option value=""></option>
-                                                    @foreach (String types in ViewBag.MainContracts)
-                                                    {
-                                                        <option value="@types">@types</option>
-                                                    }
-                                                </select>
-                                                }
-                                                else if (pi.Name == "Sign")
-                                                {
-                                                <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                    @foreach (String types in ViewBag.Users)
-                                                    {
-                                                        <option value="@types">@types</option>
-                                                    }
-                                                </select>
-                                                }
-                                                else if (pi.Name == "Area")
-                                                {
-                                                <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                    @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
-                                                    {
-                                                        <option value="@so.Value">@so.Text</option>
-                                                    }
-                                                </select>
-                                                }
-                                                else
-                                                {
-                                                String inputType = "";
-                                                String inputVal = "";
-                                                if (pi.PropertyType == typeof(DateTime?))
-                                                {
-                                                    inputType = "date";
-                                                    inputVal = DateTime.Now.ToShortDateString();
-                                                }
-                                                else
-                                                {
-                                                    inputType = "text";
-                                                }
-                                                if (pi.Name == "Contract_id")
-                                                {
-                                                    <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
-                                                }
-                                                else
-                                                {
-                                                    <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
-                                                }
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    <option value="true">true</option>
+    <option value="false">false</option>
+</select>
+}
+else if (pi.Name == "Summera")
+{
+<div class="checkbox">
+    <label>
+        <input id="summera" data-id="summera" name="Summera" type="checkbox" />
+    </label>
+</div>
+}
+else if (pi.Name == "Status")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.Statuses)
+    {
+        <option value="@so.Value">@so.Text</option>
+    }
+</select>
+}
+else if (pi.Name == "Contract_type")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (SelectOptions<view_Contract>.SelectOption so in ViewBag.ContractTypes)
+    {
+        <option value="@so.Value">@so.Text</option>
+    }
+</select>
+}
+else if (pi.Name == "Main_contract_id")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    <option value=""></option>
+    @foreach (String types in ViewBag.MainContracts)
+    {
+        <option value="@types">@types</option>
+    }
+</select>
+}
+else if (pi.Name == "Sign")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (String types in ViewBag.Users)
+    {
+        <option value="@types">@types</option>
+    }
+</select>
+}
+else if (pi.Name == "Area")
+{
+<select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+    @foreach (var so in (new SelectOptions<view_Sector>()).GetOptions("Area"))
+    {
+        <option value="@so.Value">@so.Text</option>
+    }
+</select>
+}
+else
+{
+String inputType = "";
+String inputVal = "";
+if (pi.PropertyType == typeof(DateTime?))
+{
+    inputType = "date";
+    inputVal = DateTime.Now.ToShortDateString();
+}
+else
+{
+    inputType = "text";
+}
+if (pi.Name == "Contract_id")
+{
+    <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+}
+else
+{
+    <input data-id="" class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+}
 
-                                                }
+}
                                             </div>
                                         </div>
                                     }
@@ -1349,7 +1412,6 @@
                                     <input data-id="" class="form-control" type="text" id="hashtags-text" name="Hashtags" placeholder="Tags" value="" />
                                 </div>
                             </div>
-                            @*</div>*@
                             @Html.Raw("</td>")
                         </tr>
                     </table>
@@ -1496,11 +1558,11 @@
     $('#moduleInfoModal').bind('shown.bs.modal', function () {
 
         tinymce.init({
-        selector: "textarea",
-        plugins: tinyDefaultPlugins,
-        toolbar: tinyDefaultToolbars,
-        branding: false,
-        browser_spellcheck: true
+            selector: "textarea",
+            plugins: tinyDefaultPlugins,
+            toolbar: tinyDefaultToolbars,
+            branding: false,
+            browser_spellcheck: true
         });
 
         try {

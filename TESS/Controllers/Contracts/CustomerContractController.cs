@@ -265,8 +265,6 @@ namespace TietoCRM.Controllers.Contracts
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
             HashSet<view_ContractConsultantRow> customersServices = new HashSet<view_ContractConsultantRow>();
 
-            List<view_Contract> asd = view_Contract.GetContracts(urlCustomer).Where(c => c.Status == "Giltigt").ToList();
-
             foreach (view_Contract validContract in view_Contract.GetContracts(urlCustomer).Where(c => c.Status == "Giltigt"))
             {
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows));
@@ -276,6 +274,8 @@ namespace TietoCRM.Controllers.Contracts
             // Already existing modules and services from former contracts
             ViewData.Add("CustomersModules", customersModules);
             ViewData.Add("CustomersServices", customersServices);
+            // Already existing modules from former contracts except Removed modules
+            ViewData.Add("ActiveCustomerModules", new HashSet<view_ContractRow>(customersModules.Where(w => !w.Removed.HasValue || (w.Removed.HasValue && !w.Removed.Value))));
 
             List<dynamic> remArticles = new List<dynamic>();
             List<dynamic> remEducationPortals = new List<dynamic>();
@@ -326,6 +326,7 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.Id = contract._ID;
                 contractInfo.Removed = contractRow.Removed;
                 contractInfo.Rewritten = contractRow.Rewritten;
+                contractInfo.RemovedFromContractId = contractRow.RemovedFromContractId;
 
                 //New ModuleTexts
                 view_ModuleText moduleText = new view_ModuleText();
@@ -339,7 +340,7 @@ namespace TietoCRM.Controllers.Contracts
 
                 if (contractRow.Rewritten == true && contractRow.Removed == false)
                     oldArticles.Add(contractInfo);
-                if (contractRow.Rewritten == true && contractRow.Removed == true)
+                if (contractRow.Removed == true)
                     remArticles.Add(contractInfo);
 
                 articles.Add(contractInfo);
@@ -1205,6 +1206,36 @@ namespace TietoCRM.Controllers.Contracts
             }
         }
 
+        /// <summary>
+        /// Puts articles as REMOVED on contracts for customer
+        /// </summary>
+        /// <returns></returns>
+        public string RemoveItemsFromContracts()
+        {
+            try
+            {
+                String removedFromContractId = Request.Form["contract-id"];
+                List<dynamic> modules = (List<dynamic>)(new JavaScriptSerializer()).Deserialize(Request.Form["modules"], typeof(List<dynamic>));
+
+                //Modules to be marked as REMOVED
+                foreach (dynamic article in modules)
+                {
+                    view_ContractRow contractRow = new view_ContractRow();
+                    contractRow.Select("Customer = '" + article["Customer"] + "' AND Contract_id = '" + article["Contract_id"] + "' AND Article_number = " + article["Article_number"]);
+                    contractRow.RemovedFromContractId = removedFromContractId;
+
+                    //Update() does not work on view_ContractRow...
+                    contractRow.UpdateContractRowAsRemoved();
+                }
+
+                return "1";
+            }
+            catch (Exception ex)
+            {
+                return "-1";
+            }
+        }
+
         public String SaveItemsFromContracts()
         {
             try
@@ -1309,6 +1340,12 @@ namespace TietoCRM.Controllers.Contracts
                     Rewritten = cRow.Rewritten,
                     Removed = cRow.Removed,
                     NewMod = cRow.New,
+                    Contract_id_key = cRow.Contract_id, //Could be module from other contract if it's been removed...
+                    Removed_from_contract_id = cRow.RemovedFromContractId,
+                    Rowtype = cRow.Rewritten.HasValue && cRow.Rewritten.Value && cRow.Removed.HasValue && cRow.Removed.Value ?
+                                "2" :
+                                cRow.Rewritten.HasValue && cRow.Rewritten.Value && cRow.Removed.HasValue && !cRow.Removed.Value ?
+                                "1" : "3"
                 };
                 if(System.Web.HttpContext.Current.GetUser().Area == module.Area || System.Web.HttpContext.Current.GetUser().Area == "*")
                     modules.Add(obj);
@@ -1537,8 +1574,8 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 catch (Exception e)
                 {
-                return "0";
-            }
+                    return "0";
+                }
 
                 String urlCustomer = Request.Form["customer"];
                 String urlContractId = Request.Form["contract-id"];
@@ -1589,152 +1626,174 @@ namespace TietoCRM.Controllers.Contracts
 
                     //if (cr.Rewritten == true)
                     //    rewrittens.Add(cr);
-                    cr.Delete("Customer = '" + cr.Customer + "' AND Contract_id = '" + cr.Contract_id + "' AND Article_number = " + cr.Article_number);
-
-                    //Ta även bort eventuell modultext (deleted = true)
-                    view_ModuleText moduleText = new view_ModuleText();
-                    moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + cr.Article_number.ToString());
-                    if (moduleText._ID > 0) //Vi har en modultext
+                    if(string.IsNullOrEmpty(cr.RemovedFromContractId)) //Ta ej bort artiklar från andra kontrakt (som är deletade (Removed) från detta kontrakt)
                     {
-                        //Den ska delete-markeras
-                        moduleText.Deleted = true;
-                        moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + cr.Article_number.ToString());
+                        cr.Delete("Customer = '" + cr.Customer + "' AND Contract_id = '" + cr.Contract_id + "' AND Article_number = " + cr.Article_number);
+
+                        //Ta även bort eventuell modultext (deleted = true)
+                        view_ModuleText moduleText = new view_ModuleText();
+                        moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + cr.Article_number.ToString());
+                        if (moduleText._ID > 0) //Vi har en modultext
+                        {
+                            //Den ska delete-markeras
+                            moduleText.Deleted = true;
+                            moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + cr.Article_number.ToString());
+                        }
                     }
                 }
 
                 foreach (Dictionary<String, Object> dict in list)
                 {
-                    int Article_number = Convert.ToInt32(dict["Article_number"]);
-                    decimal License = 0;
-                    decimal Maintenance = 0;
-                    if(dict["Discount_type"].GetType() == typeof(string))
+                    object test;
+                    if (!dict.TryGetValue("Removed_from_contract_id", out test) || string.IsNullOrEmpty(dict["Removed_from_contract_id"].ToString()))
                     {
-                        dict["Discount_type"] = (string)dict["Discount_type"] == "undefined" ? 0 : dict["Discount_type"];
-                    }
+                        int Article_number = Convert.ToInt32(dict["Article_number"]);
+                        decimal License = 0;
+                        decimal Maintenance = 0;
+                        if(dict["Discount_type"].GetType() == typeof(string))
+                        {
+                            dict["Discount_type"] = (string)dict["Discount_type"] == "undefined" ? 0 : dict["Discount_type"];
+                        }
 
-                    if ((int)dict["Discount_type"] != 1)
-                    {
-                        if (dict.Keys.Contains("License"))
-                            License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
-                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                        if ((int)dict["Discount_type"] != 1)
+                        {
+                            if (dict.Keys.Contains("License"))
+                                License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                            Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                        }
+                        else
+                        {
+                            if (dict.Keys.Contains("License"))
+                                License = Decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
+                            Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
+                        }
+                        int RowType = Convert.ToInt32(dict["Rowtype"]);
+
+                        var automapping = dict["Automapping"] != null ? Convert.ToBoolean(dict["Automapping"]) : false;
+
+                        view_ContractRow contractRow = new view_ContractRow();
+                        contractRow.Customer = contract.Customer;
+                        contractRow.Contract_id = contract.Contract_id;
+                        contractRow.Article_number = Article_number;
+                        contractRow.License = Convert.ToDecimal(License);
+                        contractRow.Maintenance = Convert.ToDecimal(Maintenance);
+                        contractRow.Alias = dict["Alias"].ToString();
+                        contractRow.IncludeDependencies = automapping;
+
+                        if (RowType == 3)
+                        {
+                            contractRow.New = false;
+                            //if (urlctrResign == "True") //Ska bli nytt även i nya huvudavtal och tilläggsavtal...
+                            {
+                                contractRow.New = true;
+                            }
+                            contractRow.Rewritten = false;
+                            contractRow.Removed = false;
+                        }
+                        if (RowType == 2)
+                        {
+                            contractRow.New = false;
+                            contractRow.Rewritten = true;
+                            contractRow.Removed = true;
+                        }
+                        if (RowType == 1)
+                        {
+                            contractRow.New = false;
+                            contractRow.Rewritten = true;
+                            contractRow.Removed = false;
+                        }
+                        //if(rewrittens.Any(m => m.Article_number == Article_number))
+                        //{
+                        //    offerRow.New = false;
+                        //    offerRow.Rewritten = true;
+                        //}
+                        //else
+                        //{
+                        //    offerRow.New = true;
+                        //    offerRow.Rewritten = false;
+                        //}
+                        contractRow.Insert();
+
+                        //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
+                        view_ModuleText moduleText = new view_ModuleText();
+                        moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + contractRow.Article_number.ToString());
+
+                        if (moduleText._ID > 0)
+                        {
+                            //Den ska avmarkeras FRÅN deleted.
+                            moduleText.Deleted = false;
+                            moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + contractRow.Article_number.ToString());
+                        }
+
+                        if (automapping)
+                        {
+                            //Kopplade moduler ska läggas in i kontraktet
+                            var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
+
+                            foreach (var mappedModule in mappedModuleList)
+                            {
+                                if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
+                                {
+                                    bool avoidInsert = false;
+                                    view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
+
+                                    try
+                                    {
+                                        consultantRow.Contract_id = contract.Contract_id;
+                                        consultantRow.Customer = contract.Customer;
+                                        consultantRow.Code = (int)mappedModule.Article_number;
+                                        consultantRow.Amount = 1;
+                                        consultantRow.Total_price = mappedModule.Price_category;
+                                        consultantRow.Created = DateTime.Now;
+                                        consultantRow.Alias = mappedModule.Module;
+                                        consultantRow.Insert();
+                                    }
+                                    catch (Exception)
+                                    {
+                                        if(mappedModule.Multiple_type == 1)
+                                        {
+                                            //Already exist on contract -> Räkna upp Amount!
+                                            if (consultantRow.Select("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
+                                            {
+                                                var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
+                                                consultantRow.Amount = consultantRow.Amount + 1;
+                                                consultantRow.Total_price = consultantRow.Amount * pricePerUnit;
+                                                consultantRow.Update("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //Avod adding service + moduletext
+                                            avoidInsert = true;
+                                        }
+                                    }
+
+                                    //Lägg till eventuella beskrivningstexter i view_ModuleText
+                                    if (!avoidInsert && !string.IsNullOrEmpty(mappedModule.Contract_description))
+                                    {
+                                        //Delete-insert (om modultexten har ändrats)
+                                        view_ModuleText contractModuleText = new view_ModuleText();
+                                        contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
+
+                                        InsertModuleText(mappedModule.Contract_description, "K", contract._ID, (int)mappedModule.Article_number);
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        if (dict.Keys.Contains("License"))
-                            License = Decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
-                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
-                    }
-                    int RowType = Convert.ToInt32(dict["Rowtype"]);
-
-                    var automapping = dict["Automapping"] != null ? Convert.ToBoolean(dict["Automapping"]) : false;
-
-                    view_ContractRow contractRow = new view_ContractRow();
-                    contractRow.Customer = contract.Customer;
-                    contractRow.Contract_id = contract.Contract_id;
-                    contractRow.Article_number = Article_number;
-                    contractRow.License = Convert.ToDecimal(License);
-                    contractRow.Maintenance = Convert.ToDecimal(Maintenance);
-                    contractRow.Alias = dict["Alias"].ToString();
-                    contractRow.IncludeDependencies = automapping;
-
-                    if (RowType == 3)
-                    {
-                        contractRow.New = false;
-                        //if (urlctrResign == "True") //Ska bli nytt även i nya huvudavtal och tilläggsavtal...
+                        if(Convert.ToInt32(dict["Rowtype"]) == 1)
                         {
-                            contractRow.New = true;
+                            //Ångrat borttag av artikel i kopplat avtal.
+                            var articleToReWrite = new view_ContractRow();
+                            articleToReWrite.Select("Customer = '" + urlCustomer + "' AND Contract_id = '" + dict["Contract_id_key"] + "' AND Article_number = " + dict["Article_number"]);
+
+                            articleToReWrite.UpdateContractRowAsRewritten();
                         }
-                        contractRow.Rewritten = false;
-                        contractRow.Removed = false;
-                    }
-                    if (RowType == 2)
-                    {
-                        contractRow.New = false;
-                        contractRow.Rewritten = true;
-                        contractRow.Removed = true;
-                    }
-                    if (RowType == 1)
-                    {
-                        contractRow.New = false;
-                        contractRow.Rewritten = true;
-                        contractRow.Removed = false;
-                    }
-                    //if(rewrittens.Any(m => m.Article_number == Article_number))
-                    //{
-                    //    offerRow.New = false;
-                    //    offerRow.Rewritten = true;
-                    //}
-                    //else
-                    //{
-                    //    offerRow.New = true;
-                    //    offerRow.Rewritten = false;
-                    //}
-                    contractRow.Insert();
-
-                    //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
-                    view_ModuleText moduleText = new view_ModuleText();
-                    moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + contractRow.Article_number.ToString());
-
-                    if (moduleText._ID > 0)
-                    {
-                        //Den ska avmarkeras FRÅN deleted.
-                        moduleText.Deleted = false;
-                        moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + contractRow.Article_number.ToString());
-                    }
-
-                    if (automapping)
-                    {
-                        //Kopplade moduler ska läggas in i kontraktet
-                        var mappedModuleList = view_ModuleModule.getAllChildModules(Article_number);
-
-                        foreach (var mappedModule in mappedModuleList)
+                        else
                         {
-                            if (mappedModule.Article_number > 0 && mappedModule.Module_type == 2)
-                            {
-                                bool avoidInsert = false;
-                                view_ContractConsultantRow consultantRow = new view_ContractConsultantRow();
-
-                                try
-                                {                                    
-                                    consultantRow.Contract_id = contract.Contract_id;
-                                    consultantRow.Customer = contract.Customer;
-                                    consultantRow.Code = (int)mappedModule.Article_number;
-                                    consultantRow.Amount = 1;
-                                    consultantRow.Total_price = mappedModule.Price_category;
-                                    consultantRow.Created = DateTime.Now;
-                                    consultantRow.Alias = mappedModule.Module;
-                                    consultantRow.Insert();
-                                }
-                                catch (Exception)
-                                {
-                                    if(mappedModule.Multiple_type == 1)
-                                    {
-                                        //Already exist on contract -> Räkna upp Amount!
-                                        if (consultantRow.Select("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString()))
-                                        {
-                                            var pricePerUnit = consultantRow.Total_price / consultantRow.Amount;
-                                            consultantRow.Amount = consultantRow.Amount + 1;
-                                            consultantRow.Total_price = consultantRow.Amount * pricePerUnit;
-                                            consultantRow.Update("Contract_id = " + contract.Contract_id + " AND Customer = " + contract.Customer + " AND Code = " + ((int)mappedModule.Article_number).ToString());
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //Avod adding service + moduletext
-                                        avoidInsert = true;
-                                    }
-                                }
-
-                                //Lägg till eventuella beskrivningstexter i view_ModuleText
-                                if (!avoidInsert && !string.IsNullOrEmpty(mappedModule.Contract_description))
-                                {
-                                    //Delete-insert (om modultexten har ändrats)
-                                    view_ModuleText contractModuleText = new view_ModuleText();
-                                    contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + ((int)mappedModule.Article_number).ToString());
-
-                                    InsertModuleText(mappedModule.Contract_description, "K", contract._ID, (int)mappedModule.Article_number);
-                                }
-                            }
+                            //Do nothing
                         }
                     }
                 }

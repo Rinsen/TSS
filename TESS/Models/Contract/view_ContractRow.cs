@@ -60,6 +60,9 @@ public class view_ContractRow : SQLBaseClass
         private bool _includeDependencies;
         public bool IncludeDependencies { get { return _includeDependencies; } set { _includeDependencies = value; } }
 
+        private string removedFromContractId;
+        public string RemovedFromContractId { get { return removedFromContractId; } set { removedFromContractId = value; } }
+
         private static int ASort { get; set; }
         //private int ASort;
         private static string OrderBy { get; set; }
@@ -100,17 +103,16 @@ public class view_ContractRow : SQLBaseClass
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
-       
             {
                 connection.Open();
 
                 // Default query
                 command.CommandText = @"SELECT CR.Contract_id, CR.Customer ,CR.Article_number, CR.Offer_number, CR.License, CR.Maintenance,
                                         CR.Delivery_date, CR.Created, CR.Updated, CR.Rewritten, CR.New, CR.Removed, CR.Closure_date, CR.Fixed_price, 
-                                        CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, CR.IncludeDependencies 
+                                        CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, CR.IncludeDependencies, CR.RemovedFromContractId
                                         FROM " + databasePrefix + "ContractRow CR " +
                                         "JOIN " + databasePrefix + "Module M on M.Article_number = CR.Article_number " +
-                                        "WHERE " + "CR.Contract_id = @contractID AND CR.Customer = @customer Order By " + GetOrderByForGetAllContractRows();
+                                        "WHERE " + "(CR.Contract_id = @contractID AND CR.Customer = @customer) OR CR.RemovedFromContractId = @contractID Order By " + GetOrderByForGetAllContractRows();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@contractID", contractID);
@@ -767,6 +769,43 @@ public class view_ContractRow : SQLBaseClass
             }
 
             return list;
+        }
+
+        internal void UpdateContractRowAsRemoved()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = @"UPDATE [dbo].[A_avtalsrader] SET [borttag] = 1, [RemovedFromContractId] = @removed_from_contract_id WHERE [Avtalsid] = @contract_id AND [Kund] = @customer AND [Artnr] = @article_number";
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", this.Customer);
+                command.Parameters.AddWithValue("@contract_id", this.Contract_id);
+                command.Parameters.AddWithValue("@article_number", this.Article_number);
+                command.Parameters.AddWithValue("@removed_from_contract_id", this.RemovedFromContractId);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        internal void UpdateContractRowAsRewritten()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = @"UPDATE [dbo].[A_avtalsrader] SET [borttag] = 0, [ny] = 0, [omskriv] = 1, [RemovedFromContractId] = NULL WHERE [Avtalsid] = @contract_id AND [Kund] = @customer AND [Artnr] = @article_number";
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", this.Customer);
+                command.Parameters.AddWithValue("@contract_id", this.Contract_id);
+                command.Parameters.AddWithValue("@article_number", this.Article_number);
+
+                command.ExecuteNonQuery();
+            }
         }
     }
 }
