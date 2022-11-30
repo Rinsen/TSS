@@ -449,7 +449,8 @@ public class view_ContractRow : SQLBaseClass
                     view_Contract.Customer=view_ContractRow.Customer and 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                     view_Contract.Valid_from >= @startDate AND
-                    view_Contract.Valid_from <= @stopDate";
+                    view_Contract.Valid_from <= @stopDate AND
+                    view_Contract.status IN ('Giltigt', 'Omskrivet')";
                 
                 if(!string.IsNullOrEmpty(customerString))
                 {
@@ -675,6 +676,7 @@ public class view_ContractRow : SQLBaseClass
                 {
                     customerString = string.Join(",", customers.Select(s => "'" + s + "'").ToArray());
                 }
+
                 if (articleNumbers != null && articleNumbers.Count > 0)
                 {
                     articleNumberString = string.Join(",", articleNumbers.Select(n => n.ToString()).ToArray());
@@ -682,18 +684,19 @@ public class view_ContractRow : SQLBaseClass
 
                 // Default query
                 string query = @"SELECT [view_ContractRow].[Contract_id], 
-                    [view_ContractRow].[Customer] ,[view_ContractRow].[Article_number] ,
-                    [view_ContractRow].[Offer_number] ,[view_ContractRow].[License] ,
-                    [view_ContractRow].[Maintenance] ,[view_ContractRow].[Delivery_date] ,
-                    [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
-                    [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
+                    [view_ContractRow].[Customer], [view_ContractRow].[Article_number],
+                    [view_ContractRow].[Offer_number], [view_ContractRow].[License],
+                    [view_ContractRow].[Maintenance], [view_ContractRow].[Delivery_date],
+                    [view_ContractRow].[Rewritten], [view_ContractRow].[New],
+                    [view_ContractRow].[Removed], [view_ContractRow].[Closure_date],
                     [view_ContractRow].[Alias] 
                     FROM " + databasePrefix + @"ContractRow 
                     INNER JOIN " + databasePrefix + @"Contract ON 
                     view_Contract.Customer=view_ContractRow.Customer and 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                     view_Contract.Valid_from >= '" + Start.ToShortDateString() + @"' AND
-                    view_Contract.Valid_from <= '" + Stop.ToShortDateString() + @"'";
+                    view_Contract.Valid_from <= '" + Stop.ToShortDateString() + @"' AND
+                    view_Contract.status IN('Giltigt', 'Omskrivet')";
 
                 if (!string.IsNullOrEmpty(customerString))
                 {
@@ -714,6 +717,7 @@ public class view_ContractRow : SQLBaseClass
                 try
                 {
                     SqlDataAdapter da = new SqlDataAdapter(query, connection);
+
                     da.Fill(dt);
                 }
                 catch (Exception ex)

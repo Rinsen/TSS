@@ -2445,7 +2445,7 @@ namespace TietoCRM.Controllers.Contracts
 
                 return "1";
             }
-            catch
+            catch(Exception ex)
             {
                 return "-1";
             }

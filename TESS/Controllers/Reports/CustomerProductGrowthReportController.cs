@@ -1,6 +1,7 @@
 ﻿using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -327,17 +328,58 @@ namespace TietoCRM.Controllers.Reports
                 {
                     articleNumbersDic = articleNumbers.Split(',').Select(int.Parse).ToList();
                 }
+
+                System.Data.DataTable dt = view_ContractRow.ExportContractRowsByCustomerArticleAndDateIntervalToExcel(Start, Stop, customersDic, articleNumbersDic);
+
+                //Klona för att kunna byta typ från bool till string på Rewritten, New och Removed flaggorna... för att kunna byta text till Yes/No istället för TRUE/FALSE.
+                DataTable dtCloned = dt.Clone();
+                dtCloned.Columns[7].DataType = typeof(string);
+                dtCloned.Columns[8].DataType = typeof(string);
+                dtCloned.Columns[9].DataType = typeof(string);
+                
+                foreach (DataRow row in dt.Rows)
+                {
+                    dtCloned.ImportRow(row);
+                }
+
+                TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+                foreach (DataRow row in dtCloned.Rows)
+                {
+                    if (((string)row["Rewritten"]).CompareTo("True") == 0)
+                    {
+                        row["Rewritten"] = "Yes";
+                    }
+                    else
+                    {
+                        row["Rewritten"] = "No";
+                    }
+
+                    if (((string)row["New"]).CompareTo("True") == 0)
+                    {
+                        row["New"] = "Yes";
+                    }
+                    else
+                    {
+                        row["New"] = "No";
+                    }
+                    
+                    if (((string)row["Removed"]).CompareTo("True") == 0)
+                    {
+                        row["Removed"] = "Yes";
+                    }
+                    else
+                    {
+                        row["Removed"] = "No";
+                    }
+                }
+
+                return ex.Export(dtCloned, "CustomerProductGrowthReport.xlsx");
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return "-1";
-            }
-
-            System.Data.DataTable dt = view_ContractRow.ExportContractRowsByCustomerArticleAndDateIntervalToExcel(Start, Stop, customersDic, articleNumbersDic);
-            
-            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
-            
-            return ex.Export(dt, "CustomerProductGrowthReport.xlsx");
+            }            
         }
     }
 }

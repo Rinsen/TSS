@@ -2,6 +2,7 @@
     bool isMainContract = ViewBag.CustomerContract.Is(ContractType.MainContract);
     bool isServiceContract = ViewBag.CustomerContract.Is(ContractType.ServiceContract)
         || ViewBag.CustomerContract.Is(ContractType.SupplementaryContract);
+    bool isTillaggsAvtal = ViewBag.CustomerContract.Is(ContractType.SupplementaryContract);
     bool isSent = ViewBag.CustomerContract.Status == "Sänt";
     bool isValid = ViewBag.CustomerContract.Status == "Giltigt";
     bool isModuleTermination = ViewBag.CustomerContract.Is(ContractType.ModuleTermination);
@@ -86,7 +87,7 @@
                     Remove <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" id="remove-articles-modal-button" @{ if (!isSent) { @Html.Raw("class='disabled-link' ")  ; } } href="javascript:void()">Articles</a></li>
+                    <li><a data-toggle="modal" @{ if (!isTillaggsAvtal || !isSent)  { @Html.Raw("id='' class='disabled-link'") ; } else { @Html.Raw("id='remove-articles-modal-button' href=''") ; }} href="javascript:void()">Articles</a></li>
                 </ul>
             </div>
             <div class="btn-group">
