@@ -447,7 +447,7 @@ public class view_ContractRow : SQLBaseClass
                     FROM " + databasePrefix + @"ContractRow 
 
                     INNER JOIN (SELECT COUNT(*) AS Qty, countTest.Article_number FROM " + databasePrefix + @"ContractRow countTest 
-				    INNER JOIN view_Contract C ON C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id 
+				    INNER JOIN " + databasePrefix + @"Contract C ON C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id 
 											   WHERE	C.Valid_from >= @startDate AND 
 												    	C.Valid_from <=  @stopDate and
 													    C.[status] IN ('Giltigt', 'Omskrivet') 
@@ -493,6 +493,99 @@ public class view_ContractRow : SQLBaseClass
                                     t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                     i++;
                                 }
+
+                                list.Add(t);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+                return list;
+            }
+        }
+
+        public static List<Dictionary<string, object>> GetSearchResultByDateIntervalCustomersAndArticleNumbers(DateTime Start, DateTime Stop, List<string> customers, List<int> articleNumbers)
+        {
+            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                var customerString = "";
+                var articleNumberString = "";
+
+                if (customers != null && customers.Count > 0)
+                {
+                    customerString = string.Join(",", customers.Select(s => "'" + s + "'").ToArray());
+                }
+
+                if (articleNumbers != null && articleNumbers.Count > 0)
+                {
+                    articleNumberString = string.Join(",", articleNumbers.Select(n => n.ToString()).ToArray());
+                }
+
+                // Default query
+                command.CommandText = @"SELECT	
+		                    count(*) as Qty,
+		                    [view_Module].Article_number,
+		                    [view_Module].Module,
+		                    [view_Module].Price_category,
+		                    [view_Module].[System],
+		                    [view_Module].[Classification]
+                    FROM " + databasePrefix + @"ContractRow 
+                    INNER JOIN " + databasePrefix + @"Module ON view_Module.Article_number = view_ContractRow.Article_number
+                    INNER JOIN " + databasePrefix + @"Contract ON 
+                            view_Contract.Customer=view_ContractRow.Customer and 
+                            view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
+                            view_Contract.Valid_from >= @startDate AND
+                            view_Contract.Valid_from <= @stopDate AND
+                            view_Contract.status IN ('Giltigt', 'Omskrivet') 
+                    GROUP BY 
+		                    [view_Module].Article_number,
+		                    [view_Module].Module,
+		                    [view_Module].Price_category,
+		                    [view_Module].[System],
+		                    [view_Module].[Classification]";
+
+                if (!string.IsNullOrEmpty(customerString))
+                {
+                    command.CommandText += " AND view_ContractRow.Customer IN (" + customerString + ")";
+                }
+
+                if (!string.IsNullOrEmpty(articleNumberString))
+                {
+                    command.CommandText += " AND view_ContractRow.Article_number IN(" + articleNumberString + ")";
+                }
+
+                command.CommandText += " ORDER BY count(*) desc";
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@startDate", Start);
+                command.Parameters.AddWithValue("@stopDate", Stop);
+
+                try
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (reader.HasRows)
+                            {
+                                Dictionary<string, object> t = new Dictionary<string, object>();
+                                int i = 0;
+
+                                t.Add("Count", reader.GetValue(i++));
+                                t.Add("Article_number", reader.GetValue(i++));
+                                t.Add("Module", reader.GetValue(i++));
+                                t.Add("Price_category", reader.GetValue(i++));
+                                t.Add("System", reader.GetValue(i++));
+                                t.Add("Classification", reader.GetValue(i++));
 
                                 list.Add(t);
                             }
@@ -700,7 +793,7 @@ public class view_ContractRow : SQLBaseClass
                     FROM " + databasePrefix + @"ContractRow 
 
                     INNER JOIN (SELECT COUNT(*) AS Qty, countTest.Article_number FROM " + databasePrefix + @"ContractRow countTest 
-				    INNER JOIN view_Contract C ON C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id 
+				    INNER JOIN " + databasePrefix + @"Contract C ON C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id 
 											   WHERE	C.Valid_from >= '" + Start.ToShortDateString() + @"' AND 
 												    	C.Valid_from <= '" + Stop.ToShortDateString() + @"' AND
 													    C.[status] IN ('Giltigt', 'Omskrivet') 

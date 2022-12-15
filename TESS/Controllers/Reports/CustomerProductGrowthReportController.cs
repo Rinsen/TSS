@@ -148,43 +148,9 @@ namespace TietoCRM.Controllers.Reports
 
         private List<Dictionary<string, object>> GetFilteredModules(DateTime Start, DateTime Stop, List<string> customers, List<int> articleNumbers)
         {
-            List<view_ContractRow> ContractRows = view_ContractRow.GetContractRowsByDateIntervalCustomersAndArticleNumbers(Start, Stop, customers, articleNumbers);
-            List<view_Module> Modules = view_Module.getAllModules();
-
-            Dictionary<int, Dictionary<string, object>> ReturnModules = new Dictionary<int, Dictionary<String, object>>();
-            foreach (view_ContractRow cr in ContractRows)
-            {
-                foreach(view_Module m in Modules)
-                {
-                    if(m.Article_number == cr.Article_number && System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area))
-                    {
-                        Dictionary<String, object> SortedModule = new Dictionary<String, object>();
-
-                        SortedModule.Add("Count", 1);
-                      
-                        foreach(System.Reflection.PropertyInfo pi in m.GetType().GetProperties())
-                        {
-                            SortedModule.Add(pi.Name, pi.GetValue(m));
-                        }
-
-                        int CurrentKey = Convert.ToInt32(m.Article_number);
-
-                        if (ReturnModules.ContainsKey(CurrentKey))
-                        {
-                            int newCount = Convert.ToInt32(ReturnModules[CurrentKey]["Count"]);                        
-                            ReturnModules[CurrentKey]["Count"] = newCount + 1;    
-                        }
-                        else
-                        {
-                            ReturnModules.Add(Convert.ToInt32(m.Article_number),SortedModule);
-                        }
-
-                        break; //When we found it, we found it. Go to next contract row...
-                    }
-                }
-            }
-
-            return ReturnModules.Values.ToList();           
+            var moduleList = view_ContractRow.GetSearchResultByDateIntervalCustomersAndArticleNumbers(Start, Stop, customers, articleNumbers);
+            
+            return moduleList;
         }
 
         public string FilteredModules()
