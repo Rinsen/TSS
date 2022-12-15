@@ -435,16 +435,25 @@ public class view_ContractRow : SQLBaseClass
 
                 // Default query
                 command.CommandText = @"SELECT [view_ContractRow].[Contract_id], 
-                    [view_ContractRow].[Customer] ,[view_ContractRow].[Article_number] ,
-                    [view_ContractRow].[Offer_number] ,[view_ContractRow].[License] ,
-                    [view_ContractRow].[Maintenance] ,[view_ContractRow].[Delivery_date] ,
-                    [view_ContractRow].[Created] ,[view_ContractRow].[Updated] ,
-                    [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
-                    [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
-                    [view_ContractRow].[Fixed_price] ,
-                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp ,
+                    [view_ContractRow].[Customer], [view_ContractRow].[Article_number],
+                    [view_ContractRow].[Offer_number], [view_ContractRow].[License],
+                    [view_ContractRow].[Maintenance], [view_ContractRow].[Delivery_date],
+                    [view_ContractRow].[Created], [view_ContractRow].[Updated],
+                    [view_ContractRow].[Rewritten], [view_ContractRow].[New],
+                    [view_ContractRow].[Removed], [view_ContractRow].[Closure_date],
+                    [view_ContractRow].[Fixed_price],
+                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp,
                     [view_ContractRow].[Alias] 
                     FROM " + databasePrefix + @"ContractRow 
+
+                    INNER JOIN (SELECT COUNT(*) AS Qty, countTest.Article_number FROM " + databasePrefix + @"ContractRow countTest 
+				    INNER JOIN view_Contract C ON C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id 
+											   WHERE	C.Valid_from >= @startDate AND 
+												    	C.Valid_from <=  @stopDate and
+													    C.[status] IN ('Giltigt', 'Omskrivet') 
+											   GROUP BY countTest.Article_number) QtyPerArt
+				    On view_ContractRow.Article_number = QtyPerArt.Article_number		
+
                     INNER JOIN " + databasePrefix + @"Contract ON 
                     view_Contract.Customer=view_ContractRow.Customer and 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
@@ -462,9 +471,7 @@ public class view_ContractRow : SQLBaseClass
                     command.CommandText += " AND view_ContractRow.Article_number IN(" + articleNumberString + ")";
                 }
                 
-                command.CommandText += " ORDER BY (SELECT COUNT(*) FROM [view_ContractRow] countTest INNER JOIN view_Contract C ON" +
-                    " C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id WHERE C.Valid_from >= @startDate AND" +
-                    " C.Valid_from <= @stopDate AND view_ContractRow.Article_number = countTest.Article_number) DESC";
+                command.CommandText += " ORDER BY QtyPerArt.Qty DESC";
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@startDate", Start);
@@ -691,8 +698,17 @@ public class view_ContractRow : SQLBaseClass
                     [view_ContractRow].[Removed], [view_ContractRow].[Closure_date],
                     [view_ContractRow].[Alias] 
                     FROM " + databasePrefix + @"ContractRow 
+
+                    INNER JOIN (SELECT COUNT(*) AS Qty, countTest.Article_number FROM " + databasePrefix + @"ContractRow countTest 
+				    INNER JOIN view_Contract C ON C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id 
+											   WHERE	C.Valid_from >= '" + Start.ToShortDateString() + @"' AND 
+												    	C.Valid_from <= '" + Stop.ToShortDateString() + @"' AND
+													    C.[status] IN ('Giltigt', 'Omskrivet') 
+											   GROUP BY countTest.Article_number) QtyPerArt
+				    On view_ContractRow.Article_number = QtyPerArt.Article_number		
+
                     INNER JOIN " + databasePrefix + @"Contract ON 
-                    view_Contract.Customer=view_ContractRow.Customer and 
+                    view_Contract.Customer=view_ContractRow.Customer AND 
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                     view_Contract.Valid_from >= '" + Start.ToShortDateString() + @"' AND
                     view_Contract.Valid_from <= '" + Stop.ToShortDateString() + @"' AND
@@ -708,9 +724,7 @@ public class view_ContractRow : SQLBaseClass
                     query += " AND view_ContractRow.Article_number IN(" + articleNumberString + ")";
                 }
 
-                query += " ORDER BY (SELECT COUNT(*) FROM [view_ContractRow] countTest INNER JOIN view_Contract C ON" +
-                    " C.Customer = countTest.Customer AND C.Contract_id = countTest.Contract_id WHERE C.Valid_from >= '" + Start.ToShortDateString() + @"' AND" +
-                    " C.Valid_from <= '" + Stop.ToShortDateString() + @"' AND view_ContractRow.Article_number = countTest.Article_number) DESC";
+                query += " ORDER BY QtyPerArt.Qty DESC";
                 
                 dt.TableName = "CustomerProductGrowthReport";
 
