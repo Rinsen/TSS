@@ -114,7 +114,7 @@ namespace TietoCRM.Models.Contract
                 connection.Open();
 
                 // Default query
-                command.CommandText = "Update dbo.A_avtalsregister Set giltigttom = DateAdd(m,förläng,giltigttom), bevakning = DateAdd(m,0-uppsägningstid,DateAdd(m,förläng,giltigttom)), ExpirationList = 1";
+                command.CommandText = "Update dbo.A_avtalsregister Set giltigttom = DateAdd(m,förläng,giltigttom), bevakning = DateAdd(m,0-uppsägningstid,DateAdd(m,förläng,giltigttom)), ExpirationList = 1 ";
                 command.CommandText += "Where avtalsid = @avtalsid And Kund = @kund";
 
                 command.Prepare();
