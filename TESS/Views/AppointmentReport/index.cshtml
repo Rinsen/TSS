@@ -34,7 +34,7 @@
                 <select data-live-search="true" class="form-control" name="user" id="user">
                     @foreach (TietoCRM.Models.view_User user in ViewBag.Users)
                     {
-                        if (user.Windows_user.ToLower() == User.Identity.Name.ToLower())
+                        if (user.Windows_user != null && user.Windows_user.ToLower() == User.Identity.Name.ToLower())
                         {
                             <option selected value="@user.Sign">@user.Name</option>
                         }

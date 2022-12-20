@@ -3,7 +3,7 @@
     <row>
         <div class="col-md-12">
             <form class="form-inline">
-                <div class="form-group">
+                <div class="form-group" id="div-user">
                     <label for="crm-select-user">Our Salesman:</label>
                     <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
                         <option selected value="*">All</option>
@@ -20,7 +20,7 @@
                         }
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="div-customer">
                     <label for="crm-select-customer">Customer:</label>
                     <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
                         <option value="*">All</option>
@@ -1267,6 +1267,18 @@
                 loadNewRepresentativeData();
                 $("#newRowModal").appendTo("body").modal("show").draggable();
             });
+        });
+
+        //Set focus on select-picker searchbox when selected
+        var selectCustomer = $('#div-customer #crm-select-customer').selectpicker();
+        selectCustomer.on('shown.bs.select', function (e) {
+            $('#div-customer div .bs-searchbox .form-control')[0].focus();
+        });
+
+        //Set focus on select-picker searchbox when selected
+        var selectUser = $('#div-user #crm-select-user').selectpicker();
+        selectUser.on('shown.bs.select', function (e) {
+            $('#div-user div .bs-searchbox .form-control')[0].focus();
         });
 
         var uniqueRowNumber = 0;
