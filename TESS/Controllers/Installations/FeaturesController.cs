@@ -26,12 +26,20 @@ namespace TietoCRM.Controllers
 
         public ActionResult Index()
         {
-            clientList = new ObservableCollection<FeatureService.Client>(FeatureServiceProxy.GetClientClient().GetCustomers());
-            clientList.RemoveAt(0);
-            ViewData.Add("Clients", clientList);
+            if(FeatureServiceProxy.ServiceUri != null)
+            {
+                clientList = new ObservableCollection<FeatureService.Client>(FeatureServiceProxy.GetClientClient().GetCustomers());
+                clientList.RemoveAt(0);
+                ViewData.Add("Clients", clientList);
 
-            productList = new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts());
-            ViewData.Add("Products",productList);
+                productList = new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts());
+                ViewData.Add("Products", productList);
+            }
+            else
+            {
+                ViewData.Add("Clients", new ObservableCollection<FeatureService.Product>());
+                ViewData.Add("Products", new ObservableCollection<FeatureService.Product>());
+            }
 
             this.ViewData["Title"] = "Feature";
          //   featureReader = new FeatureService.FeaturesClient();
@@ -75,13 +83,20 @@ namespace TietoCRM.Controllers
 
         public String Data()
         {
+            int prodId = 0;
+            int clientId = 0;
 
+            int.TryParse(Request.Form["productID"], out prodId);
+            int.TryParse(Request.Form["clientID"], out clientId);
 
-            int prodID = int.Parse(Request.Form["productID"]);
-            int clientID = int.Parse(Request.Form["clientID"]);
-
-            
-            featureList = new FeatureObservableCollection<FeatureService.Features>(FeatureServiceProxy.GetFeaturesClient().GetClientsFeatures(prodID, clientID));
+            if(FeatureServiceProxy.ServiceUri != null)
+            {
+                featureList = new FeatureObservableCollection<FeatureService.Features>(FeatureServiceProxy.GetFeaturesClient().GetClientsFeatures(prodId, clientId));
+            }
+            else
+            {
+                featureList = new FeatureObservableCollection<FeatureService.Features>();
+            }
             //featureList = new ObservableCollection<FeatureService.Features>(featureReader.GetClientsFeatures(prodid,clientid));
             RecursiveTree(featureList);
  

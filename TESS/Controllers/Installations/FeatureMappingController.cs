@@ -22,7 +22,14 @@ namespace TietoCRM.Controllers
                 System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area)).ToList();
 
             ViewData.Add("Modules", modules);
-            ViewData.Add("Products", new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts()));
+            if(FeatureServiceProxy.ServiceUri != null)
+            {
+                ViewData.Add("Products", new ObservableCollection<FeatureService.Product>(FeatureServiceProxy.GetProductClient().GetProducts()));
+            }
+            else
+            {
+                ViewData.Add("Products", new ObservableCollection<FeatureService.Product>());
+            }
             ViewData.Add("Systems", GetAllSystemNames(System.Web.HttpContext.Current.GetUser().Area));
             //ViewData.Add("Properties", typeof(view_Module).GetProperties());
             this.ViewData["Title"] = "Feature and Article Mapping";

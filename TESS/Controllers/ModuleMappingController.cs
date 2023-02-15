@@ -48,7 +48,7 @@ namespace TietoCRM.Controllers
             }
             else
             {
-                return "{\"error\", \"Missing parent_article_number parameter\"}";
+                return "{\"data\":" + new JavaScriptSerializer().Serialize(new List<Dictionary<string, object>>()) + "}";
             }
 
         }
