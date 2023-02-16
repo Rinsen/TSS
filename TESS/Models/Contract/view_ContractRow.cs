@@ -606,8 +606,9 @@ public class view_ContractRow : SQLBaseClass
         /// </summary>
         /// <param name="customer"></param>
         /// <param name="contract_id"></param>
+        /// <param name="onlyRemovedModules"></param>
         /// <returns></returns>
-        public List<dynamic> GetContractRowsForModuleInfo(string customer, string contract_id)
+        public List<dynamic> GetContractRowsForModuleInfo(string customer, string contract_id, bool onlyRemovedModules = false)
         {
             var list = new List<dynamic>();
 
@@ -620,11 +621,23 @@ public class view_ContractRow : SQLBaseClass
                 //                        Inner Join  " + databasePrefix + @"Module M On M.Article_number = C.Article_number 
                 //                        Where IsNull(M.Contract_Description,'') <> '' And C.Customer = @customer And C.Contract_id = @contract_id Order By " + GetOrderBy();
 
-                command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System FROM qry_ContractArtDescription Q 
+                if(onlyRemovedModules)
+                {
+                    command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System, Q.RemovedFromContractId FROM qry_ContractArtDescription Q 
                                         JOIN " + databasePrefix + @"Module M ON M.Article_number = Q.Art_id
                                         JOIN " + databasePrefix + @"Sector S ON S.System = M.System and S.Classification = M.Classification
-                                        WHERE Q.Avtalsid = @contract_id AND Q.Kund = @customer 
+                                        WHERE Q.RemovedFromContractId = @contract_id
                                         ORDER BY " + GetOrderByForQry();
+
+                }
+                else
+                {
+                    command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System, Q.RemovedFromContractId FROM qry_ContractArtDescription Q 
+                                        JOIN " + databasePrefix + @"Module M ON M.Article_number = Q.Art_id
+                                        JOIN " + databasePrefix + @"Sector S ON S.System = M.System and S.Classification = M.Classification
+                                        WHERE Q.Avtalsid = @contract_id AND Q.Kund = @customer
+                                        ORDER BY " + GetOrderByForQry();
+                }
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);

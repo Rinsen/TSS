@@ -238,10 +238,17 @@ namespace TietoCRM.Controllers.Contracts
             contract._ContractConsultantRows = contract._ContractConsultantRows.OrderBy(o => o.Alias).ToList();
             ViewData.Add("CustomerContract", contract);
 
+            var moduleTexts = updateDescriptions(urlCustomer, urlContractId, false);
+            var removedModuleTexts = updateDescriptions(urlCustomer, urlContractId, true);
+
             view_ContractText text = new view_ContractText();
             text.Select("Contract_id = '" + contract.Contract_id + "' AND Customer = '" + contract.Customer + "'");
 
+            view_ContractText textRemoved = new view_ContractText();
+            textRemoved.Module_info = removedModuleTexts;
+
             ViewData.Add("ContractText", text);
+            ViewData.Add("ContractTextRemoved", textRemoved);
 
             ViewData.Add("Systems", GetAllSystemNames(contract.Area));
             ViewData.Add("MainCtrResign", GetMainContractsToResign(urlCustomer));
@@ -1224,8 +1231,32 @@ namespace TietoCRM.Controllers.Contracts
                     contractRow.Select("Customer = '" + article["Customer"] + "' AND Contract_id = '" + article["Contract_id"] + "' AND Article_number = " + article["Article_number"]);
                     contractRow.RemovedFromContractId = removedFromContractId;
 
-                    //Update() does not work on view_ContractRow...
+                    //Just an Update() does not work on view_ContractRow so I made a specifik update method...
                     contractRow.UpdateContractRowAsRemoved();
+
+                    //Add moduleinfo texts also, as we want to have these texts under the "removed articles" section in the contract
+                    var contract = new view_Contract("Customer = '" + article["Customer"] + "' AND Contract_id = '" + removedFromContractId + "'");
+                    if(contract._ID > 0)
+                    {
+                        view_Module module = new view_Module();
+                        module.Select("Article_number =  " + article["Article_number"]);
+
+                        //First try to find existing moduletext for this article and contract.
+                        var moduleText = new view_ModuleText();
+                        moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + module.Article_number.ToString());
+                        if (moduleText._ID > 0) //Vi har en modultext
+                        {
+                            if(moduleText.Deleted)
+                            {
+                                moduleText.Deleted = false;
+                                moduleText.Update("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + module.Article_number.ToString());
+                            }
+                        }
+                        else
+                        {
+                            InsertModuleText(module.Description, "A", contract._ID, (int)module.Article_number);
+                        }
+                    }
                 }
 
                 return "1";
@@ -1789,7 +1820,15 @@ namespace TietoCRM.Controllers.Contracts
                             var articleToReWrite = new view_ContractRow();
                             articleToReWrite.Select("Customer = '" + urlCustomer + "' AND Contract_id = '" + dict["Contract_id_key"] + "' AND Article_number = " + dict["Article_number"]);
 
-                            articleToReWrite.UpdateContractRowAsRewritten();
+                            //Städa bort modultexten från avtalet som tog bort modulen
+                            var moduleText = new view_ModuleText();
+                            moduleText.Select("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + articleToReWrite.Article_number.ToString());
+                            if (moduleText._ID > 0) //Vi har en modultext
+                            {
+                                moduleText.Delete("Type = 'A' AND TypeId = " + contract._ID.ToString() + " AND ModuleId = " + articleToReWrite.Article_number.ToString());
+                            }
+
+                            articleToReWrite.UpdateContractRowAsRewritten(); //Also removes the "removed from contract id" connection
                         }
                         else
                         {
@@ -3308,17 +3347,19 @@ namespace TietoCRM.Controllers.Contracts
         /// </summary>
         /// <param name="customer"></param>
         /// <param name="contractId"></param>
+        /// <param name="onlyRemovedModules"></param>
         /// <returns></returns>
-        private string updateDescriptions(string customer, string contractId)
+        private string updateDescriptions(string customer, string contractId, bool onlyRemovedModules = false)
         {
             var contractRow = new view_ContractRow();
-            var contractArtDescriptionList = contractRow.GetContractRowsForModuleInfo(customer, contractId);
+            var contractArtDescriptionList = contractRow.GetContractRowsForModuleInfo(customer, contractId, onlyRemovedModules);
             var moduleInfo = "";
 
             foreach (var contractArtDescription in contractArtDescriptionList)
             {
                 moduleInfo += "<p>" + contractArtDescription.Contract_description + "</p>";
             }
+
             return moduleInfo;
         }
 

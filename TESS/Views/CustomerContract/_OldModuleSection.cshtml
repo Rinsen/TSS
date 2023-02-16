@@ -243,12 +243,14 @@
 
 @if (ViewBag.RemArticles.Count > 0 || ViewBag.RemEducationPortals.Count > 0)
 {
+<div style="margin-top:20px">
     <h4>Avslutade moduler</h4>
+</div>
 }
 
 @if (ViewBag.RemArticles.Count > 0)
 {
-    <div id="crm-pdf-module-rows" class="">
+    <div id="crm-pdf-module-rows">
         @{
             decimal ProductMaintenanceTotal = 0;
 

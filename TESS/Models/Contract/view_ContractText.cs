@@ -100,11 +100,11 @@ namespace TietoCRM.Models
                         }
                     }
                 }
-
-
             }
+
             return list;
         }
+
         public void UpdateModuleInfo(string customer, string contract_id, string moduleInfo, string contract_type)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))

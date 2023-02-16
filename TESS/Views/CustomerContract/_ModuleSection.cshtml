@@ -30,6 +30,11 @@
 
 @if (!ViewBag.CustomerContract.Is(ContractType.MainContract))
 {
+    <div id="crm-pdf-module-info">
+        <div id="template-Module_header">@Html.Raw(@ViewBag.ContractText.Module_header)</div>
+        <div id="Module_info"> @Html.Raw(@ViewBag.ContractText.Module_info) </div>
+    </div>
+
     //Print out removed products...
     <div class="crm-pdf-old-module-section">
         @try
@@ -42,10 +47,9 @@
         }
     </div>
 
-    //KONTROLLERA! BÖR MODULTEXTER SYNAS I TILLÄGGSAVTALET FÖR BEFINTLIGA OCH AVSLUTADE MODULER??? ELLER SKA VI FILTRERA BORT DESSA I TILLÄGGSAVTALET?
     <div id="crm-pdf-module-info">
-        <div id="template-Module_header">@Html.Raw(@ViewBag.ContractText.Module_header)</div>
-        <div id="Module_info"> @Html.Raw(@ViewBag.ContractText.Module_info) </div>
+        <div id="template-Module_header">@Html.Raw(@ViewBag.ContractTextRemoved.Module_header)</div>
+        <div id="Module_info"> @Html.Raw(@ViewBag.ContractTextRemoved.Module_info) </div>
     </div>
 }
 <!-- Help printing functinos -->
