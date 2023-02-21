@@ -806,42 +806,24 @@
                 <h4 class="modal-title" id="myModalLabel">Remove Articles</h4>
             </div>
             <div id="remove-article-modal" class="modal-body">
-                <form id="remove-articles-form">
-                    <table id="remove-articles-table" width="100%">
+                <form class="form-inline">
+                        <div class="col-sm-4">
+                            <label for="art-search-remove">Search article:</label>
+                            <input class="form-control" type="text" id="art-search-remove">
+                            <button id="remove-search-button" type="button" class="btn btn-primary">Search</button>
+                        </div>
+                </form>
+                <form id="articles-form">
+                    <table id="articles-table" width="100%">
                         <tr>
                             <td valign="top">
-                                <div class="row">
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <button type="button" class="form-control" id="check-all-modules">Check all</button>
-                                        </div>
-                                    </div>
-                                </div>
                                 <br />
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h3 class="panel-title">Articles:</h3>
                                     </div>
-                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                    <div class="panel-body" style="font-size: 9pt;">
                                         <div id="modules-from-contracts2" class="list-group">
-                                            @{
-                                                foreach (view_ContractRow cr in ViewBag.ActiveCustomerModules)
-                                                {
-                                                    <li class="list-group-item">
-                                                        <span class="list-inline" style="width:30%; display:inline-block">
-                                                            @{ view_Module article = new view_Module();
-                                                                article.Select("Article_number = " + cr.Article_number);
-                                                            }
-                                                            @article.Article_number.ToString() - @article.Module
-                                                        </span>
-                                                        <span class="list-inline" style="width:66%; display:inline-block">@cr.Contract_id</span>
-                                                        <!---->
-                                                        <div class="pull-right list-inline" style="width:4%; display:inline-block;">
-                                                            <input data-id="@cr.Article_number" data-customer="@cr.Customer" data-contract-id="@cr.Contract_id" type="checkbox" />
-                                                        </div>
-                                                    </li>
-                                                }
-                                            }
                                         </div>
                                     </div>
                                 </div>

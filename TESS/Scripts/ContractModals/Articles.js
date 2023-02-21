@@ -59,6 +59,59 @@ var fillArticleSearchList = function () {
     });
 }
 
+/////////////////////////////
+/// Remove articles functions
+/////////////////////////////
+var fillArticlesToRemoveList = function () {
+    var $searchText = $("#art-search-remove");
+    console.log($searchText);
+    $.ajax({
+        "url": serverPrefix + "CustomerContract/GetModulesForRemoval/",
+        "type": "POST",
+        "data": {
+            "customer": customerName,
+            "searchtext": $searchText.val(),
+            "contracttype": ctr,
+            "contractid": contractId
+        },
+        "success": function (data) {
+            if (data.length > 0) {
+                var articles = JSON.parse(data);
+                var $availableList = $("#removeArticlesModal #modules-from-contracts2");
+                //var $selectedList = $("#articlesModal #selected-articles");
+                $availableList.empty();
+                handleRemoveArticleList(articles, $availableList);
+            }
+        }
+    });
+}
+
+//Hämtar samtliga gällande artiklar och fyller borttag-listan
+var fillRemoveArticleSearchList = function () {
+    var $searchText = $("#art-search-remove");
+    console.log($searchText);
+    $.ajax({
+        "url": serverPrefix + "CustomerContract/SearchModulesForRemoval/",
+        "type": "POST",
+        "data": {
+            "customer": customerName,
+            "searchtext": $searchText.val(),
+            "contracttype": ctr,
+            "contractid": contractId
+        },
+        "success": function (data) {
+            if (data.length > 0) {
+                var articles = JSON.parse(data);
+                var $availableList = $("#removeArticlesModal #modules-from-contracts2");
+                //var $selectedList = $("#articlesModal #selected-articles");
+                $availableList.empty();
+                handleRemoveArticleList(articles, $availableList);
+            }
+        }
+    });
+}
+//End remove article functions
+
 // Function to fill the article list depending on chosen System and classification
 var fillArticleList = function(System, classification){
     $.ajax({
@@ -367,6 +420,97 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         
 }
 
+// Function to populate list of articles to remove
+var handleRemoveArticleList = function (availableArticles, $availableList) {
+    var aaLen = availableArticles.length;
+    //var $artNrs = $selectedList.find("button .art-nr");
+    //var artNrsLen = $artNrs.length;
+    var hasFixedRows = false;
+
+    for (var i = 0; i < aaLen; i++) {
+        var article = availableArticles[i];
+        var buttonStyle = "";
+
+        var $newButton;
+
+        if (!hasFixedRows) {
+            var button = "";
+            button += "<div style='width:100%;padding-left:15px;padding-right:15px'>                                                          \
+                                <table><tr style='font-weight:bold'><td class='art-nr' style='width:5%'>Art.nr</td><td class='alias' style='width:40%'>Module</td><td class='license' style='width:15%'>License</td><td class='maintenance' style='width:10%'>Maintenance</td> \
+            </tr></table></div>";
+
+            $newButton = $(button);
+
+            var $buttonContainer = $("<table>                                                                                               \
+                                        <tr>                                                                                                \
+                                            <td style='width: 10px'>                                                                        \
+                                               <div style='margin-right: 24px'></div>        \
+                                            </td>                                                                                           \
+                                            <td style='width: auto' class='module-item-container'>                                          \
+                                                                                                                                            \
+                                            </td>                                                                                           \
+                                        </tr>                                                                                               \
+                                     </table>");
+
+            var $mic = $buttonContainer.find(".module-item-container");
+
+            $mic.append($newButton);
+
+            $availableList.append($buttonContainer);
+            hasFixedRows = true;
+        }
+
+        var button = "";
+        button += "<button onclick='markItemRemoved(this)'                                                      \
+                                        class='list-group-item art-nr-" + article.Article_number + "'           \
+                                        data-selected='false'                                                   \
+                                        data-license='" + article.License + "'                                  \
+                                        data-maintenance='" + article.Maintenance + "'                          \
+                                        data-alias='" + article.Alias + "'                                      \
+                                        data-contract-id='" + article.Contract_id + "'                          \
+                                        data-customer='" + article.Customer + "'                                \
+                                        data-artnr='" + article.Article_number + "'                             \
+                                        type='button'>                                                          \
+                                <table>                                                                         \
+                                    <tr>"+
+                                       "<td class='art-nr' style='width:5%'>" + article.Article_number + "</td> \
+                                        <td class='alias' style='width:40%'>" + article.Alias + "</td>";
+
+        if (article.Discount_type != '1') {
+            button += "<td class='license' style='width:15%'>" + formatCurrencyNoKr(article.License) + "</td>        \
+                        <td class='maintenance' style='width:10%'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
+        }
+        else {
+            button += "<td class='license'>" + article.License + "%</td>        \
+                        <td class='maintenance'>" + article.Maintenance + "%</td>";
+        }
+
+        button += "</tr>        \
+                 </table>       \
+               </button>";
+
+        $newButton = $(button);
+
+        var $buttonContainer = $("<table>                                                                                               \
+                                        <tr>                                                                                                \
+                                            <td style='width: 10px'>                                                                        \
+                                                <div style='margin-right: 1em; cursor: pointer'>                                            \
+                                                    <span onclick='editArticle(this)' class='glyphicon glyphicon-pencil'></span>            \
+                                                </div>                                                                                      \
+                                            </td>                                                                                           \
+                                            <td style='width: auto' class='module-item-container'>                                          \
+                                                                                                                                            \
+                                            </td>                                                                                           \
+                                        </tr>                                                                                               \
+                                     </table>");
+
+        var $mic = $buttonContainer.find(".module-item-container");
+
+        $mic.append($newButton);
+
+        $availableList.append($buttonContainer);
+    }
+}
 
 //
 var calculateSums = function(){
@@ -532,6 +676,20 @@ var updateSelectedItems = function () {
 var changePrice = function (event, element) {
     console.log("Ändra pris");
 };
+
+var markItemRemoved = function (element) {
+    $button = $(element.closest('button'));
+
+    if ($button.attr("data-selected") == "false") {
+        //Make row green
+        $button.attr("style", "background-color:#00b057;color: white");
+        $button.attr("data-selected", "true");
+    } else {
+        //Make row white
+        $button.attr("style", "");
+        $button.attr("data-selected", "false");
+    }
+}
 
 // Move list item from either available-articles to selected-articles or
 // the other way around.
@@ -819,15 +977,18 @@ var getModuleByArticleNumber = function (article_number, customer, contract_id) 
 };
 
 var removeArticlesFunction = function () {
-    var $inputs = $("#modules-from-contracts2").find("input:checked");
+    var $inputs = $("#modules-from-contracts2").find(`[data-selected=true`);
     var length = $inputs.length;
     var moduleList = [];
     for (var i = 0; i < length; i++) {
         var obj = {}
         $input = $($inputs[i]);
-        obj.Article_number = $input.attr("data-id");
+        obj.Article_number = $input.attr("data-artnr");
         obj.Customer = $input.attr("data-customer");
         obj.Contract_id = $input.attr("data-contract-id");
+        obj.License = $input.attr("data-license");
+        obj.Maintenance = $input.attr("data-maintenance");
+        obj.Alias = $input.attr("data-alias");
 
         moduleList.push(obj);
     }
@@ -1035,6 +1196,7 @@ var zeroArticlesFunction = function () {
 $(document).ready(function () {
     $SystemSelect = $("#articlesModal #System-select");
     fillClassificationSelect($SystemSelect.val());
+    fillArticlesToRemoveList();
     $classificationSelect = $("#articlesModal #classification-select");
     ctr = contractType.substring(0,1);
 
@@ -1060,6 +1222,17 @@ $(document).ready(function () {
     $('#art-search').keypress(function (e) {
         if (e.keyCode == 13) {
             $('#search-button').click();
+            return false;
+        }
+    });
+
+    $("#remove-search-button").click(function () {
+        fillRemoveArticleSearchList();
+    });
+
+    $('#art-search-remove').keypress(function (e) {
+        if (e.keyCode == 13) {
+            $('#remove-search-button').click();
             return false;
         }
     });

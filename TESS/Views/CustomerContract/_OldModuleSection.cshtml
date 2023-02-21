@@ -253,6 +253,7 @@
     <div id="crm-pdf-module-rows">
         @{
             decimal ProductMaintenanceTotal = 0;
+            decimal ProductLicenseTotal = 0;
 
             String previousSystem = "";
             String previousPriceType = "";
@@ -276,9 +277,11 @@
             }
             // Calculate total sums
             ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+            ProductLicenseTotal += Convert.ToDecimal(article.License);
 
             // Format currency
             String Maintenance = "";
+            String License = "";
             if (article.Maintenance != 0)
             {
                 if ((article.Maintenance % 1) == 0)
@@ -288,6 +291,17 @@
                 else
                 {
                     Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+                }
+            }
+            if (article.License != 0)
+            {
+                if ((article.License % 1) == 0)
+                {
+                    License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+                }
+                else
+                {
+                    License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
                 }
             }
             if (!krEveryRow)
@@ -310,7 +324,7 @@
                         <td>@article.Classification</td>
                         <td>@article.Article_number</td>
                         <td>@article.Module</td>
-                        <td></td>
+                        <td>@License</td>
                         <td>@Maintenance</td>
                     </tr>
                 </table>
@@ -332,6 +346,21 @@
             {
                 ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
             }
+
+            // Format currency for total sums
+            String ProductLicenseTotalFormated;
+            if ((ProductLicenseTotal % 1) == 0)
+            {
+                ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
+            }
+            else
+            {
+                ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
+            }
+            if (!krEveryRow)
+            {
+                ProductLicenseTotalFormated = ProductLicenseTotalFormated.Replace(" kr", "");
+            }
         }
         @if (toBeSummerized)
         {
@@ -341,7 +370,7 @@
                     <tr>
                         <td></td>
                         <td>Summa Produkter:</td>
-                        <td></td>
+                        <td>@ProductLicenseTotalFormated</td>
                         <td>@ProductMaintenanceTotalFormated</td>
                     </tr>
                 </table>

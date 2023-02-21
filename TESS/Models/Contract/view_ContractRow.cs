@@ -903,12 +903,15 @@ public class view_ContractRow : SQLBaseClass
                 connection.Open();
 
                 // Default query
-                command.CommandText = @"UPDATE [dbo].[A_avtalsrader] SET [borttag] = 1, [RemovedFromContractId] = @removed_from_contract_id WHERE [Avtalsid] = @contract_id AND [Kund] = @customer AND [Artnr] = @article_number";
+                command.CommandText = @"UPDATE [dbo].[A_avtalsrader] SET [borttag] = 1, [alias] = @alias, [RemovedFromContractId] = @removed_from_contract_id, [Licens] = @license, [Underhåll] = @maintenance WHERE [Avtalsid] = @contract_id AND [Kund] = @customer AND [Artnr] = @article_number";
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", this.Customer);
                 command.Parameters.AddWithValue("@contract_id", this.Contract_id);
                 command.Parameters.AddWithValue("@article_number", this.Article_number);
                 command.Parameters.AddWithValue("@removed_from_contract_id", this.RemovedFromContractId);
+                command.Parameters.AddWithValue("@license", this.License);
+                command.Parameters.AddWithValue("@maintenance", this.Maintenance);
+                command.Parameters.AddWithValue("@alias", this.Alias);
 
                 command.ExecuteNonQuery();
             }

@@ -282,7 +282,7 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("CustomersModules", customersModules);
             ViewData.Add("CustomersServices", customersServices);
             // Already existing modules from former contracts except Removed modules
-            ViewData.Add("ActiveCustomerModules", new HashSet<view_ContractRow>(customersModules.Where(w => !w.Removed.HasValue || (w.Removed.HasValue && !w.Removed.Value))));
+            //ViewData.Add("ActiveCustomerModules", new HashSet<view_ContractRow>(customersModules.Where(w => !w.Removed.HasValue || (w.Removed.HasValue && !w.Removed.Value))));
 
             List<dynamic> remArticles = new List<dynamic>();
             List<dynamic> remEducationPortals = new List<dynamic>();
@@ -1231,6 +1231,29 @@ namespace TietoCRM.Controllers.Contracts
                     contractRow.Select("Customer = '" + article["Customer"] + "' AND Contract_id = '" + article["Contract_id"] + "' AND Article_number = " + article["Article_number"]);
                     contractRow.RemovedFromContractId = removedFromContractId;
 
+                    decimal license;
+                    decimal maintenance;
+                    if (decimal.TryParse(article["License"], out license))
+                    {
+                        if(contractRow.License != license)
+                        {
+                            contractRow.License = license;
+                        }
+                    }
+
+                    if (decimal.TryParse(article["Maintenance"], out maintenance))
+                    {
+                        if(contractRow.Maintenance != maintenance)
+                        {
+                            contractRow.Maintenance = maintenance;
+                        }
+                    }
+
+                    if(article["Alias"] != null && article["Alias"] != contractRow.Alias)
+                    {
+                        contractRow.Alias = article["Alias"];
+                    }
+
                     //Just an Update() does not work on view_ContractRow so I made a specifik update method...
                     contractRow.UpdateContractRowAsRemoved();
 
@@ -2125,6 +2148,50 @@ namespace TietoCRM.Controllers.Contracts
                 String resultString = (new JavaScriptSerializer()).Serialize(resultList);
                 return resultString;
             }
+        }
+
+        /// <summary>
+        /// Search active modules in contract. Used for removal dialog in contract view
+        /// </summary>
+        /// <returns></returns>
+        public string GetModulesForRemoval()
+        {
+            var customer = Request.Form["customer"];
+            var searchtext = Request.Form["searchtext"];
+
+            HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
+
+            foreach (view_Contract validContract in view_Contract.GetContracts(customer).Where(c => c.Status == "Giltigt"))
+            {
+                customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows));
+            }
+
+            //ViewData.Add("ActiveCustomerModules", new HashSet<view_ContractRow>(customersModules.Where(w => !w.Removed.HasValue || (w.Removed.HasValue && !w.Removed.Value))));
+
+            var resultString = new JavaScriptSerializer().Serialize(customersModules.Where(w => !w.Removed.HasValue || (w.Removed.HasValue && !w.Removed.Value)));
+            return resultString;
+        }
+
+        /// <summary>
+        /// Search modules for removal
+        /// </summary>
+        /// <returns></returns>
+        public string SearchModulesForRemoval()
+        {
+            var customer = Request.Form["customer"];
+            var searchtext = Request.Form["searchtext"];
+
+            HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
+
+            foreach (view_Contract validContract in view_Contract.GetContracts(customer).Where(c => c.Status == "Giltigt"))
+            {
+                customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows.Where(w => w.Alias.Contains(searchtext))));
+            }
+
+            //ViewData.Add("ActiveCustomerModules", new HashSet<view_ContractRow>(customersModules.Where(w => !w.Removed.HasValue || (w.Removed.HasValue && !w.Removed.Value))));
+
+            var resultString = (new JavaScriptSerializer()).Serialize(customersModules);
+            return resultString;
         }
 
         public String GetModulesAll(){
