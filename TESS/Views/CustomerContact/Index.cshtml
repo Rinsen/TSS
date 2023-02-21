@@ -19,7 +19,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Contact</h4>
+                <h4 class="modal-title" id="contactModalLabel">Edit Contact</h4>
             </div>
             <div id="contact-modal" class="modal-body">
                 <div class="form-group">
@@ -345,6 +345,7 @@
         $("#create-contact-button").bind("click", function () {
             $("#contactModal").appendTo("body").modal("show").draggable();
             $("#save-contact-changes").removeAttr("data-person");
+            $("#contactModalLabel").text("Create Contact");
             $("#crm-select-customer").show();
 
             clearData();
@@ -355,6 +356,7 @@
             if (selectedId != null) {
                 clearData();
                 loadContactData();
+                $("#contactModalLabel").text("Edit Contact");
                 $("#crm-select-customer").hide();
                 $("#contactModal").appendTo("body").modal("show").draggable();
             }

@@ -23,7 +23,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Reminder</h4>
+                <h4 class="modal-title" id="reminderModalLabel">Edit Reminder</h4>
             </div>
             <div id="Reminder-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -70,7 +70,7 @@
                                                 }
                                                 else if (pi.Name == "Active")
                                                 {
-                                                    
+
                                                     <div class="checkbox">
                                                         <label>
                                                             <input id="expired2" data-id="expired2" name="Active" type="checkbox" />
@@ -79,7 +79,7 @@
                                                 }
                                                 else if (pi.Name == "Customer_name")
                                                 {
-                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
+                                                    <select class="form-control selectpicker" data-live-search="true" id="@pi.Name.ToLower()-select" name="@pi.Name">
                                                         @foreach (String types in ViewBag.Customers)
                                                         {
                                                             <option value="@types">@types</option>
@@ -302,6 +302,9 @@
         $selRowContainer.append("<div id='create-Reminder-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Reminder-button").bind("click", function () {
             $("#id_pk-text").removeAttr("readonly");
+            var $reminderModalLabel = $("#reminderModalLabel");
+            $reminderModalLabel.text("Create Reminder");
+
             $("#ReminderModal").appendTo("body").modal("show").draggable();
             $("#save-Reminder-changes").removeAttr("data-Reminder");
             var $selectedTds = $("#Reminder-table tr.selected td").not(".radios");
@@ -341,6 +344,9 @@
             if (selectedId != null) {
                 $("#id_pk-text").prop("readonly", true);
                 $("#save-Reminder-changes").attr("data-Reminder", selectedId);
+                var $reminderModalLabel = $("#reminderModalLabel");
+                $reminderModalLabel.text("Edit Reminder");
+
                 var $selectedTds = $("#Reminder-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;
 

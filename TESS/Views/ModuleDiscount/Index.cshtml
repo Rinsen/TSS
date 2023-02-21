@@ -21,7 +21,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Module</h4>
+                <h4 class="modal-title" id="discountModalLabel">Edit Module Discount</h4>
             </div>
             <div id="module-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -235,7 +235,7 @@
                             className: 'btn-danger pull-right',
                             callback: function () {
                                 $.ajax({
-                                    "url": "/ModuleDiscount/DeleteModule/",
+                                    "url": "@Url.Content("~/ModuleDiscount/DeleteModule/")",
                                     "type": "POST",
                                     "data": {
                                         "id": selectedId
@@ -274,7 +274,10 @@
 
 
         $("#crm-add-row").bind("click", function(){
-            $("#article-number2").prop("readonly",false);
+            $("#article-number2").prop("readonly", false);
+            var $discountModalLabel = $("#discountModalLabel");
+            $discountModalLabel.text("Create Module Discount");
+
             $("#save-module-changes").removeAttr("data-Article-number");
             var $formInputs = $("#moduleModal form").find(":input");
             console.log($formInputs);
@@ -296,7 +299,8 @@
 
 
         $("#crm-edit").bind("click", function(){
-            if(selectedId != null){
+            if (selectedId != null) {
+                $("#discountModalLabel").text("Edit Module Discount");
                 var $selectedTds = $("#module-table tr.selected td").not(".radios");
                 var $selectedTds = $("#module-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;
@@ -315,10 +319,11 @@
                     }
                 }
                 $('.selectpicker').selectpicker('refresh');
-            }
+                $("#save-module-changes").attr("data-Article-number", selectedId);
+                $("#moduleModal").appendTo("body").modal().draggable();
+            } else
+                triggerAlert("You have to select a row to edit first.", "info");
 
-            $("#save-module-changes").attr("data-Article-number",selectedId);
-            $("#moduleModal").appendTo("body").modal().draggable();
         });
         drawButtonsExtension($selRowContainer);
     }

@@ -23,7 +23,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Appointment</h4>
+                <h4 class="modal-title" id="appointmentModalLabel">Edit Appointment</h4>
             </div>
             <div id="appointment-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -312,6 +312,7 @@
             selectedApptContact = null;
             $("#area-text").hide();
             $("#id_pk-text").removeAttr("readonly");
+            $("#appointmentModalLabel").text("Create Appointment");
             $("#appointmentModal").appendTo("body").modal("show").draggable();
             $("#save-appointment-changes").removeAttr("data-appointment");
             var $selectedTds = $("#appointment-table tr.selected td").not(".radios");
@@ -326,7 +327,6 @@
                 if ($currInput.attr("name") != "Customer" && $currInput.attr("name") != "Event_type")
                     $currInput.val("");
             }
-            $("#myModalLabel").html("Create Appointment");
             $("#save-appointment-changes").html("Create");
 
         });
@@ -336,6 +336,7 @@
             if (selectedId != null) {
                 $("#area-text").show();
                 $("#id_pk-text").prop("readonly", true);
+                $("#appointmentModalLabel").text("Edit Appointment");
                 $("#save-appointment-changes").attr("data-appointment", selectedId);
                 var $selectedTds = $("#appointment-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;
@@ -376,7 +377,6 @@
                 $(".selectpicker").selectpicker('refresh');
                 $("#save-appointment-changes").attr("data-appointment", selectedId);
                 $("#appointmentModal").appendTo("body").modal("show").draggable();
-                $("#myModalLabel").html("Edit Appointment");
                 $("#save-appointment-changes").html("Save Changes");
             }
             else

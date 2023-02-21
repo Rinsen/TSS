@@ -39,7 +39,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" >Edit Customer</h4>
+                <h4 class="modal-title" id="customerModalLabel">Edit Customer</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -503,6 +503,9 @@
             return;
         }
 
+        var $customerModalLabel = $("#customerModalLabel");
+        $customerModalLabel.text("Edit Customer");
+
         // Save current user as data-customer on the button element.
         $(button).attr("data-customer", selectedId);
 
@@ -580,6 +583,9 @@
         // Set null as data-customer on the button element.
         $("#crm-edit-customer").removeData("customer");
         $("#crm-edit-customer").removeAttr("data-customer");
+        var $customerModalLabel = $("#customerModalLabel");
+        $customerModalLabel.text("Create Customer");
+
         // Get all modal input fields
         var $formInputs = $("#customer-modal form").find(":input");
         var formInputsLen = $formInputs.length;

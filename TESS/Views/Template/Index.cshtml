@@ -61,7 +61,7 @@
         <div class="modal-content edit-template-modal">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit template</h4>
+                <h4 class="modal-title" id="templateModalLabel">Edit template</h4>
             </div>
             <div id="template-modal" class="modal-body">
 
@@ -406,6 +406,7 @@
         $("#edit-template-modal-button").click(function () {
             if (selectedId != null) {
                 //editModalChanged = 1;
+                $("#templateModalLabel").text("Edit Template");
                 getTemplate();
                 $("#templateModal").appendTo("body").modal("show");
                 $("#save-template-btn").attr("onclick", "save('update');");
@@ -418,6 +419,7 @@
         $("#new-template-modal-button").click(function () {
             //$selectType = $("#crm-type-select5");
             $("#title5").val("");
+            $("#templateModalLabel").text("Create Template");
             $selectType.prop("disabled", false);
             $selectType.html("");
             $selectType.append($("<option></option>").attr("value", "Offert").html("Offert"));

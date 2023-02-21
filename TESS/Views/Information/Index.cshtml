@@ -23,7 +23,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Information</h4>
+                <h4 class="modal-title" id="informationModalLabel">Edit Information</h4>
             </div>
             <div id="user-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -304,6 +304,7 @@
         $selRowContainer.append("<div id='create-information-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-information-button").bind("click", function () {
             $("#sign-text").removeAttr("readonly");
+            $("#informationModalLabel").text("Create Information");
             $("#informationModal").appendTo("body").modal("show").draggable();
             $("#save-information-changes").removeAttr("data-information");
             var $selectedTds = $("#information-table tr.selected td").not(".radios");
@@ -325,7 +326,7 @@
         $selRowContainer.append("<div id='crm-edit-information' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-information").bind("click", function () {
             if (selectedId != null) {
-               
+                $("#informationModalLabel").text("Edit Information");
                 $("#sign-text").prop("readonly", true);
                 $("#save-information-changes").attr("data-information", selectedId);
                 var $selectedTds = $("#information-table tr.selected td").not(".radios");

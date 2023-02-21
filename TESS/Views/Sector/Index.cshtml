@@ -23,7 +23,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Sector levels</h4>
+                <h4 class="modal-title" id="sectorModalLabel">Edit Sector levels</h4>
             </div>
             <div id="Sector-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -308,6 +308,7 @@
         $selRowContainer.append("<div id='create-Sector-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Sector-button").bind("click", function () {
             $("#id_pk-text").removeAttr("readonly");
+            $("#sectorModalLabel").text("Create Sector Levels");
             $("#SectorModal").appendTo("body").modal("show").draggable();
             $("#save-Sector-changes").removeAttr("data-Sector");
             var $selectedTds = $("#Sector-table tr.selected td").not(".radios");
@@ -331,6 +332,7 @@
         $("#crm-edit-Sector").bind("click", function () {
             if (selectedId != null) {
                 $("#id_pk-text").prop("readonly", true);
+                $("#sectorModalLabel").text("Edit Sector Levels");
                 $("#save-Sector-changes").attr("data-Sector", selectedId);
                 var $selectedTds = $("#Sector-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;

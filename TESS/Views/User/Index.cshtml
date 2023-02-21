@@ -29,7 +29,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit user</h4>
+                <h4 class="modal-title" id="userModalLabel">Edit user</h4>
             </div>
             <div id="user-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -469,6 +469,7 @@
         $selRowContainer.append("<div id='crm-edit-user' class='crm-table-btn'><button type='button' class='btn btn-default'>Edit</button></div>");
         $("#crm-edit-user").bind("click", function () {
             if (selectedId != null) {
+                $("#userModalLabel").text("Edit User");
                 $("#sign-text").prop("readonly", true);
                 $("#save-user-changes").attr("data-user", selectedId);
                 var $selectedTds = $("#user-table tr.selected td").not(".radios");
@@ -507,6 +508,7 @@
         $selRowContainer.append("<div id='create-user-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-user-button").bind("click", function () {
             $("#sign-text").removeAttr("readonly");
+            $("#userModalLabel").text("Create User");
             $("#userModal").appendTo("body").modal("show").draggable();
             $("#save-user-changes").removeAttr("data-user");
             var $selectedTds = $("#user-table tr.selected td").not(".radios");

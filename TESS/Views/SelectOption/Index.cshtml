@@ -153,7 +153,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Select Option</h4>
+                <h4 class="modal-title" id="optionModalLabel">Edit Select Option</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
@@ -479,7 +479,7 @@
         $("#crm-edit-selectOption").bind("click", function () {
             console.log(selectedId);
             if (selectedId != null) {
-               
+                $("#optionModalLabel").text("Edit Select Option");
                 $("#save-selectOption-changes").attr("data-selectOption", selectedId);
                 var $selectedTds = $("#selectOption-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;
@@ -506,6 +506,7 @@
 
         $selRowContainer.append("<div id='create-selectOption-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-selectOption-button").bind("click", function () {
+            $("#optionModalLabel").text("Create Select Option");
             $("#sign-text").removeAttr("readonly");
             $("#selectOptionModal").appendTo("body").modal("show").draggable();
             $("#save-selectOption-changes").removeAttr("data-information");

@@ -21,7 +21,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit Population levels</h4>
+                <h4 class="modal-title" id="populationModalLabel">Edit Population levels</h4>
             </div>
             <div id="Population-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -247,6 +247,7 @@
         $selRowContainer.append("<div id='create-Population-button' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
         $("#create-Population-button").bind("click", function () {
             $("#id_pk-text").removeAttr("readonly");
+            $("#populationModalLabel").text("Create Population Levels");
             $("#PopulationModal").appendTo("body").modal("show").draggable();
             $("#save-Population-changes").removeAttr("data-Population");
             var $selectedTds = $("#Population-table tr.selected td").not(".radios");
@@ -270,6 +271,7 @@
         $("#crm-edit-Population").bind("click", function () {
             if (selectedId != null) {
                 $("#id_pk-text").prop("readonly", true);
+                $("#populationModalLabel").text("Edit Population Levels");
                 $("#save-Population-changes").attr("data-Population", selectedId);
                 var $selectedTds = $("#Population-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;

@@ -21,7 +21,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Edit price levels</h4>
+                <h4 class="modal-title" id="priceModalLabel">Edit price levels</h4>
             </div>
             <div id="price-modal" class="modal-body">
                 <form class="form-horizontal">
@@ -246,6 +246,7 @@
             $("#id_pk-text").removeAttr("readonly");
             $("#priceModal").appendTo("body").modal("show").draggable();
             $("#save-price-changes").removeAttr("data-price");
+            $("#priceModalLabel").text("Create Price Levels");
             var $selectedTds = $("#price-table tr.selected td").not(".radios");
             var tdLen = $selectedTds.length;
 
@@ -267,6 +268,7 @@
         $("#crm-edit-price").on("click", function () {
             if (selectedId != null) {
                 $("#id_pk-text").prop("readonly", true);
+                $("#priceModalLabel").text("Edit Price Levels");
                 $("#save-price-changes").attr("data-price", selectedId);
                 var $selectedTds = $("#price-table tr.selected td").not(".radios");
                 var tdLen = $selectedTds.length;
