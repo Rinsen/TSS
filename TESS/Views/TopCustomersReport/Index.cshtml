@@ -46,6 +46,9 @@
                     <th data-field="county" data-sortable="true">County</th>
                 </tr>
             </thead>
+            <tfoot align="right">
+                <tr><th style="text-align:right"></th><th></th><th></th><th></th><th></th></tr>
+            </tfoot>
         </table>
     </div>
     <script>
@@ -59,33 +62,58 @@
         DataObject += "\t\t\t\t{ \"data\": \"" + "county" + "\"  },\r\n";
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function()      
-    {
-        $('#report-table').DataTable({
-            "destroy": true,
-            "processing": true,
-            "bPaginate": false,
-            "language": {"thousands": " "},
-            "ajax": {
-                "url": serverPrefix + "TopCustomersReport/TopCustomers/",
-                "type": "POST",
-                "data": {
-                    "user": $userContainer.val(),
-                    "area": $areaContainer.val(),
-                    "year": $yearContainer.val()
+        var updateDataTable = function () {
+            $('#report-table').DataTable({
+                "destroy": true,
+                "processing": true,
+                "bPaginate": false,
+                "language": { "thousands": " " },
+                "ajax": {
+                    "url": serverPrefix + "TopCustomersReport/TopCustomers/",
+                    "type": "POST",
+                    "data": {
+                        "user": $userContainer.val(),
+                        "area": $areaContainer.val(),
+                        "year": $yearContainer.val()
+                    }
+                },
+                "defaultContent": "",
+                "columns": [@Html.Raw(DataObject)
+                ],
+                "columnDefs": [{ className: "dt-right", "targets": [1] },
+                { render: $.fn.dataTable.render.number(" ", ",", 0, "", " kr"), "targets": [1] }],
+                "order": [[1, "desc"]],
+                "scrollX": true,
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api(), data;
+
+                    // converting to interger to find total
+                    var intVal = function (i) {
+                        return typeof i === 'string' ?
+                            i.replace(/[\$,]/g, '') * 1 :
+                            typeof i === 'number' ?
+                                i : 0;
+                    };
+
+                    // computing column Total of the complete result 
+                    var total = api
+                        .column(1)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    // Update footer by showing the total with the reference of the column index 
+                    $(api.column(0).footer()).html('Total');
+                    $(api.column(1).footer()).html(numberWithSpaces(total));
                 }
-            },
-            "defaultContent": "",
-            "columns": [@Html.Raw(DataObject)
-            ],
-            "columnDefs": [ { className: "dt-right", "targets": [ 1 ] },
-                            { render: $.fn.dataTable.render.number(" ", ",", 0, "", " kr"), "targets": [1] }],
-            "order": [[1, "desc"]],
-            "scrollX": true,
+            });
+        }
 
-        });
+        function numberWithSpaces(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
 
-    }
     $('document').ready(function () {
 
         $('.selectpicker').selectpicker();
