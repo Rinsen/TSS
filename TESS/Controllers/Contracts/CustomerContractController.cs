@@ -2185,7 +2185,7 @@ namespace TietoCRM.Controllers.Contracts
 
             foreach (view_Contract validContract in view_Contract.GetContracts(customer).Where(c => c.Status == "Giltigt"))
             {
-                customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows.Where(w => w.Alias.Contains(searchtext))));
+                customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows.Where(w => w.Alias.ToLower().Contains(searchtext.ToLower()))));
             }
 
             //ViewData.Add("ActiveCustomerModules", new HashSet<view_ContractRow>(customersModules.Where(w => !w.Removed.HasValue || (w.Removed.HasValue && !w.Removed.Value))));
