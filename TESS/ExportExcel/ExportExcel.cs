@@ -20,24 +20,31 @@ namespace TietoCRM
             {
                 HttpResponseMessage res = new HttpResponseMessage();
 
-                wb.Worksheets.Add(dt);
-                wb.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                wb.Style.Font.Bold = true;
-                byte[] ms = new byte[] { };
-
-                using (MemoryStream MyMemoryStream = new MemoryStream())
+                try
                 {
-                    wb.SaveAs(MyMemoryStream);
-                    MyMemoryStream.Position = 0;
-                    ms = ReadFully(MyMemoryStream);
+                    wb.Worksheets.Add(dt);
+                    wb.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    wb.Style.Font.Bold = true;
+                    byte[] ms = new byte[] { };
+
+                    using (MemoryStream MyMemoryStream = new MemoryStream())
+                    {
+                        wb.SaveAs(MyMemoryStream);
+                        MyMemoryStream.Position = 0;
+                        ms = ReadFully(MyMemoryStream);
+                    }
+
+                    using (var mstream = new System.IO.MemoryStream())
+                    {
+                        HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
+                        HttpContext.Current.Response.AppendHeader("content-disposition", String.Format("{1}; filename={0}", fileName, "attachment"));
+                        HttpContext.Current.Response.BinaryWrite(ms);
+                        HttpContext.Current.Response.End();
+                    }
                 }
-
-                using (var mstream = new System.IO.MemoryStream())
+                catch (Exception ex)
                 {
-                    HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
-                    HttpContext.Current.Response.AppendHeader("content-disposition", String.Format("{1}; filename={0}", fileName, "attachment"));
-                    HttpContext.Current.Response.BinaryWrite(ms);
-                    HttpContext.Current.Response.End();
+                    throw ex;
                 }
 
                 //String gd = Guid.NewGuid().ToString();
@@ -52,6 +59,7 @@ namespace TietoCRM
                 return "0";
             }
         }
+
         private static byte[] ReadFully(Stream input)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -76,6 +84,43 @@ namespace TietoCRM
             {
                 GC.Collect();
             }
+        }
+
+        public DataTable ToDataTable(List<Dictionary<string, object>> list, string workSheetName)
+        {
+            DataTable result = new DataTable();
+            if (list.Count == 0)
+                return result;
+
+            result.TableName = workSheetName;
+
+            var columnNames = list.SelectMany(dict => dict.Keys).Distinct();
+            result.Columns.AddRange(columnNames.Select(c => new DataColumn(c)).ToArray());
+            foreach (Dictionary<string, object> item in list)
+            {
+                var row = result.NewRow();
+                foreach (var key in item.Keys)
+                {
+                    row[key] = item[key];
+                }
+
+                result.Rows.Add(row);
+            }
+
+            foreach (DataColumn column in result.Columns)
+            {
+                var str = column.ColumnName.Replace("_", " ");
+                column.ColumnName = FirstCharToUpper(str);
+            }
+
+            return result;
+        }
+
+        private string FirstCharToUpper(string input)
+        {
+            if (String.IsNullOrEmpty(input))
+                throw new ArgumentException("Empty input for column name (ExportExcel.cs)");
+            return input.First().ToString().ToUpper() + input.Substring(1);
         }
     }
 }

@@ -6,6 +6,7 @@
     <div class="col-md-12">
         <form method="get" action="~/SentContractsReport/Pdf" target="_blank" class="form-inline">
             <button id="fetch-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
+            <button id="fetch-excel" style="margin-top: 1.7em;" class="btn btn-default" type="button">Excel</button>
         </form>
     </div>
     <div class="col-md-12">
@@ -104,6 +105,10 @@
             var sort = "?sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
             window.open(serverPrefix + 'SentContractsReport/Pdf' + sort, "_blank");
+        })
+
+        $('#fetch-excel').click(function () {
+            window.open(serverPrefix + 'SentContractsReport/ExportExcel', "_parent");
         })
     });
 

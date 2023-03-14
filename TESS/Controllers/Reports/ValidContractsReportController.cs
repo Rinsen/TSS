@@ -1,6 +1,7 @@
 ﻿using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web;
@@ -36,8 +37,15 @@ namespace TietoCRM.Controllers.Reports
             pdf.RotativaOptions.CustomSwitches += " --header-center \"Valid Contracts Report\"";
 
             return pdf;
+        }
 
+        public string ExportExcel()
+        {            
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
 
+            DataTable dt = ex.ToDataTable(GenerateValidContracts(), "ValidContracts");
+
+            return ex.Export(dt, "ValidContracts.xlsx");
         }
 
         public String ValidContacts()

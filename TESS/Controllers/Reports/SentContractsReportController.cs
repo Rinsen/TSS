@@ -1,6 +1,7 @@
 ﻿using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -37,8 +38,15 @@ namespace TietoCRM.Controllers.Reports
             pdf.RotativaOptions.CustomSwitches += " --header-center \"Sent Contracts Report\"";
 
             return pdf;
+        }
 
+        public string ExportExcel()
+        {
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
 
+            DataTable dt = ex.ToDataTable(GenerateSentContracts(), "SentContracts");
+
+            return ex.Export(dt, "SentContracts.xlsx");
         }
 
         public String SentContracts()
