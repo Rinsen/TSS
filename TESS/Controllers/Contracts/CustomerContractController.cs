@@ -1143,7 +1143,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
-                string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+                string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id, false);
 
                 view_ContractText contractText = new view_ContractText();
                 contractText.Select("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
@@ -1864,7 +1864,7 @@ namespace TietoCRM.Controllers.Contracts
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
 
                 view_ContractText ctext = new view_ContractText();
-                string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+                string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id, false);
                 ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo, contract.Contract_type);
 
                 return "1";
@@ -1999,7 +1999,7 @@ namespace TietoCRM.Controllers.Contracts
             contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
 
             view_ContractText ctext = new view_ContractText();
-            string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+            string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id, false);
             ctext.UpdateModuleInfo(contract.Customer, contract.Contract_id, moduleInfo, contract.Contract_type);
 
             return "1";
@@ -3023,7 +3023,7 @@ namespace TietoCRM.Controllers.Contracts
                     //Uppdatera kontraktet med nya texterna.
                     view_Contract contract = new view_Contract("ID = " + contractId.ToString());
 
-                    string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id);
+                    string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id, false);
 
                     view_ContractText contractText = new view_ContractText();
                     contractText.Select("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
@@ -3416,7 +3416,7 @@ namespace TietoCRM.Controllers.Contracts
         /// <param name="contractId"></param>
         /// <param name="onlyRemovedModules"></param>
         /// <returns></returns>
-        private string updateDescriptions(string customer, string contractId, bool onlyRemovedModules = false)
+        private string updateDescriptions(string customer, string contractId, bool? onlyRemovedModules)
         {
             var contractRow = new view_ContractRow();
             var contractArtDescriptionList = contractRow.GetContractRowsForModuleInfo(customer, contractId, onlyRemovedModules);
