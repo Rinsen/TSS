@@ -244,139 +244,145 @@
 @if (ViewBag.RemArticles.Count > 0 || ViewBag.RemEducationPortals.Count > 0)
 {
 <div style="margin-top:20px">
-    <h4>Avslutade moduler</h4>
+    <span style="font-size: 14pt"><strong>Avslutade moduler</strong></span>
 </div>
 }
 
 @if (ViewBag.RemArticles.Count > 0)
 {
-    <div id="crm-pdf-module-rows">
-        @{
-            decimal ProductMaintenanceTotal = 0;
-            decimal ProductLicenseTotal = 0;
+<div id="crm-pdf-module-rows">
+    @{
+        decimal ProductMaintenanceTotal = 0;
+        decimal ProductLicenseTotal = 0;
+        bool firstLap = true;
 
-            String previousSystem = "";
-            String previousPriceType = "";
-        }
-        @foreach (dynamic article in ViewBag.RemArticles)
+        String previousSystem = "";
+        String previousPriceType = "";
+    }
+    @foreach (dynamic article in ViewBag.RemArticles)
+    {
+        if (previousPriceType != article.Price_type)
         {
-            if (previousPriceType != article.Price_type)
-            {
-                previousPriceType = article.Price_type;
-                <div class="@subh1" id="crm-pdf-module-rows-title">
-                    <table>
-                        <tr>
-                            <td>Produkter</td>
-                            <td></td>
-                            <td>@rubEng</td>
-                            <td>@article.Price_type @krRub</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="large-divider"></div>
-            }
-            // Calculate total sums
-            ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
-            ProductLicenseTotal += Convert.ToDecimal(article.License);
-
-            // Format currency
-            String Maintenance = "";
-            String License = "";
-            if (article.Maintenance != 0)
-            {
-                if ((article.Maintenance % 1) == 0)
-                {
-                    Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
-                }
-                else
-                {
-                    Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
-                }
-            }
-            if (article.License != 0)
-            {
-                if ((article.License % 1) == 0)
-                {
-                    License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
-                }
-                else
-                {
-                    License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
-                }
-            }
-            if (!krEveryRow)
-            {
-                Maintenance = Maintenance.Replace(" kr", "");
-            }
-            if (previousSystem != article.System)
-            {
-                <div class="crm-pdf-subrows_1">
-                    <table>
-                        <tr>
-                            <td>@article.System</td>
-                        </tr>
-                    </table>
-                </div>
-            }
-            <div class="@subr2">
+            previousPriceType = article.Price_type;
+            <div class="@subh1" id="crm-pdf-module-rows-title">
                 <table>
                     <tr>
-                        <td>@article.Classification</td>
-                        <td>@article.Article_number</td>
-                        <td>@article.Module</td>
-                        <td>@License</td>
-                        <td>@Maintenance</td>
-                    </tr>
-                </table>
-            </div>
-            previousSystem = article.System;
-        }
-        @{
-            // Format currency for total sums
-            String ProductMaintenanceTotalFormated;
-            if ((ProductMaintenanceTotal % 1) == 0)
-            {
-                ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
-            }
-            else
-            {
-                ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
-            }
-            if (!krEveryRow)
-            {
-                ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
-            }
-
-            // Format currency for total sums
-            String ProductLicenseTotalFormated;
-            if ((ProductLicenseTotal % 1) == 0)
-            {
-                ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
-            }
-            else
-            {
-                ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
-            }
-            if (!krEveryRow)
-            {
-                ProductLicenseTotalFormated = ProductLicenseTotalFormated.Replace(" kr", "");
-            }
-        }
-        @if (toBeSummerized)
-        {
-            <span class="large-divider"></span>
-            <div class="@subs1">
-                <table>
-                    <tr>
+                        <td><span style="font-size: 10pt; font-weight: bold">Produkter</span></td>
                         <td></td>
-                        <td>Summa</td>
-                        <td>@ProductLicenseTotalFormated</td>
-                        <td>@ProductMaintenanceTotalFormated</td>
+                        <td>@rubEng</td>
+                        <td>@article.Price_type @krRub</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="large-divider"></div>
+        }
+        // Calculate total sums
+        ProductMaintenanceTotal += Convert.ToDecimal(article.Maintenance);
+        ProductLicenseTotal += Convert.ToDecimal(article.License);
+
+        // Format currency
+        String Maintenance = "";
+        String License = "";
+        if (article.Maintenance != 0)
+        {
+            if ((article.Maintenance % 1) == 0)
+            {
+                Maintenance = string.Format(se, "{0:C0}", article.Maintenance).Replace(".", " ");
+            }
+            else
+            {
+                Maintenance = string.Format(se, "{0:C2}", article.Maintenance).Replace(".", " ");
+            }
+        }
+        if (article.License != 0)
+        {
+            if ((article.License % 1) == 0)
+            {
+                License = string.Format(se, "{0:C0}", article.License).Replace(".", " ");
+            }
+            else
+            {
+                License = string.Format(se, "{0:C2}", article.License).Replace(".", " ");
+            }
+        }
+        if (!krEveryRow)
+        {
+            Maintenance = Maintenance.Replace(" kr", "");
+        }
+        if (previousSystem != article.System)
+        {
+            if (!firstLap)
+            {
+                <div style="margin-top:10px" class="large-divider"></div>
+            }
+            firstLap = false;
+            <div class="crm-pdf-subrows_1">
+                <table>
+                    <tr>
+                        <td>@article.System</td>
                     </tr>
                 </table>
             </div>
         }
-    </div>
+        <div class="@subr2">
+            <table>
+                <tr>
+                    <td>@article.Article_number</td>
+                    <td>@article.Classification</td>
+                    <td>@article.Module</td>
+                    <td>@License</td>
+                    <td>@Maintenance</td>
+                </tr>
+            </table>
+        </div>
+        previousSystem = article.System;
+    }
+    @{
+        // Format currency for total sums
+        String ProductMaintenanceTotalFormated;
+        if ((ProductMaintenanceTotal % 1) == 0)
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C0}", ProductMaintenanceTotal).Replace(".", " ");
+        }
+        else
+        {
+            ProductMaintenanceTotalFormated = string.Format(se, "{0:C2}", ProductMaintenanceTotal).Replace(".", " ");
+        }
+        if (!krEveryRow)
+        {
+            ProductMaintenanceTotalFormated = ProductMaintenanceTotalFormated.Replace(" kr", "");
+        }
+
+        // Format currency for total sums
+        String ProductLicenseTotalFormated;
+        if ((ProductLicenseTotal % 1) == 0)
+        {
+            ProductLicenseTotalFormated = string.Format(se, "{0:C0}", ProductLicenseTotal).Replace(".", " ");
+        }
+        else
+        {
+            ProductLicenseTotalFormated = string.Format(se, "{0:C2}", ProductLicenseTotal).Replace(".", " ");
+        }
+        if (!krEveryRow)
+        {
+            ProductLicenseTotalFormated = ProductLicenseTotalFormated.Replace(" kr", "");
+        }
+    }
+    @if (toBeSummerized)
+    {
+        <span class="large-divider"></span>
+        <div class="@subs1">
+            <table>
+                <tr>
+                    <td></td>
+                    <td>Summa</td>
+                    <td>@ProductLicenseTotalFormated</td>
+                    <td>@ProductMaintenanceTotalFormated</td>
+                </tr>
+            </table>
+        </div>
+    }
+</div>
 }
 
 @if (ViewBag.RemEducationPortals.Count > 0)

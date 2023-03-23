@@ -1277,7 +1277,7 @@ namespace TietoCRM.Controllers.Contracts
                         }
                         else
                         {
-                            InsertModuleText(module.Description, "A", contract._ID, (int)module.Article_number);
+                            InsertModuleText(module.Contract_description, "A", contract._ID, (int)module.Article_number);
                         }
                     }
                 }
