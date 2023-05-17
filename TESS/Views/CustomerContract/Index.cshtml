@@ -704,7 +704,7 @@
 
                         window.history.pushState(null,null,["Index?contract-id=" + data + "&customer=" + newContract.Customer ]);
 
-                        window.location = "ViewPdf?contract-id=" + data + "&customer=" + newContract.Customer;
+                        window.location = "ViewPdf?contract-id=" + encodeURIComponent(data) + "&customer=" + newContract.Customer;
 
                     }
                     else {
@@ -1114,9 +1114,9 @@
                 $td.parent().dblclick(function(){
                     $input = $("#CustomerContract-table_filter").find(":input");
                     val = $input.val();
-                    window.history.pushState(null,null,["ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val]);
+                    window.history.pushState(null, null, ["ViewPdf?contract-id=" + encodeURIComponent(selectedId) + "&customer=" + $customerSelect.val() + "&search=" + val]);
 
-                    window.location = "ViewPdf?contract-id=" + selectedId + "&customer=" + $customerSelect.val() + "&search=" + val;
+                    window.location.href = "ViewPdf?contract-id=" + encodeURIComponent(selectedId) + "&customer=" + $customerSelect.val() + "&search=" + val;
                 });
 
                 var object = {Contract_id: aData["Contract_id"], Customer: aData["Customer"]}
@@ -1288,8 +1288,8 @@
                 uval = $userSelect.val();
                 if(cval == "*")
                     cval = selectedContract.Customer;
-                window.history.pushState(null,null,["Index?contract-id=" + contract + "&customer=" + cval + "&search=" + val ]);
-                window.location = "ViewPdf?contract-id=" + contract + "&customer=" + cval + "&our_sign=" + uval + "&search=" + val;
+                window.history.pushState(null, null, ["Index?contract-id=" + encodeURIComponent(contract) + "&customer=" + cval + "&search=" + val ]);
+                window.location = "ViewPdf?contract-id=" + encodeURIComponent(contract) + "&customer=" + cval + "&our_sign=" + uval + "&search=" + val;
             }
 
         });

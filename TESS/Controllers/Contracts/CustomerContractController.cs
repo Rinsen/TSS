@@ -235,7 +235,10 @@ namespace TietoCRM.Controllers.Contracts
             bool ctrResign = false;
 
             view_Contract contract = new view_Contract("Contract_id = '" + urlContractId + "' AND Customer = '" + urlCustomer + "'");
-            contract._ContractConsultantRows = contract._ContractConsultantRows.OrderBy(o => o.Alias).ToList();
+            if(contract._ContractConsultantRows != null)
+            {
+                contract._ContractConsultantRows = contract._ContractConsultantRows.OrderBy(o => o.Alias).ToList();
+            }
             ViewData.Add("CustomerContract", contract);
 
             var moduleTexts = updateDescriptions(urlCustomer, urlContractId, false);
@@ -294,6 +297,7 @@ namespace TietoCRM.Controllers.Contracts
             SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
             SortedList<String, List<dynamic>> articleAndServicesDic = new SortedList<String, List<dynamic>>();
 
+            if(contract._ContractRows != null)
             foreach (view_ContractRow contractRow in contract._ContractRows)
             {
                 view_Module module = new view_Module();
@@ -373,6 +377,7 @@ namespace TietoCRM.Controllers.Contracts
                 }
             }
 
+            if(contract._ContractConsultantRows != null)
             foreach (view_ContractConsultantRow consultantRow in contract._ContractConsultantRows)
             {
                 view_Module service = new view_Module();
@@ -446,8 +451,16 @@ namespace TietoCRM.Controllers.Contracts
             ViewData.Add("CtrResign", ctrResign);
 
             view_Reminder vR = new view_Reminder();
-            var remindExist = vR.checkIfReminderPerCustomer(contract.Customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
-            ViewData.Add("ShowReminderButton", remindExist.CompareTo("-1") == 0 ? false : true);
+
+            if(contract.Customer != null)
+            {
+                var remindExist = vR.checkIfReminderPerCustomer(contract.Customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+                ViewData.Add("ShowReminderButton", remindExist.CompareTo("-1") == 0 ? false : true);
+            }
+            else
+            {
+                ViewData.Add("ShowReminderButton", false);
+            }
 
             //Här styrs sorteringen av artiklarna ut på avtalet av aktuella artiklar.
             if (usr.AvtalSortera == 1) //Article name
@@ -460,7 +473,7 @@ namespace TietoCRM.Controllers.Contracts
                 articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
                 remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList();
             }
-            else if (usr.AvtalSortera == 3) //Classification, Article-no. Denna sortering styrs från view_ContractRow, GetOrderBy()
+            else if (usr.AvtalSortera == 3 && contract._ContractConsultantRows != null) //Classification, Article-no. Denna sortering styrs från view_ContractRow, GetOrderBy()
             {
                 //articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
                 //remArticles = remArticles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Article_number).ToList();
@@ -539,52 +552,61 @@ namespace TietoCRM.Controllers.Contracts
             customer.Select("ID=" + customer._ID);
             ViewData.Add("Customer", customer);
 
-            view_User user = new view_User();
-            user.Select("Sign = " + contract.Sign);
-            //if (System.Web.HttpContext.Current.GetUser().User_level > 1)
-            //    user = System.Web.HttpContext.Current.GetUser();
-            //else
-            //{
-            //    List<view_User> users = new List<view_User>();
-            //    foreach(String name in customer._Representatives)
-            //    {
-            //        view_User rep = new view_User();
-            //        rep.Select("Sign=" + name);
-            //        users.Add(rep);
-            //    }
-            //    if (users.Count > 0)
-            //    {
-            //        List<view_User> tempUsers = users.Where(u => u.Area == contract.Area).ToList();
-            //        if(tempUsers.Count > 0)
-            //            user = tempUsers.First();
-            //        else
-            //            user = System.Web.HttpContext.Current.GetUser();
-            //    }
-            //    else
-            //        user = System.Web.HttpContext.Current.GetUser();
-            //}
-                
-            ViewData.Add("Representative", user);
-
-            if (user.City != null)
+            if(contract.Sign != null)
             {
-                int iSplit = 0;
-                for (int i = 0; i < user.City.Length; i++)
+                view_User user = new view_User();
+                user.Select("Sign = " + contract.Sign);
+                //if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                //    user = System.Web.HttpContext.Current.GetUser();
+                //else
+                //{
+                //    List<view_User> users = new List<view_User>();
+                //    foreach(String name in customer._Representatives)
+                //    {
+                //        view_User rep = new view_User();
+                //        rep.Select("Sign=" + name);
+                //        users.Add(rep);
+                //    }
+                //    if (users.Count > 0)
+                //    {
+                //        List<view_User> tempUsers = users.Where(u => u.Area == contract.Area).ToList();
+                //        if(tempUsers.Count > 0)
+                //            user = tempUsers.First();
+                //        else
+                //            user = System.Web.HttpContext.Current.GetUser();
+                //    }
+                //    else
+                //        user = System.Web.HttpContext.Current.GetUser();
+                //}
+
+                ViewData.Add("Representative", user);
+
+                if (user.City != null)
                 {
-                    if (!char.IsWhiteSpace(user.City[i]) && !char.IsDigit(user.City[i]))
+                    int iSplit = 0;
+                    for (int i = 0; i < user.City.Length; i++)
                     {
-                        iSplit = i;
-                        break;
+                        if (!char.IsWhiteSpace(user.City[i]) && !char.IsDigit(user.City[i]))
+                        {
+                            iSplit = i;
+                            break;
+                        }
                     }
+
+                    ViewData.Add("OurCity", user.City.Substring(iSplit));
+                }
+                else
+                {
+                    ViewData.Add("OurCity", "");
                 }
 
-                ViewData.Add("OurCity", user.City.Substring(iSplit));
             }
             else
             {
                 ViewData.Add("OurCity", "");
             }
-            
+
+
             this.ViewData.Add("Services", view_Module.getAllModules(false, 2).Where(w => !w.Expired.Value)); //Exkludera utgångna tjänster
 
             List<view_CustomerOffer> openOffers = view_CustomerOffer.getAllCustomerOffers(customer.Customer)

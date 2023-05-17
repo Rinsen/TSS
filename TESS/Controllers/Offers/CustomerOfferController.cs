@@ -1930,6 +1930,7 @@ namespace TietoCRM.Controllers
                 return resultString;
             }
         }
+
         private String Json_UpdateClassificationSelect()
         {
             String System = Request.Form["System"];
@@ -1939,6 +1940,7 @@ namespace TietoCRM.Controllers
             returnList = returnList.OrderBy(a => a.Value == "-").ToList();
             return (new JavaScriptSerializer()).Serialize(returnList);
         }
+
         private String Json_UpdateViewService()
         {
             String obj = HttpContext.Request.Unvalidated.Form["object"];

@@ -70,8 +70,8 @@
                     "module": module,
                 },
                 "dataSrc": function (res) {
-                    rowLength = res.data.length;
-                    return res.data;
+                    rowLength = res.data != null ? res.data.length : 0;
+                    return res.data != null ? res.data : [];
                 }
             },
             "defaultContent": "",
