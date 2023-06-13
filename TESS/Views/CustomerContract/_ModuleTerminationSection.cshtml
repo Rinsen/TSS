@@ -70,7 +70,7 @@
                     <p></p>
                 </td>
                 <td id="crm-pdf-tieto-info">
-                    <p>Tietoevry AB</p>
+                    <p>@ViewBag.Organisation.CompanyName</p>
                     <p>@ViewBag.Representative.Address</p>
                     <p>@ViewBag.Representative.City</p>
                 </td>
@@ -150,7 +150,7 @@
         <div class="crm-pdf-footer-section">
             <div id="crm-pdf-footer-regards">
                 <br /><br /><p>Med vänlig hälsning</p>
-                <p>Tietoevry AB</p>
+                <p>@ViewBag.Organisation.CompanyName</p>
                 <div class="signature-container">
                     @{
                         String url = "../Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";

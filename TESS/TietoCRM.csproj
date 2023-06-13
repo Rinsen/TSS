@@ -220,6 +220,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\List Management\ModuleController.cs" />
     <Compile Include="Controllers\List Management\TariffController.cs" />
+    <Compile Include="Controllers\Reports\ModuleOverviewReportController.cs" />
     <Compile Include="Controllers\Reports\ModuleReportController.cs" />
     <Compile Include="Controllers\Reports\ProductReportController.cs" />
     <Compile Include="Controllers\Reports\SaleReportController.cs" />
@@ -271,6 +272,7 @@
     <Compile Include="Models\view_ModuleDiscount.cs" />
     <Compile Include="Models\view_ModuleFeature.cs" />
     <Compile Include="Models\view_ModuleModule.cs" />
+    <Compile Include="Models\view_OrganisationInformation.cs" />
     <Compile Include="Models\view_ModuleText.cs" />
     <Compile Include="Models\view_OfferRow.cs" />
     <Compile Include="Models\view_MainContractTemplate.cs" />
@@ -515,7 +517,6 @@
     <None Include="Content\ExpPdfStyle.less" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\tree.css" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Rotativa\wkhtmltopdf.exe" />
@@ -996,6 +997,8 @@
     <Content Include="Views\Template\Denied.cshtml" />
     <Content Include="Views\CustomerProductGrowthReport\Index.cshtml" />
     <Content Include="Views\CustomerProductGrowthReport\Pdf.cshtml" />
+    <Content Include="Views\ModuleOverviewReport\Index.cshtml" />
+    <Content Include="Views\ModuleOverviewReport\Pdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1086,7 +1089,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/TESS</IISUrl>
+          <IISUrl>http://localhost:8080/TESS</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

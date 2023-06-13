@@ -139,6 +139,8 @@ namespace TietoCRM.Controllers
             }
             ViewData.Add("SelectOfferStatus", selectOfferStatus);
 
+            ViewData.Add("Organisations", view_OrganisationInformation.getAllOrganisations());
+
             //Server.Transfer(Request.Url.AbsoluteUri, true);
 
             //PropertyInfo isreadonly = typeof(NameValueCollection).GetProperty("IsReadOnly", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -179,6 +181,11 @@ namespace TietoCRM.Controllers
 
             co._ConsultantRows = co._ConsultantRows.OrderBy(o => o.Alias).ToList();
             ViewData.Add("CustomerOffer", co);
+
+            view_OrganisationInformation orgInfo = new view_OrganisationInformation();
+            orgInfo.Select("ID = " + co.OrgInfoId);
+
+            ViewData.Add("OrganisationInformation", orgInfo);
 
             var customer = new view_Customer();
             customer.Select("Customer = '" + co.Customer.ToString() + "'");
@@ -333,6 +340,11 @@ namespace TietoCRM.Controllers
             }
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             ViewData.Add("CustomerOffer", co);
+
+            view_OrganisationInformation orgInfo = new view_OrganisationInformation();
+            orgInfo.Select("ID = " + co.OrgInfoId);
+
+            ViewData.Add("OrganisationInformation", orgInfo);
 
             ViewData.Add("UseLogo", System.Web.HttpContext.Current.GetUser().Use_logo);
 
@@ -693,6 +705,8 @@ namespace TietoCRM.Controllers
             ViewData.Add("Systems", GetAllSystemNames(co.Area));
 
             ViewData.Add("ContactPersons", view_CustomerContact.getAllCustomerContacts(customer));
+
+            ViewData.Add("Organisations", view_OrganisationInformation.getAllOrganisations());
 
             List<string> l = new List<string>();
             view_Customer us = new view_Customer();
@@ -2053,6 +2067,8 @@ namespace TietoCRM.Controllers
                     co.Offer_created = DateTime.Today;
 
                     co.Update("Offer_number = '" + offerNumber + "'");
+
+                    view_OrganisationInformation.UpdateOrganisationInformationDefaultValue(co.OrgInfoId, (bool)offerVariables["DefaultOrg"]);
                 }
                 catch (Exception ex)
                 {

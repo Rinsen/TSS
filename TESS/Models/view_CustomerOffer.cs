@@ -78,6 +78,9 @@ namespace TietoCRM.Models
         private String buyer;
         public String Buyer { get { return buyer; } set { buyer = value; } }
 
+        private int orgInfoId;
+        public int OrgInfoId { get { return orgInfoId; } set { orgInfoId = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

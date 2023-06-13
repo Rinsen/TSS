@@ -318,7 +318,7 @@
                         <div class="col-sm-10">
                             <select class="form-control" id="contactPerson4">
                                 <option value="none">None</option>
-                                
+
                             </select>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                     <div class="form-group">
                         <label for="created4" class="col-sm-2 control-label">Offer created</label>
                         <div class="col-sm-10">
-                            <input class="form-control" name="Created" id="created4" type="date" value='@DateTime.Now.Date.ToShortDateString()'/>
+                            <input class="form-control" name="Created" id="created4" type="date" value='@DateTime.Now.Date.ToShortDateString()' />
                         </div>
                     </div>
                     <div class="form-group">
@@ -366,9 +366,33 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="OrgInfoId" class="col-sm-2 control-label">Organisation</label>
+                        <div class="col-sm-4">
+                            <select class="form-control selectpicker" name="OrgInfoId" id="OrgInfoId" placeholder="Organisation">
+                                @foreach (view_OrganisationInformation org in ViewBag.Organisations)
+                                {
+                                    if (org.IsDefaultValue)
+                                    {
+                                        <option selected value="@org._ID">@org.CompanyName - @org.OrgNo (Default)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@org._ID">@org.CompanyName - @org.OrgNo</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-5 checkbox">
+                            <label style="text-align:left" class="col-sm-12">
+                                <input checked id="defaultOrg" data-id="defaultOrg" name="DefaultOrg" type="checkbox" />
+                                Default Organisation
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="summera" class="col-sm-2 control-label">Summera</label>
                         @{
-                           String SummeraChecked = Convert.ToBoolean((ViewBag.Summera)) ? "checked" : "";
+                            String SummeraChecked = Convert.ToBoolean((ViewBag.Summera)) ? "checked" : "";
                         }
                         <div class="col-sm-10">
                             <div class="checkbox">
@@ -521,6 +545,8 @@
         newOffer.Offer_valid =  $("#valid4").val();
         newOffer.Offer_status =  $("#offerStatus4").val();
         newOffer.Title =  $("#offerTitle4").val();
+        newOffer.OrgInfoId = $("#OrgInfoId").val();
+        newOffer.DefaultOrg = $("#defaultOrg").prop("checked") ? 1 : 0;
         newOffer.Summera = $("#summera").prop("checked") ? 1 : 0;
         newOffer.Our_Sign = $("#ourSign4").val();
         
@@ -552,6 +578,20 @@
 
 
     });
+
+    $("#OrgInfoId").change(function (element) {
+        var sel = document.getElementById("OrgInfoId");
+        if (sel.selectedIndex > -1) {
+            var text = sel.options[sel.selectedIndex].text;
+
+            if (text != null && text.indexOf("Default") > -1) {
+                document.getElementById("defaultOrg").checked = true;
+            } else {
+                document.getElementById("defaultOrg").checked = false;
+            }
+        }
+    });
+
 </script>
 
 <!--
@@ -1234,11 +1274,24 @@
         $('#crm-save-btn').on('click', save);
 
         $("#crm-add-row").click(function(){
-                loadNewContactData();
-                loadNewRepresentativeData();
-                $("#newRowModal").appendTo("body").modal("show").draggable();
-            });
-            drawButtonsExtension($selRowContainer, "bottom");
+            loadNewContactData();
+            loadNewRepresentativeData();
+
+            var sel = document.getElementById("OrgInfoId");
+            if (sel.selectedIndex > -1) {
+                var text = sel.options[sel.selectedIndex].text;
+
+                if (text != null && text.indexOf("Default") > -1) {
+                    document.getElementById("defaultOrg").checked = true;
+                } else {
+                    document.getElementById("defaultOrg").checked = false;
+                }
+            }
+
+            $("#newRowModal").appendTo("body").modal("show").draggable();
+        });
+
+        drawButtonsExtension($selRowContainer, "bottom");
     }
 
     $(document).ready(function () {

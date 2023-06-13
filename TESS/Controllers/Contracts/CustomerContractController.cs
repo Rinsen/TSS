@@ -17,6 +17,7 @@ using TietoCRM.Models;
 using TietoCRM.Extensions;
 using System.Data;
 using System.Net;
+using System.Reflection;
 
 namespace TietoCRM.Controllers.Contracts
 {
@@ -47,6 +48,7 @@ namespace TietoCRM.Controllers.Contracts
             "Sign",
             "_ID",
             "Monthly_fee_from",
+            "ExpirationList",
             "SSMA_timestamp"
         };
 
@@ -97,10 +99,34 @@ namespace TietoCRM.Controllers.Contracts
 
             this.ViewData.Add("OfferNumber", on);
 
-            this.ViewData.Add("Properties", typeof(view_Contract).GetProperties());
+            var properties = new List<PropertyInfo>
+            {
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Customer").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Title").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_type").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Term_of_notice").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Extension").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Status").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "CRM_id").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "OrgInfoId").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Valid_from").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Valid_through").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Main_contract_id").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Expire").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Observation").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Note").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Contact_person").First(),
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Summera").First()
+            };
+
+            this.ViewData.Add("Properties", properties.ToArray());
+
+
             this.ViewData.Add("SkipProperties", this.skipProp);
             this.ViewData.Add("Statuses", GetStatuses());
             this.ViewData.Add("ContractTypes", GetContractTypes());
+            this.ViewData.Add("Organisations", view_OrganisationInformation.getAllOrganisations());
+
             //this.ViewData.Add("ContractTypes", (new view_Contract()).GetSelectOptions("ContractType"));
             this.ViewData["Title"] = "Customer Contract";
 
@@ -271,6 +297,10 @@ namespace TietoCRM.Controllers.Contracts
             view_ContractHead contractHead = new view_ContractHead();
             contractHead.Select("Contract_id = '" + contract.Contract_id + "' AND Customer = '" + contract.Customer + "'");
             ViewData.Add("ContractHead", contractHead);
+
+            view_OrganisationInformation organisationInformation = new view_OrganisationInformation();
+            organisationInformation.Select("ID = " + contract.OrgInfoId);
+            ViewData.Add("Organisation", organisationInformation);
 
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
             HashSet<view_ContractConsultantRow> customersServices = new HashSet<view_ContractConsultantRow>();
@@ -637,25 +667,40 @@ namespace TietoCRM.Controllers.Contracts
             this.ViewData["Title"] = "Customer Contract";
 
             //lägg till rätt properties beroende på typ., signs, statuse.
-            List<System.Reflection.PropertyInfo> properties;
+            List<System.Reflection.PropertyInfo> properties = new List<System.Reflection.PropertyInfo>();
             if (contract.Status == "Sänt")
             {
-                properties = typeof(view_Contract).GetProperties().Where(   p => 
-                        p.Name == "Contract_id" || p.Name == "Title" || p.Name == "Status" || p.Name == "Main_contract_id" || p.Name == "Contract_type" ||
-                        p.Name == "Term_of_notice" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Valid_from" || p.Name == "Valid_through" ||
-                        p.Name == "Extension" || p.Name == "Expire" || p.Name == "Observation" || p.Name == "Note" ||
-                        p.Name == "Sign" || p.Name == "Area" || p.Name == "Summera" || p.Name == "Monthly_fee_from"
-                    ).ToList();
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Title").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_type").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Term_of_notice").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Extension").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Status").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "CRM_id").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Valid_from").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Valid_through").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "OrgInfoId").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Main_contract_id").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Expire").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Observation").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Note").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Sign").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Area").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Summera").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Monthly_fee_from").First());
             }
             else
             {
-                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Note" || p.Name == "Sign" || p.Name == "Summera").ToList();
+                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Note" || p.Name == "Sign" || p.Name == "Summera" || p.Name == "OrgInfoId").ToList();
             }
+
             this.ViewData.Add("TableItems", properties);
             //this.ViewData.Add("Statuses", GetStatuses());
             this.ViewData.Add("Statuses", (new SelectOptions<view_Contract>()).GetSelectOptions("Status"));
             //this.ViewData.Add("ContractTypes", GetContractTypes());
             this.ViewData.Add("ContractTypes", (new SelectOptions<view_Contract>()).GetSelectOptions("Contract_type"));
+            this.ViewData.Add("Organisations", view_OrganisationInformation.getAllOrganisations());
+
             List<String> mainContracts = view_Contract.GetContracts(customer.Customer).Where(c => c.Contract_type == "Huvudavtal").Select(c => c.Contract_id).ToList();
             this.ViewData.Add("MainContracts", mainContracts);
             this.ViewData.Add("Users", view_User.getAllUsers().Select(u => u.Sign));
@@ -1009,6 +1054,13 @@ namespace TietoCRM.Controllers.Contracts
                     new view_AuditLog().Write("C", "view_Contract", a._ID.ToString(), a.Contract_id + ", " + a.Customer);
 
                     scope.Complete();
+                }
+
+                string defaultOrg = Request.Form["defaultorg"];
+                if(!string.IsNullOrEmpty(defaultOrg) && a.OrgInfoId.HasValue)
+                {
+                    var isDefaultOrg = defaultOrg == "1" ? true : false;
+                    view_OrganisationInformation.UpdateOrganisationInformationDefaultValue(a.OrgInfoId.Value, isDefaultOrg);
                 }
 
                 return a.Contract_id.ToString();
@@ -2669,6 +2721,7 @@ namespace TietoCRM.Controllers.Contracts
 
 
                 }
+
                 //If contract ID has been changed, and it's a mani ciontract, then we also change the Main Contract ID
                 if (a.Is(ContractType.MainContract))
                 {
@@ -2698,6 +2751,13 @@ namespace TietoCRM.Controllers.Contracts
                     }
 
                     
+                }
+
+                var defaultOrg = false;
+                if (a.OrgInfoId.HasValue && map["DefaultOrg"] != null && map["DefaultOrg"] != null)
+                {
+                    defaultOrg = map["DefaultOrg"] == "1" ? true : false;
+                    view_OrganisationInformation.UpdateOrganisationInformationDefaultValue(a.OrgInfoId.Value, defaultOrg);
                 }
 
                 //ViewBag.CustomerContract.Contract_id = newContractId;
@@ -3081,7 +3141,7 @@ namespace TietoCRM.Controllers.Contracts
             {
                 ChangedBy = System.Web.HttpContext.Current.GetUser().Sign,
                 Changed = DateTime.Now,
-                Description = ContractDescription,
+                Description = ContractDescription != null ? ContractDescription : "",
 
                 Type = "A", //Avtal
 

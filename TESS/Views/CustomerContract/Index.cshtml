@@ -45,7 +45,7 @@
             <th data-field="#" data-sortable="false">#</th>
             @foreach (System.Reflection.PropertyInfo property in ViewBag.Properties)
             {
-                if (!property.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(property.Name))
+                if (!property.Name.StartsWith("_") && !ViewBag.SkipProperties.Contains(property.Name) && !property.Name.StartsWith("OrgInfoId"))
                 {
                     String PropertyName = property.Name.Replace("_", " ");
                     <th data-field="@property.Name" data-sortable="true">@PropertyName</th>
@@ -260,15 +260,20 @@
 
                                         String pName = pi.Name.Replace("_", " ");
 
-                                        if (count == 0 || count == 7)
+                                        if (count == 0 || count == 8)
                                         {
-                                            @Html.Raw("<td valign=\"top\">")
+                                            @Html.Raw("<td valign=\"top\" style=\"width:50%\">")
                                         }
 
-
-
                                         <div class="form-group">
-                                            <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
+                                            @if(pName == "OrgInfoId")
+                                            {
+                                                <label for="@pi.Name.ToLower()-select" style="font-size: 12px" class="col-sm-3 control-label">Organisation</label>
+                                            }
+                                            else
+                                            {
+                                                <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
+                                            }
                                             <div class="col-sm-9">
                                                 @if (pi.PropertyType == typeof(bool?) || pi.PropertyType == typeof(bool))
                                                 {
@@ -308,6 +313,26 @@
                                                         </label>
                                                     </div>
                                                 }
+                                                else if (pi.Name == "OrgInfoId")
+                                                {
+                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
+                                                        @foreach (view_OrganisationInformation org in ViewBag.Organisations)
+                                                        {
+                                                            if (org.IsDefaultValue)
+                                                            {
+                                                                <option selected value="@org._ID">@org.CompanyName - @org.OrgNo (Default)</option>
+                                                            }
+                                                            else
+                                                            {
+                                                                <option value="@org._ID">@org.CompanyName - @org.OrgNo</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <label style="text-align:left" class="col-sm-12">
+                                                        <input checked id="defaultorg" data-id="defaultorg" name="DefaultOrg" type="checkbox" />
+                                                        Default Organisation
+                                                    </label>
+                                                }
                                                 else
                                                 {
                                                     String inputType = "";
@@ -340,7 +365,7 @@
 
                                             </div>
                                         </div>
-                                        if (count == 6 || count == ViewBag.Properties.Length - 1)
+                                        if (count == 7 || count == ViewBag.Properties.Length - 1)
                                         {
                                             if (count == 4)
                                             {
@@ -665,27 +690,33 @@
 
         if ($("#new-contract-modal form").valid()) {
             var newContract = {}
+            var defaultOrg = "";
 
             var $formInputs = $("#newRowModal form").find(":input");
             var hashtags = "";
             var frmInpLen = $formInputs.length;
             for (var i = 0; i < frmInpLen; i++) {
                 var $currInput = $($formInputs[i]);
-                if($currInput.attr("name") == "Main_contract_id"){
+                var name = $currInput.attr("name");
+                if(name == "Main_contract_id"){
                     console.log($currInput.attr("name"), $currInput.val())
                     if($currInput.val() !== "ignore"){
                         newContract[$currInput.attr("name")] = $currInput.val();
                     }
                 }
-                else if($currInput.attr("name") != "Hashtags" && $currInput.attr("name") != "Summera")
-                    newContract[$currInput.attr("name")] = $currInput.val();
-                else if ($currInput.attr("name") == "Summera") {
+                else if (name == "DefaultOrg") {
+                    defaultOrg = (($currInput.prop("checked")) ? "1" : "0");
+                }
+                else if (name != "Hashtags" && name != "Summera")
+                    newContract[name] = $currInput.val();
+                else if (name == "Summera") {
                     newContract["Summera"] = (($currInput.prop("checked")) ? "1" : "0");
                 }
                 else
                     hashtags = $currInput.val();
             }
             newContract["Customer"] = $customerSelect.val();
+            newContract["OrgInfoId"] = $("#orginfoid-select").val();
             newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
             newContract["Area"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Area)";
 
@@ -694,7 +725,8 @@
                 "type": "POST",
                 "data": {
                     "json": JSON.stringify(newContract),
-                    "hashtags": hashtags
+                    "hashtags": hashtags,
+                    "defaultorg": defaultOrg
                 },
                 "success": function(data){
                     if(data != "0" && data != "-1"){
@@ -1152,7 +1184,7 @@
     @foreach (System.Reflection.PropertyInfo PropertyInfo in ViewBag.Properties)
         {
 
-            if ((!PropertyInfo.Name.StartsWith("_") || PropertyInfo.Name == "_HashtagList") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name))
+            if ((!PropertyInfo.Name.StartsWith("_") || PropertyInfo.Name == "_HashtagList") && !ViewBag.SkipProperties.Contains(PropertyInfo.Name) && !PropertyInfo.Name.StartsWith("OrgInfoId"))
             {
                 String PropertyName = PropertyInfo.Name.Replace("_", " ");
                 DataObject += "\t\t\t\t\t{ \"data\": \"" + @PropertyInfo.Name + "\"  },\r\n";
@@ -1326,6 +1358,20 @@
             selectedId = null;
             loadAppointments();
             updateDataTable($("#crm-select-customer").val(), this.value);
+        });
+
+        $("#orginfoid-select").change(function (element) {
+            //Set default org checkbox depending on OrgInfo-select
+            var sel = document.getElementById("orginfoid-select");
+            if (sel.selectedIndex > -1) {
+                var text = sel.options[sel.selectedIndex].text;
+
+                if (text != null && text.indexOf("Default") > -1) {
+                    document.getElementById("defaultorg").checked = true;
+                } else {
+                    document.getElementById("defaultorg").checked = false;
+                }
+            }
         });
 
         //Set focus on select-picker searchbox when selected

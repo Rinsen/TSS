@@ -7,55 +7,55 @@ using System.Linq;
 
 namespace TietoCRM.Models
 {
-public class view_ContractRow : SQLBaseClass
-	{
-		private String contract_id;
-		public String Contract_id { get{ return contract_id; } set{ contract_id = value; } }
+    public class view_ContractRow : SQLBaseClass
+    {
+        private string contract_id;
+        public string Contract_id { get { return contract_id; } set { contract_id = value; } }
 
-		private String customer;
-		public String Customer { get{ return customer; } set{ customer = value; } }
+        private string customer;
+        public string Customer { get { return customer; } set { customer = value; } }
 
-		private int article_number;
-		public int Article_number { get{ return article_number; } set{ article_number = value; } }
+        private int article_number;
+        public int Article_number { get { return article_number; } set { article_number = value; } }
 
-		private int? offer_number;
-		public int? Offer_number { get{ return offer_number; } set{ offer_number = value; } }
+        private int? offer_number;
+        public int? Offer_number { get { return offer_number; } set { offer_number = value; } }
 
-		private decimal? license;
-		public decimal? License { get{ return license; } set{ license = value ?? 0; } }
+        private decimal? license;
+        public decimal? License { get { return license; } set { license = value ?? 0; } }
 
-		private decimal? maintenance;
+        private decimal? maintenance;
         public decimal? Maintenance { get { return maintenance; } set { maintenance = value ?? 0; } }
 
-		private DateTime? delivery_date;
-		public DateTime? Delivery_date { get{ return delivery_date; } set{ delivery_date = value; } }
+        private DateTime? delivery_date;
+        public DateTime? Delivery_date { get { return delivery_date; } set { delivery_date = value; } }
 
-		private DateTime? created;
-		public DateTime? Created { get{ return created; } set{ created = value; } }
+        private DateTime? created;
+        public DateTime? Created { get { return created; } set { created = value; } }
 
-		private DateTime? updated;
-		public DateTime? Updated { get{ return updated; } set{ updated = value; } }
+        private DateTime? updated;
+        public DateTime? Updated { get { return updated; } set { updated = value; } }
 
-		private bool? rewritten;
-		public bool? Rewritten { get{ return rewritten; } set{ rewritten = value; } }
+        private bool? rewritten;
+        public bool? Rewritten { get { return rewritten; } set { rewritten = value; } }
 
-		private bool? _new;
-		public bool? New { get{ return _new; } set{ _new = value; } }
+        private bool? _new;
+        public bool? New { get { return _new; } set { _new = value; } }
 
-		private bool? removed;
-		public bool? Removed { get{ return removed; } set{ removed = value; } }
+        private bool? removed;
+        public bool? Removed { get { return removed; } set { removed = value; } }
 
-		private DateTime? closure_date;
-		public DateTime? Closure_date { get{ return closure_date; } set{ closure_date = value; } }
+        private DateTime? closure_date;
+        public DateTime? Closure_date { get { return closure_date; } set { closure_date = value; } }
 
         private int fixed_price;
-        public int Fixed_price { get ; set ; }
+        public int Fixed_price { get; set; }
 
         private DateTime ssma_timestamp;
-		public DateTime SSMA_timestamp { get{ return ssma_timestamp; } set{ ssma_timestamp = value; } }
+        public DateTime SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
-        private String alias;
-        public String Alias { get { return alias; } set { alias = value; } }
+        private string alias;
+        public string Alias { get { return alias; } set { alias = value; } }
 
         private bool _includeDependencies;
         public bool IncludeDependencies { get { return _includeDependencies; } set { _includeDependencies = value; } }
@@ -68,7 +68,7 @@ public class view_ContractRow : SQLBaseClass
         private static string OrderBy { get; set; }
 
         public view_ContractRow() : base("ContractRow")
-		{
+        {
             //ctr
         }
 
@@ -82,7 +82,8 @@ public class view_ContractRow : SQLBaseClass
 
             // If parameter cannot be cast to Point return false.
             view_ContractRow p = obj as view_ContractRow;
-            if ((System.Object)p == null)
+
+            if (p == null)
             {
                 return false;
             }
@@ -138,9 +139,8 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-
-
             }
+
             return list;
         }
 
@@ -187,9 +187,8 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-
-
             }
+
             return list;
         }
 
@@ -208,11 +207,11 @@ public class view_ContractRow : SQLBaseClass
                 connection.Open();
 
                 //Ersätt med denna för att få in status på kontraktet
-                  //SELECT CR.Contract_id, CR.Customer, CR.Article_number, CR.Offer_number, CR.License, CR.Maintenance,
-                  //CR.Delivery_date, CR.Created, CR.Updated, CR.Rewritten, CR.New, CR.Removed, CR.Closure_date, CR.Fixed_price, 
-                  //CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, C.[status] AS Contract_Status FROM view_ContractRow CR
-                  //JOIN view_Contract C on C.Customer = CR.Customer and C.Contract_id = CR.Contract_id
-                  //WHERE CR.Customer = 'Ale kommun'
+                //SELECT CR.Contract_id, CR.Customer, CR.Article_number, CR.Offer_number, CR.License, CR.Maintenance,
+                //CR.Delivery_date, CR.Created, CR.Updated, CR.Rewritten, CR.New, CR.Removed, CR.Closure_date, CR.Fixed_price, 
+                //CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, C.[status] AS Contract_Status FROM view_ContractRow CR
+                //JOIN view_Contract C on C.Customer = CR.Customer and C.Contract_id = CR.Contract_id
+                //WHERE CR.Customer = 'Ale kommun'
 
                 // Default query
                 command.CommandText = @"SELECT [Contract_id] ,[Customer] ,[Article_number], [Offer_number] ,[License] ,[Maintenance] ,
@@ -243,9 +242,8 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-
-
             }
+
             return list;
         }
 
@@ -288,10 +286,86 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-
-
             }
+
             return list;
+        }
+
+        public static List<view_ContractRow> GetValidContractRows(string customer, string system, List<string> classifications, bool includeExpired)
+        {
+            List<view_ContractRow> list = new List<view_ContractRow>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+
+                // Default query
+                command.CommandText = @"SELECT 
+	                                        [Contract_id], [Customer], [Article_number], [Offer_number], [License], [Maintenance],
+	                                        [Delivery_date], [Created], [Updated], [Rewritten], [New], [Removed], [Closure_date], [Fixed_price], 
+	                                        CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp, [Alias]
+                                        FROM 
+	                                        qry_ValidContractRow 
+                                        WHERE 
+	                                        Customer = @customer AND [System] = @system " + GetClassificationSearchString(classifications) + GetExpiredSearchString(includeExpired);
+
+                command.Prepare();
+                command.Parameters.AddWithValue("@customer", customer);
+                command.Parameters.AddWithValue("@system", system);
+                command.Parameters.AddWithValue("@expired", "0");
+
+
+                command.ExecuteNonQuery();
+
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            view_ContractRow t = new view_ContractRow();
+                            int i = 0;
+                            while (reader.FieldCount > i)
+                            {
+                                t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                                i++;
+                            }
+                            list.Add(t);
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        private static string GetExpiredSearchString(bool includeExpired)
+        {
+            var returnString = !includeExpired ? " and Expired = @expired " : "";
+            return returnString;
+        }
+
+        private static string GetClassificationSearchString(List<string> classifications)
+        {
+            var returnString = "";
+            if(classifications != null && classifications.Count > 0)
+            {
+                returnString = "AND Classif IN ('";
+                if (classifications.Count > 1)
+                {
+                    returnString += string.Join("','", classifications);
+                    returnString += "') ";
+                }
+                else
+                {
+                    returnString += classifications.First().ToString() + "') ";
+                }
+            }
+
+            return returnString;
         }
 
         public static List<view_ContractRow> GetValidContractRows(int articleNumber)
@@ -331,19 +405,18 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-
-
             }
+
             return list;
         }
 
-    /// <summary>
-    /// Gets all ContractRows for a specified DateTime period.
-    /// </summary>
-    /// <param name="Start">Start DateTime</param>
-    /// <param name="Stop">End DateTime</param>
-    /// <returns>List of ContractRows.</returns>
-    public static List<view_ContractRow> GetContractRowsByDateInterval(DateTime Start, DateTime Stop)
+        /// <summary>
+        /// Gets all ContractRows for a specified DateTime period.
+        /// </summary>
+        /// <param name="Start">Start DateTime</param>
+        /// <param name="Stop">End DateTime</param>
+        /// <returns>List of ContractRows.</returns>
+        public static List<view_ContractRow> GetContractRowsByDateInterval(DateTime Start, DateTime Stop)
         {
             List<view_ContractRow> list = new List<view_ContractRow>();
 
@@ -351,7 +424,6 @@ public class view_ContractRow : SQLBaseClass
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
-
 
                 // Default query
 
@@ -400,8 +472,9 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-                return list;
             }
+
+            return list;
         }
 
         /// <summary>
@@ -428,7 +501,7 @@ public class view_ContractRow : SQLBaseClass
                 {
                     customerString = string.Join(",", customers.Select(s => "'" + s + "'").ToArray());
                 }
-                if(articleNumbers != null && articleNumbers.Count > 0)
+                if (articleNumbers != null && articleNumbers.Count > 0)
                 {
                     articleNumberString = string.Join(",", articleNumbers.Select(n => n.ToString()).ToArray());
                 }
@@ -460,17 +533,17 @@ public class view_ContractRow : SQLBaseClass
                     view_Contract.Valid_from >= @startDate AND
                     view_Contract.Valid_from <= @stopDate AND
                     view_Contract.status IN ('Giltigt', 'Omskrivet')";
-                
-                if(!string.IsNullOrEmpty(customerString))
+
+                if (!string.IsNullOrEmpty(customerString))
                 {
                     command.CommandText += " AND view_ContractRow.Customer IN (" + customerString + ")";
                 }
-                
-                if(!string.IsNullOrEmpty(articleNumberString))
+
+                if (!string.IsNullOrEmpty(articleNumberString))
                 {
                     command.CommandText += " AND view_ContractRow.Article_number IN(" + articleNumberString + ")";
                 }
-                
+
                 command.CommandText += " ORDER BY QtyPerArt.Qty DESC";
 
                 command.Prepare();
@@ -503,9 +576,9 @@ public class view_ContractRow : SQLBaseClass
                 {
                     throw ex;
                 }
-
-                return list;
             }
+
+            return list;
         }
 
         public static List<Dictionary<string, object>> GetSearchResultByDateIntervalCustomersAndArticleNumbers(DateTime Start, DateTime Stop, List<string> customers, List<int> articleNumbers)
@@ -596,9 +669,9 @@ public class view_ContractRow : SQLBaseClass
                 {
                     throw ex;
                 }
-
-                return list;
             }
+
+            return list;
         }
 
         /// <summary>
@@ -621,7 +694,7 @@ public class view_ContractRow : SQLBaseClass
                 //                        Inner Join  " + databasePrefix + @"Module M On M.Article_number = C.Article_number 
                 //                        Where IsNull(M.Contract_Description,'') <> '' And C.Customer = @customer And C.Contract_id = @contract_id Order By " + GetOrderBy();
 
-                if(!onlyRemovedModules.HasValue) //All modules, both removed and active...
+                if (!onlyRemovedModules.HasValue) //All modules, both removed and active...
                 {
                     command.CommandText = @"SELECT Q.Alias, Q.Description, Q.Typ, Q.Art_id, M.System AS System, Q.RemovedFromContractId FROM qry_ContractArtDescription Q 
                                         JOIN " + databasePrefix + @"Module M ON M.Article_number = Q.Art_id
@@ -670,11 +743,9 @@ public class view_ContractRow : SQLBaseClass
                         }
                     }
                 }
-
-
             }
-            return list;
 
+            return list;
         }
 
         private static string GetOrderBy()
@@ -683,6 +754,7 @@ public class view_ContractRow : SQLBaseClass
             if (ASort == 1) return "Alias";
             if (ASort == 2 || ASort == 4) return "Classification, Alias";
             if (ASort == 3) return "Classification, Article_number";
+
             return "Alias";
         }
 
@@ -692,6 +764,7 @@ public class view_ContractRow : SQLBaseClass
             if (ASort == 1) return "CR.Alias";
             if (ASort == 2 || ASort == 4) return "M.Classification, CR.Alias";
             if (ASort == 3) return "M.Classification, CR.Article_number";
+
             return "CR.Alias";
         }
 
@@ -702,6 +775,7 @@ public class view_ContractRow : SQLBaseClass
             if (ASort == 2) return "Typ, M.Classification, Alias";
             if (ASort == 3) return "Typ, M.Classification, Art_id";
             if (ASort == 4) return "Typ, S.SortNo, M.Classification, ISNULL(NULLIF(Sort_order, 0), 99), Alias";
+
             return "Typ, System, Alias";
         }
 
@@ -715,9 +789,9 @@ public class view_ContractRow : SQLBaseClass
 
 
                 // Default query
-               string query  = @"SELECT Article_number, alias as Module, Customer, Contract_id , Classif as Classification, our_sign as Representative FROM qry_ValidContractRow WHERE Article_number in (" + articleNumber + ") Order By Customer, Contract_id";
+                string query = @"SELECT Article_number, alias as Module, Customer, Contract_id , Classif as Classification, our_sign as Representative FROM qry_ValidContractRow WHERE Article_number in (" + articleNumber + ") Order By Customer, Contract_id";
 
-                if(allModules)
+                if (allModules)
                 {
                     //Maximum chars in worksheet name is 31 chars..
                     dt.TableName = "ModuleReport_All_Modules";
@@ -730,6 +804,7 @@ public class view_ContractRow : SQLBaseClass
                 SqlDataAdapter da = new SqlDataAdapter(query, connection);
                 da.Fill(dt);
             }
+
             return dt;
         }
 
@@ -783,8 +858,9 @@ public class view_ContractRow : SQLBaseClass
                     throw ex;
                 }
             }
+
             return dt;
-            }
+        }
 
         public static System.Data.DataTable ExportContractRowsByCustomerArticleAndDateIntervalToExcel(DateTime Start, DateTime Stop, List<string> customers, List<int> articleNumbers)
         {
@@ -843,7 +919,7 @@ public class view_ContractRow : SQLBaseClass
                 }
 
                 query += " ORDER BY QtyPerArt.Qty DESC";
-                
+
                 dt.TableName = "CustomerProductGrowthReport";
 
                 try

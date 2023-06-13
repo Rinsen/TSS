@@ -85,7 +85,7 @@
                     {
                         <br/>
                     }
-                    <div>Tietoevry AB</div>
+                    <div>@ViewBag.OrganisationInformation.CompanyName</div>
                     <div>@ViewBag.Representative.Address</div>
                     <div>@ViewBag.Representative.City</div>
                 </td>
@@ -123,7 +123,7 @@
                 <div id="Document_foot" >@Html.Raw(@ViewBag.CustomerOffer.Document_foot)</div>
             </div>
             <div id="crm-pdf-footer-regards" class="crm-print-block">
-                <p>Med vänlig hälsning<br />Tietoevry AB</p>
+                <p>Med vänlig hälsning<br />@ViewBag.OrganisationInformation.CompanyName</p>
                 <div class="signature-container">
                     @{
                         String url = "../Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";

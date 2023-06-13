@@ -97,6 +97,12 @@ namespace TietoCRM.Models
         private DateTime? monthly_fee_from;
         public DateTime? Monthly_fee_from { get; set; }
 
+        private int? expirationList;
+        public int? ExpirationList { get; set; }
+
+        private int? orgInfoId;
+        public int? OrgInfoId { get; set; }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

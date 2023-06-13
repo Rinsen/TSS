@@ -1544,14 +1544,14 @@ else if (Request["modal"] == "services")
                 var resultString = !string.IsNullOrEmpty(service.Offer_description) ? service.Offer_description : "";
 
                 @Html.Raw("services.push({id:" + row.Code +
-                                       ", amount:" + row.Amount +
-                                       ", total:" + (int)row.Total_price +
-                                       //", Offer_description:'" + resultString + "'" + Varför behövs denna? Texten verkar komma fram ändå. Just nu orsakar denna ett fel då texten innehåller något konstigt tecken...
-                                       ", Offer_id:" + row.Offer_number +
-                                       ", Module_text_id:" + moduleText._ID +
-                                       ", Module_type:'K'" +
-                                       ", Service_code:" + service.Article_number +
-                                       "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
+                            ", amount:" + row.Amount +
+                            ", total:" + (int)row.Total_price +
+                            //", Offer_description:'" + resultString + "'" + Varför behövs denna? Texten verkar komma fram ändå. Just nu orsakar denna ett fel då texten innehåller något konstigt tecken...
+                            ", Offer_id:" + row.Offer_number +
+                            ", Module_text_id:" + moduleText._ID +
+                            ", Module_type:'K'" +
+                            ", Service_code:" + service.Article_number +
+                            "}); setTotalCost(" + row.Amount + ", " + (int)(row.Total_price / row.Amount) + ");");
             }
         }
         });
@@ -1682,15 +1682,15 @@ else if (Request["modal"] == "services")
             })
         }
     </script>
-}
-else if (Request["modal"] == "head-information")
-{
+            }
+            else if (Request["modal"] == "head-information")
+            {
 
-    String disabled = "";
-    if (ViewBag.CustomerOffer.Offer_status != "Öppen")
-    {
-        disabled = "disabled";
-    }
+                String disabled = "";
+                if (ViewBag.CustomerOffer.Offer_status != "Öppen")
+                {
+                    disabled = "disabled";
+                }
 
 
 
@@ -1792,6 +1792,45 @@ else if (Request["modal"] == "head-information")
         </div>
     </div>
     <div class="form-group">
+        <label for="OrgInfoId" class="col-sm-2 control-label">Organisation</label>
+        <div class="col-sm-3">
+            <select class="form-control selectpicker" name="OrgInfoId" id="OrgInfoId" placeholder="Organisation">
+                @foreach (view_OrganisationInformation org in ViewBag.Organisations)
+                {
+                    if (org._ID == @ViewBag.CustomerOffer.OrgInfoId)
+                    {
+                        if (org.IsDefaultValue)
+                        {
+                            <option value="@org._ID" selected>@org.CompanyName - @org.OrgNo (Default)</option>
+                        }
+                        else
+                        {
+                            <option value="@org._ID" selected>@org.CompanyName - @org.OrgNo</option>
+                        }
+                    }
+                    else
+                    {
+                        if (org.IsDefaultValue)
+                        {
+                            <option value="@org._ID">@org.CompanyName - @org.OrgNo (Default)</option>
+                        }
+                        else
+                        {
+                            <option value="@org._ID">@org.CompanyName - @org.OrgNo</option>
+                        }
+                        
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-5 checkbox">
+            <label style="text-align:left" class="col-sm-12">
+                <input checked id="defaultOrg" data-id="defaultOrg" name="DefaultOrg" type="checkbox"/>
+                Default Organisation
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
         <label for="summera" class="col-sm-2 control-label">Summera</label>
         <div class="col-sm-10">
             <div class="checkbox">
@@ -1852,7 +1891,7 @@ else if (Request["modal"] == "head-information")
                 var $formInput = $(this);
                 var inputProp = $formInput.attr("name");
                 if(inputProp != "Sign" && inputProp != "Template_number" && inputProp != "SSMA_timestamp" && typeof inputProp != 'undefined'){
-                    if(inputProp == "Summera") {
+                    if (inputProp == "Summera" || inputProp == "DefaultOrg") {
                         updateData[$formInput.attr("name")] = (($formInput.prop("checked")) ? true : false);
                     }
                     else {
@@ -1930,11 +1969,38 @@ else if (Request["modal"] == "head-information")
                     $dateInput.prop("disabled", false);
                 }
             });
+
+            $("#OrgInfoId").change(function (element) {
+                var sel = document.getElementById("OrgInfoId");
+                if (sel.selectedIndex > -1) {
+                    var text = sel.options[sel.selectedIndex].text;
+
+                    if (text != null && text.indexOf("Default") > -1) {
+                        document.getElementById("defaultOrg").checked = true;
+                    } else {
+                        document.getElementById("defaultOrg").checked = false;
+                    }
+                }
+            });
+
+            var sel = document.getElementById("OrgInfoId");
+            if (sel.selectedIndex > -1) {
+                var text = sel.options[sel.selectedIndex].text;
+
+                if (text != null && text.indexOf("Default") > -1) {
+                    document.getElementById("defaultOrg").checked = true;
+                } else {
+                    document.getElementById("defaultOrg").checked = false;
+                }
+            }
+
             if(!webkit)
             {
                 $("#offer-valid-date").datepicker({ dateFormat: 'yy-mm-dd' });
             }
         });
+
+        
     </script>
 }
 else if (Request["modal"] == "module-info")

@@ -1,5 +1,6 @@
 ﻿
 $(document).ready(function () {
+
     var oldStatus = "";
     $("#head-info-modal-button").click(function () {
         $("#tableItemsModal").appendTo("body").modal("show").find('.modal-content').draggable();
@@ -24,6 +25,21 @@ $(document).ready(function () {
             $("#observation-date").datepicker();
         }
        $('.selectpicker').selectpicker('refresh');
+    });
+
+    $("#orginfoid-text").change(function (element) {
+        //Set default org checkbox depending on OrgInfo-select
+        var sel = document.getElementById("orginfoid-text");
+
+        if (sel.selectedIndex > -1) {
+            var text = sel.options[sel.selectedIndex].text;
+
+            if (text != null && text.indexOf("Default") > -1) {
+                document.getElementById("defaultOrg").checked = true;
+            } else {
+                document.getElementById("defaultOrg").checked = false;
+            }
+        } 
     });
 
     var reCalcObservationDate = function () {
@@ -82,6 +98,9 @@ $(document).ready(function () {
                 }
                 else if ($formInput.attr("name") == "Summera") {
                     contract["Summera"] = (($formInput.prop("checked")) ? "1" : "0");
+                }
+                else if ($formInput.attr("name") == "DefaultOrg") {
+                    contract["DefaultOrg"] = (($formInput.prop("checked")) ? "1" : "0");
                 }
 
             });
@@ -207,6 +226,19 @@ var loadInfo = function () {
                             $formInput.val(items[formInputName]).change();
                         } else if (formInputName == "Summera") {
                             $formInput.prop("checked", (items[formInputName] == 1 ? true : false));
+                        } else if (formInputName == "OrgInfoId") {
+                            var sel = document.getElementById("orginfoid-text");
+                            if (sel.selectedIndex > -1) {
+                                var text = sel.options[sel.selectedIndex].text;
+
+                                if (text != null && text.indexOf("Default") > -1) {
+                                    document.getElementById("defaultOrg").checked = true;
+                                } else {
+                                    document.getElementById("defaultOrg").checked = false;
+                                }
+                            }
+
+                            $formInput.val(items[formInputName]).change();
                         } else {
                             $formInput.val(items[formInputName]);
                         }

@@ -1,0 +1,183 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var rowLength = 0;
+}
+@using TietoCRM.Extensions;
+<row>
+    <div class="col-md-12">
+        <form method="get" action="~/ModuleOverviewReport/Pdf" target="_blank" class="form-inline">
+            <div class="form-group">
+                <label for="crm-select-customer">Customer:</label>
+                <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
+                    @foreach (String Customer in ViewBag.CustomerNames)
+                    {
+                        <option value="@Customer">@Customer</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="System-select">System: </label>
+                <select name="systems" id="System-select" class="form-control selectpicker" data-live-search="true">
+                    @foreach (var SelectOption in ViewBag.Systems)
+                    {
+                        <option value="@SelectOption.Value">@SelectOption.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="classification-select">Classification: </label>
+                <select name="systems" id="classification-select" multiple class="form-control selectpicker" data-live-search="true">
+                    @foreach (var SelectOption in ViewBag.Classification)
+                    {
+                        <option value="@SelectOption.Value">@SelectOption.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="checkbox" style="margin-top: 1.7em; padding-left:1em">
+                <label>
+                    <input type="checkbox" id="exportexpired"> Include expired modules
+                </label>
+            </div>
+
+            <button id="search-modules" style="margin-top: 1.7em" class="btn btn-default" type="button">Search</button>
+            <button id="fetch-pdf" style="margin-top: 1.7em" class="btn btn-default" type="button">PDF</button>
+        </form>
+
+    </div>
+    <div class="col-md-12">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+            <thead>
+                <tr>
+                    <th data-field="Customer" data-sortable="true">Customer</th>
+                    <th data-field="Contract_id" data-sortable="true">Contract id</th>
+                    <th data-field="Module" data-sortable="true">Module</th>
+                    <th data-field="Representative" data-sortable="true">Representative</th>
+                    <th data-field="System" data-sortable="true">System</th>
+                    <th data-field="Classification" data-sortable="true">Classification</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <script>
+    var serverPrefix = "@Url.Content("~/")";
+    @{String DataObject = "\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Customer" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Contract_id" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Module" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Representative" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "System" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
+    @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+
+    var updateDataTable = function(customer, system, classifications, expired)
+    {
+        $('#report-table').DataTable({
+            "destroy": true,
+            "processing": true,
+            "bFilter": true,
+            "bPaginate": false,
+            //"ajax": "/CustomerProductReport/CustomerData/",
+            "ajax": {
+                "url": serverPrefix + "ModuleOverviewReport/Module/",
+                "type": "POST",
+                "data": {
+                    "customer": customer,
+                    "system": system,
+                    "classifications": JSON.stringify(classifications),
+                    "expired": expired
+                },
+                "dataSrc": function (res) {
+                    rowLength = res.data != null ? res.data.length : 0;
+                    return res.data != null ? res.data : [];
+                }
+            },
+            "defaultContent": "",
+            "order": [[0, "asc"]],
+            "columns": [@Html.Raw(DataObject)],
+            "scrollX": true,
+            //"createdRow": function (row, data, dataIndex) {
+            //    if (data[2] == `someVal`) {
+            //        $(row).addClass('redClass');
+            //    }
+            //}
+        });
+
+    }
+
+    $('document').ready(function () {
+        $('.selectpicker').selectpicker();
+
+        $customerContainer = $("#crm-select-customer");
+        $systemsContainer = $("#System-select");
+        $classificationContainer = $("#classification-select");
+        $exportexpired = $("#exportexpired");
+
+        var selectedValue = "";
+
+        $("#search-modules").click(function () {
+            updateDataTable($customerContainer.val(), $systemsContainer.val(), $classificationContainer.val(), $exportexpired.is(':checked'))
+        });
+
+        $customerContainer.change(function () {
+            $('#report-table').DataTable().clear().draw();
+        });
+
+        // Change content of classificationSelect on change
+        $systemsContainer.change(function () {
+            fillClassificationSelect();
+        });
+
+        // Fuction to fill the classifications select element with options corresponding to the correct
+        // System.
+        var fillClassificationSelect = function () {
+
+            var system = $("#System-select").val();
+
+            $.ajax({
+                "url": serverPrefix + "ModuleOverviewReport/GetClassificationData/",
+                "type": "POST",
+                "data": {
+                    "system": system,
+                },
+                "success": function (data) {
+                    if (data.length > 0) {
+                        var selectOptions = JSON.parse(data);
+                        $classificationContainer.empty();
+                        $.each(selectOptions, function (i, selectOption) {
+                            var $optionEl = $("<option></option>").val(selectOption.Value).html(selectOption.Text);
+                            $classificationContainer.append($optionEl);
+                        });
+                    }
+                    $classificationContainer.selectpicker('refresh');
+                }
+            });
+            $classificationContainer.selectpicker('refresh');
+        }
+
+        $('#fetch-pdf').click(function () {
+            var customer = $("#crm-select-customer").val();
+            var system = $("#System-select").val();
+            var classifications = $("#classification-select").val();
+            var includeExpired = $exportexpired.is(':checked');
+
+            var $dt = $('.dataTable').DataTable();
+            var sortArr = $dt.order();
+            var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
+
+            var url = "ModuleOverviewReport/Pdf?customer=" + customer + "&system=" + system + "&classifications=" + JSON.stringify(classifications) + "&expired=" + includeExpired + sort;
+            if ($('#desc').is(':checked')) {
+                url += "&showDesc=1";
+            }
+
+            if (rowLength > 0) {
+                window.open(serverPrefix + url, "_blank");
+            }
+        })
+    });
+    </script>
+</row>
