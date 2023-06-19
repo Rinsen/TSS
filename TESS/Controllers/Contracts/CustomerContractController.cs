@@ -1049,7 +1049,15 @@ namespace TietoCRM.Controllers.Contracts
                 using (var scope = TransactionHelper.CreateTransactionScope())
                 {
                     contractHead.Insert();
-
+                    if(a.OrgInfoId == null)
+                    {
+                        view_OrganisationInformation orgInfo = new view_OrganisationInformation();
+                        orgInfo.Select("IsDefaultValue = 1");
+                        if(orgInfo._ID > 0)
+                        {
+                            a.OrgInfoId = orgInfo._ID;
+                        }
+                    }
                     a.Insert();
 
                     new view_AuditLog().Write("C", "view_Contract", a._ID.ToString(), a.Contract_id + ", " + a.Customer);

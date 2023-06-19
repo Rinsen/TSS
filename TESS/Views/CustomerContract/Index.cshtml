@@ -716,7 +716,8 @@
                     hashtags = $currInput.val();
             }
             newContract["Customer"] = $customerSelect.val();
-            newContract["OrgInfoId"] = $("#orginfoid-select").val();
+            var orgInfoSelect = $("#orginfoid-select");
+            newContract["OrgInfoId"] = orgInfoSelect.val();
             newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
             newContract["Area"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Area)";
 
@@ -1373,6 +1374,18 @@
                 }
             }
         });
+
+        //Set default org checkbox depending on OrgInfo-select
+        var sel = document.getElementById("orginfoid-select");
+        if (sel.selectedIndex > -1) {
+            var text = sel.options[sel.selectedIndex].text;
+
+            if (text != null && text.indexOf("Default") > -1) {
+                document.getElementById("defaultorg").checked = true;
+            } else {
+                document.getElementById("defaultorg").checked = false;
+            }
+        }
 
         //Set focus on select-picker searchbox when selected
         var selectCustomer = $('#div-customer #crm-select-customer').selectpicker();
