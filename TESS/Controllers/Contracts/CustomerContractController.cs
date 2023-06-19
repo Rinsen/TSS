@@ -101,6 +101,7 @@ namespace TietoCRM.Controllers.Contracts
 
             var properties = new List<PropertyInfo>
             {
+                typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id").First(),
                 typeof(view_Contract).GetProperties().Where(p => p.Name == "Customer").First(),
                 typeof(view_Contract).GetProperties().Where(p => p.Name == "Title").First(),
                 typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_type").First(),
@@ -3372,6 +3373,10 @@ namespace TietoCRM.Controllers.Contracts
                 {
                     using (var scope = TransactionHelper.CreateTransactionScope())
                     {
+                        //Ta även bort modultexter
+                        view_ModuleText moduleText = new view_ModuleText();
+                        moduleText.Delete("Type = 'A' and TypeId = " + co._ID);
+
                         co.Delete("Customer = '" + customer + "' AND Contract_id = '" + value + "'");
                         new view_AuditLog().Write("D", "view_Contract", co._ID.ToString(), "", co.Contract_id + ", " + co.Customer);
 

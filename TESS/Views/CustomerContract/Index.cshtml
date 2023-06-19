@@ -1105,7 +1105,7 @@
         });
     }
 
-    var generateSelectedContract = function($selectedRow){
+    var generateSelectedContract = function ($selectedRow) {
         selectedContract.Contract_id = $selectedRow.find("td:nth-child(2)").html();
         selectedContract.Customer = $selectedRow.find("td:nth-child(3)").html();
         selectedContract.Title = $selectedRow.find("td:nth-child(4)").html();
@@ -1121,7 +1121,7 @@
         selectedContract.Observation = $selectedRow.find('td:nth-child(14)').html();
         selectedContract.Note = $selectedRow.find('td:nth-child(15)').html();
         selectedContract.Contact_person = $selectedRow.find('td:nth-child(16)').html();
-        selectedContract.Area = $selectedRow.find('td:nth-child(17)').html();
+        selectedContract.Summera = $selectedRow.find('td:nth-child(17)').html();
     }
     var uniqueRowNumber = 0;
     var drawCallBack = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
