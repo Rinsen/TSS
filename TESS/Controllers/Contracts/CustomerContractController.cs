@@ -1224,6 +1224,7 @@ namespace TietoCRM.Controllers.Contracts
                         InsertModuleText(offerModuleText.Description, "K", contract._ID, int.Parse(service.Article_number.ToString()));
                     }
                 }
+
                 contract.Updated = System.DateTime.Now;
                 contract.Update("Customer = '" + contract.Customer + "' AND Contract_id = '" + contract.Contract_id + "'");
                 string moduleInfo = updateDescriptions(contract.Customer, contract.Contract_id, false);

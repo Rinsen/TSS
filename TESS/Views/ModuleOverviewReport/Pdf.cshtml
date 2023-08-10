@@ -1,36 +1,154 @@
 ﻿@{
     Layout = "~/Views/Shared/_ReportLayout.cshtml";
-    bool showDesc = false;
-    if (Request.Params["showDesc"] != null) {
-        if(Request.Params["showDesc"] == "1"){
-            showDesc = true;
-        }
-    }
 }
+<html>
+<head>
+    <style>
+        html, body {
+            margin: 0px;
+            height: 100%;
+        }
 
-<div class="crm-print-block">
-    @foreach (var system in ViewBag.Systems)
-    {
-        <h2>@system</h2>
-        
-        <table class="table table-striped table-bordered contract-supervision-table">
-            <th>Customer</th>
-            <th>Contract id</th>
-            <th style="width: 15em">Module</th>
-            <th>Representative</th>
-            <th>System</th>
-            <th>Classification</th>
-            @foreach (Dictionary<string, object> customerModule in ViewBag.Customermodules)
-            {
-                <tr class="" style="page-break-inside:avoid">
-                    @foreach (KeyValuePair<string, object> dic in customerModule)
+        .box {
+            background: #b1b5ce;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            bottom: 0px;
+            left: 0px;
+        }
+
+        .row {
+            display: -webkit-box;  /*wkhtmltopdf uses this one */
+            display:flow;
+            -webkit-box-pack: center;  /*wkhtmltopdf uses this one */
+            justify-content: center;
+            column-fill:auto;
+        }
+
+        /*.row > div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+        .row > div:last-child {
+            margin-right: 0;
+        }*/
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div style="font-size:80px; margin-bottom:50px">
+            Produktportfölj @ViewBag.Area - @ViewBag.Customer 
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-4" style="font-size:large">
+                @{
+                    var currentModule = "";
+                    var count = 0;
+                    var customerModuleList = (List<string>)ViewBag.Customermodules;
+                }
+
+                @foreach (TietoCRM.Models.view_Module module in ViewBag.AllModules)
+                {
+                    count++;
+
+                    if (@module.System != currentModule)
                     {
-                        <td>@dic.Value</td>
+                        <h2>@module.System</h2>
+                        currentModule = module.System;
                     }
-                </tr>
-            }
-        </table>
-    }
-</div>
 
+                    if (customerModuleList.Contains(@module.Module))
+                    {
+                        if (module.Expired.HasValue && module.Expired.Value)
+                        {
+                            if (module.Module_status == 3) //In developement
+                            {
+                                <div style="font-weight:bolder; color:red">
+                                    <s>@module.Module</s>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="font-weight:bolder">
+                                    <s>@module.Module</s>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            if (module.Module_status == 3) //In developement
+                            {
+                                <div style="font-weight:bolder; color:red">
+                                    @module.Module
+                                </div>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (module.Expired.HasValue && module.Expired.Value)
+                        {
+                            if (module.Module_status == 3) //In developement
+                            {
+                                <div style="color:red">
+                                    <s>@module.Module</s>
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+                                    <s>@module.Module</s>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            if (module.Module_status == 3) //In developement
+                            {
+                                <div style="color:red">
+                                    @module.Module
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+                                    @module.Module
+                                </div>
+                            }
+                        }
+                    }
 
+                    if (count > 52)
+                    {
+                        count = 0;
+                    @:</div>
+                        @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:1.5em">
+                    }
+
+                    //foreach (Dictionary<string, object> customerModule in ViewBag.Customermodules)
+                    //{
+                    //object systemVal, moduleVal;
+                    //var success = customerModule.TryGetValue("System", out systemVal);
+                    //var module = customerModule.TryGetValue("Module", out moduleVal);
+
+                    @*if (success && ((string)systemVal).Equals(system))
+                    {
+                        count++;
+                        @moduleVal <br />
+                        if (count > 35)
+                        {
+                            count = 0;
+                            @:</div>
+                            @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:2.7em">
+                        }
+                    }*@
+                    //}
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

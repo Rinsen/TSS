@@ -57,6 +57,7 @@ namespace TietoCRM.Controllers.Reports
             string classifications = Request["classifications"];
             string expired = Request["expired"];
 
+            var systemDic = (List<string>)new JavaScriptSerializer().Deserialize(system, typeof(List<string>));
             var classificationsDic = (List<string>)new JavaScriptSerializer().Deserialize(classifications, typeof(List<string>));
             var expiredBool = (bool)new JavaScriptSerializer().Deserialize(expired, typeof(bool));
 
@@ -66,29 +67,34 @@ namespace TietoCRM.Controllers.Reports
 
             var systems = new List<string>();
 
-            List<Dictionary<string, object>> list = generateModuleInfo(customer, system, classificationsDic, expiredBool);
+            List<string> list = generateModuleInfo(customer, systemDic, classificationsDic, expiredBool).Select(s => GetValueFromDictionary(s)).ToList();
 
             if (list.Count > 0)
             {
-                ViewData.Add("Customermodules", new SortedByColumnCollection(list, sortDir, sortKey).Collection);
+                ViewData.Add("Customermodules", list);
             }
             else
             {
                 ViewData.Add("Customermodules", new ArrayList());
             }
 
-            this.ViewData["Title"] = "";
-            this.ViewData["Systems"] = list.Where(dict => dict.ContainsKey("System"))
-                     .Select(dict => dict["System"])
-                     .Distinct()
-                     .ToList();
+            var totalModuleList = view_Module.getAllModuleForModuleOverviewReport();
+            ViewData.Add("AllModules", totalModuleList);
+            ViewData.Add("Area", System.Web.HttpContext.Current.GetUser().Area);
+            ViewData.Add("Customer", customer);
 
-            ViewAsPdf pdf = new ViewAsPdf("Pdf");
+            //this.ViewData["Title"] = "";
+            //this.ViewData["Systems"] = list.Where(dict => dict.ContainsKey("System"))
+            //         .Select(dict => dict["System"])
+            //         .Distinct()
+            //         .ToList();
+
+            ViewAsPdf pdf = new ViewAsPdf("Pdf") { RotativaOptions = new Rotativa.Core.DriverOptions() { PageOrientation = Rotativa.Core.Options.Orientation.Landscape } };
 
             String headerPath = Server.MapPath("~/Views/CustomerOffer/Header_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
             String headerFilePath = "file:///" + headerPath;
 
-            string customSwitches = string.Format("--print-media-type --header-spacing 3 --header-html \"{0}\"", headerFilePath);
+            string customSwitches = string.Format("--print-media-type");
             pdf.RotativaOptions.CustomSwitches = customSwitches;
 
             var user = System.Web.HttpContext.Current.GetUser();
@@ -97,6 +103,15 @@ namespace TietoCRM.Controllers.Reports
             hfs.Close();
 
             return pdf;
+        }
+
+        private string GetValueFromDictionary(Dictionary<string, object> s)
+        {
+            object value;
+
+            s.TryGetValue("Module", out value);
+
+            return !string.IsNullOrEmpty((string)value) ? (string)value : "";
         }
 
         public List<SelectListItem> GetAllSystemNames(String area)
@@ -155,7 +170,7 @@ namespace TietoCRM.Controllers.Reports
             return fs;
         }
 
-        public List<Dictionary<string, object>> generateModuleInfo(string customer, string system, List<string> classifications, bool expired)
+        public List<Dictionary<string, object>> generateModuleInfo(string customer, List<string> system, List<string> classifications, bool expired)
         {
 
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
@@ -204,9 +219,16 @@ namespace TietoCRM.Controllers.Reports
             try
             {
                 string customer = Request.Form["customer"];
+
                 string system = Request.Form["system"];
                 string classifications = Request.Form["classifications"];
                 string expired = Request["expired"];
+
+                var systemsDic = new List<string>();
+                if (system != null)
+                {
+                    systemsDic.AddRange((List<string>)new JavaScriptSerializer().Deserialize(system, typeof(List<string>)));
+                }
 
                 var classificationsDic = new List<string>();
                 if (classifications != null)
@@ -215,7 +237,7 @@ namespace TietoCRM.Controllers.Reports
                 }
                 var expiredBool = (bool)new JavaScriptSerializer().Deserialize(expired, typeof(bool));
 
-                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(customer, system, classificationsDic, expiredBool)) + "}";
+                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(customer, systemsDic, classificationsDic, expiredBool)) + "}";
             }
             catch
             {
@@ -226,12 +248,15 @@ namespace TietoCRM.Controllers.Reports
         public string GetClassificationData()
         {
             string system = Request.Form["system"];
+            var systemDic = (List<string>)new JavaScriptSerializer().Deserialize(system, typeof(List<string>));
 
             string Area = System.Web.HttpContext.Current.GetUser().Area;
 
             List<SelectListItem> returnList = new List<SelectListItem>();
 
-            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => a.System == system && a.Area == Area).DistinctBy(a => a.Classification).ToList();
+
+
+            List<view_Sector> allSectors = view_Sector.getAllSectors().Where(a => systemDic.Contains(a.System) && a.Area == Area).DistinctBy(a => a.Classification).ToList();
             returnList.AddRange(allSectors.Select(a => new SelectListItem { Value = a.Classification, Text = a.Classification }).ToList());
 
             returnList = returnList.OrderBy(a => a.Value == "-").ToList();

@@ -291,7 +291,7 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public static List<view_ContractRow> GetValidContractRows(string customer, string system, List<string> classifications, bool includeExpired)
+        public static List<view_ContractRow> GetValidContractRows(string customer, List<string> system, List<string> classifications, bool includeExpired)
         {
             List<view_ContractRow> list = new List<view_ContractRow>();
 
@@ -309,13 +309,10 @@ namespace TietoCRM.Models
                                         FROM 
 	                                        qry_ValidContractRow 
                                         WHERE 
-	                                        Customer = @customer AND [System] = @system " + GetClassificationSearchString(classifications) + GetExpiredSearchString(includeExpired);
+	                                        Customer = @customer " + GetSystemSearchString(system) + GetClassificationSearchString(classifications) + GetExpiredSearchString(includeExpired);
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
-                command.Parameters.AddWithValue("@system", system);
-                command.Parameters.AddWithValue("@expired", "0");
-
 
                 command.ExecuteNonQuery();
 
@@ -342,9 +339,31 @@ namespace TietoCRM.Models
             return list;
         }
 
+        private static string GetSystemSearchString(List<string> systems)
+        {
+            var first = 0;
+            var returnString = "";
+            if (systems != null && systems.Count > 0)
+            {
+                returnString = " AND (";
+                foreach (var system in systems)
+                {
+                    first++;
+                    returnString += " [Classification] LIKE '%" + system + "%'";
+                    if (first < systems.Count)
+                    {
+                        returnString += " OR";
+                    }
+                }
+                returnString += ")";
+            }
+
+            return returnString;
+        }
+
         private static string GetExpiredSearchString(bool includeExpired)
         {
-            var returnString = !includeExpired ? " and Expired = @expired " : "";
+            var returnString = !includeExpired ? " AND Expired = 0" : "";
             return returnString;
         }
 
@@ -353,7 +372,7 @@ namespace TietoCRM.Models
             var returnString = "";
             if(classifications != null && classifications.Count > 0)
             {
-                returnString = "AND Classif IN ('";
+                returnString = " AND Classif IN ('";
                 if (classifications.Count > 1)
                 {
                     returnString += string.Join("','", classifications);

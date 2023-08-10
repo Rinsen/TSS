@@ -136,6 +136,45 @@ namespace TietoCRM.Models
             return list;
         }
 
+        public static List<view_Module> getAllModuleForModuleOverviewReport()
+        {
+            List<view_Module> list = new List<view_Module>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "";
+
+                query = "select M.Article_number, M.Module, M.Description, M.Price_category, M.Area, M.System, M.Classification, M.Fixed_price, " +
+                        "M.Expired, M.Comment, M.Discount, M.Discount_type, M.Multiple_type, Case When isnull(M.offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption, " +
+                        "Case When isnull(M.contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, M.Module_status, M.Read_name_from_module, M.Maint_price_category, " +
+                        "M.Module_type, M.Sort_order, CAST(M.SSMA_timestamp AS BIGINT) AS SSMA_timestamp from view_Module M " +
+                        "join View_Sector S on S.System = M.System and S.Classification = M.Classification " +
+                        "where M.Module_type = 1 " +
+                        "order by S.SortNo, M.system, M.Classification";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        view_Module t = new view_Module();
+                        int i = 0;
+                        while (reader.FieldCount > i)
+                        {
+                            t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
+                            i++;
+                        }
+                        list.Add(t);
+                    }
+                }
+            }
+
+            return list;
+        }
+
         /// <summary>
         /// Gets all the modules with the price from the tariff.
         /// </summary>

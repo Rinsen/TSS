@@ -19,7 +19,7 @@
 
             <div class="form-group">
                 <label for="System-select">System: </label>
-                <select name="systems" id="System-select" class="form-control selectpicker" data-live-search="true">
+                <select name="systems" id="System-select" multiple class="form-control selectpicker" data-live-search="true">
                     @foreach (var SelectOption in ViewBag.Systems)
                     {
                         <option value="@SelectOption.Value">@SelectOption.Text</option>
@@ -87,7 +87,7 @@
                 "type": "POST",
                 "data": {
                     "customer": customer,
-                    "system": system,
+                    "system": JSON.stringify(system),
                     "classifications": JSON.stringify(classifications),
                     "expired": expired
                 },
@@ -142,7 +142,7 @@
                 "url": serverPrefix + "ModuleOverviewReport/GetClassificationData/",
                 "type": "POST",
                 "data": {
-                    "system": system,
+                    "system": JSON.stringify(system),
                 },
                 "success": function (data) {
                     if (data.length > 0) {
@@ -169,7 +169,7 @@
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            var url = "ModuleOverviewReport/Pdf?customer=" + customer + "&system=" + system + "&classifications=" + JSON.stringify(classifications) + "&expired=" + includeExpired + sort;
+            var url = "ModuleOverviewReport/Pdf?customer=" + customer + "&system=" + JSON.stringify(system) + "&classifications=" + JSON.stringify(classifications) + "&expired=" + includeExpired + sort;
             if ($('#desc').is(':checked')) {
                 url += "&showDesc=1";
             }
