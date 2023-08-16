@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <div class="box">
+    <div class="box" style="padding:50px 50px 50px 50px">
         <div style="font-size:80px; margin-bottom:50px">
             Produktportfölj @ViewBag.Area - @ViewBag.Customer 
         </div>
@@ -66,13 +66,13 @@
                         {
                             if (module.Module_status == 3) //In developement
                             {
-                                <div style="font-weight:bolder; color:red">
+                                <div style="font-weight: bolder; color: red; max-width: 450px; margin-right: 10px; margin-top: 3px">
                                     <s>@module.Module</s>
                                 </div>
                             }
                             else
                             {
-                                <div style="font-weight:bolder">
+                                <div style="font-weight: bolder; max-width: 450px; margin-right: 10px; margin-top: 3px ">
                                     <s>@module.Module</s>
                                 </div>
                             }
@@ -81,7 +81,13 @@
                         {
                             if (module.Module_status == 3) //In developement
                             {
-                                <div style="font-weight:bolder; color:red">
+                                <div style="font-weight: bolder; color: red; max-width: 450px; margin-right: 10px; margin-top: 3px ">
+                                    @module.Module
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="font-weight: bolder; max-width: 450px; margin-right: 10px; margin-top: 3px ">
                                     @module.Module
                                 </div>
                             }
@@ -93,13 +99,13 @@
                         {
                             if (module.Module_status == 3) //In developement
                             {
-                                <div style="color:red">
+                                <div style="color: red; max-width: 450px; margin-right: 10px; margin-top: 3px ">
                                     <s>@module.Module</s>
                                 </div>
                             }
                             else
                             {
-                                <div>
+                                <div style="max-width: 450px; margin-right: 10px; margin-top: 3px ">
                                     <s>@module.Module</s>
                                 </div>
                             }
@@ -108,24 +114,24 @@
                         {
                             if (module.Module_status == 3) //In developement
                             {
-                                <div style="color:red">
+                                <div style="color: red; max-width: 450px; margin-right: 10px; margin-top:3px">
                                     @module.Module
                                 </div>
                             }
                             else
                             {
-                                <div>
+                                <div style="max-width: 450px; margin-right: 10px; margin-top: 3px ">
                                     @module.Module
                                 </div>
                             }
                         }
                     }
 
-                    if (count > 52)
+                    if (count > 46)
                     {
                         count = 0;
                     @:</div>
-                        @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:1.5em">
+                    @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:1.5em">
                     }
 
                     //foreach (Dictionary<string, object> customerModule in ViewBag.Customermodules)
@@ -135,18 +141,27 @@
                     //var module = customerModule.TryGetValue("Module", out moduleVal);
 
                     @*if (success && ((string)systemVal).Equals(system))
+                {
+                    count++;
+                    @moduleVal <br />
+                    if (count > 35)
                     {
-                        count++;
-                        @moduleVal <br />
-                        if (count > 35)
-                        {
-                            count = 0;
-                            @:</div>
-                            @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:2.7em">
-                        }
-                    }*@
+                        count = 0;
+                        @:</div>
+                        @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:2.7em">
+                    }
+                }*@
                     //}
                 }
+                <div style="font-size:x-large; font-weight: bolder; color: red; max-width: 450px; margin-right: 10px; margin-top: 50px ">
+                    Röd markering = under utveckling
+                </div>
+                <div style="font-size:x-large; font-weight: bolder; max-width: 450px; margin-right: 10px;">
+                    Fet stil = befintliga moduler
+                </div>
+                <div style="font-size:x-large; font-weight: bolder; max-width: 450px; margin-right: 10px;">
+                    <s>Överstruket = Utgångna moduler</s>
+                </div>
             </div>
         </div>
     </div>

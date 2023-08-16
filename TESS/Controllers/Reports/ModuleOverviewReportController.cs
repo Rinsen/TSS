@@ -96,6 +96,7 @@ namespace TietoCRM.Controllers.Reports
 
             string customSwitches = string.Format("--print-media-type");
             pdf.RotativaOptions.CustomSwitches = customSwitches;
+            pdf.RotativaOptions.PageMargins = new Rotativa.Core.Options.Margins(0, 0, 0, 0);
 
             var user = System.Web.HttpContext.Current.GetUser();
 
