@@ -1,5 +1,14 @@
 ﻿@{
     Layout = "~/Views/Shared/_ReportLayout.cshtml";
+
+    @functions{
+
+        String GetWorkingUrl(string url)
+        {
+            String retVal = Server.MapPath(url);
+            return retVal;
+        }
+    }
 }
 <html>
 <head>
@@ -19,11 +28,11 @@
         }
 
         .row {
-            display: -webkit-box;  /*wkhtmltopdf uses this one */
-            display:flow;
-            -webkit-box-pack: center;  /*wkhtmltopdf uses this one */
+            display: -webkit-box; /*wkhtmltopdf uses this one */
+            display: flow;
+            -webkit-box-pack: center; /*wkhtmltopdf uses this one */
             justify-content: center;
-            column-fill:auto;
+            column-fill: auto;
         }
 
         /*.row > div {
@@ -39,8 +48,13 @@
 </head>
 <body>
     <div class="box" style="padding:50px 50px 50px 50px">
-        <div style="font-size:80px; margin-bottom:50px">
-            Produktportfölj @ViewBag.Area - @ViewBag.Customer 
+        <div style="font-size: 80px; margin-bottom: 50px">
+            Produktportfölj @ViewBag.Area - @ViewBag.Customer
+        </div>
+        <div style="position:absolute; top:85px; right:100px">
+            <span id="crm-pdf-tieto-logo-com">
+                <img src="@GetWorkingUrl("../Content/img/TE-Lockup-RGB-BLUE.png")" alt="" width="300px" />
+            </span>
         </div>
         <div class="row">
             <div class="col-md-4 col-sm-4" style="font-size:large">
@@ -141,16 +155,16 @@
                     //var module = customerModule.TryGetValue("Module", out moduleVal);
 
                     @*if (success && ((string)systemVal).Equals(system))
-                {
-                    count++;
-                    @moduleVal <br />
-                    if (count > 35)
                     {
-                        count = 0;
-                        @:</div>
-                        @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:2.7em">
-                    }
-                }*@
+                        count++;
+                        @moduleVal <br />
+                        if (count > 35)
+                        {
+                            count = 0;
+                            @:</div>
+                            @:<div class="col-md-4 col-sm-4" style="font-size:large; margin-top:2.7em">
+                        }
+                    }*@
                     //}
                 }
                 <div style="font-size:x-large; font-weight: bolder; color: red; max-width: 450px; margin-right: 10px; margin-top: 50px ">
