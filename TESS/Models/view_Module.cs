@@ -136,7 +136,7 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public static List<view_Module> getAllModuleForModuleOverviewReport()
+        public static List<view_Module> getAllModuleForModuleOverviewReport(bool includeExpired)
         {
             List<view_Module> list = new List<view_Module>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -149,7 +149,7 @@ namespace TietoCRM.Models
                         "Case When isnull(M.contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, M.Module_status, M.Read_name_from_module, M.Maint_price_category, " +
                         "M.Module_type, M.Sort_order, CAST(M.SSMA_timestamp AS BIGINT) AS SSMA_timestamp from view_Module M " +
                         "join View_Sector S on S.System = M.System and S.Classification = M.Classification " +
-                        "where M.Module_type = 1 " +
+                        "where M.Module_type = 1 " + GetExpiredSearchString(includeExpired) +
                         "order by S.SortNo, M.system, M.Classification";
 
                 SqlCommand command = new SqlCommand(query, connection);
@@ -173,6 +173,12 @@ namespace TietoCRM.Models
             }
 
             return list;
+        }
+
+        private static string GetExpiredSearchString(bool includeExpired)
+        {
+            var returnString = !includeExpired ? " AND Expired = 0" : "";
+            return returnString;
         }
 
         /// <summary>

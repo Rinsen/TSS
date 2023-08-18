@@ -78,7 +78,7 @@ namespace TietoCRM.Controllers.Reports
                 ViewData.Add("Customermodules", new ArrayList());
             }
 
-            var totalModuleList = view_Module.getAllModuleForModuleOverviewReport();
+            var totalModuleList = view_Module.getAllModuleForModuleOverviewReport(expiredBool);
             ViewData.Add("AllModules", totalModuleList);
             ViewData.Add("Area", System.Web.HttpContext.Current.GetUser().Area);
             ViewData.Add("Customer", customer);
