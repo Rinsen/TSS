@@ -26,7 +26,7 @@
         }
 
         .box {
-            background-color: #b1b5ce;
+            background-color: rgb(227,223,221);
             position: absolute;
             top: 0px;
             right: 0px;
@@ -37,7 +37,7 @@
         #content {
             height: 102.9%;
             padding: 10px;
-            background-color: #b1b5ce;
+            background-color: rgb(227,223,221);
             display: -webkit-box;
         }
 
@@ -46,27 +46,31 @@
                 margin: 10px;
                 padding: 10px;
                 width: 300px;
-                background-color: #b1b5ce;
+                background-color: rgb(227,223,221);
                 display: -webkit-flex;
                 -webkit-flex-flow: column wrap;
             }
 
                 #content > .group .item {
-                    background-color: #b1b5ce;
+                    background-color: rgb(227,223,221);
                     width: 280px;
+                    font-family:Arial;
+                    font-size: 13px !important;
+                    line-height: 1.2;
                 }
 
     </style>
 </head>
-<body style="background: #b1b5ce;">
-    <div class="box" style="padding:50px 50px 50px 50px">
-        <div style="font-size: 45px; margin-bottom: 20px">
-            Produktportfölj @ViewBag.Area - @ViewBag.Customer
+<body style="background: rgb(227,223,221)">
+    <div class="box" style="padding:20px 20px 20px 20px">
+        <div style="font-size: 30px; margin-left:25px;">
+            @ViewBag.Area - @ViewBag.Customer
         </div>
-        <div style="position:absolute; top:15px; right:80px">
-            <span id="crm-pdf-tieto-logo-com">
-                <img src="@GetWorkingUrl("../Content/img/TE-Lockup-RGB-BLUE.png")" alt="" width="270px" />
-            </span>
+
+        <div style="position:absolute; top:25px; right:225px">
+            <div class="item" style="font-size:15px; font-weight: bolder; margin-top: 10px ">
+                <span style="color: red">Rött</span> = under utveckling
+            </div>
         </div>
 
         <div id="content">
@@ -82,11 +86,12 @@
                 {
                     count++;
 
-                    if (@module.System != currentModule)
+                    if (@module.Classification != currentModule)
                     {
+                        //Delrubrik
                         count++;
-                        <h2>@module.System</h2>
-                        currentModule = module.System;
+                        <div style="font-size:16px; font-weight:bold;margin-top:10px">@module.Classification</div>
+                        currentModule = module.Classification;
                     }
 
                     if (customerModuleList.Contains(@module.Module))
@@ -101,7 +106,7 @@
                             }
                             else
                             {
-                                <div class="item" style="font-weight: bolder; margin-top: 3px">
+                                <div class="item" style="background-color: yellow; font-weight: bolder; margin-top: 3px">
                                     <s>@module.Module</s>
                                 </div>
                             }
@@ -116,7 +121,7 @@
                             }
                             else
                             {
-                                <div class="item" style="font-weight: bolder; margin-top: 3px">
+                                <div class="item" style="background-color: yellow; font-weight: bolder; margin-top: 3px">
                                     @module.Module
                                 </div>
                             }
@@ -156,7 +161,7 @@
                         }
                     }
 
-                    if (count > 48)
+                    if (count > 38)
                     {
                         countCol++;
                         count = 0;
@@ -170,16 +175,12 @@
                     @:<div class="group">
                     }
                 }
-                <div class="item" style="font-size:15px; font-weight: bolder; margin-top: 50px ">
-                    <span style="color: red">Rött</span> = under utveckling
-                </div>
-                <div class="item" style="font-size: 15px; font-weight: bolder; margin-right: 10px;">
-                    Fet stil = befintliga moduler                    
-                </div>
-                <div class="item" style="font-size: 15px; font-weight: bolder; margin-right: 10px;">
-                    <s>Överstruket</s> = Utgångna moduler
-                </div>
             </div>
+        </div>
+        <div style="position:absolute; bottom:15px; right:80px">
+            <span id="crm-pdf-tieto-logo-com">
+                <img src="@GetWorkingUrl("../Content/img/tieto-evry_beige.png")" alt="" width="150px" />
+            </span>
         </div>
     </div>
 </body>

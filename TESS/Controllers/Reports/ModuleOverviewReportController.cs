@@ -78,7 +78,7 @@ namespace TietoCRM.Controllers.Reports
                 ViewData.Add("Customermodules", new ArrayList());
             }
 
-            var totalModuleList = view_Module.getAllModuleForModuleOverviewReport(expiredBool);
+            var totalModuleList = view_Module.getAllModuleForModuleOverviewReport(expiredBool, systemDic, classificationsDic);
             ViewData.Add("AllModules", totalModuleList);
             ViewData.Add("Area", System.Web.HttpContext.Current.GetUser().Area);
             ViewData.Add("Customer", customer);
@@ -104,6 +104,7 @@ namespace TietoCRM.Controllers.Reports
             hfs.Close();
 
             return pdf;
+            //return View("Pdf"); felsökningssyfte, petar ut den till en html-vy
         }
 
         private string GetValueFromDictionary(Dictionary<string, object> s)

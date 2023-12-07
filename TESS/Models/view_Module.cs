@@ -136,7 +136,7 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public static List<view_Module> getAllModuleForModuleOverviewReport(bool includeExpired)
+        public static List<view_Module> getAllModuleForModuleOverviewReport(bool includeExpired, List<string> systems, List<string> classifications)
         {
             List<view_Module> list = new List<view_Module>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -147,10 +147,10 @@ namespace TietoCRM.Models
                 query = "select M.Article_number, M.Module, M.Description, M.Price_category, M.Area, M.System, M.Classification, M.Fixed_price, " +
                         "M.Expired, M.Comment, M.Discount, M.Discount_type, M.Multiple_type, Case When isnull(M.offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption, " +
                         "Case When isnull(M.contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, M.Module_status, M.Read_name_from_module, M.Maint_price_category, " +
-                        "M.Module_type, M.Sort_order, CAST(M.SSMA_timestamp AS BIGINT) AS SSMA_timestamp from view_Module M " +
+                        "M.Module_type, S.SortNo, CAST(M.SSMA_timestamp AS BIGINT) AS SSMA_timestamp from view_Module M " +
                         "join View_Sector S on S.System = M.System and S.Classification = M.Classification " +
-                        "where M.Module_type = 1 " + GetExpiredSearchString(includeExpired) +
-                        "order by S.SortNo, M.system, M.Classification";
+                        "where M.Module_type = 1 " + GetExpiredSearchString(includeExpired) + getSystemString(systems) + getClassificationString(classifications) +
+                        "order by S.SortNo, S.System, S.Classification";
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -173,6 +173,32 @@ namespace TietoCRM.Models
             }
 
             return list;
+        }
+
+        private static string getClassificationString(List<string> classifications)
+        {
+            var commaSepString = "";
+            if (classifications.Count > 0)
+            {
+                commaSepString = " and M.Classification in ('";
+                commaSepString += string.Join("','", classifications);
+                commaSepString += "') ";
+            }
+
+            return commaSepString;
+        }
+
+        private static string getSystemString(List<string> systems)
+        {
+            var commaSepString = "";
+            if(systems.Count > 0)
+            {
+                commaSepString = " and M.System in ('";
+                commaSepString += string.Join("','", systems);
+                commaSepString += "') ";
+            }
+
+            return commaSepString;
         }
 
         private static string GetExpiredSearchString(bool includeExpired)
