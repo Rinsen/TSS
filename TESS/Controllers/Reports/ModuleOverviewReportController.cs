@@ -56,10 +56,12 @@ namespace TietoCRM.Controllers.Reports
             string system = Request["system"];
             string classifications = Request["classifications"];
             string expired = Request["expired"];
+            string maxColRowsStr = Request["maxColRows"];
 
             var systemDic = (List<string>)new JavaScriptSerializer().Deserialize(system, typeof(List<string>));
             var classificationsDic = (List<string>)new JavaScriptSerializer().Deserialize(classifications, typeof(List<string>));
             var expiredBool = (bool)new JavaScriptSerializer().Deserialize(expired, typeof(bool));
+            var maxColRows = (int)new JavaScriptSerializer().Deserialize(maxColRowsStr, typeof(int));
 
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
@@ -82,6 +84,7 @@ namespace TietoCRM.Controllers.Reports
             ViewData.Add("AllModules", totalModuleList);
             ViewData.Add("Area", System.Web.HttpContext.Current.GetUser().Area);
             ViewData.Add("Customer", customer);
+            ViewData.Add("MaxColRows", maxColRows);
 
             //this.ViewData["Title"] = "";
             //this.ViewData["Systems"] = list.Where(dict => dict.ContainsKey("System"))
