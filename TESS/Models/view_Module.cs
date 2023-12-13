@@ -203,7 +203,7 @@ namespace TietoCRM.Models
 
         private static string GetExpiredSearchString(bool includeExpired)
         {
-            var returnString = !includeExpired ? " AND Expired = 0" : "";
+            var returnString = !includeExpired ? " AND Expired = 0 " : "";
             return returnString;
         }
 

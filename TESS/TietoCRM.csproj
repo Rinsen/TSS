@@ -1000,6 +1000,7 @@
     <Content Include="Views\CustomerProductGrowthReport\Pdf.cshtml" />
     <Content Include="Views\ModuleOverviewReport\Index.cshtml" />
     <Content Include="Views\ModuleOverviewReport\Pdf.cshtml" />
+    <Content Include="Views\ModuleOverviewReport\Pdf_ifo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

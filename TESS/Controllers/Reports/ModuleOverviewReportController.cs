@@ -92,7 +92,16 @@ namespace TietoCRM.Controllers.Reports
             //         .Distinct()
             //         .ToList();
 
-            ViewAsPdf pdf = new ViewAsPdf("Pdf") { RotativaOptions = new Rotativa.Core.DriverOptions() { PageOrientation = Rotativa.Core.Options.Orientation.Landscape } };
+            ViewAsPdf pdf = null;
+            
+            if(System.Web.HttpContext.Current.GetUser().Area == "IFO")
+            {
+                pdf = new ViewAsPdf("Pdf_ifo") { RotativaOptions = new Rotativa.Core.DriverOptions() { PageOrientation = Rotativa.Core.Options.Orientation.Landscape } };
+            }
+            else
+            {
+                pdf = new ViewAsPdf("Pdf") { RotativaOptions = new Rotativa.Core.DriverOptions() { PageOrientation = Rotativa.Core.Options.Orientation.Landscape } };
+            }
 
             String headerPath = Server.MapPath("~/Views/CustomerOffer/Header_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");
             String headerFilePath = "file:///" + headerPath;
@@ -107,7 +116,7 @@ namespace TietoCRM.Controllers.Reports
             hfs.Close();
 
             return pdf;
-            //return View("Pdf"); felsökningssyfte, petar ut den till en html-vy
+            //return View("Pdf"); //felsökningssyfte, petar ut den till en html-vy
         }
 
         private string GetValueFromDictionary(Dictionary<string, object> s)

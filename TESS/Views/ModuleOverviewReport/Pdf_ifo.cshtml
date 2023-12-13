@@ -20,7 +20,7 @@
 
         body {
             margin: 0px;
-            height: 90%;
+            height: 102.9%;
             display: -webkit-flex;
             background-color: rgb(227,223,221);
             -webkit-flex-flow: column none;
@@ -36,10 +36,11 @@
         }
 
         #content {
-            height: 90%;
+            height: 102.9%;
             padding: 10px;
             background-color: rgb(227,223,221);
             display: -webkit-box;
+
         }
 
             #content > .group {
@@ -53,7 +54,8 @@
                 #content > .group .item {
                     background-color: rgb(227,223,221);
                     width: 280px;
-                    font-family:Arial;
+
+                    font-family: Arial;
                     font-size: 13px !important;
                     line-height: 1.2;
                 }
@@ -85,12 +87,12 @@
                 {
                     count++;
 
-                    if (@module.Classification != currentModule)
+                    if (@module.System != currentModule)
                     {
                         //Delrubrik
                         count++;
-                        <div style="font-size:16px; font-weight:bold;margin-top:10px">@module.Classification</div>
-                        currentModule = module.Classification;
+                        <div style="font-size:16px; font-weight:bold;margin-top:10px">@module.System</div>
+                        currentModule = module.System;
                     }
 
                     if (customerModuleList.Contains(@module.Module))
