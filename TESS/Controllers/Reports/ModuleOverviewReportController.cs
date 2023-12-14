@@ -98,9 +98,13 @@ namespace TietoCRM.Controllers.Reports
             {
                 pdf = new ViewAsPdf("Pdf_ifo") { RotativaOptions = new Rotativa.Core.DriverOptions() { PageOrientation = Rotativa.Core.Options.Orientation.Landscape } };
             }
-            else
+            else if (System.Web.HttpContext.Current.GetUser().Area == "VOO")
             {
                 pdf = new ViewAsPdf("Pdf") { RotativaOptions = new Rotativa.Core.DriverOptions() { PageOrientation = Rotativa.Core.Options.Orientation.Landscape } };
+            }
+            else
+            {
+                pdf = new ViewAsPdf("Pdf_edu") { RotativaOptions = new Rotativa.Core.DriverOptions() { PageOrientation = Rotativa.Core.Options.Orientation.Landscape } };
             }
 
             String headerPath = Server.MapPath("~/Views/CustomerOffer/Header_" + System.Web.HttpContext.Current.GetUser().Sign + ".html").Replace("\\", "/");

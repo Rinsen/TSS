@@ -40,7 +40,6 @@
             padding: 10px;
             background-color: rgb(227,223,221);
             display: -webkit-box;
-
         }
 
             #content > .group {
@@ -54,12 +53,10 @@
                 #content > .group .item {
                     background-color: rgb(227,223,221);
                     width: 280px;
-
                     font-family: Arial;
                     font-size: 13px !important;
                     line-height: 1.2;
                 }
-
     </style>
 </head>
 <body style="background: rgb(227,223,221)">
@@ -87,19 +84,19 @@
                 {
                     count++;
 
-                    if (@module.System != currentModule)
+                    if (@module.Classification != currentModule)
                     {
                         //Delrubrik
                         count++;
-                        <div style="font-size:16px; font-weight:bold;margin-top:10px">@module.System</div>
-                        currentModule = module.System;
+                        <div style="font-size:16px; font-weight:bold;margin-top:10px">@module.System/@module.Classification</div>
+                        currentModule = module.Classification;
                     }
 
                     if (customerModuleList.Contains(@module.Module))
                     {
                         if (module.Expired.HasValue && module.Expired.Value)
                         {
-                            if (module.Module_status == 1 || module.Module_status == 2) //In developement
+                            if (module.Module_status == 3) //In developement
                             {
                                 <div class="item" style="background-color: yellow; font-weight: bolder; color: red; margin-top: 3px">
                                     <s>@module.Module</s>
@@ -114,7 +111,7 @@
                         }
                         else
                         {
-                            if (module.Module_status == 1 || module.Module_status == 2) //In developement
+                            if (module.Module_status == 3) //In developement
                             {
                                 <div class="item" style="background-color: yellow; font-weight: bolder; color: red; margin-top: 3px">
                                     @module.Module
@@ -132,7 +129,7 @@
                     {
                         if (module.Expired.HasValue && module.Expired.Value)
                         {
-                            if (module.Module_status == 1 || module.Module_status == 2) //In developement
+                            if (module.Module_status == 3) //In developement
                             {
                                 <div class="item" style="color: red; margin-top: 3px">
                                     <s>@module.Module</s>
@@ -147,7 +144,7 @@
                         }
                         else
                         {
-                            if (module.Module_status == 1 || module.Module_status == 2) //In developement
+                            if (module.Module_status == 3) //In developement
                             {
                                 <div class="item" style="color: red; margin-top:3px">
                                     @module.Module
