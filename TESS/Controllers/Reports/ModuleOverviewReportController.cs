@@ -1,4 +1,5 @@
-﻿using Rotativa.MVC;
+﻿using Newtonsoft.Json;
+using Rotativa.MVC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,10 +58,20 @@ namespace TietoCRM.Controllers.Reports
             string classifications = Request["classifications"];
             string expired = Request["expired"];
             string maxColRowsStr = Request["maxColRows"];
+            string excludeStringArray = Request["exclude"];
 
             var systemDic = (List<string>)new JavaScriptSerializer().Deserialize(system, typeof(List<string>));
             var classificationsDic = (List<string>)new JavaScriptSerializer().Deserialize(classifications, typeof(List<string>));
             var expiredBool = (bool)new JavaScriptSerializer().Deserialize(expired, typeof(bool));
+            
+            var excludeStringList = new List<string>();
+            var excludeIntList = new List<int>();
+            if (excludeStringArray != null)
+            {
+                excludeStringList.AddRange(JsonConvert.DeserializeObject<string[]>(excludeStringArray));
+                excludeIntList = excludeStringList.Select(s => int.Parse(new string(s.Where(char.IsDigit).ToArray()))).ToList(); //Parsa endast numeriska tecken till int...
+            }
+
             var maxColRows = (int)new JavaScriptSerializer().Deserialize(maxColRowsStr, typeof(int));
 
             String sortDir = Request["sort"];
@@ -81,6 +92,13 @@ namespace TietoCRM.Controllers.Reports
             }
 
             var totalModuleList = view_Module.getAllModuleForModuleOverviewReport(expiredBool, systemDic, classificationsDic);
+
+            //Should any modules be excluded?
+            if(excludeIntList.Any())
+            {
+                totalModuleList = totalModuleList.Where(w => !excludeIntList.Contains((int)w.Article_number)).ToList();
+            }
+
             ViewData.Add("AllModules", totalModuleList);
             ViewData.Add("Area", System.Web.HttpContext.Current.GetUser().Area);
             ViewData.Add("Customer", customer);
@@ -216,6 +234,7 @@ namespace TietoCRM.Controllers.Reports
                         Customers.Add("Customer", cr.Customer);
                         Customers.Add("Contract_id", cr.Contract_id);
                         Customers.Add("Module", cr.Alias);
+                        Customers.Add("ArticleNumber", cr.Article_number);
                         Customers.Add("Representative", contract.Sign);
                         Customers.Add("System", module.System);
                         Customers.Add("Classification", module.Classification); // module.Classification);
@@ -253,6 +272,7 @@ namespace TietoCRM.Controllers.Reports
                 {
                     classificationsDic.AddRange((List<string>)new JavaScriptSerializer().Deserialize(classifications, typeof(List<string>)));
                 }
+
                 var expiredBool = (bool)new JavaScriptSerializer().Deserialize(expired, typeof(bool));
 
                 return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(customer, systemsDic, classificationsDic, expiredBool)) + "}";

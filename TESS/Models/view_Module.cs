@@ -150,7 +150,7 @@ namespace TietoCRM.Models
                         "M.Module_type, S.SortNo, CAST(M.SSMA_timestamp AS BIGINT) AS SSMA_timestamp from view_Module M " +
                         "join View_Sector S on S.System = M.System and S.Classification = M.Classification " +
                         "where M.Module_type = 1 " + GetExpiredSearchString(includeExpired) + getSystemString(systems) + getClassificationString(classifications) +
-                        "order by S.SortNo, S.System, S.Classification";
+                        "order by S.SortNo, S.System, S.Classification, CASE WHEN isnull(M.Sort_order, 0) = 0 THEN 255 ELSE M.Sort_order END, M.Module"; //Sortering i första hand på Sort_order, sen i bokstavsordning om sort_order inte finns (eller är mindre än 1)
 
                 SqlCommand command = new SqlCommand(query, connection);
 

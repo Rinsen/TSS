@@ -55,12 +55,13 @@
 
     </div>
     <div class="col-md-12">
-        <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
+        <table draggable="true" id="report-table" class="table table-bordered table-hover" style="width:100%" data-sort-name="name" data-sort-order="desc">
             <thead>
                 <tr>
-                    <th data-field="Customer" data-sortable="true">Customer</th>
+                    <th data-field="#" data-sortable="false">Exclude</th>
                     <th data-field="Contract_id" data-sortable="true">Contract id</th>
                     <th data-field="Module" data-sortable="true">Module</th>
+                    <th data-field="ArticleNumber" data-sortable="true">Article number</th>
                     <th data-field="Representative" data-sortable="true">Representative</th>
                     <th data-field="System" data-sortable="true">System</th>
                     <th data-field="Classification" data-sortable="true">Classification</th>
@@ -72,13 +73,26 @@
     <script>
     var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
-    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Customer" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Contract_id" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Module" + "\"  },\r\n";}
+    @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "ArticleNumber" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Representative" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "System" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
+
+    var selectedNo = null;
+
+    var cbClicked = function (cb) {
+        if (cb.checked) {
+            selectedNo += 1;
+        }
+        else {
+            selectedNo -= 1;
+        }
+        console.log(selectedNo);
+    }
 
     var updateDataTable = function(customer, system, classifications, expired)
     {
@@ -105,14 +119,51 @@
             "defaultContent": "",
             "order": [[0, "asc"]],
             "columns": [@Html.Raw(DataObject)],
+            "columnDefs": [
+                {
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": 0
+                },
+                {
+                    "type": "swedish-string",
+                    "targets": 3
+                }
+            ],
             "scrollX": true,
             //"createdRow": function (row, data, dataIndex) {
             //    if (data[2] == `someVal`) {
             //        $(row).addClass('redClass');
             //    }
             //}
+            "fnRowCallback": drawCallBack
         });
 
+    }
+
+    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var i = 0;
+        for (var name in aData) {
+            var i = 0;
+
+            for (var name in aData) {
+                var $td;
+                if (i == 0) {
+                    $td = $('td:eq(' + i + ')', nRow);
+                    $td.html("<input style='margin-top: -1px; z-index: -1999; vertical-align: top' type='checkbox' name='selected-row' \
+                    data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' data-module=" + aData["ArticleNumber"] + "/>");
+                }
+                else {
+                    if (i < 14) {
+                        $td = $('td:eq(' + i + ')', nRow);
+                        $td.attr("data-property", name);
+                        $td.html(aData[name]);
+                        i++;
+                    }
+                }
+            }
+        }
     }
 
     $('document').ready(function () {
@@ -173,11 +224,21 @@
             var includeExpired = $exportexpired.is(':checked');
             var maxColRows = $("#maxColRows").val();
 
+            var $inputs = $("#report-table").find("input:checked");
+            var length = $inputs.length;
+            var excludeList = [];
+            for (var i = 0; i < length; i++) {
+                $input = $($inputs[i]);
+                var str = $input.attr("data-module");
+                excludeList.push(str);
+            }
+
+
             var $dt = $('.dataTable').DataTable();
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            var url = "ModuleOverviewReport/Pdf?customer=" + customer + "&system=" + JSON.stringify(system) + "&classifications=" + JSON.stringify(classifications) + "&expired=" + includeExpired + "&maxColRows=" + maxColRows + sort;
+            var url = "ModuleOverviewReport/Pdf?customer=" + customer + "&system=" + JSON.stringify(system) + "&classifications=" + JSON.stringify(classifications) + "&expired=" + includeExpired + "&exclude=" + JSON.stringify(excludeList) + "&maxColRows=" + maxColRows + sort;
             if ($('#desc').is(':checked')) {
                 url += "&showDesc=1";
             }
