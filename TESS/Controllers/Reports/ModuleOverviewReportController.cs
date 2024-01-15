@@ -275,7 +275,31 @@ namespace TietoCRM.Controllers.Reports
 
                 var expiredBool = (bool)new JavaScriptSerializer().Deserialize(expired, typeof(bool));
 
-                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(customer, systemsDic, classificationsDic, expiredBool)) + "}";
+                var rows = generateModuleInfo(customer, systemsDic, classificationsDic, expiredBool);
+
+                var totalModuleList = view_Module.getAllModuleForModuleOverviewReport(expiredBool, systemsDic, classificationsDic);
+
+                //Lägg till övriga moduler i listan
+                foreach (var module in totalModuleList)
+                {
+                    var found = rows.FirstOrDefault(row => row.ContainsKey("ArticleNumber") && row.ContainsValue(module.Article_number));
+                    if (found == null)
+                    {
+                        //Not found, add to rest-list
+                        rows.Add(new Dictionary<string, object>
+                        {
+                            { "Customer", "" },
+                            { "Contract_id", "" },
+                            { "Module", module.Module },
+                            { "ArticleNumber", module.Article_number },
+                            { "Representative", "" },
+                            { "System", module.System },
+                            { "Classification", module.Classification } // module.Classification);
+                        });
+                    }
+                }
+
+                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";
             }
             catch
             {
