@@ -77,7 +77,11 @@
                     var currentModule = "";
                     var count = 0;
                     var countCol = 0;
-                    var customerModuleList = (List<string>)ViewBag.Customermodules;
+                    var customerModuleList = new List<string>();
+                    if (ViewBag.Customermodules.Count > 0)
+                    {
+                        customerModuleList = ViewBag.Customermodules;
+                    }
                 }
 
                 @foreach (TietoCRM.Models.view_Module module in ViewBag.AllModules)
