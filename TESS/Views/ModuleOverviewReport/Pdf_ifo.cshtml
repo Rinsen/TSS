@@ -80,7 +80,7 @@
                     var currentModule = "";
                     var count = 0;
                     var countCol = 0;
-                    var customerModuleList = new List<string>();
+                    var customerModuleList = new List<Dictionary<string, object>>();
                     if (ViewBag.Customermodules.Count > 0)
                     {
                         customerModuleList = ViewBag.Customermodules;
@@ -99,7 +99,19 @@
                         currentModule = module.System;
                     }
 
-                    if (customerModuleList.Contains(@module.Module))
+                    var foundModule = customerModuleList.Any(dictionary =>
+                    {
+                        object value = 0;
+                        // Check if the dictionary contains the key "Article_number"
+                        if (dictionary.TryGetValue("ArticleNumber", out value))
+                        {
+                            // Compare the value with the targetArticleNumber
+                            return (int)value == (int)@module.Article_number;
+                        }
+                        return false; // The key "Article_number" doesn't exist in the dictionary
+                    });
+
+                    if (foundModule)
                     {
                         if (module.Expired.HasValue && module.Expired.Value)
                         {
