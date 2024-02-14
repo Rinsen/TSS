@@ -95,7 +95,7 @@
     Produkter
     -------------------------------------*@
 <div id="crm-pdf-module-rows" class="">
-    <div class="crm-pdf-subheader_terminate" id="crm-pdf-module-rows-title">
+    <div class="crm-pdf-subheader_terminate" style="page-break-inside:avoid" id="crm-pdf-module-rows-title">
         <table>
             <tr>
                 <td>Produkter</td>
@@ -108,7 +108,7 @@
     <div class="large-divider"></div>
     @foreach (dynamic article in ViewBag.Articles)
     {
-        <div class="crm-pdf-subrows_terminate">
+        <div class="crm-pdf-subrows_terminate" style="page-break-inside:avoid">
             <table>
                 <tr>
                     <td>@article.Article_number</td>
@@ -129,7 +129,7 @@
     </div>
     }@foreach (dynamic article in ViewBag.EducationPortals)
     {
-        <div class="crm-pdf-subrows_terminate">
+        <div class="crm-pdf-subrows_terminate" style="page-break-inside:avoid">
             <table>
                 <tr>
                     <td>@article.Article_number</td>

@@ -80,7 +80,7 @@ namespace TietoCRM.Controllers.Reports
 
             var systems = new List<string>();
 
-            List<string> list = generateModuleInfo(customer, systemDic, classificationsDic, expiredBool).Select(s => GetValueFromDictionary(s)).ToList();
+            var list = generateModuleInfo(customer, systemDic, classificationsDic, expiredBool);
 
             if (list.Count > 0)
             {

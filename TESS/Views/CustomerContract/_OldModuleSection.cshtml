@@ -51,7 +51,7 @@
             if (previousPriceType != article.Price_type)
             {
                 previousPriceType = article.Price_type;
-                <div class="@subh1" id="crm-pdf-module-rows-title">
+                <div class="@subh1" style="page-break-inside:avoid" id="crm-pdf-module-rows-title">
                     <table>
                         <tr>
                             <td>Produkter</td>
@@ -94,7 +94,7 @@
                     </table>
                 </div>
             }
-            <div class="@subr2">
+            <div class="@subr2" style="page-break-inside:avoid">
                 <table>
                     <tr>
                         <td>@article.Article_number</td>
@@ -131,7 +131,7 @@
         @if (toBeSummerized)
         {
             <span class="large-divider"></span>
-            <div class="@subs1">
+            <div class="@subs1" style="page-break-inside:avoid">
                 <table>
                     <tr>
                         <td></td>
@@ -264,7 +264,7 @@
         if (previousPriceType != article.Price_type)
         {
             previousPriceType = article.Price_type;
-            <div class="@subh1" id="crm-pdf-module-rows-title">
+            <div class="@subh1" style="page-break-inside:avoid" id="crm-pdf-module-rows-title">
                 <table>
                     <tr>
                         <td><span style="font-size: 10pt; font-weight: bold">Produkter</span></td>
@@ -324,7 +324,7 @@
                 </table>
             </div>
         }
-        <div class="@subr2">
+        <div class="@subr2" style="page-break-inside:avoid">
             <table>
                 <tr>
                     <td>@article.Article_number</td>
@@ -371,7 +371,7 @@
     @if (toBeSummerized)
     {
         <span class="large-divider"></span>
-        <div class="@subs1">
+        <div class="@subs1" style="page-break-inside:avoid">
             <table>
                 <tr>
                     <td></td>

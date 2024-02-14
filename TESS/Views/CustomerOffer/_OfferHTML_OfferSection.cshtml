@@ -74,7 +74,7 @@
                 currentPriceType = article.Price_type;
                 if (i == 0)
                 {
-                    <div class="@subh1" id="crm-pdf-module-rows-title">
+                    <div class="@subh1" style="page-break-inside:avoid" id="crm-pdf-module-rows-title">
                         <table>
                             <tr>
                                 <td>
@@ -194,7 +194,7 @@
                         </table>
                     </div>
                 }
-                <div class="@subr2">
+                <div class="@subr2" style="page-break-inside:avoid">
                     <table>
                         <tr>
                             <td>@article.Article_number</td>
@@ -255,7 +255,7 @@
             if (nextPriceType != currentPriceType && toBeSummerized)
             {
                 <span class="large-divider"></span>
-                <div class="@subs1">
+                <div class="@subs1" style="page-break-inside:avoid">
                     <table>
                         <tr>
                             <td></td>
@@ -299,7 +299,7 @@
         Konsulttjänster
         -------------------------------------*@
         <div id="crm-pdf-service-rows">
-        <div class="@subh2">
+        <div class="@subh2" style="page-break-inside:avoid">
             <table>
                 <tr>
                     <td>
@@ -352,7 +352,7 @@
                 Price = Price.Replace(" kr", "");
                 TotalPrice = TotalPrice.Replace(" kr", "");
             }
-            <div class="@subr3">
+            <div class="@subr3" style="page-break-inside:avoid">
                 <table>
                     <tr>
                         <td>@service.Article_number</td>
@@ -383,7 +383,7 @@
         @if (toBeSummerized)
         {
             <span class="large-divider"></span>
-            <div class="@subs1">
+            <div class="@subs1" style="page-break-inside:avoid">
                 <table>
                     <tr>
                         <td></td>
