@@ -97,32 +97,61 @@
                         currentModule = module.Classification;
                     }
 
-                    var foundModule = customerModuleList.Any(dictionary =>
-                    {
-                        object value = 0;
-                        // Check if the dictionary contains the key "Article_number"
-                        if (dictionary.TryGetValue("ArticleNumber", out value))
-                        {
-                            // Compare the value with the targetArticleNumber
-                            return (int)value == (int)@module.Article_number;
-                        }
-                        return false; // The key "Article_number" doesn't exist in the dictionary
-                    });
+                    object value = null;
+                    var foundModule = customerModuleList.FirstOrDefault(dict => dict.TryGetValue("ArticleNumber", out value) && value.ToString() == module.Article_number.ToString());
 
-                    if (foundModule)
+                    if (foundModule != null)
                     {
                         if (module.Expired.HasValue && module.Expired.Value)
                         {
                             if (module.Module_status == 3) //In developement
                             {
                                 <div class="item" style="background-color: yellow; font-weight: bolder; color: red; margin-top: 3px">
-                                    <s>@module.Module</s>
+                                    <s>
+                                        @if (module.Read_name_from_module == 0)
+                                        {
+                                            object moduleName;
+                                            var foundModuleName = foundModule.TryGetValue("Module", out moduleName);
+
+                                            if (foundModuleName)
+                                            {
+                                                @moduleName;
+                                            }
+                                            else
+                                            {
+                                                @module.Module;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @module.Module;
+                                        }
+                                    </s>
                                 </div>
                             }
                             else
                             {
                                 <div class="item" style="background-color: yellow; font-weight: bolder; margin-top: 3px">
-                                    <s>@module.Module</s>
+                                    <s>
+                                        @if (module.Read_name_from_module == 0)
+                                        {
+                                            object moduleName;
+                                            var foundModuleName = foundModule.TryGetValue("Module", out moduleName);
+
+                                            if (foundModuleName)
+                                            {
+                                                @moduleName;
+                                            }
+                                            else
+                                            {
+                                                @module.Module;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @module.Module;
+                                        }
+                                    </s>
                                 </div>
                             }
                         }
@@ -131,13 +160,47 @@
                             if (module.Module_status == 3) //In developement
                             {
                                 <div class="item" style="background-color: yellow; font-weight: bolder; color: red; margin-top: 3px">
-                                    @module.Module
+                                    @if (module.Read_name_from_module == 0)
+                                    {
+                                        object moduleName;
+                                        var foundModuleName = foundModule.TryGetValue("Module", out moduleName);
+
+                                        if (foundModuleName)
+                                        {
+                                            @moduleName;
+                                        }
+                                        else
+                                        {
+                                            @module.Module;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @module.Module;
+                                    }
                                 </div>
                             }
                             else
                             {
                                 <div class="item" style="background-color: yellow; font-weight: bolder; margin-top: 3px">
-                                    @module.Module
+                                    @if (module.Read_name_from_module == 0)
+                                    {
+                                        object moduleName;
+                                        var foundModuleName = foundModule.TryGetValue("Module", out moduleName);
+
+                                        if (foundModuleName)
+                                        {
+                                            @moduleName;
+                                        }
+                                        else
+                                        {
+                                            @module.Module;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @module.Module;
+                                    }
                                 </div>
                             }
                         }

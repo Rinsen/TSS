@@ -70,10 +70,10 @@ namespace TietoCRM.Controllers.Reports
 
                 foreach (var item in list)
                 {
-                    object moduleName = "";
-                    if(item.TryGetValue("Module", out moduleName))
+                    object articleNumber = "";
+                    if(item.TryGetValue("ArticleNumber", out articleNumber))
                     {
-                        if (moduleName as string == module.Module)
+                        if (articleNumber.ToString() == module.Article_number.ToString())
                         {
                             //Match
                             customerModules.Add(item);
@@ -181,9 +181,10 @@ namespace TietoCRM.Controllers.Reports
                             {
                                 Customers.Add("Customer", cr.Customer);
                                 Customers.Add("Contract_id", cr.Contract_id);
-                                Customers.Add("Module", module.Module);
+                                Customers.Add("Module", module.Read_name_from_module == 1 ? module.Module : cr.Alias);
                                 Customers.Add("Representative", contract.Sign);
                                 Customers.Add("Classification", module.Classification);
+                                Customers.Add("ArticleNumber", module.Article_number);
 
                                 rows.Add(Customers);
                             }

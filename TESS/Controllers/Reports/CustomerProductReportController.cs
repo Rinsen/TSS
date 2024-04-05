@@ -36,7 +36,7 @@ namespace TietoCRM.Controllers
         public ActionResult Index()
         {
             TietoCRM.Models.GlobalVariables.Initializer();
-            List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows();
+            //List<view_CustomerProductRow> ProductReportRows = view_CustomerProductRow.getAllCustomerProductRows();
 
             List<String> OrderedCustomerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
             OrderedCustomerNames.Sort();

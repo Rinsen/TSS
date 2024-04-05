@@ -233,7 +233,7 @@ namespace TietoCRM.Controllers.Reports
                     {
                         Customers.Add("Customer", cr.Customer);
                         Customers.Add("Contract_id", cr.Contract_id);
-                        Customers.Add("Module", cr.Alias);
+                        Customers.Add("Module", module.Read_name_from_module == 1 ? module.Module : cr.Alias);
                         Customers.Add("ArticleNumber", cr.Article_number);
                         Customers.Add("Representative", contract.Sign);
                         Customers.Add("System", module.System);
@@ -282,7 +282,9 @@ namespace TietoCRM.Controllers.Reports
                 //Lägg till övriga moduler i listan
                 foreach (var module in totalModuleList)
                 {
-                    var found = rows.FirstOrDefault(row => row.ContainsKey("ArticleNumber") && row.ContainsValue(module.Article_number));
+                    //var found = rows.FirstOrDefault(row => row.ContainsKey("ArticleNumber") && row.ContainsValue(module.Article_number));
+                    object value = null;
+                    var found = rows.FirstOrDefault(dict => dict.TryGetValue("ArticleNumber", out value) && value.ToString() == module.Article_number.ToString());
                     if (found == null)
                     {
                         //Not found, add to rest-list
