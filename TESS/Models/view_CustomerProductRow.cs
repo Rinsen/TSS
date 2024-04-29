@@ -227,18 +227,20 @@ namespace TietoCRM.Models
                         if (withExpired)
                         {
                             command.CommandText = @"SELECT CPR.Customer, CPR.Article_number, CPR.Classification, CPR.Module, CPR.System, CPR.Contract_id, CPR.Sign, CPR.Valid_through, 
-                            CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, C.Main_contract_id, C.Valid_from as MainContract_ValidFrom, C.Valid_through as MainContract_ValidThrough
+                            CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, CMain.Main_contract_id, CMain.Valid_from as MainContract_ValidFrom, CMain.Valid_through as MainContract_ValidThrough
                             FROM " + databasePrefix + "CustomerProductRow CPR " +
                             "JOIN " + databasePrefix + "Contract C on C.Customer = CPR.Customer and C.Contract_id = CPR.Contract_id " +
+                            "JOIN " + databasePrefix + "Contract CMain on C.Customer = CMain.Customer and C.Main_contract_id = CMain.Contract_id " +
                             "JOIN " + databasePrefix + "Module M on M.Article_number = CPR.Article_number " +
                             "WHERE C.Customer = @customer And CPR.Discount_type = 0 And C.status = 'Giltigt' ";
                         }
                         else
                         {
                             command.CommandText = @"SELECT CPR.Customer, CPR.Article_number, CPR.Classification, CPR.Module, CPR.System, CPR.Contract_id, CPR.Sign, CPR.Valid_through, 
-                            CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, C.Main_contract_id, C.Valid_from as MainContract_ValidFrom, C.Valid_through as MainContract_ValidThrough
+                            CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, CMain.Main_contract_id, CMain.Valid_from as MainContract_ValidFrom, CMain.Valid_through as MainContract_ValidThrough
                             FROM " + databasePrefix + "CustomerProductRow CPR " +
                             "JOIN " + databasePrefix + "Contract C on C.Customer = CPR.Customer and C.Contract_id = CPR.Contract_id " +
+                            "JOIN " + databasePrefix + "Contract CMain on C.Customer = CMain.Customer and C.Main_contract_id = CMain.Contract_id " +
                             "JOIN " + databasePrefix + "Module M on M.Article_number = CPR.Article_number " +
                             "WHERE CPR.Customer = @customer And CPR.Discount_type = 0 And CPR.Expired = 0 And C.status = 'Giltigt' ";
                         }
@@ -248,18 +250,20 @@ namespace TietoCRM.Models
                         if (withExpired)
                         {
                             command.CommandText = @"SELECT CPR.Customer, CPR.Article_number, CPR.Classification, CPR.Module, CPR.System, CPR.Contract_id, CPR.Sign, CPR.Valid_through, 
-                        CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, C.Main_contract_id, C.Valid_from as MainContract_ValidFrom, C.Valid_through as MainContract_ValidThrough
+                        CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, CMain.Main_contract_id, CMain.Valid_from as MainContract_ValidFrom, CMain.Valid_through as MainContract_ValidThrough
                         FROM " + databasePrefix + "CustomerProductRow CPR " +
                             "JOIN " + databasePrefix + "Contract C on C.Customer = CPR.Customer and C.Contract_id = CPR.Contract_id " +
+                            "JOIN " + databasePrefix + "Contract CMain on C.Customer = CMain.Customer and C.Main_contract_id = CMain.Contract_id " +
                             "JOIN " + databasePrefix + "Module M on M.Article_number = CPR.Article_number " +
                             "WHERE C.Customer = @customer And CPR.Discount_type = 0 And (C.status = 'Giltigt' or C.status = 'Sänt') ";
                         }
                         else
                         {
                             command.CommandText = @"SELECT CPR.Customer, CPR.Article_number, CPR.Classification, CPR.Module, CPR.System, CPR.Contract_id, CPR.Sign, CPR.Valid_through, 
-                        CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, C.Main_contract_id, C.Valid_from as MainContract_ValidFrom, C.Valid_through as MainContract_ValidThrough
+                        CPR.Status, CAST(CPR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CPR.SortNo, CPR.Discount_type, CPR.Alias, CPR.Expired, CPR.Read_name_from_module, CMain.Main_contract_id, CMain.Valid_from as MainContract_ValidFrom, CMain.Valid_through as MainContract_ValidThrough
                         FROM " + databasePrefix + "CustomerProductRow CPR " +
                             "JOIN " + databasePrefix + "Contract C on C.Customer = CPR.Customer and C.Contract_id = CPR.Contract_id " +
+                            "JOIN " + databasePrefix + "Contract CMain on C.Customer = CMain.Customer and C.Main_contract_id = CMain.Contract_id " +
                             "JOIN " + databasePrefix + "Module M on M.Article_number = CPR.Article_number " +
                             "WHERE CPR.Customer = @customer And CPR.Discount_type = 0 And CPR.Expired = 0 And (C.status = 'Giltigt' or C.status = 'Sänt') ";
                         }
