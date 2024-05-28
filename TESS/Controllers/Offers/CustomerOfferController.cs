@@ -2000,10 +2000,19 @@ namespace TietoCRM.Controllers
                 var module = new view_Module();
                 module.Select("Article_number = " + id);
 
-                if (module.Read_name_from_module == 1 || String.IsNullOrEmpty(alias))
+                if (module.Read_name_from_module == 1)
                 {
                     alias = module.Module;
-                }                    
+                }
+
+                if(String.IsNullOrEmpty(alias))
+                {
+                    //Check for old saved name.
+                    if(id > 0 && customerOffer._ConsultantRows != null && customerOffer._ConsultantRows.Where(w => w.Code == id).FirstOrDefault() != null)
+                    {
+                         alias = customerOffer._ConsultantRows.Where(w => w.Code == id).First().Alias;
+                    }
+                }
 
                 view_ConsultantRow consultantRow = new view_ConsultantRow();
                 consultantRow.Offer_number = offer;
