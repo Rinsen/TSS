@@ -306,7 +306,8 @@ namespace TietoCRM.Controllers.Contracts
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
             HashSet<view_ContractConsultantRow> customersServices = new HashSet<view_ContractConsultantRow>();
 
-            foreach (view_Contract validContract in view_Contract.GetContracts(urlCustomer).Where(c => c.Status == "Giltigt"))
+            //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
+            foreach (view_Contract validContract in view_Contract.GetContracts(urlCustomer, false, "Giltigt"))
             {
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows));
                 customersServices = new HashSet<view_ContractConsultantRow>(customersServices.Concat(validContract._ContractConsultantRows));
@@ -663,7 +664,8 @@ namespace TietoCRM.Controllers.Contracts
 
             ViewData.Add("OpenOfferModules", modules);
             ViewData.Add("OpenOfferServices", services);
-            ViewData.Add("ActiveContracts", view_Contract.GetContracts(customer.Customer).Where(c => c.Status == "Giltigt"));
+            //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
+            ViewData.Add("ActiveContracts", view_Contract.GetContracts(customer.Customer, false, "Giltigt"));
 
             this.ViewData["Title"] = "Customer Contract";
 
@@ -702,7 +704,8 @@ namespace TietoCRM.Controllers.Contracts
             this.ViewData.Add("ContractTypes", (new SelectOptions<view_Contract>()).GetSelectOptions("Contract_type"));
             this.ViewData.Add("Organisations", view_OrganisationInformation.getAllOrganisations());
 
-            List<String> mainContracts = view_Contract.GetContracts(customer.Customer).Where(c => c.Contract_type == "Huvudavtal").Select(c => c.Contract_id).ToList();
+            //Gör om frågan.. detta är inte effektivt att använda GetContracts som hämtar allt...
+            List<String> mainContracts = view_Contract.GetContracts(customer.Customer, false, null, "Huvudavtal").Select(c => c.Contract_id).ToList();
             this.ViewData.Add("MainContracts", mainContracts);
             this.ViewData.Add("Users", view_User.getAllUsers().Select(u => u.Sign));
 
@@ -2245,7 +2248,8 @@ namespace TietoCRM.Controllers.Contracts
 
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
 
-            foreach (view_Contract validContract in view_Contract.GetContracts(customer).Where(c => c.Status == "Giltigt"))
+            //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
+            foreach (view_Contract validContract in view_Contract.GetContracts(customer, false, "Giltigt"))
             {
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows));
             }
@@ -2267,7 +2271,8 @@ namespace TietoCRM.Controllers.Contracts
 
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
 
-            foreach (view_Contract validContract in view_Contract.GetContracts(customer).Where(c => c.Status == "Giltigt"))
+            //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
+            foreach (view_Contract validContract in view_Contract.GetContracts(customer, false, "Giltigt"))
             {
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows.Where(w => w.Alias.ToLower().Contains(searchtext.ToLower()))));
             }
@@ -2652,13 +2657,15 @@ namespace TietoCRM.Controllers.Contracts
                 List<String> mainContracts = new List<String>();
                 if (our_sign != "*")
                 {
-                    mainContracts = view_Contract.GetContracts(customer).Where(c => c.Is(ContractType.MainContract) && 
-                        c.Status == "Giltigt" && c.Sign == our_sign && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
+                    //Gör om GetContracts .. detta är inte effektivt...
+                    mainContracts = view_Contract.GetContracts(customer, false, "Giltigt").Where(c => c.Is(ContractType.MainContract) && 
+                        c.Sign == our_sign && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
                 }
                 else
                 {
-                   mainContracts = view_Contract.GetContracts(customer).Where(c => c.Is(ContractType.MainContract) && 
-                        c.Status == "Giltigt" && user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
+                    //Gör om GetContracts .. detta är inte effektivt...
+                    mainContracts = view_Contract.GetContracts(customer, false, "Giltigt").Where(c => c.Is(ContractType.MainContract) && 
+                        user.IfSameArea(c.Area)).Select(c => c.Contract_id).ToList();
                 }
 
                 return (new JavaScriptSerializer()).Serialize(mainContracts);

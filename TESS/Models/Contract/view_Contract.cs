@@ -150,8 +150,11 @@ namespace TietoCRM.Models
         /// Get all contract of a specific customer
         /// </summary>
         /// <param name="customer">The customer to get contracts from</param>
+        /// <param name="noRows">Skip lists with data under contract</param>
+        /// <param name="contractStatus">Search for specific contract status</param>
+        /// <param name="contractType">Search for specific contract type</param>
         /// <returns>A list of strings with customer names</returns>
-        public static List<view_Contract> GetContracts(String customer, bool noRows = false)
+        public static List<view_Contract> GetContracts(String customer, bool noRows = false, string contractStatus = "", string contractType = "")
         {
             List<view_Contract> list = new List<view_Contract>();
 
@@ -164,8 +167,18 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = "SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status], [CRM_id] ,[Valid_from] ,[Valid_through] ,";
                 command.CommandText += "[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,";
-                command.CommandText += "[Option_date] ,[Sign], Area, Resigned_contract, Summera, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
+                command.CommandText += "[Option_date] ,[Sign], Area, Resigned_contract, Summera, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + 
+                                        "Contract WHERE " + "Customer = @customer";
                 //command.CommandText = "SELECT * FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
+
+                if(!string.IsNullOrEmpty(contractStatus))
+                {
+                    command.CommandText += " and Status = '" + contractStatus + "'";
+                }
+                if(!string.IsNullOrEmpty(contractType))
+                {
+                    command.CommandText += " and Contract_type = '" + contractType + "'";
+                }
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@customer", customer);
