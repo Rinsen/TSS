@@ -128,6 +128,11 @@ namespace TietoCRM.Controllers
                 {
                     if(pi.Name == "Created" || pi.Name == "Updated")
                         returnDic.Add(pi.Name, ((DateTime)pi.GetValue(info, null)).ToString("yyyy-MM-dd HH:mm"));
+                    else if(pi.Name == "Message")
+                    {
+                        var test = pi.GetValue(info, null).ToString().Replace("\n", "<br />");
+                        returnDic.Add(pi.Name, test);
+                    }                        
                     else
                         returnDic.Add(pi.Name, pi.GetValue(info, null).ToString());
                 }    
