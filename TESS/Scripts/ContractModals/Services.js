@@ -421,6 +421,7 @@ var fillServiceSearchList = function () {
                                             onclick = 'newItem(this, " + service.Price_category + ")'               \
                                             data-code='" + service.Article_number + "'                              \
                                             data-selected='false'                                                   \
+                                            data-multiple-select='" + service.Multiple_type + "'                    \
                                             class='list-group-item'>                                                \
                                         <span style='font-weight:700'>" + service.Article_number + ", </span> \
                                         <span id='description-title' style='font-weight:700'>" + service.Module + "</span>                  \
