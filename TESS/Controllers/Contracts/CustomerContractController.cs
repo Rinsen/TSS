@@ -18,6 +18,7 @@ using TietoCRM.Extensions;
 using System.Data;
 using System.Net;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace TietoCRM.Controllers.Contracts
 {
@@ -36,9 +37,9 @@ namespace TietoCRM.Controllers.Contracts
             }
         }
     }
+
     public class CustomerContractController : Controller
     {
-
         private List<String> skipProp = new List<string>
         {
             "Created",
@@ -99,6 +100,8 @@ namespace TietoCRM.Controllers.Contracts
 
             this.ViewData.Add("OfferNumber", on);
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             var properties = new List<PropertyInfo>
             {
                 typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id").First(),
@@ -119,6 +122,19 @@ namespace TietoCRM.Controllers.Contracts
                 typeof(view_Contract).GetProperties().Where(p => p.Name == "Contact_person").First(),
                 typeof(view_Contract).GetProperties().Where(p => p.Name == "Summera").First()
             };
+
+            if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+            {
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "LicensePart").First());
+                properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Factor").First());
+
+                var licensePart = currentSaasFormula.LicensePart > 0 ? currentSaasFormula.LicensePart.ToString().Replace(",", ".") : "";
+                this.ViewData.Add("LicensePart", licensePart);
+
+                var factor = currentSaasFormula.Factor > 0 ? currentSaasFormula.Factor.ToString().Replace(",", ".") : "";
+                this.ViewData.Add("Factor", factor);
+
+            }
 
             this.ViewData.Add("Properties", properties.ToArray());
 
@@ -995,12 +1011,15 @@ namespace TietoCRM.Controllers.Contracts
                 view_Contract a = null;
                 try
                 {
-                    a = (view_Contract)(new JavaScriptSerializer()).Deserialize(json, typeof(view_Contract));
+                    a = JsonConvert.DeserializeObject<view_Contract>(json);
+
                     a.ParseHashtags(Request["hashtags"]);
+
                     int i = 1;
                     bool foundIndex = false;
                     string contractId = "";
                     view_Contract contract = new view_Contract();
+
                     while(!foundIndex) // make sure that we will get a unique contract id
                     {
                         if (a.Is(ContractType.ModuleTermination))

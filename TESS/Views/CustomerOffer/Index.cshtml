@@ -1,78 +1,80 @@
-﻿@using TietoCRM.Extensions;
+﻿@{
+    var currentSaasFormula = TietoCRM.Models.view_SaaS_Formula.getActiveSaaSFormula();
+}
+@using TietoCRM.Extensions;
 @using TietoCRM.Models;
-    <row>
-        <div class="col-md-12">
-            <form class="form-inline">
-                <div class="form-group" id="div-user">
-                    <label for="crm-select-user">Our Salesman:</label>
-                    <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
-                        <option selected value="*">All</option>
-                        @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
-                        {
-                            @*if (ViewBag.CurrentUser == User.Sign)
+<row>
+    <div class="col-md-12">
+        <form class="form-inline">
+            <div class="form-group" id="div-user">
+                <label for="crm-select-user">Our Salesman:</label>
+                <select name="user" id="crm-select-user" class="form-control selectpicker" data-live-search="true">
+                    <option selected value="*">All</option>
+                    @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
+                    {
+                        @*if (ViewBag.CurrentUser == User.Sign)
                             {
                                 <option selected value="@User.Sign">@User.Name</option>
                             }
                             else
                             {*@
-                                <option value="@User.Sign">@User.Name</option>
-                            @*}*@
-                        }
-                    </select>
-                </div>
-                <div class="form-group" id="div-customer">
-                    <label for="crm-select-customer">Customer:</label>
-                    <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
-                        <option value="*">All</option>
-                        <option selected value="@ViewBag.SelectedCustomer">@ViewBag.SelectedCustomer</option>
-                        @foreach (String Customer in ViewBag.Customers)
-                        {
-                            <option value="@Customer">@Customer</option>
-                        }
-                    </select>
-                </div>
-                <button type='button' style="margin-top: 1.7em;" class='btn btn-default form-control' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-                <div id='crm-edit-contact' class='crm-table-btn'>
-                    <button type='button'  style="margin-top: 1.7em;" class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
-                </div>
-                <button type='button' style="display:none; margin-top: 1.7em;" class='btn btn-warning form-control' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
-                <div class="form-group">
-                    <input hidden name="CurrentUser" id="current_user" value="@ViewBag.CurrentUser">
-                </div>            
-            </form>
-        </div>
-    </row>
-    <table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
-        <thead>
-            <tr>
-                @foreach (String ColumnName in ViewBag.Properties)
+                        <option value="@User.Sign">@User.Name</option>
+                        @*}*@
+                    }
+                </select>
+            </div>
+            <div class="form-group" id="div-customer">
+                <label for="crm-select-customer">Customer:</label>
+                <select name="customer" id="crm-select-customer" class="form-control selectpicker" data-live-search="true">
+                    <option value="*">All</option>
+                    <option selected value="@ViewBag.SelectedCustomer">@ViewBag.SelectedCustomer</option>
+                    @foreach (String Customer in ViewBag.Customers)
+                    {
+                        <option value="@Customer">@Customer</option>
+                    }
+                </select>
+            </div>
+            <button type='button' style="margin-top: 1.7em;" class='btn btn-default form-control' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
+            <div id='crm-edit-contact' class='crm-table-btn'>
+                <button type='button' style="margin-top: 1.7em;" class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+            </div>
+            <button type='button' style="display:none; margin-top: 1.7em;" class='btn btn-warning form-control' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+            <div class="form-group">
+                <input hidden name="CurrentUser" id="current_user" value="@ViewBag.CurrentUser">
+            </div>
+        </form>
+    </div>
+</row>
+<table draggable="true" id="@ViewBag.ControllerName-table" class="table table-bordered table-hover" data-url="data1.json" data-height="299" data-sort-name="name" data-sort-order="desc">
+    <thead>
+        <tr>
+            @foreach (String ColumnName in ViewBag.Properties)
+            {
+                String PropertyName = ColumnName.Replace("_", " ");
+                if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
                 {
-                    String PropertyName = ColumnName.Replace("_", " ");
-                    if (@PropertyName != "SSMA timestamp" && @PropertyName != "#" && @PropertyName != "Customer")
+                    if (ColumnName == "Hashtags")
                     {
-                        if (ColumnName == "Hashtags")
-                        {
-                            <th class="hidden" data-field="@ColumnName" data-sortable="true">@PropertyName</th>
-                        }
-                        else
-                        {
-                            <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
-                        }
+                        <th class="hidden" data-field="@ColumnName" data-sortable="true">@PropertyName</th>
                     }
-                    else if (@PropertyName != "SSMA timestamp") // this is for #
+                    else
                     {
-                        <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
+                        <th data-field="@ColumnName" data-sortable="true">@PropertyName</th>
                     }
-
                 }
-            </tr>
-        </thead>
-    </table>
+                else if (@PropertyName != "SSMA timestamp") // this is for #
+                {
+                    <th data-field="@ColumnName" data-sortable="false">@PropertyName</th>
+                }
+
+            }
+        </tr>
+    </thead>
+</table>
 
 
-    <!-- #region reminders -->
-
-    @*<div class="modal fade bs-example-modal-lg" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<!-- #region reminders -->
+@*<div class="modal fade bs-example-modal-lg" id="reminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
         <div class="modal-dialog reminders-modal" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -135,8 +137,8 @@
             <div id="reminder-modal" class="modal-body">
                 <form class="form-inline" id="reminders-form">
                     <table class="table table-striped table-bordered" id="reminder-table">
-                        
-                       <thead>
+
+                        <thead>
                             <tr>
                                 <th>Start date</th>
                                 <th>Reminder text</th>
@@ -311,7 +313,7 @@
                 <h4 class="modal-title" id="myModalLabel">New offer</h4>
             </div>
             <div id="new-offer-modal" class="modal-body">
-                
+
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label for="contactPerson4" class="col-sm-2 control-label">Contact Person</label>
@@ -396,10 +398,23 @@
                         }
                         <div class="col-sm-10">
                             <div class="checkbox">
-                                <input id="summera" name="Summera" type="checkbox" @SummeraChecked />
+                                <input id="summera" name="Summera" type="checkbox" @SummeraChecked style="margin-left:0px;" />
                             </div>
                         </div>
                     </div>
+                    @if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                    {
+                        <div class="form-group">
+                            <label for="summera" class="col-sm-2 control-label">SaaS Formula</label>
+                            <div class="col-sm-10" style="display: flex; align-items: center;">
+                                <label for="license" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
+                                <input type="text" class="form-control mx-1" name="LicensePart" id="license" style="width: 80px; margin-right: 10px; height: 30px;" value="@currentSaasFormula.LicensePart.ToString()">
+                                <label for="factor" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
+                                <input type="text" class="form-control mx-1" name="Factor" id="factor" style="width: 80px; height: 30px;" value="@currentSaasFormula.Factor.ToString()">
+                            </div>
+                        </div>
+                    }
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -412,12 +427,12 @@
 
 
 <!--
-    
+
     Script for new offer modal
 -->
 <script>
     var serverPrefix = "@Url.Content("~/")";
-   
+
     var $customerSelect = $("#crm-select-customer");
     var checkReminder = function(customer, showModal){
         $.ajax({
@@ -458,14 +473,14 @@
                 currentPerson = JSON.parse(data);
                 $select = $("#contactPerson4");
                 $select.html("");
-             
+
                 if(currentPerson.length > 0){
                     for(var i = 0; i < currentPerson.length; i++)
                     {
                         var person = currentPerson[i];
                         $select.append($("<option></option>").attr("innerText", person.Contact_person).html(person.Contact_person));
                     }
-                }                 
+                }
                 $select.append("<option value='none'>None</option>");
                 $select.selectpicker('refresh');
             }
@@ -484,20 +499,20 @@
                 currentSign = JSON.parse(data);
                 $select = $("#ourSign4");
                 $select.html("");
-             
+
                 if(currentSign.length > 0){
                     for(var i = 0; i < currentSign.length; i++)
                     {
-                        if (currentSign[i] == $("#current_user").val()) 
+                        if (currentSign[i] == $("#current_user").val())
                         {
                             $select.append($("<option> selected </option>").attr("innerText", currentSign[i]).html(currentSign[i]));
                         }
-                        else 
+                        else
                         {
                             $select.append($("<option></option>").attr("innerText", currentSign[i]).html(currentSign[i]));
                         }
                     }
-                }                 
+                }
                 //$select.append("<option selected value=''>No one selected</option>");
                 $select.selectpicker('refresh');
             }
@@ -534,7 +549,7 @@
         $("#created4").datepicker();
         $("#valid4").datepicker();
     }
-        
+
 
     $("#create-offer-btn").click(function(){
         if ($("#new-offer-modal form").valid()) {
@@ -549,7 +564,10 @@
         newOffer.DefaultOrg = $("#defaultOrg").prop("checked") ? 1 : 0;
         newOffer.Summera = $("#summera").prop("checked") ? 1 : 0;
         newOffer.Our_Sign = $("#ourSign4").val();
-        
+        newOffer.LicensePart = $("#license").val().replace(",", ".");
+        newOffer.Factor = $("#factor").val().replace(",", ".");
+
+
         $.ajax({
             "url": serverPrefix + "CustomerOffer/Insert/",
             "type": "POST",
@@ -600,30 +618,27 @@
 <script>
     var currentPerson;
     var $contactSelect = $("#crm-select-customer");
-    $("#contact-modal-button").click(function(){
+    $("#contact-modal-button").click(function () {
         $("#contactModal").appendTo("body").modal("show").draggable();
     });
 
-    var loadContactData = function()
-    {
+    var loadContactData = function () {
         $.ajax({
             "url": serverPrefix + "CustomerOffer/GetContacts/",
             "type": "POST",
             "data": {
                 "customer": $("#crm-select-customer").val()
             },
-            "success": function(data){
+            "success": function (data) {
                 currentPerson = JSON.parse(data);
                 $select = $("#crm-contact-select");
                 $select.html("");
                 $button = $("#create-contact-button");
 
-                for(var i = 0; i < currentPerson.length; i++)
-                {
+                for (var i = 0; i < currentPerson.length; i++) {
                     var person = currentPerson[i];
                     $select.append($("<option></option>").attr("value", JSON.stringify(person)).html(person.Contact_person));
-                    if(i == 0)
-                    {
+                    if (i == 0) {
                         changePersonToShow(person);
                     }
 
@@ -631,7 +646,7 @@
                 $select.append("<option new-person='true'>New person</option>");
                 $select.selectpicker('refresh');
 
-                if($select.children().length > 1)
+                if ($select.children().length > 1)
                     $button.hide();
                 else
                     $button.show();
@@ -639,26 +654,24 @@
         });
     }
 
-    $("#remind-modal-button").click(function(){
+    $("#remind-modal-button").click(function () {
         $("#reminderModal").appendTo("body").modal("show").draggable();
     });
-    var loadReminders = function()
-    {
+    var loadReminders = function () {
         $.ajax({
             "url": serverPrefix + "CustomerOffer/GetReminders/",
             "type": "POST",
             "data": {
                 "customer": $("#crm-select-customer").val()
             },
-            "success": function(data){
+            "success": function (data) {
                 reminders = JSON.parse(data);
 
                 $newRows = $(".reminder-body");
                 $newRows.empty();
                 $newRows.html("");
                 $newRows.append("<tbody>");
-                for(var i = 0; i < reminders.length; i++)
-                {
+                for (var i = 0; i < reminders.length; i++) {
                     var remind = reminders[i];
 
                     var $row = $("<tr>                                                                                                \
@@ -674,10 +687,10 @@
         });
     }
 
-    $("#save-reminders").click(function(){
+    $("#save-reminders").click(function () {
         var $inputs = $("#reminderModal #reminder-table").find("input:checked");
         var length = $inputs.length;
-        for(var i = 0; i < length; i++){
+        for (var i = 0; i < length; i++) {
             $input = $($inputs[i]);
             var id = $input.attr("data-id");
             $.ajax({
@@ -686,8 +699,8 @@
                 "data": {
                     "id_pk": id
                 },
-                "success": function(data){
-                
+                "success": function (data) {
+
                 }
             });
         }
@@ -696,24 +709,19 @@
         triggerAlert("Successfully deactivated reminders", "success");
     });
 
-    $("#crm-contact-select").change(function(){
+    $("#crm-contact-select").change(function () {
         $option = $(this).find("option:selected");
-        if(typeof $option.attr("new-person") == "undefined")
-        {
+        if (typeof $option.attr("new-person") == "undefined") {
             $("#create-contact-button").hide();
             changePersonToShow(JSON.parse(this.value), $option);
         }
-        else
-        {
+        else {
             changePersonToShow("", $option);
         }
     });
-    var changePersonToShow = function(person, $option)
-    {
-        if(typeof $option != "undefined")
-        {
-            if(typeof $option.attr("new-person") == "undefined")
-            {
+    var changePersonToShow = function (person, $option) {
+        if (typeof $option != "undefined") {
+            if (typeof $option.attr("new-person") == "undefined") {
                 $("#fullName3").val($("<div>").html(person.Contact_person).text());
                 $("#title3").val(person.Title);
                 $("#inputEmail3").val(person.Email);
@@ -722,8 +730,7 @@
                 $("#address3").val(person.Address);
                 $("#notes3").val($("<div>").html(person.Notes).text());
             }
-            else
-            {
+            else {
                 $("#fullName3").val("");
                 $("#title3").val("");
                 $("#inputEmail3").val("");
@@ -733,8 +740,7 @@
                 $("#notes3").val("");
             }
         }
-        else
-        {
+        else {
             $("#fullName3").val($("<div>").html(person.Contact_person).text());
             $("#title3").val(person.Title);
             $("#inputEmail3").val(person.Email);
@@ -745,33 +751,31 @@
         }
     }
 
-    var loadAppointments = function()
-    {
+    var loadAppointments = function () {
         $.ajax({
             "url": serverPrefix + "Appointment/GetAppointments/",
             "type": "POST",
             "data": {
                 "customer": $contactSelect.val()
             },
-            "success": function(data){
+            "success": function (data) {
                 insertAppointmentToHtml(JSON.parse(data));
             }
         });
     }
 
-    var insertAppointmentToHtml = function(json){
+    var insertAppointmentToHtml = function (json) {
         $newRows = $(".appointment-body");
         $newRows.empty();
         $newRows.html("");
         $newRows.append("<tbody>");
         var lastVisit;
-        if(json.length > 0){
+        if (json.length > 0) {
             lastVisit = json[json.length - 1];
             json.splice(json.length - 1, 1);
         }
 
-        for(var i = 0; i < json.length; i++)
-        {
+        for (var i = 0; i < json.length; i++) {
             var appointment = json[i];
 
             var $row = $("<tr>                                                                                                \
@@ -789,7 +793,7 @@
         $newRow.empty();
         $newRow.html("");
         $newRow.append("<tbody>");
-        if(json.length > 0 && lastVisit != null){
+        if (json.length > 0 && lastVisit != null) {
             var $row = $("<tr>                                                                                                \
                         <td class='appointment-date'>" + lastVisit.Date + "</td>                                   \
                         <td class='appointment-event-type'>" + lastVisit.Event_type + "</td>         \
@@ -802,25 +806,23 @@
         $newRow.append("<tbody>");
     }
 
-    var openModal = function(){
+    var openModal = function () {
         $("#appointmentModal").appendTo("body").modal("show").draggable();
     }
 
-    $("#save-contact-changes").click(function(){
+    $("#save-contact-changes").click(function () {
         $option = $("#crm-contact-select").find("option:selected");
-        if(typeof $option.attr("new-person") == "undefined")
-        {
+        if (typeof $option.attr("new-person") == "undefined") {
             updateContact();
         }
-        else{
+        else {
             insertContact();
         }
     });
 
 
-    var insertContact = function(){
-        if ($("#contactModal form").valid())
-        {
+    var insertContact = function () {
+        if ($("#contactModal form").valid()) {
             var person = {}
             $option = $("#crm-contact-select").find("option:selected");
 
@@ -839,9 +841,8 @@
                 "data": {
                     "json": JSON.stringify(person)
                 },
-                "success": function(data){
-                    if(data > 0)
-                    {
+                "success": function (data) {
+                    if (data > 0) {
                         $select = $("#crm-contact-select");
                         json = JSON.stringify(person);
                         $select.prepend($("<option></option>").attr("value", json).html(person.Contact_person));
@@ -849,8 +850,7 @@
                         triggerAlert("Successfully added contact.", "success");
                         updateContact();
                     }
-                    else
-                    {
+                    else {
                         triggerAlert("Failed to add contact.", "warning");
                     }
                 }
@@ -858,18 +858,16 @@
         }
     }
 
-    var updateContact = function(){
+    var updateContact = function () {
         $option = $("#crm-contact-select").find("option:selected");
-        if(typeof $option.attr("new-person") == "undefined")
-        {
-            if ($("#contactModal form").valid())
-            {
+        if (typeof $option.attr("new-person") == "undefined") {
+            if ($("#contactModal form").valid()) {
                 var oldPerson = JSON.parse($option.val());
                 var person = {}
 
                 person.oldName = oldPerson.Contact_person;
                 person.oldEmail = oldPerson.Email;
-                if(selectedId != null)
+                if (selectedId != null)
                     person.offerNumber = selectedId;
                 person.Customer = $contactSelect.val();
                 person.Contact_person = $("#fullName3").val();
@@ -887,23 +885,21 @@
                         "json": JSON.stringify(person),
                         "id": selectedId
                     },
-                    "success": function(data){
-                        if(data > 0)
-                        {
+                    "success": function (data) {
+                        if (data > 0) {
                             updateDataTable($("#crm-select-customer").val(), $("#crm-select-user").val());
                             drawButtons();
                             selectedId = null;
                             triggerAlert("Successfully updated contact.", "success");
                             $("#contactModal").modal("toggle");
                         }
-                        else
-                        {
+                        else {
                             triggerAlert("Failed to update contact.", "warning");
                         }
                     }
                 });
             }
-            
+
         }
     }
 

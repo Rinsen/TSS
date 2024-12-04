@@ -1,4 +1,7 @@
-﻿@using TietoCRM.Extensions;
+﻿@{
+    var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+}
+@using TietoCRM.Extensions;
 @using TietoCRM.Models;
 <row>
         <div class="col-md-12">
@@ -265,106 +268,128 @@
                                             @Html.Raw("<td valign=\"top\" style=\"width:50%\">")
                                         }
 
-                                        <div class="form-group">
-                                            @if(pName == "OrgInfoId")
+                            <div class="form-group">
+                                @if (pName == "OrgInfoId")
+                                {
+                                    <label for="@pi.Name.ToLower()-select" style="font-size: 12px" class="col-sm-3 control-label">Organisation</label>
+                                }
+                                else
+                                {
+                                    if (pi.Name == "LicensePart" || pi.Name == "Factor")
+                                    {
+                                        if (pi.Name == "LicensePart")
+                                        {
+                                            <label for="saas-formula-text"  style="font-size: 12px" class="col-sm-3 control-label">SaaS Formula</label>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <label for="@pi.Name.ToLower()-text"  style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
+                                    }
+                                }
+                            <div class="col-sm-9">
+                                @if (pi.PropertyType == typeof(bool?) || pi.PropertyType == typeof(bool))
+                                {
+                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                        <option value="true">true</option>
+                                        <option value="false">false</option>
+                                    </select>
+                                }
+                                else if (pi.Name == "Status")
+                                {
+                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
+                                        @foreach (String status in ViewBag.Statuses)
+                                        {
+                                            <option value="@status">@status</option>
+                                        }
+                                    </select>
+                                }
+                                else if (pi.Name == "Contract_type")
+                                {
+                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
+                                        @foreach (String types in ViewBag.ContractTypes)
+                                        {
+                                            <option value="@types">@types</option>
+                                        }
+                                    </select>
+                                }
+                                else if (pi.Name == "Contact_person" || pi.Name == "Main_contract_id")
+                                {
+                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name"></select>
+                                }
+
+                                else if (pi.Name == "Summera")
+                                {
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Summera" type="checkbox" />
+                                        </label>
+                                    </div>
+                                }
+                                else if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && (pi.Name == "LicensePart" || pi.Name == "Factor"))
+                                {
+                                    if (pi.Name == "LicensePart")
+                                    {
+                                        <div class="col-sm-10" style="display: flex; align-items: center;">
+                                            <label for="licensepart-text" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
+                                            <input type="text" class="form-control mx-1" name="LicensePart" id="licensepart-text" style="width: 80px; margin-right: 10px; height: 30px;" value="@ViewBag.LicensePart">
+                                            <label for="factor-text" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
+                                            <input type="text" class="form-control mx-1" name="Factor" id="factor-text" style="width: 80px; height: 30px;" value="@ViewBag.Factor">
+                                        </div>
+                                    }
+                                }
+                                else if (pi.Name == "OrgInfoId")
+                                {
+                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
+                                        @foreach (view_OrganisationInformation org in ViewBag.Organisations)
+                                        {
+                                            if (org.IsDefaultValue)
                                             {
-                                                <label for="@pi.Name.ToLower()-select" style="font-size: 12px" class="col-sm-3 control-label">Organisation</label>
+                                                <option selected value="@org._ID">@org.CompanyName - @org.OrgNo (Default)</option>
                                             }
                                             else
                                             {
-                                                <label for="@pi.Name.ToLower()-text" style="font-size: 12px" class="col-sm-3 control-label">@pName</label>
+                                                <option value="@org._ID">@org.CompanyName - @org.OrgNo</option>
                                             }
-                                            <div class="col-sm-9">
-                                                @if (pi.PropertyType == typeof(bool?) || pi.PropertyType == typeof(bool))
-                                                {
-                                                    <select class="form-control" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                        <option value="true">true</option>
-                                                        <option value="false">false</option>
-                                                    </select>
-                                                }
-                                                else if (pi.Name == "Status")
-                                                {
-                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-text" name="@pi.Name">
-                                                        @foreach (String status in ViewBag.Statuses)
-                                                        {
-                                                            <option value="@status">@status</option>
-                                                        }
-                                                    </select>
-                                                }
-                                                else if (pi.Name == "Contract_type")
-                                                {
-                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
-                                                        @foreach (String types in ViewBag.ContractTypes)
-                                                        {
-                                                            <option value="@types">@types</option>
-                                                        }
-                                                    </select>
-                                                }
-                                                else if (pi.Name == "Contact_person" || pi.Name == "Main_contract_id")
-                                                {
-                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name"></select>
-                                                }
+                                        }
+                                    </select>
+                                    <label style="text-align:left" class="col-sm-12">
+                                        <input checked id="defaultorg" data-id="defaultorg" name="DefaultOrg" type="checkbox" />
+                                        Default Organisation (refers to all customers)
+                                    </label>
+                                }
+                                else
+                                {
+                                    String inputType = "";
+                                    String inputVal = "";
+                                    if (pi.PropertyType == typeof(DateTime?))
+                                    {
+                                        inputType = "date";
+                                        if (pi.Name == "Valid_through")
+                                        {
+                                            inputVal = DateTime.Now.AddYears(3).ToShortDateString();
+                                        }
+                                        else
+                                        {
+                                            if (pi.Name == "Expire")
+                                            {
+                                                inputVal = "";
+                                            }
+                                            else
+                                            {
+                                                inputVal = DateTime.Now.AddMonths(3).ToShortDateString();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        inputType = "text";
+                                    }
+                                    <input class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
+                                }
 
-                                                else if (pi.Name == "Summera")
-                                                {
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input id="@pi.Name.ToLower()" data-id="@pi.Name.ToLower()" name="Summera" type="checkbox" />
-                                                        </label>
-                                                    </div>
-                                                }
-                                                else if (pi.Name == "OrgInfoId")
-                                                {
-                                                    <select class="form-control selectpicker" id="@pi.Name.ToLower()-select" name="@pi.Name">
-                                                        @foreach (view_OrganisationInformation org in ViewBag.Organisations)
-                                                        {
-                                                            if (org.IsDefaultValue)
-                                                            {
-                                                                <option selected value="@org._ID">@org.CompanyName - @org.OrgNo (Default)</option>
-                                                            }
-                                                            else
-                                                            {
-                                                                <option value="@org._ID">@org.CompanyName - @org.OrgNo</option>
-                                                            }
-                                                        }
-                                                    </select>
-                                                    <label style="text-align:left" class="col-sm-12">
-                                                        <input checked id="defaultorg" data-id="defaultorg" name="DefaultOrg" type="checkbox" />
-                                                        Default Organisation (refers to all customers)
-                                                    </label>
-                                                }
-                                                else
-                                                {
-                                                    String inputType = "";
-                                                    String inputVal = "";
-                                                    if (pi.PropertyType == typeof(DateTime?))
-                                                    {
-                                                        inputType = "date";
-                                                        if (pi.Name == "Valid_through")
-                                                        {
-                                                            inputVal = DateTime.Now.AddYears(3).ToShortDateString();
-                                                        }
-                                                        else
-                                                        {
-                                                            if (pi.Name == "Expire")
-                                                            {
-                                                                inputVal = "";
-                                                            }
-                                                            else
-                                                            {
-                                                                inputVal = DateTime.Now.AddMonths(3).ToShortDateString();
-                                                            }
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        inputType = "text";
-                                                    }
-                                                    <input class="form-control" type="@inputType" id="@pi.Name.ToLower()-@inputType" name="@pi.Name" placeholder="@pName" value="@inputVal" />
-                                                }
-
-                                            </div>
-                                        </div>
+                            </div>
+                            </div>
                                         if (count == 7 || count == ViewBag.Properties.Length - 1)
                                         {
                                             if (count == 4)
@@ -720,6 +745,11 @@
             newContract["OrgInfoId"] = orgInfoSelect.val();
             newContract["Sign"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Sign)";
             newContract["Area"] = "@Html.Raw(System.Web.HttpContext.Current.GetUser().Area)";
+
+            var licensePart = newContract["LicensePart"];
+            var factor = newContract["Factor"];
+            newContract["LicensePart"] = (licensePart ? licensePart.toString() : "").replace(",", ".");
+            newContract["Factor"] = (factor ? factor.toString() : "").replace(",", ".");
 
             $.ajax({
                 "url": "@Url.Content("~/CustomerContract/Insert/")",
@@ -1289,7 +1319,9 @@
             }
 
             else {
-                $currInput.val("");
+                if ($currInput.attr("name") != "LicensePart" && $currInput.attr("name") != "Factor") {
+                    $currInput.val("");
+                }
             }
         }
 

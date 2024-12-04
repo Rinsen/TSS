@@ -14,6 +14,7 @@ using TietoCRM.Models;
 using TietoCRM.Extensions;
 using System.IO;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace TietoCRM.Controllers
 {
@@ -1192,7 +1193,7 @@ namespace TietoCRM.Controllers
                 view_CustomerOffer a = null;
                 try
                 {
-                    a = (view_CustomerOffer)(new JavaScriptSerializer()).Deserialize(json, typeof(view_CustomerOffer));
+                    a = JsonConvert.DeserializeObject<view_CustomerOffer>(json);
                 }
                 catch (Exception e)
                 {
