@@ -3,9 +3,9 @@
     <div class="nav-side-menu">
         <div class="menu-list">
             <ul id="menu-content" class="menu-content collapse out">
-               
+
                 <div class="brand">
-                   
+
                 </div>
 
                 <li data-toggle="collapse" data-target="#customers" class="collapsed">
@@ -23,7 +23,7 @@
                 <li data-toggle="collapse" data-target="#products-and-services" class="collapsed">
                     <a href="javascript:void()">Product and Services</a>
                     <div class="pull-right">
-                            <span class="glyphicon glyphicon-chevron-down collapse-arrow" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-chevron-down collapse-arrow" aria-hidden="true"></span>
                     </div>
                 </li>
                 <ul class="sub-menu collapse" id="products-and-services">
@@ -31,7 +31,8 @@
                     <li><a href="~/Tariff/">- Tariff</a></li>
                     <li><a href="~/Price/">- Price category</a></li>
                     <li><a href="~/Population/">- Population levels</a></li>
-                    @*<li><a href="~/Service/">- Services</a></li>*@       
+                    @*
+                    <li><a href="~/Service/">- Services</a></li>*@
                     <li><a href="~/Sector/">- System/Classification</a></li>
                     <li><a href="~/ModuleDiscount/">- Module Discount</a></li>
                 </ul>
@@ -50,7 +51,8 @@
                     <li><a href="~/CustomerProductGrowthReport/">- Customer Product Growth</a></li>
                     <li><a href="~/CustomerProductReport/">- Customer Products</a></li>
                     <li><a href="~/CustomerMissingProductReport/">- "Missing" Products</a></li>
-                    @*<li><a href="~/ContractSupervision/">- Supervision</a></li>*@
+                    @*
+                    <li><a href="~/ContractSupervision/">- Supervision</a></li>*@
                     <li><a href="~/SentContractsReport/">- Sent Contracts</a></li>
                     <li><a href="~/SaleReport/">- Sent Offers</a></li>
                     <li><a href="~/ContractSoldProductsReport/">- Sold Products</a></li>
@@ -60,33 +62,35 @@
                 </ul>
                 @if (TietoCRM.Models.GlobalVariables.isAuthorized("CustomerOffer"))
                 {
-                    <li data-toggle="collapse" data-target="#offers" class="collapsed">
-                        <a href="javascript:void()"> Offers </a>
-                        <div class="pull-right">
-                            <span class="glyphicon glyphicon-chevron-down collapse-arrow" aria-hidden="true"></span>
-                        </div>
-                    </li>
-                    <ul class="sub-menu collapse" id="offers">
-                        <li><a href="~/CustomerOffer/">- Customer offers</a></li>
-                        @*<li><a href="#">Summary</a></li>*@
-                    </ul>
+                <li data-toggle="collapse" data-target="#offers" class="collapsed">
+                    <a href="javascript:void()"> Offers </a>
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-chevron-down collapse-arrow" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <ul class="sub-menu collapse" id="offers">
+                    <li><a href="~/CustomerOffer/">- Customer offers</a></li>
+                    @*
+                    <li><a href="#">Summary</a></li>*@
+                </ul>
                 }
                 @if (TietoCRM.Models.GlobalVariables.isAuthorized("CustomerContract"))
                 {
-                    <li data-toggle="collapse" data-target="#contracts" class="collapsed">
-                        <a href="javascript:void()"> Contracts </a>
-                        <div class="pull-right">
-                            <span class="glyphicon glyphicon-chevron-down collapse-arrow" aria-hidden="true"></span>
-                        </div>
-                    </li>
-                    <ul class="sub-menu collapse" id="contracts">
+                <li data-toggle="collapse" data-target="#contracts" class="collapsed">
+                    <a href="javascript:void()"> Contracts </a>
+                    <div class="pull-right">
+                        <span class="glyphicon glyphicon-chevron-down collapse-arrow" aria-hidden="true"></span>
+                    </div>
+                </li>
+                <ul class="sub-menu collapse" id="contracts">
 
-                        <li><a href="~/CustomerContract/">- Customer contracts</a></li>
-                        <li><a href="~/ContractExpirationList/">- Expiration List</a></li>
-                        @*<li><a href="#">Customer visit</a></li>
-                            <li><a href="#">Modual closure</a></li>
-                            <li><a href="#">Summary</a></li>*@
-                    </ul>
+                    <li><a href="~/CustomerContract/">- Customer contracts</a></li>
+                    <li><a href="~/ContractExpirationList/">- Expiration List</a></li>
+                    @*
+                    <li><a href="#">Customer visit</a></li>
+                    <li><a href="#">Modual closure</a></li>
+                    <li><a href="#">Summary</a></li>*@
+                </ul>
                 }
                 <li data-toggle="collapse" data-target="#system" class="collapsed">
                     <a href="javascript:void()">System</a>
@@ -97,12 +101,16 @@
                 <ul class="sub-menu collapse" id="system">
                     <li><a href="~/ModuleMapping/">- Article/Service Dependency</a></li>
                     <li><a href="~/Information/">- Information Messages</a></li>
-                    <li><a href="~/SelectOption/">- Select Options</a></li>
                     <li><a href="~/Template/MainContractTemplate/">- Main Contract Templates</a></li>
+                    @if(TietoCRM.Models.GlobalVariables.getCurrentArea() != "EDU")
+                    {
+                    <li><a href="~/SaasFormula/">- SaaS Formula</a></li>
+                    }
                     <li><a href="~/Template/">- Offer/Contract Templates</a></li>
+                    <li><a href="~/SelectOption/">- Select Options</a></li>
                     @if (TietoCRM.Models.GlobalVariables.isAuthorized("Users"))
                     {
-                        <li><a href="~/User/">- Users</a></li>
+                    <li><a href="~/User/">- Users</a></li>
                     }
                 </ul>
                 <li data-toggle="collapse" data-target="#installations" class="collapsed">
@@ -124,7 +132,7 @@
 </div>
 <script>
     $('ul.sub-menu.collapse li').bind('click', function () {
-        var $listItem = $(this);
-        window.location = $listItem.find('a').attr("href");
+    var $listItem = $(this);
+    window.location = $listItem.find('a').attr("href");
     })
 </script>

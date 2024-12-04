@@ -80,6 +80,20 @@ namespace TietoCRM.Models
             return false;
         }
 
+        public static string getCurrentArea()
+        {
+            view_User user = new view_User();
+            user.Select("windows_user='" + WindowsIdentity.GetCurrent().Name + "'");
+
+            return user.Area;
+        }
+
+        public static bool isSaasFormulaActive()
+        {
+            view_SaaS_Formula currentFormula = view_SaaS_Formula.getActiveSaaSFormula();
+            return currentFormula != null && currentFormula._ID > 0 && currentFormula.IsActive == true;
+        }
+
         // read-write variable
         public static string ApplicationName
         {

@@ -153,8 +153,7 @@ namespace TietoCRM.Controllers.Contracts
                 ViewData["Appointments"] = vA;
                 ViewData.Add("Customer", Request["customer"]);
             }
-                
-            
+
             return View();
         }
 
@@ -669,6 +668,8 @@ namespace TietoCRM.Controllers.Contracts
 
             this.ViewData["Title"] = "Customer Contract";
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             //lägg till rätt properties beroende på typ., signs, statuse.
             List<System.Reflection.PropertyInfo> properties = new List<System.Reflection.PropertyInfo>();
             if (contract.Status == "Sänt")
@@ -691,10 +692,15 @@ namespace TietoCRM.Controllers.Contracts
                 properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Area").First());
                 properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Summera").First());
                 properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Monthly_fee_from").First());
+                if(currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                {
+                    properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "LicensePart").First());
+                    properties.Add(typeof(view_Contract).GetProperties().Where(p => p.Name == "Factor").First());
+                }
             }
             else
             {
-                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Note" || p.Name == "Sign" || p.Name == "Summera" || p.Name == "OrgInfoId").ToList();
+                properties = typeof(view_Contract).GetProperties().Where(p => p.Name == "Contract_id" || p.Name == "Status" || p.Name == "CRM_id" || p.Name == "Observation" || p.Name == "Note" || p.Name == "Sign" || p.Name == "Summera" || p.Name == "OrgInfoId" || (p.Name == "LicensePart" && currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true) || (p.Name == "Factor" && currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)).ToList();
             }
 
             this.ViewData.Add("TableItems", properties);
@@ -2718,6 +2724,7 @@ namespace TietoCRM.Controllers.Contracts
                     return "0";
                 }
 
+                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
                 view_Contract a = new view_Contract();
 
                 a.Select("Customer = '" + customer + "' AND Contract_id = '" + contractId + "'");
@@ -2731,12 +2738,24 @@ namespace TietoCRM.Controllers.Contracts
                         //a.SetValue(entry.Key, nullString);
                         a.SetValue(entry.Key, null);
                     }
+                    else if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && (entry.Key == "LicensePart" || entry.Key == "Factor"))
+                    {
+                        if (entry.Key == "LicensePart")
+                        {
+                            var licensePart = entry.Value.ToString().Replace(",", ".");
+                            a.SetValue(entry.Key, decimal.Parse(licensePart, CultureInfo.InvariantCulture));
+                        }
+
+                        if (entry.Key == "Factor")
+                        {
+                            var factor = entry.Value.ToString().Replace(",", ".");
+                            a.SetValue(entry.Key, decimal.Parse(factor, CultureInfo.InvariantCulture));
+                        }
+                    }
                     else
                     {
                         a.SetValue(entry.Key, entry.Value);
                     }
-
-
                 }
 
                 //If contract ID has been changed, and it's a mani ciontract, then we also change the Main Contract ID

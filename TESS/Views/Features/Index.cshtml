@@ -11,8 +11,14 @@
                 <select class="form-control selectpicker" id="product-list" data-live-search="true">
                     @foreach (TietoCRM.FeatureService.Product product in ViewBag.Products)
                     {
-
+                        if (product.ShortName == "VoO")
+                        {
+                            <option value="@product.Id" selected>@product.ShortName</option>
+                        }
+                        else
+                        {
                             <option value="@product.Id">@product.ShortName</option>
+                        }
 
                     }
                 </select>

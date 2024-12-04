@@ -81,6 +81,16 @@ namespace TietoCRM.Models
         private int orgInfoId;
         public int OrgInfoId { get { return orgInfoId; } set { orgInfoId = value; } }
 
+        /// <summary>
+        /// LicensePart
+        /// </summary>
+        public decimal? LicensePart { get; set; }
+
+        /// <summary>
+        /// Factor
+        /// </summary>
+        public decimal? Factor { get; set; }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 

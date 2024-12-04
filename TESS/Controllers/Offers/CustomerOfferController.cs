@@ -2062,6 +2062,8 @@ namespace TietoCRM.Controllers
 
                 try
                 {
+                    var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
                     view_CustomerOffer co = new view_CustomerOffer();
                     co.Select("Offer_number = '" + offerNumber + "'");
 
@@ -2069,6 +2071,20 @@ namespace TietoCRM.Controllers
                     {
                         if (offerVariable.Key == "Hashtags")
                             co.ParseHashtags(offerVariable.Value.ToString());
+                        else if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && (offerVariable.Key == "LicensePart" || offerVariable.Key == "Factor"))
+                        {
+                            if(offerVariable.Key == "LicensePart")
+                            {
+                                var licensePart = offerVariable.Value.ToString().Replace(",", ".");
+                                co.SetValue(offerVariable.Key, decimal.Parse(licensePart, CultureInfo.InvariantCulture));
+                            }
+
+                            if(offerVariable.Key == "Factor")
+                            {
+                                var factor = offerVariable.Value.ToString().Replace(",", ".");
+                                co.SetValue(offerVariable.Key, decimal.Parse(factor, CultureInfo.InvariantCulture));
+                            }
+                        }
                         else
                             co.SetValue(offerVariable.Key, offerVariable.Value);
                     }

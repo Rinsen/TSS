@@ -15,6 +15,12 @@ using TietoCRM.UD_Exceptions;
 
 namespace TietoCRM.Controllers
 {
+    public class DynamicProperty
+    {
+        public string Name { get; set; }
+        public Type PropertyType { get; set; }
+    }
+
     public class CustomerController : Controller
     {
         // GET: Customer
@@ -26,7 +32,27 @@ namespace TietoCRM.Controllers
             if (amount == "" || amount == null)
                 amount = "0";
 
-            this.ViewData.Add("Properties", typeof(TietoCRM.Models.view_Customer).GetProperties());
+            var properties = typeof(TietoCRM.Models.view_Customer)
+                 .GetProperties()
+                 .Select(p => new DynamicProperty
+                 {
+                     Name = p.Name,
+                     PropertyType = p.PropertyType
+                 })
+                 .ToList();
+
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+            if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+            { 
+                properties.Add(new DynamicProperty() { Name = "License" });
+                properties.Add(new DynamicProperty() { Name = "Factor" });
+            }
+            else
+            {
+                properties = properties.Where(w => w.Name != "UseSaasFormula").ToList();
+            }
+
+            this.ViewData.Add("Properties", properties);
 
             String select = "[";
             foreach (view_User a in view_User.getAllUsers())
@@ -45,6 +71,7 @@ namespace TietoCRM.Controllers
             this.ViewData.Add("PrimaryKey", "Customer");
             this.ViewData.Add("Representatives", view_User.getAllUsers());
             this.ViewData.Add("Population", view_Population.getAllPopulations());
+            this.ViewData.Add("UseSaasFormula", true); //Hämta detta från customer-tabellen
             this.ViewData["Title"] = "Customer";
             //this.ViewBag.Tile = "Customer";
             
@@ -102,6 +129,8 @@ namespace TietoCRM.Controllers
             List<Dictionary<String, Object>> list = new List<Dictionary<String, Object>>();
             SelectOptions<view_Customer> selectOption = new SelectOptions<view_Customer>();
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             foreach(view_Customer customer in l)
             {
                 Dictionary<String, Object> dic = new Dictionary<String, Object>();
@@ -117,6 +146,17 @@ namespace TietoCRM.Controllers
                     }
                         
                 }
+
+                if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                {
+                    dic.Add("License", currentSaasFormula.LicensePart);
+                    dic.Add("Factor", currentSaasFormula.Factor);
+                }
+                else
+                {
+                    dic = dic.Where(w => w.Key != "UseSaasFormula").ToDictionary(w => w.Key, w => w.Value);
+                }
+
                 list.Add(dic);
             }
 
