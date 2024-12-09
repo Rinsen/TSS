@@ -67,6 +67,9 @@ namespace TietoCRM.Controllers.Reports
 
             List<view_Contract> contracts = view_Contract.GetContracts();
             view_User user = System.Web.HttpContext.Current.GetUser();
+
+            var isSaasFormulaActive = GlobalVariables.isSaasFormulaActive();
+
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Contract contract in contracts)
             {
@@ -77,18 +80,21 @@ namespace TietoCRM.Controllers.Reports
 
                 if (contract.Status == "Sänt" && user.IfSameArea(contract.Area) && customer != null)
                 {
-                    Dictionary<String, object> dict = new Dictionary<String, object>();
-                    dict.Add("customer", contract.Customer);
-                    dict.Add("customer_type", customer.Customer_type);
-                    dict.Add("representative", customer.GetReprensentativesAsString());
-                    dict.Add("contact_person", contract.Contact_person);
-                    dict.Add("contract_id", contract.Contract_id);
-                    dict.Add("title", contract.Title);
-                    dict.Add("contract_type", contract.Contract_type);
-                    dict.Add("totalMaintenance", contract.ContractMaintenanceSum());
-                    dict.Add("totalLicense", contract.ContractLicenseSum());
-                    dict.Add("totalService", contract.ContractServiceSum());
-                    totalMaintenance += contract.ContractMaintenanceSum();
+                    Dictionary<String, object> dict = new Dictionary<String, object>
+                    {
+                        { "customer", contract.Customer },
+                        { "customer_type", customer.Customer_type },
+                        { "representative", customer.GetReprensentativesAsString() },
+                        { "contact_person", contract.Contact_person },
+                        { "contract_id", contract.Contract_id },
+                        { "title", contract.Title },
+                        { "contract_type", contract.Contract_type },
+                        { "totalMaintenance", contract.ContractMaintenanceSum().HasValue ? Math.Round(contract.ContractMaintenanceSum(isSaasFormulaActive).Value, 2) : 0 },
+                        { "totalLicense", contract.ContractLicenseSum().HasValue ? Math.Round(contract.ContractLicenseSum(isSaasFormulaActive).Value, 2) : 0 },
+                        { "totalService", contract.ContractServiceSum().HasValue ? Math.Round(contract.ContractServiceSum().Value, 2) : 0 }
+                    };
+
+                    totalMaintenance += contract.ContractMaintenanceSum(isSaasFormulaActive);
                     rows.Add(dict);
                 }
             }
@@ -108,6 +114,9 @@ namespace TietoCRM.Controllers.Reports
 
             List<view_Contract> contracts = view_Contract.GetContracts();
             view_User user = System.Web.HttpContext.Current.GetUser();
+
+            var isSaasFormulaActive = GlobalVariables.isSaasFormulaActive();
+
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Contract contract in contracts)
             {
@@ -118,18 +127,21 @@ namespace TietoCRM.Controllers.Reports
 
                 if (contract.Status == "Sänt" && user.IfSameArea(contract.Area) && customer != null)
                 {
-                    Dictionary<String, object> dict = new Dictionary<String, object>();
-                    dict.Add("customer", contract.Customer);
-                    dict.Add("customer_type", customer.Customer_type);
-                    dict.Add("representative", customer.GetReprensentativesAsString());
-                    dict.Add("contact_person", contract.Contact_person);
-                    dict.Add("contract_id", contract.Contract_id);
-                    dict.Add("title", contract.Title);
-                    dict.Add("contract_type", contract.Contract_type);
-                    dict.Add("totalMaintenance", contract.ContractMaintenanceSum());
-                    dict.Add("totalLicense", contract.ContractLicenseSum());
-                    dict.Add("totalService", contract.ContractServiceSum());
-                    totalMaintenance += contract.ContractMaintenanceSum();
+                    Dictionary<String, object> dict = new Dictionary<String, object>
+                    {
+                        { "customer", contract.Customer },
+                        { "customer_type", customer.Customer_type },
+                        { "representative", customer.GetReprensentativesAsString() },
+                        { "contact_person", contract.Contact_person },
+                        { "contract_id", contract.Contract_id },
+                        { "title", contract.Title },
+                        { "contract_type", contract.Contract_type },
+                        { "totalMaintenance", contract.ContractMaintenanceSum().HasValue ? Math.Round(contract.ContractMaintenanceSum(isSaasFormulaActive).Value, 2) : 0 },
+                        { "totalLicense", contract.ContractLicenseSum().HasValue ? Math.Round(contract.ContractLicenseSum(isSaasFormulaActive).Value, 2) : 0 },
+                        { "totalService", contract.ContractServiceSum().HasValue ? Math.Round(contract.ContractServiceSum().Value, 2) : 0 }
+                    };
+
+                    totalMaintenance += contract.ContractMaintenanceSum(isSaasFormulaActive);
                     rows.Add(dict);
                 }
             }

@@ -304,7 +304,7 @@ namespace TietoCRM.Models
                                         [Term_of_notice] ,[Extension] ,[Status], [CRM_id] ,[Valid_from] ,
                                         [Valid_through] ,[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,
                                         [Contact_person] ,[Created] ,[Updated] ,[Option_date] ,[Sign], Area, 
-                                        Resigned_contract, Summera, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
+                                        Resigned_contract, Summera, Monthly_fee_from, ExpirationList, OrgInfoId, LicensePart, Factor, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Contract";
 
                 command.Prepare();
                 command.ExecuteNonQuery();
@@ -436,24 +436,42 @@ namespace TietoCRM.Models
                 }
             }
         }
-        public decimal? ContractMaintenanceSum()
+
+        public decimal? ContractMaintenanceSum(bool useSaasFormula = false)
         {
             decimal? mainSum = 0;
 
             foreach(view_ContractRow r in this._contractRows)
             {
-                mainSum += r.Maintenance;
+                if(useSaasFormula && r.License.HasValue && r.Maintenance > 0 && this.LicensePart > 0 && this.Factor > 0)
+                {
+                    mainSum += view_SaaS_Formula.CalculateSaasPrice(r.License.Value, r.Maintenance.Value, this.LicensePart.Value, this.Factor.Value);
+                }
+                else
+                {
+                    mainSum += r.Maintenance;
+                }
             }
+
             return mainSum;
         }
-        public decimal? ContractLicenseSum()
+
+        public decimal? ContractLicenseSum(bool useSaasFormula = false)
         {
             decimal? mainSum = 0;
 
             foreach (view_ContractRow r in this._contractRows)
             {
-                mainSum += r.License;
+                if (useSaasFormula && r.License.HasValue && r.Maintenance > 0 && this.LicensePart > 0 && this.Factor > 0)
+                {
+                    mainSum += 0.0m;
+                }
+                else
+                {
+                    mainSum += r.License;
+                }                    
             }
+
             return mainSum;
         }
         public decimal? ContractServiceSum()

@@ -508,12 +508,12 @@ namespace TietoCRM.Models
         {
             List<view_ContractRow> list = new List<view_ContractRow>();
 
-            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
+
+                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
 
                 var customerString = "";
                 var articleNumberString = "";

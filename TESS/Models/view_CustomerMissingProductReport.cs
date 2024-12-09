@@ -31,11 +31,11 @@ namespace TietoCRM.Models
         private String sign;
         public String Sign { get { return sign; } set { sign = value; } }
 
-        private int license;
-        public int License { get; set; }
+        private decimal license;
+        public decimal License { get; set; }
 
-        private int maintenance;
-        public int Maintenance { get; set; }
+        private decimal maintenance;
+        public decimal Maintenance { get; set; }
 
         private decimal fixed_price;
         public decimal Fixed_price { get; set; }
@@ -57,11 +57,12 @@ namespace TietoCRM.Models
         /// <returns>A list of product rows.</returns>
         public static List<view_CustomerMissingProductReport> getCustomerMissingProducts(string customer, string area)
         {
-
             List<view_CustomerMissingProductReport> list = new List<view_CustomerMissingProductReport>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
+
+                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
 
                 //String query = "SELECT * FROM " + databasePrefix + "CustomerProductsMissing Where Customer = @customer Order By Fixed_price, classification, status, module";
                 String query = "stp_MissingProducts";
@@ -88,6 +89,20 @@ namespace TietoCRM.Models
                                 t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                 i++;
                             }
+
+                            if (t.System != "Tjänster" && currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                            {
+                                if (currentSaasFormula.LicensePart > 0 && currentSaasFormula.Factor > 0)
+                                {
+                                    t.Maintenance = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(t.License.ToString()), decimal.Parse(t.Maintenance.ToString()), currentSaasFormula.LicensePart.Value, currentSaasFormula.Factor.Value);
+                                    t.License = 0;
+                                }
+                                else
+                                {
+                                    //SaaS formula is enabled in the system, but this contract does not use it.
+                                }
+                            }
+
                             list.Add(t);
                         }
                     }

@@ -163,13 +163,13 @@ namespace TietoCRM.Models
         {
             try
             {
-                var result = maintenance;
+                decimal result = maintenance;
                 if(factor > 0)
                 {
                     result = ((license / licensePart) + maintenance) * factor;
                 }
 
-                return result;
+                return Math.Round(result, 2);
             }
             catch (Exception ex)
             {

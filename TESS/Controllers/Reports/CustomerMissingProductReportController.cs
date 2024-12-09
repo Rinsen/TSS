@@ -9,6 +9,8 @@ using Rotativa.MVC;
 using System.Security.Principal;
 using System.Web.Script.Serialization;
 using TietoCRM.Extensions;
+using System.Data;
+using NPOI.SS.Formula.Functions;
 
 namespace TietoCRM.Controllers
 {
@@ -130,10 +132,50 @@ namespace TietoCRM.Controllers
         }
         public string ExportExcel()
         {
-            System.Data.DataTable dt = view_CustomerMissingProductReport.ExportCustomerMissingProductsToExcel(Request["customer"], System.Web.HttpContext.Current.GetUser().Area);
-            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
-            return ex.Export(dt, "CustomerMissingProducts.xlsx");
+            try
+            {
+                System.Data.DataTable dt = view_CustomerMissingProductReport.ExportCustomerMissingProductsToExcel(Request["customer"], System.Web.HttpContext.Current.GetUser().Area);
 
+                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+                DataTable dtCloned = dt.Clone();
+                dtCloned.Columns[7].DataType = typeof(decimal);
+                dtCloned.Columns[8].DataType = typeof(decimal);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    dtCloned.ImportRow(row);
+                }
+
+                foreach (DataColumn column in dtCloned.Columns)
+                {
+                    column.ReadOnly = false; // Gör alla kolumner skrivbara
+                }
+
+                foreach (DataRow row in dtCloned.Rows)
+                {
+                    if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && row["System"].ToString() != "Tjänster")
+                    {
+                        if (currentSaasFormula.LicensePart > 0 && currentSaasFormula.Factor > 0 && row["Maintenance"].ToString() != "" && row["License"].ToString() != "")
+                        {
+                            row["Maintenance"] = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(row["License"].ToString()), decimal.Parse(row["Maintenance"].ToString()), currentSaasFormula.LicensePart.Value, currentSaasFormula.Factor.Value);
+                            row["License"] = 0.0m;
+                        }
+                        else
+                        {
+                            //SaaS formula is enabled in the system, but this contract does not use it.
+                        }
+                    }
+                }
+
+                TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+                return ex.Export(dtCloned, "CustomerMissingProducts.xlsx");
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }
