@@ -194,7 +194,7 @@ var handleExistingOption = function (availableArticles, $availableList, $selecte
         else if (article.Used == true) {
             usedCell = "<td><span class='glyphicon glyphicon-ok'></span></td>";
         }
-        var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
+        var artComm = ((article.Comment == '' || article.Comment == null) ? "Hjälptext saknas" : article.Comment);
         var artClass = article.System + " / " + article.Classification;
         var $newButton;
         if (article.System == "Lärportal") {

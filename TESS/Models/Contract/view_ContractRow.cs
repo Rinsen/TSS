@@ -508,6 +508,8 @@ namespace TietoCRM.Models
         {
             List<view_ContractRow> list = new List<view_ContractRow>();
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
             {
@@ -586,6 +588,24 @@ namespace TietoCRM.Models
                                     i++;
                                 }
 
+                                //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
+                                //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
+                                view_Contract contract = new view_Contract();
+                                contract.Select("Contract_id = '" + t.contract_id + "'");
+
+                                if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                                {
+                                    if (contract.LicensePart > 0 && contract.Factor > 0)
+                                    {
+                                        t.Maintenance = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(t.License.ToString()), decimal.Parse(t.Maintenance.ToString()), contract.LicensePart.Value, contract.Factor.Value);
+                                        t.License = 0;
+                                    }
+                                    else
+                                    {
+                                        //SaaS formula is enabled in the system, but this contract does not use it.
+                                    }
+                                }
+
                                 list.Add(t);
                             }
                         }
@@ -637,13 +657,7 @@ namespace TietoCRM.Models
                             view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                             view_Contract.Valid_from >= @startDate AND
                             view_Contract.Valid_from <= @stopDate AND
-                            view_Contract.status IN ('Giltigt', 'Omskrivet') 
-                    GROUP BY 
-		                    [view_Module].Article_number,
-		                    [view_Module].Module,
-		                    [view_Module].Price_category,
-		                    [view_Module].[System],
-		                    [view_Module].[Classification]";
+                            view_Contract.status IN ('Giltigt', 'Omskrivet')";
 
                 if (!string.IsNullOrEmpty(customerString))
                 {
@@ -654,6 +668,13 @@ namespace TietoCRM.Models
                 {
                     command.CommandText += " AND view_ContractRow.Article_number IN(" + articleNumberString + ")";
                 }
+
+                command.CommandText += " GROUP BY " +
+                    "[view_Module].Article_number," +
+                    "[view_Module].Module," +
+                    "[view_Module].Price_category," +
+                    "[view_Module].[System]," +
+                    "[view_Module].[Classification]";
 
                 command.CommandText += " ORDER BY count(*) desc";
 

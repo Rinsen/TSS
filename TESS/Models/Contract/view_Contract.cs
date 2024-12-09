@@ -94,6 +94,15 @@ namespace TietoCRM.Models
         private int summera;
         public int Summera { get; set; }
 
+        private DateTime? monthly_fee_from;
+        public DateTime? Monthly_fee_from { get; set; }
+
+        private int? expirationList;
+        public int? ExpirationList { get; set; }
+
+        private int? orgInfoId;
+        public int? OrgInfoId { get; set; }
+
         /// <summary>
         /// LicensePart
         /// </summary>
@@ -104,15 +113,6 @@ namespace TietoCRM.Models
         /// </summary>
 
         public decimal? Factor { get; set; }
-
-        private DateTime? monthly_fee_from;
-        public DateTime? Monthly_fee_from { get; set; }
-
-        private int? expirationList;
-        public int? ExpirationList { get; set; }
-
-        private int? orgInfoId;
-        public int? OrgInfoId { get; set; }
 
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
@@ -178,7 +178,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = "SELECT [ID], [Contract_id] ,[Customer], [Title] ,[Contract_type] ,[Term_of_notice] ,[Extension] ,[Status], [CRM_id] ,[Valid_from] ,[Valid_through] ,";
                 command.CommandText += "[Main_contract_id] ,[Expire] ,[Observation] ,[Note] ,[Contact_person] ,[Created] ,[Updated] ,";
-                command.CommandText += "[Option_date] ,[Sign], Area, Resigned_contract, Summera, LicensePart, Factor, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + 
+                command.CommandText += "[Option_date] ,[Sign], Area, Resigned_contract, Summera, Monthly_fee_from, ExpirationList, OrgInfoId, LicensePart, Factor, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + 
                                         "Contract WHERE " + "Customer = @customer";
                 //command.CommandText = "SELECT * FROM " + databasePrefix + "Contract WHERE " + "Customer = @customer";
 

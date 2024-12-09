@@ -607,8 +607,10 @@ else if (Request["modal"] == "articles")
             var article = availableArticles[i];
             var usedCell = "<td></td>";
             var depCell = "<td></td>";
-            var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
+            var artComm = ((article.Comment == '' || article.Comment == null) ? "Hjälptext saknas" : article.Comment);
             var artClass = article.System + " / " + article.Classification;
+            var saasTitle = "@Html.Raw(ViewBag.UseSaasFormula)".toLowerCase() == "true" ? "Pris beräknat med SaaS-formel" : "";
+
             var buttonStyle = "";
 
             console.log(artClass);
@@ -690,7 +692,7 @@ else if (Request["modal"] == "articles")
                                             + usedCell + depCell +
                                            "<td class='art-nr' title='" + artClass + "'>" + article.Article_number + "</td>                  \
                                             <td class='alias' title='" + artComm + "'>" + article.Module + "</td>                                         \
-                                            <td class='maintenance' style='float: right; width:auto;'>" + formatCurrencyNoKr(article.Price_category) + "</td>\
+                                            <td class='maintenance' title='" + saasTitle + "' style='float: right; width:auto;'>" + formatCurrencyNoKr(article.Price_category) + "</td>\
                                         </tr>                                                                       \
                                     </table>                                                                        \
                                 </button>");
@@ -729,12 +731,12 @@ else if (Request["modal"] == "articles")
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             ";
                 if(article.Discount_type != '1'){
-                    button += "<td class='license'>" + formatCurrencyNoKr(article.License) + "</td>        \
-                            <td class='maintenance'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
+                    button += "<td class='license' title='" + saasTitle + "'>" + formatCurrencyNoKr(article.License) + "</td>        \
+                            <td class='maintenance' title='" + saasTitle + "'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
                 }
                 else{
-                    button += "<td class='license'>" + article.License + "%</td>        \
-                            <td class='maintenance'>" + article.Maintenance + "%</td>";
+                    button += "<td class='license' title='" + saasTitle + "'>" + article.License + "%</td>        \
+                            <td class='maintenance' title='" + saasTitle + "'>" + article.Maintenance + "%</td>";
                 }
 
                 button +=                 "</tr>                                                                       \
@@ -1854,9 +1856,9 @@ else if (Request["modal"] == "head-information")
                 <label for="summera" class="col-sm-2 control-label">SaaS Formula</label>
                 <div class="col-sm-10" style="display: flex; align-items: center;">
                     <label for="license" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
-                    <input type="text" class="form-control mx-1" name="LicensePart" id="license" style="width: 80px; margin-right: 10px; height: 30px;" value="@ViewBag.CustomerOffer.LicensePart">
+                    <input type="number" class="form-control mx-1" name="LicensePart" id="license" style="width: 80px; margin-right: 10px; height: 30px;" value="@ViewBag.CustomerOffer.LicensePart">
                     <label for="factor" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
-                    <input type="text" class="form-control mx-1" name="Factor" id="factor" style="width: 80px; height: 30px;" value="@ViewBag.CustomerOffer.Factor">
+                    <input type="number" class="form-control mx-1" name="Factor" id="factor" style="width: 80px; height: 30px;" value="@ViewBag.CustomerOffer.Factor">
                 </div>
             </div>
         }

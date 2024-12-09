@@ -149,5 +149,32 @@ namespace TietoCRM.Models
             }
             
         }
+
+        /// <summary>
+        /// Calculates SaaS sum with SaaS formula
+        /// (License / {LicensePart} + Maintenance) * {Factor}
+        /// </summary>
+        /// <param name="license"></param>
+        /// <param name="maintenance"></param>
+        /// <param name="licensePart"></param>
+        /// <param name="factor"></param>
+        /// <returns></returns>
+        public static Decimal CalculateSaasPrice(decimal license, decimal maintenance, decimal licensePart, decimal factor)
+        {
+            try
+            {
+                var result = maintenance;
+                if(factor > 0)
+                {
+                    result = ((license / licensePart) + maintenance) * factor;
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

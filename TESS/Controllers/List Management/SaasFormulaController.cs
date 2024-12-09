@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using TietoCRM.Models;
@@ -45,6 +42,21 @@ namespace TietoCRM.Controllers.List_Management
             {
                 return "-1";
             }
+        }
+
+        public string IsSaasFormulaActive()
+        {
+            var result = "";
+
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+            if (currentSaasFormula != null) 
+            { 
+                result = currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true ? "true" : "false";
+            }
+
+            result = new JavaScriptSerializer().Serialize(result);
+            return result;
         }
     }
 }

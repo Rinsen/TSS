@@ -572,6 +572,7 @@ namespace TietoCRM.Controllers
 
             String offerNo = Server.UrlDecode(Request["selected-offer"]);
             ViewData.Add("OfferNo", offerNo);
+            ViewData.Add("UseSaasFormula", GlobalVariables.isSaasFormulaActive());
 
             ViewData.Add("Statuses", GetOfferStatus());
 
@@ -1804,6 +1805,8 @@ namespace TietoCRM.Controllers
             String classification = Request.Form["classification"];
             String offerNo = Request.Form["offerNo"]; //För att kunna läsa upp offerten
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -1887,12 +1890,22 @@ namespace TietoCRM.Controllers
                                 if (!String.IsNullOrEmpty(moduleDiscount.Alias))
                                     result["Module"] = moduleDiscount.Alias;
                             }
+
+                            //Läser upp offerten för att sedan kunna läsa upp eventuella modultexter för att veta om 
+                            //vi ska lägga till standardtext eller modultext då vi lägger till en modul till offerten
+                            view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offerNo);
+
+                            if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                            {
+                                if(customerOffer.LicensePart > 0 && customerOffer.Factor > 0)
+                                {
+                                    result["Maintenance"] = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(result["License"].ToString()), decimal.Parse(result["Maintenance"].ToString()), customerOffer.LicensePart.Value, customerOffer.Factor.Value);
+                                    result["License"] = 0;
+                                }
+                            }
+                            
                             result["License"] = result["License"].ToString().Replace(",", ".");
                             result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
-
-                            //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
-                            //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
-                            view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offerNo);
 
                             if (customerOffer._ID > 0)
                             {

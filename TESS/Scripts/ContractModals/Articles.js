@@ -2,6 +2,20 @@
 var $SystemSelect = $("#articlesModal #System-select");
 var $classificationSelect = $("#articlesModal #classification-select");
 var ctr = "";
+var saasFormulaActive = false;
+
+var isSaasFormulaActive = function () {
+    $.ajax({
+        "url": serverPrefix + "SaasFormula/IsSaasFormulaActive/",
+        "type": "POST",
+        "data": {},
+        "success": function (data) {
+            if (data.length > 0) {
+                saasFormulaActive = JSON.parse(data);
+            }
+        }
+    });
+}
 
 // Fuction to fill the classifications select element with options corresponding to the correct
 // System.
@@ -249,8 +263,9 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
     var hasFixedRows = false;
     for (var i = 0; i < aaLen; i++) {
         var article = availableArticles[i];
-        var artComm = ((article.Comment == '') ? "Hjälptext saknas" : article.Comment);
+        var artComm = ((article.Comment == '' || article.Comment == null) ? "Hjälptext saknas" : article.Comment);
         var artClass = article.System + " / " + article.Classification;
+        var saasTitle = saasFormulaActive == "true" ? "Pris beräknat med SaaS-formel" : "";
         var usedCell = "<td></td>";
         var usedDep = "<td></td>";
         var buttonStyle = "";
@@ -368,12 +383,12 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             <td class='alias' title = '" + artComm + "'>" + article.Module + "</td>                                         \
                                             ";
             if (article.Discount_type != '1') {
-                button += "<td class='license'>" + formatCurrencyNoKr(article.License) + "</td>        \
-                            <td class='maintenance'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
+                button += "<td class='license' title='" + saasTitle + "'>" + formatCurrencyNoKr(article.License) + "</td>        \
+                            <td class='maintenance' title='" + saasTitle + "'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
             }
             else {
-                button += "<td class='license'>" + article.License + "%</td>        \
-                            <td class='maintenance'>" + article.Maintenance + "%</td>";
+                button += "<td class='license' title='" + saasTitle + "'>" + article.License + "%</td>        \
+                            <td class='maintenance' title='" + saasTitle + "'>" + article.Maintenance + "%</td>";
             }
 
             button += "</tr>                                                                       \
@@ -436,7 +451,7 @@ var handleRemoveArticleList = function (availableArticles, $availableList) {
         if (!hasFixedRows) {
             var button = "";
             button += "<div style='width:100%;padding-left:15px;padding-right:15px'>                                                          \
-                                <table><tr style='font-weight:bold'><td class='art-nr' style='width:5%'>Art.nr</td><td class='alias' style='width:40%'>Module</td><td class='license' style='width:15%'>License</td><td class='maintenance' style='width:10%'>Maintenance</td> \
+                                <table><tr style='font-weight:bold'><td class='art-nr' style='width:5%'>Art.nr</td><td class='alias' style='width:40%'>Module</td><td class='license' title='" + saasTitle + "' style='width:15%'>License</td><td class='maintenance' title='" + saasTitle + "' style='width:10%'>Maintenance</td> \
             </tr></table></div>";
 
             $newButton = $(button);
@@ -477,12 +492,12 @@ var handleRemoveArticleList = function (availableArticles, $availableList) {
                                         <td class='alias' style='width:40%'>" + article.Alias + "</td>";
 
         if (article.Discount_type != '1') {
-            button += "<td class='license' style='width:15%'>" + formatCurrencyNoKr(article.License) + "</td>        \
-                        <td class='maintenance' style='width:10%'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
+            button += "<td class='license' title='" + saasTitle + "' style='width:15%'>" + formatCurrencyNoKr(article.License) + "</td>        \
+                        <td class='maintenance' title='" + saasTitle + "' style='width:10%'>" + formatCurrencyNoKr(article.Maintenance) + "</td>";
         }
         else {
-            button += "<td class='license'>" + article.License + "%</td>        \
-                        <td class='maintenance'>" + article.Maintenance + "%</td>";
+            button += "<td class='license' title='" + saasTitle + "'>" + article.License + "%</td>        \
+                        <td class='maintenance' title='" + saasTitle + "'>" + article.Maintenance + "%</td>";
         }
 
         button += "</tr>        \
@@ -1194,6 +1209,7 @@ var zeroArticlesFunction = function () {
 }
 
 $(document).ready(function () {
+    isSaasFormulaActive();
     $SystemSelect = $("#articlesModal #System-select");
     fillClassificationSelect($SystemSelect.val());
     fillArticlesToRemoveList();

@@ -484,6 +484,7 @@ namespace TietoCRM.Models
                                 {
                                     if (this.propertyInfos[i].PropertyType != typeof(ICollection<>))
                                     {
+                                        //var tmp = reader[j];
                                         this.SetValue(this.propertyInfos[i].Name, reader[j]);
                                         j++;
                                     }

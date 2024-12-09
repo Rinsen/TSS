@@ -44,8 +44,8 @@ namespace TietoCRM.Controllers
             var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
             if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
             { 
-                properties.Add(new DynamicProperty() { Name = "License" });
-                properties.Add(new DynamicProperty() { Name = "Factor" });
+                //properties.Add(new DynamicProperty() { Name = "SaaS_License" });
+                //properties.Add(new DynamicProperty() { Name = "SaaS_Factor" });
             }
             else
             {
@@ -71,7 +71,6 @@ namespace TietoCRM.Controllers
             this.ViewData.Add("PrimaryKey", "Customer");
             this.ViewData.Add("Representatives", view_User.getAllUsers());
             this.ViewData.Add("Population", view_Population.getAllPopulations());
-            this.ViewData.Add("UseSaasFormula", true); //Hämta detta från customer-tabellen
             this.ViewData["Title"] = "Customer";
             //this.ViewBag.Tile = "Customer";
             
@@ -149,8 +148,8 @@ namespace TietoCRM.Controllers
 
                 if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
                 {
-                    dic.Add("License", currentSaasFormula.LicensePart);
-                    dic.Add("Factor", currentSaasFormula.Factor);
+                    //dic.Add("SaaS_License", currentSaasFormula.LicensePart);
+                    //dic.Add("SaaS_Factor", currentSaasFormula.Factor);
                 }
                 else
                 {

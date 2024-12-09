@@ -1,5 +1,5 @@
 ﻿@{ 
-    var isSaasFormulaActive = TietoCRM.Models.GlobalVariables.isSaasFormulaActive();
+    var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
 }
 
 @using TietoCRM.Models;
@@ -23,6 +23,10 @@
                     else if (PropertyInfo.Name == "UseShortNameAsReceiver")
                     {
                         <th data-field="@PropertyInfo.Name" data-sortable="true">Buyer as receiver</th>
+                    }
+                    else if (PropertyInfo.Name == "UseSaasFormula")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">SaaS Formula</th>
                     }
                     else if (PropertyInfo.Name == "Short_name")
                     {
@@ -238,21 +242,23 @@
                                     @*                                    <input type="text" class="form-control" name="Inhabitant_level" id="inhabitant-level-text" placeholder="Inhabitant level">*@
                                 </div>
                             </div>
-                            <input type="hidden" name="isSaasFormulaActive" id="isSaasFormulaActive" value="@(isSaasFormulaActive.ToString())">
-                            @if (isSaasFormulaActive)
+
+                            <input type="hidden" name="isSaasFormulaActive" id="isSaasFormulaActive" value="@((currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true).ToString())">
+
+                            @if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
                             {
                                 <div class="form-group">
                                     <label for="useSaasFormula" class="col-sm-3 control-label">SaaS Formula</label>
                                     <div class="col-sm-1">
                                         <div class="checkbox">
-                                            <input id="useSaasFormula" name="UseSaasFormula" type="checkbox" style="margin-left:0px" />
+                                            <input id="useSaasFormula" name="UseSaasFormula" type="checkbox" style="margin-left:0px" checked="checked"/>
                                         </div>
                                     </div>
                                     <div class="col-sm-8" style="display: flex; align-items: center;">
-                                        <label for="license" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
-                                        <input type="text" disabled class="form-control mx-1" name="License" id="license-text" style="width: 80px; margin-right: 10px; height: 30px;">
-                                        <label for="factor" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
-                                        <input type="text" disabled class="form-control mx-1" name="Factor" id="factor-text" style="width: 80px; height: 30px;">
+                                        <label for="license-number" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
+                                        <input type="number" disabled class="form-control mx-1" name="License" id="license-number" style="width: 80px; margin-right: 10px; height: 30px;" value="@currentSaasFormula.LicensePart.ToString().Replace(",",".")">
+                                        <label for="factor-number" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
+                                        <input type="number" disabled class="form-control mx-1" name="Factor" id="factor-number" style="width: 80px; height: 30px;" value="@currentSaasFormula.Factor.ToString().Replace(",",".")">
                                     </div>
                                 </div>
                             }
@@ -623,7 +629,7 @@
             var $currentInput = $($formInputs[i]);
             var name = $currentInput.attr("name");
             var type = $currentInput.attr("type") || $currentInput.prop("tagName").toLowerCase();
-            if(type != "select")
+            if (type != "select" && name != "Factor" && name != "License" && name != "isSaasFormulaActive")
                 $currentInput.val("");
             if(name == "County" || name == "Municipality" || name == "PUL")
             {
