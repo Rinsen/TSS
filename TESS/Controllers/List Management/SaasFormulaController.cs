@@ -34,6 +34,15 @@ namespace TietoCRM.Controllers.List_Management
                 license = license.Replace(",", ".");
                 factor = factor.Replace(",", ".");
 
+                if(string.IsNullOrEmpty(license))
+                {
+                    license = "0";
+                }
+                if (string.IsNullOrEmpty(factor))
+                {
+                    factor = "0";
+                }
+
                 view_SaaS_Formula.SaveSaaSFormula(bool.Parse(isActive), decimal.Parse(license, CultureInfo.InvariantCulture), decimal.Parse(factor, CultureInfo.InvariantCulture));
 
                 return "1";

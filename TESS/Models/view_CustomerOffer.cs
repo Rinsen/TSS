@@ -213,7 +213,6 @@ namespace TietoCRM.Models
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-
                         while (reader.Read())
                         {
                             if (reader.HasRows)
@@ -240,18 +239,16 @@ namespace TietoCRM.Models
                     }
                 }
             }
+
             return list;
         }
 
         public static bool CustomerOfferExists(String customer)
         {
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             using (SqlCommand command = connection.CreateCommand())
-
             {
                 connection.Open();
-
 
                 // Default query
                 command.CommandText = "SELECT Customer FROM " + databasePrefix + "CustomerOffer WHERE " + "Customer = @customer";
@@ -276,8 +273,6 @@ namespace TietoCRM.Models
                     }
                     return false;
                 }
-
-
             }
         }
 
@@ -327,8 +322,10 @@ namespace TietoCRM.Models
                     }
                 }
             }
+
             return list;
         }
+
         public static DataTable ExportCustomerOffersToExcel(string user)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -353,12 +350,15 @@ namespace TietoCRM.Models
                 return dt;
             }
         }
+
         public static List<String> GetCustomerOffers(string user)
         {
             List<String> list = new List<String>();
+
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
+
                 String condition = "";
                 if (user != null)
                     condition = "WHERE Representative like @representive";
@@ -367,6 +367,7 @@ namespace TietoCRM.Models
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Prepare();
+
                 if (user != null)
                     command.Parameters.AddWithValue("@representive", "%" + user + "%");
 
@@ -379,6 +380,7 @@ namespace TietoCRM.Models
                     }
                 }
             }
+
             return list;
         }
     }

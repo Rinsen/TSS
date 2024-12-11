@@ -609,7 +609,7 @@ else if (Request["modal"] == "articles")
             var depCell = "<td></td>";
             var artComm = ((article.Comment == '' || article.Comment == null) ? "Hjälptext saknas" : article.Comment);
             var artClass = article.System + " / " + article.Classification;
-            var saasTitle = "@Html.Raw(ViewBag.UseSaasFormula)".toLowerCase() == "true" ? "Pris beräknat med SaaS-formel" : "";
+            var saasTitle = "@Html.Raw(ViewBag.UseSaasFormula)".toLowerCase() == "true" ? "SaaS-formel aktiv. Pris beräknas utifrån saas-parametrar på offerten." : "";
 
             var buttonStyle = "";
 

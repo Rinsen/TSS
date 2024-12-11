@@ -265,7 +265,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         var article = availableArticles[i];
         var artComm = ((article.Comment == '' || article.Comment == null) ? "Hjälptext saknas" : article.Comment);
         var artClass = article.System + " / " + article.Classification;
-        var saasTitle = saasFormulaActive == "true" ? "Pris beräknat med SaaS-formel" : "";
+        var saasTitle = saasFormulaActive == "true" ? "SaaS-formel aktiv. Pris beräknas utifrån saas-parametrar på avtalet." : "";
         var usedCell = "<td></td>";
         var usedDep = "<td></td>";
         var buttonStyle = "";
@@ -441,6 +441,7 @@ var handleRemoveArticleList = function (availableArticles, $availableList) {
     //var $artNrs = $selectedList.find("button .art-nr");
     //var artNrsLen = $artNrs.length;
     var hasFixedRows = false;
+    var saasTitle = saasFormulaActive == "true" ? "SaaS-formel aktiv. Kontrollera parametrar under Contract information." : "";
 
     for (var i = 0; i < aaLen; i++) {
         var article = availableArticles[i];

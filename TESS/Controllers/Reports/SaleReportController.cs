@@ -68,6 +68,8 @@ namespace TietoCRM.Controllers.Reports
             else
                 customers = view_Customer.getAllCustomers();
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
@@ -82,8 +84,16 @@ namespace TietoCRM.Controllers.Reports
                         dict.Add("title", offer.Title);
                         foreach (view_OfferRow row in offer._OfferRows)
                         {
-                            totalMaintenance += row.Maintenance;
-                            totalLicense += row.License;
+                            if(currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && offer.LicensePart > 0 && offer.Factor > 0)
+                            {
+                                totalMaintenance += view_SaaS_Formula.CalculateSaasPrice(row.License.Value, row.Maintenance.Value, offer.LicensePart.Value, offer.Factor.Value);
+                                totalLicense += 0;
+                            }
+                            else
+                            {
+                                totalMaintenance += row.Maintenance;
+                                totalLicense += row.License;
+                            }
                         }
                         if(!dict.Keys.Contains("valid_through") || (String)dict["valid_through"] == "no date found" || DateTime.Parse((String)dict["valid_through"]) > offer.Offer_valid.Value)
                         {
@@ -112,10 +122,19 @@ namespace TietoCRM.Controllers.Reports
 
         public string ExportExcel()
         {
-            DataTable dt = view_CustomerOffer.ExportCustomerOffersToExcel(Request["user"]);
-            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+            try
+            {
+                DataTable dt = view_CustomerOffer.ExportCustomerOffersToExcel(Request["user"]);
 
-            return ex.Export(dt, "SentOffers.xlsx");            
+                TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+
+                return ex.Export(dt, "SentOffers.xlsx");
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
         //    using (XLWorkbook wb = new XLWorkbook())
@@ -151,7 +170,7 @@ namespace TietoCRM.Controllers.Reports
         //        return ms.ToArray();
         //    }
         //}
-   
+
         //private void releaseObject(object obj)
         //{
         //    try

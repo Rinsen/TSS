@@ -2285,9 +2285,19 @@ namespace TietoCRM.Controllers.Contracts
 
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
             foreach (view_Contract validContract in view_Contract.GetContracts(customer, false, "Giltigt"))
             {
+                if(currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && validContract.LicensePart > 0 && validContract.Factor > 0)
+                {
+                    foreach (var module in validContract._ContractRows)
+                    {
+                        module.Maintenance = view_SaaS_Formula.CalculateSaasPrice(module.License, module.Maintenance, validContract.LicensePart, validContract.Factor);
+                        module.License = 0;
+                    }
+                }
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows));
             }
 
@@ -2308,9 +2318,19 @@ namespace TietoCRM.Controllers.Contracts
 
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
 
+            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
             //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
             foreach (view_Contract validContract in view_Contract.GetContracts(customer, false, "Giltigt"))
             {
+                if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && validContract.LicensePart > 0 && validContract.Factor > 0)
+                {
+                    foreach (var module in validContract._ContractRows)
+                    {
+                        module.Maintenance = view_SaaS_Formula.CalculateSaasPrice(module.License, module.Maintenance, validContract.LicensePart, validContract.Factor);
+                        module.License = 0;
+                    }
+                }
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows.Where(w => w.Alias.ToLower().Contains(searchtext.ToLower()))));
             }
 

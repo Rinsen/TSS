@@ -858,32 +858,28 @@ namespace TietoCRM.Models
 
                 // Default query
 
-                string query = @"SELECT [view_ContractRow].[Contract_id], 
-                    [view_ContractRow].[Customer] ,[view_ContractRow].[Article_number] ,
-                    [view_ContractRow].[Offer_number] ,[view_ContractRow].[License] ,
-                    [view_ContractRow].[Maintenance] ,[view_ContractRow].[Delivery_date] ,
-                    [view_ContractRow].[Created] ,[view_ContractRow].[Updated] ,
-                    [view_ContractRow].[Rewritten] ,[view_ContractRow].[New] ,
-                    [view_ContractRow].[Removed] ,[view_ContractRow].[Closure_date] ,
-                    [view_ContractRow].[Fixed_price] ,
-                     CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp ,
-                    [view_ContractRow].[Alias] 
-                    FROM " + databasePrefix + @"ContractRow 
-                    INNER JOIN " + databasePrefix + @"Contract ON 
-                    view_Contract.Customer=view_ContractRow.Customer and 
-                    view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
-                    view_Contract.Valid_from >= '" + Start.ToShortDateString() + @"' AND
-                    view_Contract.Valid_from <= '" + Stop.ToShortDateString() + @"' AND
-                    view_ContractRow.Rewritten = 0 AND view_ContractRow.Removed = 0Order By " + GetOrderBy();
-                //view_Contract.Valid_from >= Convert(datetime, '@startDate') AND
-                //view_Contract.Valid_from <= Convert(datetime, '@stopDate')";
-
-
-                //command.Prepare();
-                //command.Parameters.AddWithValue("@startDate", Start);
-                //command.Parameters.AddWithValue("@stopDate", Stop);
-                ////command.Parameters.AddWithValue("@startDate", Start.ToString("yyyy-MM-dd"));
-                ////command.Parameters.AddWithValue("@endDate", Start.ToString("yyyy-MM-dd")));
+                string query = @"SELECT[view_ContractRow].[Contract_id], 
+                                       [view_ContractRow].[Customer], [view_ContractRow].[Article_number],
+                                       [view_ContractRow].[Offer_number], 
+		                               ROUND(CAST(CASE WHEN SF.Id IS NOT NULL AND C.LicensePart > 0 and C.Factor > 0 THEN 0 ELSE [view_ContractRow].[License] end AS MONEY), 0) as License,
+                                       ROUND(CAST(CASE WHEN SF.Id IS NOT NULL AND C.LicensePart > 0 and C.Factor > 0 THEN view_ContractRow.License/C.LicensePart+view_ContractRow.Maintenance*C.Factor ELSE [view_ContractRow].[Maintenance] END AS MONEY), 0) AS Maintenance, 
+                                       [view_ContractRow].[Delivery_date],
+                                       [view_ContractRow].[Created], [view_ContractRow].[Updated],
+                                       [view_ContractRow].[Rewritten], [view_ContractRow].[New],
+                                       [view_ContractRow].[Removed], [view_ContractRow].[Closure_date],
+                                       [view_ContractRow].[Fixed_price],
+                                       CAST(view_ContractRow.SSMA_TimeStamp AS BIGINT) AS SSMA_TimeStamp,
+                                       [view_ContractRow].[Alias]
+                                  FROM " + databasePrefix + @"ContractRow
+                                  INNER JOIN " + databasePrefix + @"Contract C ON
+                                       C.Customer = view_ContractRow.Customer and
+                                       C.Contract_id = view_ContractRow.Contract_id
+                                  LEFT JOIN view_SaaS_Formula SF on SF.PeriodTo is null and SF.IsActive = 1
+                                  WHERE
+                                       C.Valid_from >= '" + Start.ToShortDateString() + @"' AND
+                                       C.Valid_from <= '" + Stop.ToShortDateString() + @"' AND
+                                       view_ContractRow.Rewritten = 0 AND view_ContractRow.Removed = 0
+                                  Order By " + GetOrderBy();
 
                 dt.TableName = "ContractSoldReport";
 

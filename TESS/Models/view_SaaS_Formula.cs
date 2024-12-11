@@ -159,17 +159,17 @@ namespace TietoCRM.Models
         /// <param name="licensePart"></param>
         /// <param name="factor"></param>
         /// <returns></returns>
-        public static Decimal CalculateSaasPrice(decimal license, decimal maintenance, decimal licensePart, decimal factor)
+        public static Decimal CalculateSaasPrice(decimal? license, decimal? maintenance, decimal? licensePart, decimal? factor)
         {
             try
             {
-                decimal result = maintenance;
-                if(factor > 0)
+                decimal result = maintenance.Value;
+                if(factor > 0 && licensePart > 0 && license.HasValue && maintenance.HasValue)
                 {
-                    result = ((license / licensePart) + maintenance) * factor;
+                    result = ((license.Value / licensePart.Value) + maintenance.Value) * factor.Value;
                 }
 
-                return Math.Round(result, 2);
+                return Math.Round(result, 0);
             }
             catch (Exception ex)
             {

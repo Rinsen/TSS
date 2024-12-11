@@ -374,6 +374,7 @@ namespace TietoCRM.Models
         {
             List<view_Customer> list = new List<view_Customer>();
             List<Dictionary<String, String>> result = GetAllRepresentatives();
+            
             foreach (String id in GetCustomerIds(representive))
             {
                 view_Customer c = new view_Customer();
@@ -381,6 +382,7 @@ namespace TietoCRM.Models
                 
                 // Place all represenatives from CustomerDivision to Customer
                 List<String> reps = new List<string>();
+
                 foreach (Dictionary<String, String> res in result)
                 {
                     if (Convert.ToString(c._ID) == res["CustomerID"])
@@ -388,6 +390,7 @@ namespace TietoCRM.Models
                         reps.Add(res["Representative"]);
                     }
                 }
+
                 c._Representatives = reps;
                 list.Add(c);
             }
