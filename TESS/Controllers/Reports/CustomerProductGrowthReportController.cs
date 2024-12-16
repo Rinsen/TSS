@@ -308,8 +308,6 @@ namespace TietoCRM.Controllers.Reports
                     dtCloned.ImportRow(row);
                 }
 
-                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
-
                 TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
                 foreach (DataRow row in dtCloned.Rows)
                 {
@@ -339,27 +337,9 @@ namespace TietoCRM.Controllers.Reports
                     {
                         row["Removed"] = "No";
                     }
-
-                    //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
-                    //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
-                    view_Contract contract = new view_Contract();
-                    contract.Select("Contract_id = '" + row["Contract_id"] + "'");
-
-                    if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
-                    {
-                        if (contract.LicensePart > 0 && contract.Factor > 0)
-                        {
-                            row["Maintenance"] = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(row["License"].ToString()), decimal.Parse(row["Maintenance"].ToString()), contract.LicensePart.Value, contract.Factor.Value);
-                            row["License"] = 0;
-                        }
-                        else
-                        {
-                            //SaaS formula is enabled in the system, but this contract does not use it.
-                        }
-                    }
                 }
-                return ex.Export(dtCloned, "CustomerProductGrowthReport.xlsx");
 
+                return ex.Export(dtCloned, "CustomerProductGrowthReport.xlsx");
             }
             catch (Exception ex)
             {

@@ -53,15 +53,23 @@ namespace TietoCRM.Controllers.List_Management
             }
         }
 
-        public string IsSaasFormulaActive()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string IsSaasFormulaActiveOnCustomer()
         {
             var result = "";
+            String customer = Request.Form["customer"];
 
             var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
-
-            if (currentSaasFormula != null) 
-            { 
-                result = currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true ? "true" : "false";
+            if (!string.IsNullOrEmpty(customer))
+            {
+                var cust = new view_Customer("Customer=" + customer);
+                if (currentSaasFormula != null && cust != null && cust.UseSaasFormula == 1)
+                {
+                    result = currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true ? "true" : "false";
+                }
             }
 
             result = new JavaScriptSerializer().Serialize(result);

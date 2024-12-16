@@ -1,9 +1,5 @@
-﻿using Microsoft.Ajax.Utilities;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data.SqlClient;
-using System.Diagnostics.Contracts;
-using System.ServiceModel.Description;
 using TietoCRM.Extensions;
 
 namespace TietoCRM.Models

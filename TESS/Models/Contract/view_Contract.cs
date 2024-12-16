@@ -437,43 +437,30 @@ namespace TietoCRM.Models
             }
         }
 
-        public decimal? ContractMaintenanceSum(bool useSaasFormula = false)
+        public decimal? ContractMaintenanceSum()
         {
             decimal? mainSum = 0;
 
             foreach(view_ContractRow r in this._contractRows)
             {
-                if(useSaasFormula && r.License.HasValue && r.Maintenance > 0 && this.LicensePart > 0 && this.Factor > 0)
-                {
-                    mainSum += view_SaaS_Formula.CalculateSaasPrice(r.License.Value, r.Maintenance.Value, this.LicensePart.Value, this.Factor.Value);
-                }
-                else
-                {
-                    mainSum += r.Maintenance;
-                }
+                mainSum += r.Maintenance;
             }
 
             return mainSum;
         }
 
-        public decimal? ContractLicenseSum(bool useSaasFormula = false)
+        public decimal? ContractLicenseSum()
         {
             decimal? mainSum = 0;
 
             foreach (view_ContractRow r in this._contractRows)
             {
-                if (useSaasFormula && r.License.HasValue && r.Maintenance > 0 && this.LicensePart > 0 && this.Factor > 0)
-                {
-                    mainSum += 0.0m;
-                }
-                else
-                {
-                    mainSum += r.License;
-                }                    
+                mainSum += r.License;
             }
 
             return mainSum;
         }
+
         public decimal? ContractServiceSum()
         {
             decimal? mainSum = 0;
@@ -485,5 +472,4 @@ namespace TietoCRM.Models
             return mainSum;
         }
     }
-
 }

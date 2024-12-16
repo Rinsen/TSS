@@ -2127,6 +2127,12 @@ namespace TietoCRM.Controllers.Contracts
 
             var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
 
+            view_Customer customerObj = null;
+            if (!string.IsNullOrEmpty(customer))
+            {
+                customerObj = new view_Customer("Customer=" + customer);
+            }
+
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -2215,7 +2221,7 @@ namespace TietoCRM.Controllers.Contracts
                             view_Contract contract = new view_Contract();
                             contract.Select("Contract_id = '" + contractId + "'");
 
-                            if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                            if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && customerObj != null && customerObj.UseSaasFormula == 1)
                             {
                                 if (contract.LicensePart > 0 && contract.Factor > 0)
                                 {
@@ -2285,19 +2291,9 @@ namespace TietoCRM.Controllers.Contracts
 
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
 
-            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
-
             //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
             foreach (view_Contract validContract in view_Contract.GetContracts(customer, false, "Giltigt"))
             {
-                if(currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && validContract.LicensePart > 0 && validContract.Factor > 0)
-                {
-                    foreach (var module in validContract._ContractRows)
-                    {
-                        module.Maintenance = view_SaaS_Formula.CalculateSaasPrice(module.License, module.Maintenance, validContract.LicensePart, validContract.Factor);
-                        module.License = 0;
-                    }
-                }
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows));
             }
 
@@ -2318,19 +2314,9 @@ namespace TietoCRM.Controllers.Contracts
 
             HashSet<view_ContractRow> customersModules = new HashSet<view_ContractRow>();
 
-            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
-
             //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
             foreach (view_Contract validContract in view_Contract.GetContracts(customer, false, "Giltigt"))
             {
-                if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && validContract.LicensePart > 0 && validContract.Factor > 0)
-                {
-                    foreach (var module in validContract._ContractRows)
-                    {
-                        module.Maintenance = view_SaaS_Formula.CalculateSaasPrice(module.License, module.Maintenance, validContract.LicensePart, validContract.Factor);
-                        module.License = 0;
-                    }
-                }
                 customersModules = new HashSet<view_ContractRow>(customersModules.Concat(validContract._ContractRows.Where(w => w.Alias.ToLower().Contains(searchtext.ToLower()))));
             }
 
@@ -2424,6 +2410,14 @@ namespace TietoCRM.Controllers.Contracts
                 command.ExecuteNonQuery();
                 List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
 
+                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+                view_Customer customerObj = null;
+                if (!string.IsNullOrEmpty(customer))
+                {
+                    customerObj = new view_Customer("Customer=" + customer);
+                }
+
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -2466,13 +2460,24 @@ namespace TietoCRM.Controllers.Contracts
                                 if (!String.IsNullOrEmpty(moduleDiscount.Alias))
                                     result["Module"] = moduleDiscount.Alias;
                             }
-                            result["License"] = result["License"].ToString().Replace(",", ".");
-                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
 
                             //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
                             //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
                             view_Contract contract = new view_Contract();
                             contract.Select("Contract_id = '" + contractid + "'");
+
+                            if (moduletype != "2" && currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && customerObj != null && customerObj.UseSaasFormula == 1)
+                            {
+                                //Time to re-calculate according to SaaS-formula
+                                if (contract._ID > 0 && contract.LicensePart > 0 && contract.Factor > 0)
+                                {
+                                    result["Maintenance"] = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(result["License"].ToString().Replace(".", ",")), decimal.Parse(result["Maintenance"].ToString().Replace(".", ",")), contract.LicensePart.Value, contract.Factor.Value);
+                                    result["License"] = 0;
+                                }
+                            }
+
+                            result["License"] = result["License"].ToString().Replace(",", ".");
+                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
 
                             if (contract._ID > 0)
                             {
@@ -2776,6 +2781,13 @@ namespace TietoCRM.Controllers.Contracts
                 }
 
                 var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+                view_Customer customerObj = null;
+                if (!string.IsNullOrEmpty(customer))
+                {
+                    customerObj = new view_Customer("Customer=" + customer);
+                }
+
                 view_Contract a = new view_Contract();
 
                 a.Select("Customer = '" + customer + "' AND Contract_id = '" + contractId + "'");
@@ -2789,7 +2801,7 @@ namespace TietoCRM.Controllers.Contracts
                         //a.SetValue(entry.Key, nullString);
                         a.SetValue(entry.Key, null);
                     }
-                    else if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && (entry.Key == "LicensePart" || entry.Key == "Factor"))
+                    else if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && (entry.Key == "LicensePart" || entry.Key == "Factor") && customerObj != null && customerObj.UseSaasFormula == 1)
                     {
                         if (entry.Key == "LicensePart")
                         {

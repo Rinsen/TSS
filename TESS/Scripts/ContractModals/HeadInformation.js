@@ -5,6 +5,7 @@ $(document).ready(function () {
     $("#head-info-modal-button").click(function () {
         $("#tableItemsModal").appendTo("body").modal("show").find('.modal-content').draggable();
         loadInfo();
+        isSaasCustomer();
         if (contractType == "Huvudavtal") {
             $("#main_contract_id-text").prop("disabled", "disabled");
         }
@@ -26,6 +27,26 @@ $(document).ready(function () {
         }
        $('.selectpicker').selectpicker('refresh');
     });
+
+    var isSaasCustomer = function () {
+        $.ajax({
+            "url": serverPrefix + "SaasFormula/IsSaasFormulaActiveOnCustomer/",
+            "type": "POST",
+            "data": {
+                "customer": customerName
+            },
+            "success": function (data) {
+                saasCustomer = JSON.parse(data);
+                if (saasCustomer != "1") {
+                    document.getElementById("saasDiv").style.display = "none";
+                    document.getElementById("saasLabelDiv").style.display = "none";
+                } else {
+                    document.getElementById("saasDiv").style.display = "flex";
+                    document.getElementById("saasLabelDiv").style.display = "";
+                }
+            }
+        });
+    }
 
     $("#orginfoid-text").change(function (element) {
         //Set default org checkbox depending on OrgInfo-select
@@ -202,8 +223,7 @@ var loadInfo = function () {
         "type": "POST",
         "data": {
             "customer": customerName,
-            "contract-id": contractId,
-            
+            "contract-id": contractId,            
         },
         "success": function (data) {
             if (data != "0") {

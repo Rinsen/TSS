@@ -279,7 +279,7 @@
                                     {
                                         if (pi.Name == "LicensePart")
                                         {
-                                            <label for="saas-formula-text"  style="font-size: 12px" class="col-sm-3 control-label">SaaS Formula</label>
+                                            <label for="saas-formula-text" id="saasLabelDiv" style="font-size: 12px" class="col-sm-3 control-label">SaaS Formula</label>
                                         }
                                     }
                                     else
@@ -330,7 +330,7 @@
                                 {
                                     if (pi.Name == "LicensePart")
                                     {
-                                        <div class="col-sm-10" style="display: flex; align-items: center;">
+                                        <div class="col-sm-10" style="display: flex; align-items: center;" id="saasDiv">
                                             <label for="licensepart-number" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
                                             <input type="number" class="form-control mx-1" name="LicensePart" id="licensepart-number" style="width: 80px; margin-right: 10px; height: 30px;" value="@ViewBag.LicensePart">
                                             <label for="factor-number" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
@@ -1299,6 +1299,26 @@
         //$('#crm-save-btn').on('click', save);
     }
 
+    var isSaasCustomer = function () {
+        $.ajax({
+            "url": serverPrefix + "SaasFormula/IsSaasFormulaActiveOnCustomer/",
+            "type": "POST",
+            "data": {
+                "customer": $customerSelect.val()
+            },
+            "success": function (data) {
+                saasCustomer = JSON.parse(data);
+                if (saasCustomer != "1") {
+                    document.getElementById("saasDiv").style.display = "none";
+                    document.getElementById("saasLabelDiv").style.display = "none";
+                } else {
+                    document.getElementById("saasDiv").style.display = "flex";
+                    document.getElementById("saasLabelDiv").style.display = "";
+                }
+            }
+        });
+    }
+
     var loadCustomer = function()
     {
         var $formInputs = $("#newRowModal form").find(":input");
@@ -1361,10 +1381,12 @@
         $("#crm-add-row").bind("click", function(){
             if($('#crm-select-customer').val() != "*"){
                 console.log("asd");
+
                 loadNewContactData();
                 loadCustomer();
                 //loadMainContracts();
                 console.log(1);
+                isSaasCustomer();
                 setDefaultValues();
                 $("#newRowModal").appendTo("body").modal("show").draggable();
             } else {

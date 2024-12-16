@@ -513,8 +513,6 @@ namespace TietoCRM.Models
             {
                 connection.Open();
 
-                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
-
                 var customerString = "";
                 var articleNumberString = "";
 
@@ -586,24 +584,6 @@ namespace TietoCRM.Models
                                 {
                                     t.SetValue(t.GetType().GetProperties()[i].Name, reader.GetValue(i));
                                     i++;
-                                }
-
-                                //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
-                                //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
-                                view_Contract contract = new view_Contract();
-                                contract.Select("Contract_id = '" + t.contract_id + "'");
-
-                                if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
-                                {
-                                    if (contract.LicensePart > 0 && contract.Factor > 0)
-                                    {
-                                        t.Maintenance = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(t.License.ToString()), decimal.Parse(t.Maintenance.ToString()), contract.LicensePart.Value, contract.Factor.Value);
-                                        t.License = 0;
-                                    }
-                                    else
-                                    {
-                                        //SaaS formula is enabled in the system, but this contract does not use it.
-                                    }
                                 }
 
                                 list.Add(t);
@@ -861,8 +841,8 @@ namespace TietoCRM.Models
                 string query = @"SELECT[view_ContractRow].[Contract_id], 
                                        [view_ContractRow].[Customer], [view_ContractRow].[Article_number],
                                        [view_ContractRow].[Offer_number], 
-		                               ROUND(CAST(CASE WHEN SF.Id IS NOT NULL AND C.LicensePart > 0 and C.Factor > 0 THEN 0 ELSE [view_ContractRow].[License] end AS MONEY), 0) as License,
-                                       ROUND(CAST(CASE WHEN SF.Id IS NOT NULL AND C.LicensePart > 0 and C.Factor > 0 THEN view_ContractRow.License/C.LicensePart+view_ContractRow.Maintenance*C.Factor ELSE [view_ContractRow].[Maintenance] END AS MONEY), 0) AS Maintenance, 
+		                               ROUND(CAST([view_ContractRow].[License] AS MONEY), 0) as License,
+                                       ROUND(CAST([view_ContractRow].[Maintenance] AS MONEY), 0) AS Maintenance, 
                                        [view_ContractRow].[Delivery_date],
                                        [view_ContractRow].[Created], [view_ContractRow].[Updated],
                                        [view_ContractRow].[Rewritten], [view_ContractRow].[New],
@@ -874,7 +854,6 @@ namespace TietoCRM.Models
                                   INNER JOIN " + databasePrefix + @"Contract C ON
                                        C.Customer = view_ContractRow.Customer and
                                        C.Contract_id = view_ContractRow.Contract_id
-                                  LEFT JOIN view_SaaS_Formula SF on SF.PeriodTo is null and SF.IsActive = 1
                                   WHERE
                                        C.Valid_from >= '" + Start.ToShortDateString() + @"' AND
                                        C.Valid_from <= '" + Stop.ToShortDateString() + @"' AND

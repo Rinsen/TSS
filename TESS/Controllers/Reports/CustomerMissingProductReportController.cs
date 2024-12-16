@@ -37,10 +37,11 @@ namespace TietoCRM.Controllers
             if(Request["customer"] != "null")
             {
                 String sign = Request["user"];
+                var includeServices = bool.Parse(Request["inclserv"]);
 
                 view_User user = new view_User();
                 user.Select("Sign=" + sign);
-                List<view_CustomerMissingProductReport> CustomerMissingProducts = view_CustomerMissingProductReport.getCustomerMissingProducts(Request["customer"], user.Area);
+                List<view_CustomerMissingProductReport> CustomerMissingProducts = view_CustomerMissingProductReport.getCustomerMissingProducts(Request["customer"], user.Area, includeServices);
 
                 // Store all unique Customer name in a set
                 HashSet<String> SystemNames = new HashSet<String>();
@@ -82,11 +83,12 @@ namespace TietoCRM.Controllers
         {
             String sign = Request.Form["user"];
             String customer = Request.Form["customer"];
+            var includeServices = bool.Parse(Request["inclserv"]);
 
             view_User user = new view_User();
             user.Select("Sign=" + sign);
 
-            List<view_CustomerMissingProductReport> ProductReportRows = view_CustomerMissingProductReport.getCustomerMissingProducts(customer, user.Area);
+            List<view_CustomerMissingProductReport> ProductReportRows = view_CustomerMissingProductReport.getCustomerMissingProducts(customer, user.Area, includeServices);
 
             ProductReportRows.OrderBy(m => m.Classification).ThenBy(m => m.Status).ThenBy(m => m.Article_number);
 
@@ -134,9 +136,17 @@ namespace TietoCRM.Controllers
         {
             try
             {
-                System.Data.DataTable dt = view_CustomerMissingProductReport.ExportCustomerMissingProductsToExcel(Request["customer"], System.Web.HttpContext.Current.GetUser().Area);
+                var includeServices = bool.Parse(Request["inclserv"]);
+
+                System.Data.DataTable dt = view_CustomerMissingProductReport.ExportCustomerMissingProductsToExcel(Request["customer"], System.Web.HttpContext.Current.GetUser().Area, includeServices);
 
                 var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+                view_Customer customerObj = null;
+                if (!string.IsNullOrEmpty(Request["customer"]))
+                {
+                    customerObj = new view_Customer("Customer=" + Request["customer"]);
+                }
 
                 DataTable dtCloned = dt.Clone();
                 dtCloned.Columns[7].DataType = typeof(decimal);
@@ -152,11 +162,16 @@ namespace TietoCRM.Controllers
                     column.ReadOnly = false; // Gör alla kolumner skrivbara
                 }
 
-                foreach (DataRow row in dtCloned.Rows)
+                if (currentSaasFormula._ID > 0 && 
+                    currentSaasFormula.IsActive == true && 
+                    currentSaasFormula.LicensePart > 0 && 
+                    currentSaasFormula.Factor > 0 && 
+                    customerObj != null &&
+                    customerObj.UseSaasFormula == 1)
                 {
-                    if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && row["System"].ToString() != "Tjänster")
+                    foreach (DataRow row in dtCloned.Rows)
                     {
-                        if (currentSaasFormula.LicensePart > 0 && currentSaasFormula.Factor > 0 && row["Maintenance"].ToString() != "" && row["License"].ToString() != "")
+                        if (row["System"].ToString() != "Tjänster" && row["Maintenance"].ToString() != "" && row["License"].ToString() != "")
                         {
                             row["Maintenance"] = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(row["License"].ToString()), decimal.Parse(row["Maintenance"].ToString()), currentSaasFormula.LicensePart.Value, currentSaasFormula.Factor.Value);
                             row["License"] = 0.0m;

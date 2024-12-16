@@ -68,8 +68,6 @@ namespace TietoCRM.Controllers.Reports
             List<view_Contract> contracts = view_Contract.GetContracts();
             view_User user = System.Web.HttpContext.Current.GetUser();
 
-            var isSaasFormulaActive = GlobalVariables.isSaasFormulaActive();
-
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Contract contract in contracts)
             {
@@ -89,12 +87,12 @@ namespace TietoCRM.Controllers.Reports
                         { "contract_id", contract.Contract_id },
                         { "title", contract.Title },
                         { "contract_type", contract.Contract_type },
-                        { "totalMaintenance", contract.ContractMaintenanceSum().HasValue ? Math.Round(contract.ContractMaintenanceSum(isSaasFormulaActive).Value, 2) : 0 },
-                        { "totalLicense", contract.ContractLicenseSum().HasValue ? Math.Round(contract.ContractLicenseSum(isSaasFormulaActive).Value, 2) : 0 },
+                        { "totalMaintenance", contract.ContractMaintenanceSum().HasValue ? Math.Round(contract.ContractMaintenanceSum().Value, 2) : 0 },
+                        { "totalLicense", contract.ContractLicenseSum().HasValue ? Math.Round(contract.ContractLicenseSum().Value, 2) : 0 },
                         { "totalService", contract.ContractServiceSum().HasValue ? Math.Round(contract.ContractServiceSum().Value, 2) : 0 }
                     };
 
-                    totalMaintenance += contract.ContractMaintenanceSum(isSaasFormulaActive);
+                    totalMaintenance += contract.ContractMaintenanceSum();
                     rows.Add(dict);
                 }
             }
@@ -115,8 +113,6 @@ namespace TietoCRM.Controllers.Reports
             List<view_Contract> contracts = view_Contract.GetContracts();
             view_User user = System.Web.HttpContext.Current.GetUser();
 
-            var isSaasFormulaActive = GlobalVariables.isSaasFormulaActive();
-
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Contract contract in contracts)
             {
@@ -136,12 +132,12 @@ namespace TietoCRM.Controllers.Reports
                         { "contract_id", contract.Contract_id },
                         { "title", contract.Title },
                         { "contract_type", contract.Contract_type },
-                        { "totalMaintenance", contract.ContractMaintenanceSum().HasValue ? Math.Round(contract.ContractMaintenanceSum(isSaasFormulaActive).Value, 2) : 0 },
-                        { "totalLicense", contract.ContractLicenseSum().HasValue ? Math.Round(contract.ContractLicenseSum(isSaasFormulaActive).Value, 2) : 0 },
+                        { "totalMaintenance", contract.ContractMaintenanceSum().HasValue ? Math.Round(contract.ContractMaintenanceSum().Value, 2) : 0 },
+                        { "totalLicense", contract.ContractLicenseSum().HasValue ? Math.Round(contract.ContractLicenseSum().Value, 2) : 0 },
                         { "totalService", contract.ContractServiceSum().HasValue ? Math.Round(contract.ContractServiceSum().Value, 2) : 0 }
                     };
 
-                    totalMaintenance += contract.ContractMaintenanceSum(isSaasFormulaActive);
+                    totalMaintenance += contract.ContractMaintenanceSum();
                     rows.Add(dict);
                 }
             }

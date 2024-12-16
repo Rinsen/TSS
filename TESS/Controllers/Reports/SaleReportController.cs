@@ -68,8 +68,6 @@ namespace TietoCRM.Controllers.Reports
             else
                 customers = view_Customer.getAllCustomers();
 
-            var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
-
             List<Dictionary<String, object>> rows = new List<Dictionary<String, object>>();
             foreach (view_Customer customer in customers)
             {
@@ -78,23 +76,19 @@ namespace TietoCRM.Controllers.Reports
                     if (offer.Offer_status == "Öppen" && (offer.Our_sign == sign || sign == "alla"))
                     {
                         Dictionary<String, object> dict = new Dictionary<String, object>();
+
                         decimal? totalMaintenance = 0;
                         decimal? totalLicense = 0;
+
                         dict.Add("customer", customer.Customer);
                         dict.Add("title", offer.Title);
+
                         foreach (view_OfferRow row in offer._OfferRows)
                         {
-                            if(currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && offer.LicensePart > 0 && offer.Factor > 0)
-                            {
-                                totalMaintenance += view_SaaS_Formula.CalculateSaasPrice(row.License.Value, row.Maintenance.Value, offer.LicensePart.Value, offer.Factor.Value);
-                                totalLicense += 0;
-                            }
-                            else
-                            {
-                                totalMaintenance += row.Maintenance;
-                                totalLicense += row.License;
-                            }
+                            totalMaintenance += row.Maintenance;
+                            totalLicense += row.License;
                         }
+
                         if(!dict.Keys.Contains("valid_through") || (String)dict["valid_through"] == "no date found" || DateTime.Parse((String)dict["valid_through"]) > offer.Offer_valid.Value)
                         {
                             if (offer.Offer_created.HasValue)
@@ -107,6 +101,7 @@ namespace TietoCRM.Controllers.Reports
                             else
                                 dict["valid_through"] = "no date found";
                         }
+
                         dict.Add("maintenance", totalMaintenance);
                         dict.Add("license", totalLicense);
                         dict.Add("contact_person", offer.Contact_person);

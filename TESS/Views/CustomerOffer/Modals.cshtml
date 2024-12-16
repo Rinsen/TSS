@@ -609,7 +609,7 @@ else if (Request["modal"] == "articles")
             var depCell = "<td></td>";
             var artComm = ((article.Comment == '' || article.Comment == null) ? "Hjälptext saknas" : article.Comment);
             var artClass = article.System + " / " + article.Classification;
-            var saasTitle = "@Html.Raw(ViewBag.UseSaasFormula)".toLowerCase() == "true" ? "SaaS-formel aktiv. Pris beräknas utifrån saas-parametrar på offerten." : "";
+            var saasTitle = "@Html.Raw(ViewBag.UseSaasFormula)".toLowerCase() == "true" ? "SaaS-kund. Pris beräknas utifrån saas-parametrar på offerten." : "";
 
             var buttonStyle = "";
 
@@ -1849,16 +1849,15 @@ else if (Request["modal"] == "head-information")
             </div>
         </div>
         <input type="hidden" name="isSaasFormulaActive" id="isSaasFormulaActive" value="@(isSaasFormulaActive.ToString())">
-        @if (isSaasFormulaActive)
+        @if (isSaasFormulaActive && ViewBag.IsSaaSCustomer == 1)
         {
-
             <div class="form-group">
                 <label for="summera" class="col-sm-2 control-label">SaaS Formula</label>
                 <div class="col-sm-10" style="display: flex; align-items: center;">
                     <label for="license" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
-                    <input type="number" class="form-control mx-1" name="LicensePart" id="license" style="width: 80px; margin-right: 10px; height: 30px;" value="@ViewBag.CustomerOffer.LicensePart">
+                    <input type="number" class="form-control mx-1" name="LicensePart" id="license" style="width: 80px; margin-right: 10px; height: 30px;" value="@ViewBag.CustomerOffer.LicensePart.ToString().Replace(",",".")">
                     <label for="factor" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
-                    <input type="number" class="form-control mx-1" name="Factor" id="factor" style="width: 80px; height: 30px;" value="@ViewBag.CustomerOffer.Factor">
+                    <input type="number" class="form-control mx-1" name="Factor" id="factor" style="width: 80px; height: 30px;" value="@ViewBag.CustomerOffer.Factor.ToString().Replace(",",".")">
                 </div>
             </div>
         }

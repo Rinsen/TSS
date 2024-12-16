@@ -55,7 +55,7 @@ namespace TietoCRM.Models
         /// Gets all the product rows
         /// </summary>
         /// <returns>A list of product rows.</returns>
-        public static List<view_CustomerMissingProductReport> getCustomerMissingProducts(string customer, string area)
+        public static List<view_CustomerMissingProductReport> getCustomerMissingProducts(string customer, string area, bool includeServices)
         {
             List<view_CustomerMissingProductReport> list = new List<view_CustomerMissingProductReport>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -63,6 +63,12 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+                view_Customer customerObj = null;
+                if (!string.IsNullOrEmpty(customer))
+                {
+                    customerObj = new view_Customer("Customer=" + customer);
+                }
 
                 //String query = "SELECT * FROM " + databasePrefix + "CustomerProductsMissing Where Customer = @customer Order By Fixed_price, classification, status, module";
                 String query = "stp_MissingProducts";
@@ -73,7 +79,7 @@ namespace TietoCRM.Models
                 command.Prepare();
                 command.Parameters.AddWithValue("@pCustomer", customer);
                 command.Parameters.AddWithValue("@pArea", area);
-                //command.Parameters.AddWithValue("@area", user.Area);
+                command.Parameters.AddWithValue("@pInclServ", includeServices ? "1" : "0");
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -90,7 +96,7 @@ namespace TietoCRM.Models
                                 i++;
                             }
 
-                            if (t.System != "Tjänster" && currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                            if (customerObj != null && customerObj.UseSaasFormula == 1 && t.System != "Tjänster" && currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
                             {
                                 if (currentSaasFormula.LicensePart > 0 && currentSaasFormula.Factor > 0)
                                 {
@@ -112,7 +118,7 @@ namespace TietoCRM.Models
             return list;
         }
 
-        public static DataTable ExportCustomerMissingProductsToExcel(string customer, string area)
+        public static DataTable ExportCustomerMissingProductsToExcel(string customer, string area, bool includeServices)
         {
             DataTable dt = new DataTable(customer.Replace(" ", "_"));
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -126,6 +132,7 @@ namespace TietoCRM.Models
                 command.Prepare();
                 command.Parameters.AddWithValue("@pCustomer", customer);
                 command.Parameters.AddWithValue("@pArea", area);
+                command.Parameters.AddWithValue("@pInclServ", includeServices ? "1" : "0");
 
                 connection.Open();
 

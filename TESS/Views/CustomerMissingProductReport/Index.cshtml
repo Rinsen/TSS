@@ -30,6 +30,14 @@
                     }
                 </select>
             </div>
+            <div class="form-group">
+                <div class="checkbox" style="margin-top: 1.7em;margin-left: 0.5em; margin-right:0.5em;">
+                    <label>
+                        <input type="checkbox" id="include-services"> Include services
+                    </label>
+                </div>
+            </div>
+
             <button id="fetch-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
             <button id="export-excel" style="margin-top: 1.7em;" class="btn" type="button">Excel</button>
         </form>
@@ -64,6 +72,8 @@
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
     var updateDataTable = function(customer, user)
     {
+        var includeServices = $('#include-services').is(':checked') ? true : false;
+
         $('#report-table').DataTable({
             "destroy": true,
             "processing": true,
@@ -79,7 +89,8 @@
                 "type": "POST",
                 "data": {
                     "customer": customer,
-                    "user": user
+                    "user": user,
+                    "inclserv": includeServices
                 }
             },
             "defaultContent": "",
@@ -138,14 +149,16 @@
             var customer = $customerContainer.val();
             var user = $userContainer.val();
             var $dt = $('.dataTable').DataTable();
+            var includeServices = $('#include-services').is(':checked') ? true : false;
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            window.open(serverPrefix + 'CustomerMissingProductReport/Pdf?customer=' + customer + '&user=' + user + sort, "_blank");
+            window.open(serverPrefix + 'CustomerMissingProductReport/Pdf?customer=' + customer + '&inclserv=' + includeServices + '&user=' + user + sort, "_blank");
         })
         $('#export-excel').click(function () {
             var customer = $customerContainer.val();
-            window.open(serverPrefix + 'CustomerMissingProductReport/ExportExcel?customer=' + customer, "_parent").focus();
+            var includeServices = $('#include-services').is(':checked') ? true : false;
+            window.open(serverPrefix + 'CustomerMissingProductReport/ExportExcel?customer=' + customer + '&inclserv=' + includeServices, "_parent").focus();
         })
 
     });

@@ -1328,7 +1328,7 @@
                                             {
                                                 if (pi.Name == "LicensePart")
                                                 {
-                                                    <label for="saas-formula-text" class="col-sm-2 control-label">SaaS Formula</label>
+                                                    <label for="saas-formula-text" id="saasLabelDiv" class="col-sm-2 control-label">SaaS Formula</label>
                                                 }
                                             }
                                             else
@@ -1358,7 +1358,7 @@
                         {
                             if (pi.Name == "LicensePart")
                             {
-                                <div class="col-sm-10" style="display: flex; align-items: center;">
+                                <div class="col-sm-10" style="display: flex; align-items: center;" id="saasDiv">
                                     <label for="license-number" class="control-label mb-0" style="margin-right:10px">( Licence / </label>
                                     <input type="number" class="form-control mx-1" name="LicensePart" id="license-number" style="width: 80px; margin-right: 10px; height: 30px;">
                                     <label for="factor-number" class="control-label mb-0" style="margin-right:10px">+ Maintenance ) * </label>
@@ -1679,7 +1679,6 @@
         if ("@Html.Raw(ViewBag.showReminderButton)" == "True") {
             $("#copyReminder").show();
         }
-
 
         function get_browser() {
             var ua = navigator.userAgent,

@@ -6,9 +6,11 @@ var saasFormulaActive = false;
 
 var isSaasFormulaActive = function () {
     $.ajax({
-        "url": serverPrefix + "SaasFormula/IsSaasFormulaActive/",
+        "url": serverPrefix + "SaasFormula/IsSaasFormulaActiveOnCustomer/",
         "type": "POST",
-        "data": {},
+        "data": {
+            "customer": customerName
+        },
         "success": function (data) {
             if (data.length > 0) {
                 saasFormulaActive = JSON.parse(data);
@@ -265,7 +267,7 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
         var article = availableArticles[i];
         var artComm = ((article.Comment == '' || article.Comment == null) ? "Hjälptext saknas" : article.Comment);
         var artClass = article.System + " / " + article.Classification;
-        var saasTitle = saasFormulaActive == "true" ? "SaaS-formel aktiv. Pris beräknas utifrån saas-parametrar på avtalet." : "";
+        var saasTitle = saasFormulaActive == "true" ? "SaaS-kund. Pris beräknas utifrån saas-parametrar på avtalet." : "";
         var usedCell = "<td></td>";
         var usedDep = "<td></td>";
         var buttonStyle = "";
@@ -441,7 +443,7 @@ var handleRemoveArticleList = function (availableArticles, $availableList) {
     //var $artNrs = $selectedList.find("button .art-nr");
     //var artNrsLen = $artNrs.length;
     var hasFixedRows = false;
-    var saasTitle = saasFormulaActive == "true" ? "SaaS-formel aktiv. Kontrollera parametrar under Contract information." : "";
+    var saasTitle = saasFormulaActive == "true" ? "SaaS-kund. Pris beräknas utifrån saas-parametrar på avtalet." : "";
 
     for (var i = 0; i < aaLen; i++) {
         var article = availableArticles[i];

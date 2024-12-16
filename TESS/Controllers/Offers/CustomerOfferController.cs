@@ -572,12 +572,17 @@ namespace TietoCRM.Controllers
 
             String offerNo = Server.UrlDecode(Request["selected-offer"]);
             ViewData.Add("OfferNo", offerNo);
-            ViewData.Add("UseSaasFormula", GlobalVariables.isSaasFormulaActive());
-
             ViewData.Add("Statuses", GetOfferStatus());
 
             view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
             ViewData.Add("CustomerOffer", co);
+
+            if (!string.IsNullOrEmpty(customer))
+            {
+                var chosenCustomer = new view_Customer("Customer =" + customer);
+                ViewData.Add("IsSaaSCustomer", chosenCustomer.UseSaasFormula);
+                ViewData.Add("UseSaasFormula", GlobalVariables.isSaasFormulaActive() && chosenCustomer.UseSaasFormula == 1);
+            }
 
             List<dynamic> articles = new List<dynamic>();
             SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
@@ -748,7 +753,9 @@ namespace TietoCRM.Controllers
         { 
             String customer = Request.Form["customer"];
             String representative = Request.Form["representative"];
+
             view_User user = new view_User();
+
             if (representative == "undefined" || representative == "*")
             {
                 user.Select("Sign = '" + System.Web.HttpContext.Current.GetUser() + "'");
@@ -764,45 +771,14 @@ namespace TietoCRM.Controllers
                 if (customerNames.Count <= 0)
                     customer = "-1337_ingen-kund.pådenna#sökning?!"; // a string that will make sure we wont get any result. having an empty string gave result, because it exists offers with empty strings as customers
             }
-            List<view_CustomerOffer> customerOffers;
-            customerOffers = view_CustomerOffer.getAllCustomerOffers(customer, representative);
+            
+            var customerOffers = view_CustomerOffer.getAllCustomerOffers(customer, representative);
 
-            //if (customer != "*")
-            //    if (representative == "*")
-            //    {
-            //        customerOffers = view_CustomerOffer.getAllCustomerOffers(customer);
-            //    }
-            //    else
-            //    {
-            //        customerOffers = view_CustomerOffer.getAllCustomerOffers(customer,representative);
-            //    }
-            //else
-            //{
-            //    if (representative == "*")
-            //    {
-            //        customerOffers = view_CustomerOffer.getAllCustomerOffers();
-            //    }
-            //    else
-            //    {
-
-            //    }
-            //}
-            List<dynamic> customers = new List<dynamic>();
+            List<dynamic> offers = new List<dynamic>();
             //List<view_Customer> vCustomers = new List<view_Customer>();
 
             foreach (view_CustomerOffer co in customerOffers)
             {
-                //view_Customer vCustomer;
-                //if (vCustomers.Any(c => c.Customer == co.Customer))
-                //    vCustomer = vCustomers.Find(c => c.Customer == co.Customer);
-                //else
-                //{
-                //    vCustomer = new view_Customer("Customer='" + co.Customer + "'");
-                //    vCustomers.Add(vCustomer);
-                //}
-
-                //if (user.IfSameArea(co.Area) && (vCustomer._Representatives.Contains(user.Sign) || user.User_level == 1))
-                //{
                 var v = new
                 {
                     Offer_number = co._Offer_number,
@@ -818,14 +794,19 @@ namespace TietoCRM.Controllers
                     Buyer = co.Buyer,
                     Hashtags = co.HashtagsAsString()
                 };
-                customers.Add(v);
-                //}
+                offers.Add(v);
+            }
+
+            if(!string.IsNullOrEmpty(customer))
+            {
+                var chosenCustomer = new view_Customer("Customer =" + customer);
+                ViewData.Add("IsSaaSCustomer", chosenCustomer.UseSaasFormula);
             }
 
             //ViewData.Add("viewRemind", checkReminder(customer));
 
             this.Response.ContentType = "text/plain";
-            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(customers) + "}";
+            String jsonData = "{\"data\":" + (new JavaScriptSerializer()).Serialize(offers) + "}";
             return Regex.Replace(jsonData, @"\\\/Date\(([0-9]+)\)\\\/", m =>
             {
                 DateTime dt = new DateTime(1970, 1, 1, 4, 0, 0, 0);
@@ -1706,6 +1687,14 @@ namespace TietoCRM.Controllers
                 command.ExecuteNonQuery();
                 List<IDictionary<String, object>> resultList = new List<IDictionary<String, object>>();
 
+                var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+                view_Customer customerObj = null;
+                if (!string.IsNullOrEmpty(customer))
+                {
+                    customerObj = new view_Customer("Customer=" + customer);
+                }
+
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -1742,12 +1731,23 @@ namespace TietoCRM.Controllers
                                 if (!String.IsNullOrEmpty(moduleDiscount.Alias))
                                     result["Module"] = moduleDiscount.Alias;
                             }
-                            result["License"] = result["License"].ToString().Replace(",", ".");
-                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
 
                             //Läser upp kontraktet för att sedan kunna läsa upp eventuella modultexter för att veta om 
                             //vi ska lägga till standardtext eller modultext då vi lägger till en modul till kontraktet
                             view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offerNo);
+
+                            if (moduletype != "2" && currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && customerObj != null && customerObj.UseSaasFormula == 1)
+                            {
+                                //Time to re-calculate according to SaaS-formula
+                                if (customerOffer._ID > 0 && customerOffer.LicensePart > 0 && customerOffer.Factor > 0)
+                                {
+                                    result["Maintenance"] = view_SaaS_Formula.CalculateSaasPrice(decimal.Parse(result["License"].ToString().Replace(".",",")), decimal.Parse(result["Maintenance"].ToString().Replace(".", ",")), customerOffer.LicensePart.Value, customerOffer.Factor.Value);
+                                    result["License"] = 0;
+                                }
+                            }
+
+                            result["License"] = result["License"].ToString().Replace(",", ".");
+                            result["Maintenance"] = result["Maintenance"].ToString().Replace(",", ".");
 
                             if (customerOffer._ID > 0)
                             {
@@ -1806,6 +1806,13 @@ namespace TietoCRM.Controllers
             String offerNo = Request.Form["offerNo"]; //För att kunna läsa upp offerten
 
             var currentSaasFormula = view_SaaS_Formula.getActiveSaaSFormula();
+
+            view_Customer customerObj = null;
+            
+            if(!string.IsNullOrEmpty(customer))
+            {
+                customerObj = new view_Customer("Customer=" + customer);
+            }
 
             String connectionString = ConfigurationManager.ConnectionStrings["DataBaseCon"].ConnectionString;
 
@@ -1891,11 +1898,10 @@ namespace TietoCRM.Controllers
                                     result["Module"] = moduleDiscount.Alias;
                             }
 
-                            //Läser upp offerten för att sedan kunna läsa upp eventuella modultexter för att veta om 
-                            //vi ska lägga till standardtext eller modultext då vi lägger till en modul till offerten
+                            //Läser upp offerten för att kunna beräkna saas-formel
                             view_CustomerOffer customerOffer = new view_CustomerOffer("Offer_number = " + offerNo);
 
-                            if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true)
+                            if (currentSaasFormula._ID > 0 && currentSaasFormula.IsActive == true && customerObj != null && customerObj.UseSaasFormula == 1)
                             {
                                 if(customerOffer.LicensePart > 0 && customerOffer.Factor > 0)
                                 {
