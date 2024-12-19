@@ -37,7 +37,7 @@ $(document).ready(function () {
             },
             "success": function (data) {
                 saasCustomer = JSON.parse(data);
-                if (saasCustomer != "1") {
+                if (saasCustomer != "true") {
                     document.getElementById("saasDiv").style.display = "none";
                     document.getElementById("saasLabelDiv").style.display = "none";
                 } else {
