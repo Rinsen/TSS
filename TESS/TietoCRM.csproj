@@ -16,7 +16,7 @@
     <AssemblyName>TietoCRM</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication>disabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
@@ -195,6 +195,7 @@
     <Compile Include="Controllers\List Management\PopulationController.cs" />
     <Compile Include="Controllers\List Management\SaasFormulaController.cs" />
     <Compile Include="Controllers\Reports\CustomerProductGrowthReportController.cs" />
+    <Compile Include="Controllers\Reports\SalesmanHashtagReportController.cs" />
     <Compile Include="Controllers\Reports\ExportExcelController.cs" />
     <Compile Include="Controllers\Installations\FeatureMappingController.cs" />
     <Compile Include="Controllers\List Management\AppointmentController.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Models\SortedByColumnCollection.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\ViewCsvParser.cs" />
+    <Compile Include="Models\view_HashtagReport.cs" />
     <Compile Include="Models\view_Exception.cs" />
     <Compile Include="Models\FileLocationMapping.cs" />
     <Compile Include="Models\UserStatistics.cs" />
@@ -1008,6 +1010,8 @@
     <Content Include="Views\ModuleOverviewReport\Pdf_ifo.cshtml" />
     <Content Include="Views\ModuleOverviewReport\Pdf_edu.cshtml" />
     <Content Include="Views\SaasFormula\Index.cshtml" />
+    <Content Include="Views\SalesmanHashtagReport\Index.cshtml" />
+    <Content Include="Views\SalesmanHashtagReport\Pdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1094,11 +1098,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61645</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:8080/TESS</IISUrl>
+          <IISUrl>http://localhost/TietoCRM</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

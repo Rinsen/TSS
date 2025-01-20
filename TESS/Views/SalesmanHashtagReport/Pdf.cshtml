@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "~/Views/Shared/_ReportLayout.cshtml";
+}
+
+<div class="crm-print-block">
+    @if (ViewBag.OfferHashtagRows.Count > 0)
+    {
+        <h1>Offers</h1>
+        <table class="table table-striped table-bordered valid-contracts-table">
+            <th>Offer number</th>
+            <th>Customer</th>
+            <th>Title</th>
+            <th>Created</th>
+            <th>Valid</th>
+            <th>Sign</th>
+            <th>Hashtag</th>
+            @foreach (Dictionary<String, object> hashtag in ViewBag.OfferHashtagRows)
+            {
+                <tr class="">
+                    @foreach (KeyValuePair<String, object> kp in hashtag)
+                    {
+                        <td>@kp.Value</td>
+                    }
+                </tr>
+            }
+        </table>
+    }
+    @if (ViewBag.ContractHashtagRows.Count > 0)
+    {
+        <h1>Contracts</h1>
+        <table class="table table-striped table-bordered valid-contracts-table">
+            <th>Contract id</th>
+            <th>Customer</th>
+            <th>Title</th>
+            <th>Sign</th>
+            <th>Hashtag</th>
+            @foreach (Dictionary<String, object> hashtag in ViewBag.ContractHashtagRows)
+            {
+                <tr class="">
+                    @foreach (KeyValuePair<String, object> kp in hashtag)
+                    {
+                        <td>@kp.Value</td>
+                    }
+                </tr>
+            }
+        </table>
+    }
+</div>
