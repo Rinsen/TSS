@@ -105,7 +105,7 @@
         });
 
         $('#fetch-pdf').click(function () {
-            var user = $userContainer.val();
+            var user = JSON.stringify($userContainer.val());
             var isOffer = $('#search-offers').is(':checked')
             var isContract = $('#search-contracts').is(':checked')
 

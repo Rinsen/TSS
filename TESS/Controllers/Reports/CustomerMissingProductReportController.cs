@@ -75,10 +75,8 @@ namespace TietoCRM.Controllers
             {
                 return Content("No customer was chosen");
             }
-            
-
-
         }
+
         public String GetData()
         {
             String sign = Request.Form["user"];
@@ -121,6 +119,7 @@ namespace TietoCRM.Controllers
 
             return "{\"data\":" + (new JavaScriptSerializer()).Serialize(rows) + "}";
         }
+
         public String CustomerNames()
         {
             String sign = Request.Form["key"];
