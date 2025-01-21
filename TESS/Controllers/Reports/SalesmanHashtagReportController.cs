@@ -33,6 +33,7 @@ namespace TietoCRM.Controllers
 
             ViewData.Add("IgnoredProperties", ignoredProperties);
             ViewData.Add("Users", view_User.getAllUsers());
+            ViewData.Add("Hashtags", view_Hashtag.getAllHashTags());
             ViewData.Add("Properties", typeof(view_HashtagReport).GetProperties());
 
             this.ViewData["Title"] = "Salesman Hashtag Report";
@@ -43,44 +44,44 @@ namespace TietoCRM.Controllers
         public ActionResult Pdf()
         {
             var user = Request["user"];
+            var hashtags = Request["hashtags"];
             var isContract = Request["isContract"];
             var isOffer = Request["isOffer"];
 
             String sortDir = Request["sort"];
             String sortKey = Request["prop"];
 
-            var area = System.Web.HttpContext.Current.GetUser().Area;
-
             var usersDic = (List<string>)new JavaScriptSerializer().Deserialize(user, typeof(List<string>));
+            var hashtagDic = (List<string>)new JavaScriptSerializer().Deserialize(hashtags, typeof(List<string>));
 
-            var hashtags = view_HashtagReport.getHashTagReportRows(usersDic, bool.Parse(isContract), bool.Parse(isOffer));
+            var hashtagReportRows = view_HashtagReport.getHashTagReportRows(usersDic, hashtagDic, bool.Parse(isContract), bool.Parse(isOffer));
 
             List<Dictionary<String, object>> offerRows = new List<Dictionary<String, object>>();
-            foreach (var hashtag in hashtags.Where(w => w.Offer_number > 0))
+            foreach (var hashtagReportRow in hashtagReportRows.Where(w => w.Offer_number > 0))
             {
                 Dictionary<String, object> dict = new Dictionary<String, object>();
 
-                dict.Add("Offer_number", hashtag.Offer_number.ToString());
-                dict.Add("Offer_customer", hashtag.Offer_customer);
-                dict.Add("Offer_title", hashtag.Offer_title);
-                dict.Add("Offer_created", hashtag.Offer_created.ToShortDateString());
-                dict.Add("Offer_valid", hashtag.Offer_valid.ToShortDateString());
-                dict.Add("Offer_sign", hashtag.Offer_sign);
-                dict.Add("Hashtag", hashtag.Hashtag);
+                dict.Add("Offer_number", hashtagReportRow.Offer_number.ToString());
+                dict.Add("Offer_customer", hashtagReportRow.Offer_customer);
+                dict.Add("Offer_title", hashtagReportRow.Offer_title);
+                dict.Add("Offer_created", hashtagReportRow.Offer_created.ToShortDateString());
+                dict.Add("Offer_valid", hashtagReportRow.Offer_valid.ToShortDateString());
+                dict.Add("Offer_sign", hashtagReportRow.Offer_sign);
+                dict.Add("Hashtag", hashtagReportRow.Hashtag);
 
                 offerRows.Add(dict);
             }
 
             List<Dictionary<String, object>> contractRows = new List<Dictionary<String, object>>();
-            foreach (var hashtag in hashtags.Where(w => w.Offer_number == 0))
+            foreach (var hashtagReportRow in hashtagReportRows.Where(w => w.Offer_number == 0))
             {
                 Dictionary<String, object> dict = new Dictionary<String, object>();
 
-                dict.Add("Contract_id", hashtag.Contract_id.ToString());
-                dict.Add("Contract_customer", hashtag.Contract_customer);
-                dict.Add("Contract_title", hashtag.Contract_title);
-                dict.Add("Contract_sign", hashtag.Contract_sign);
-                dict.Add("Hashtag", hashtag.Hashtag);
+                dict.Add("Contract_id", hashtagReportRow.Contract_id.ToString());
+                dict.Add("Contract_customer", hashtagReportRow.Contract_customer);
+                dict.Add("Contract_title", hashtagReportRow.Contract_title);
+                dict.Add("Contract_sign", hashtagReportRow.Contract_sign);
+                dict.Add("Hashtag", hashtagReportRow.Hashtag);
 
                 contractRows.Add(dict);
             }
@@ -176,16 +177,17 @@ namespace TietoCRM.Controllers
         public String GetUserHashtags()
         {
             var user = Request.Form["user"];
+            var hashtags = Request.Form["hashtags"];
             var isContract = Request.Form["contract"];
             var isOffer = Request.Form["offer"];
-            var area = System.Web.HttpContext.Current.GetUser().Area;
 
             var usersDic = (List<string>)new JavaScriptSerializer().Deserialize(user, typeof(List<string>));
+            var hashtagDic = (List<string>)new JavaScriptSerializer().Deserialize(hashtags, typeof(List<string>));
 
-            var hashtags = view_HashtagReport.getHashTagReportRows(usersDic, bool.Parse(isContract), bool.Parse(isOffer));
+            var hashtagReportRows = view_HashtagReport.getHashTagReportRows(usersDic, hashtagDic, bool.Parse(isContract), bool.Parse(isOffer));
             
             List<Dictionary<String, String>> rows = new List<Dictionary<String, String>>();
-            foreach (view_HashtagReport cpr in hashtags)
+            foreach (view_HashtagReport cpr in hashtagReportRows)
             {
                 Dictionary<String, String> dic = new Dictionary<String, String>();
                 foreach (System.Reflection.PropertyInfo pi in cpr.GetType().GetProperties())
@@ -223,11 +225,19 @@ namespace TietoCRM.Controllers
 
         public string ExportExcel()
         {
-            bool withExpired = Request["expired"] == "Ja" ? true : false;
-            System.Data.DataTable dt = view_CustomerProductRow.ExportCustomerProductsToExcel(Request["customer"], null, null, withExpired);
-            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
-            return ex.Export(dt, "CustomerProducts.xlsx");
+            var user = Request["user"];
+            var hashtags = Request["hashtags"];
+            var isContract = Request["isContract"];
+            var isOffer = Request["isOffer"];
 
+            var usersDic = (List<string>)new JavaScriptSerializer().Deserialize(user, typeof(List<string>));
+            var hashtagDic = (List<string>)new JavaScriptSerializer().Deserialize(hashtags, typeof(List<string>));
+
+            System.Data.DataTable dt = view_HashtagReport.ExportHashtagReportRowsToExcel(usersDic, hashtagDic, bool.Parse(isContract), bool.Parse(isOffer));
+            
+            TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
+            
+            return ex.Export(dt, "SalesmanHashtagReport.xlsx");
         }
     }
 }

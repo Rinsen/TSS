@@ -15,6 +15,15 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="crm-select-hashtag">Hashtags:</label>
+                <select name="hashtag" id="crm-select-hashtag" multiple class="form-control selectpicker" data-show-subtext="true" data-live-search="true">
+                    @foreach (TietoCRM.Models.view_Hashtag hashtag in ViewBag.Hashtags)
+                    {
+                        <option value="@hashtag.Hashtag">@hashtag.Hashtag</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
                 <div class="checkbox" style="margin-top: 1.7em; margin-left: 0.5em; margin-right:0.5em;">
                     <label>
                         <input type="checkbox" id="search-offers">Offers
@@ -26,7 +35,8 @@
                 </div>
             </div>
             <button id="search-button" style="margin-top: 1.7em;" class="btn btn-default" type="button">Search</button>
-            <button id="fetch-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
+            <button id="export-pdf" style="margin-top: 1.7em;" class="btn btn-default" type="button">PDF</button>
+            <button id="export-excel" style="margin-top: 1.7em;" class="btn btn-default" type="button">Excel</button>
         </form>
     </div>
     <div class="col-md-12">
@@ -57,7 +67,7 @@
         }
     }
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function(user)
+    var updateDataTable = function(users, hashtags)
     {
         var isOffer = $('#search-offers').is(':checked')
         var isContract = $('#search-contracts').is(':checked')
@@ -72,7 +82,8 @@
                 "url": serverPrefix + "SalesmanHashtagReport/GetUserHashtags/",
                 "type": "POST",
                 "data": {
-                    "user": user,
+                    "user": users,
+                    "hashtags": hashtags,
                     "contract": isContract,
                     "offer": isOffer
                 }
@@ -93,19 +104,15 @@
         $('.selectpicker').selectpicker();
 
         $userContainer = $("#crm-select-user");
-
-        updateDataTable('');
-
-        $userContainer.change(function () {
-            updateDataTable(JSON.stringify($userContainer.val()));
-        });
+        $hashtagContainer = $("#crm-select-hashtag");
 
         $('#search-button').click(function () {
-            updateDataTable(JSON.stringify($userContainer.val()));
+            updateDataTable(JSON.stringify($userContainer.val()), JSON.stringify($hashtagContainer.val()));
         });
 
-        $('#fetch-pdf').click(function () {
+        $('#export-pdf').click(function () {
             var user = JSON.stringify($userContainer.val());
+            var hashtags = JSON.stringify($hashtagContainer.val());
             var isOffer = $('#search-offers').is(':checked')
             var isContract = $('#search-contracts').is(':checked')
 
@@ -118,25 +125,16 @@
                 sort = "&sort=&prop=";
             }
 
-            window.open(serverPrefix + 'SalesmanHashtagReport/Pdf?user=' + user + '&isOffer=' + isOffer + '&isContract=' + isContract + sort, "_blank");
+            window.open(serverPrefix + 'SalesmanHashtagReport/Pdf?user=' + user + '&hashtags=' + hashtags + '&isOffer=' + isOffer + '&isContract=' + isContract + sort, "_blank");
         });
 
         $('#export-excel').click(function () {
-            var customer = $customerContainer.val();
-            var user = $userContainer.val();
-            var exp = "Ja"
-            var $dt = $('.dataTable').DataTable();
-            var sortArr = $dt.order();
-            var sort = "";
-            if (sortArr.length > 0) {
-                sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
-            } else {
-                sort = "&sort=&prop=";
-            }
-            if ($('#expired').is(':checked')) {
-                exp = "Nej"
-            }
-            window.open(serverPrefix + 'SalesmanHashtagReport/ExportExcel?customer=' + customer + '&expired=' + exp + '&user=' + user + sort, "_parent").focus();
+            var user = JSON.stringify($userContainer.val());
+            var hashtags = JSON.stringify($hashtagContainer.val());
+            var isOffer = $('#search-offers').is(':checked')
+            var isContract = $('#search-contracts').is(':checked')
+
+            window.open(serverPrefix + 'SalesmanHashtagReport/ExportExcel?user=' + user + '&hashtags=' + hashtags + '&isOffer=' + isOffer + '&isContract=' + isContract, "_parent").focus();
         });
     });
 

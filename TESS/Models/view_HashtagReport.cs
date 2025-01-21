@@ -1,6 +1,9 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using TietoCRM.Extensions;
 
@@ -30,59 +33,14 @@ namespace TietoCRM.Models
         /// Gets all main contract templates.
         /// </summary>
         /// <returns>A lsit of main contract templates.</returns>
-        public static List<view_HashtagReport> getHashTagReportRows(List<string> users, bool isContract, bool isOffer)
+        public static List<view_HashtagReport> getHashTagReportRows(List<string> users, List<string> hashtags, bool isContract, bool isOffer)
         {
             List<view_HashtagReport> list = new List<view_HashtagReport>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                var first = true;
 
-                var query = "SELECT Offer_number, Offer_customer, Offer_title, Offer_created, Offer_valid, Offer_sign, Contract_id, Contract_customer, Contract_title, Contract_sign, Hashtag FROM " + databasePrefix + "HashtagReport";
-
-                if(users != null && users.Count > 0)
-                {
-                    first = false;
-                    query += " WHERE (Contract_sign IN (" + string.Join(", ", users.Select(s => $"'{s}'")) + ") OR Offer_sign IN (" + string.Join(", ", users.Select(s => $"'{s}'")) + "))";
-                }
-
-                if (!isContract && !isOffer)
-                {
-                    if (first)
-                    {
-                        query += " WHERE Contract_id IS NULL AND Offer_number IS NULL";
-                    }
-                    else
-                    {
-                        query += " AND Contract_id IS NULL AND Offer_number IS NULL";
-                    }
-                }
-                else
-                {
-                    if (!isContract)
-                    {
-                        if (first)
-                        {
-                            query += " WHERE Contract_id IS NULL";
-                        }
-                        else
-                        {
-                            query += " AND Contract_id IS NULL";
-                        }
-                    }
-
-                    if (!isOffer)
-                    {
-                        if (first)
-                        {
-                            query += " WHERE Offer_number IS NULL";
-                        }
-                        else
-                        {
-                            query += " AND Offer_number IS NULL";
-                        }
-                    }
-                }
+                var query = GetHashtagReportQuery(users, hashtags, isContract, isOffer);
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -105,6 +63,95 @@ namespace TietoCRM.Models
             }
 
             return list;
+        }
+
+        private static string GetHashtagReportQuery(List<string> users, List<string> hashtags, bool isContract, bool isOffer)
+        {
+            var first = true;
+
+            var query = "SELECT Offer_number, Offer_customer, Offer_title, Offer_created, Offer_valid, Offer_sign, Contract_id, Contract_customer, Contract_title, Contract_sign, Hashtag " +
+            "FROM " + databasePrefix + "HashtagReport";
+
+            if (users != null && users.Count > 0)
+            {
+                first = false;
+                query += " WHERE (Contract_sign IN (" + string.Join(", ", users.Select(s => $"'{s}'")) + ") OR Offer_sign IN (" + string.Join(", ", users.Select(s => $"'{s}'")) + "))";
+            }
+
+            if (hashtags != null && hashtags.Count > 0)
+            {
+                if (first)
+                {
+                    first = false;
+                    query += " WHERE (Hashtag IN (" + string.Join(", ", hashtags.Select(s => $"'{s}'")) + "))";
+                }
+                else
+                {
+                    query += " AND (Hashtag IN (" + string.Join(", ", hashtags.Select(s => $"'{s}'")) + "))";
+                }
+            }
+
+            if (!isContract && !isOffer)
+            {
+                if (first)
+                {
+                    first = false;
+                    query += " WHERE Contract_id IS NULL AND Offer_number IS NULL";
+                }
+                else
+                {
+                    query += " AND Contract_id IS NULL AND Offer_number IS NULL";
+                }
+            }
+            else
+            {
+                if (!isContract)
+                {
+                    if (first)
+                    {
+                        first = false;
+                        query += " WHERE Contract_id IS NULL";
+                    }
+                    else
+                    {
+                        query += " AND Contract_id IS NULL";
+                    }
+                }
+
+                if (!isOffer)
+                {
+                    if (first)
+                    {
+                        first = false;
+                        query += " WHERE Offer_number IS NULL";
+                    }
+                    else
+                    {
+                        query += " AND Offer_number IS NULL";
+                    }
+                }
+            }
+
+            return query;
+        }
+
+        internal static DataTable ExportHashtagReportRowsToExcel(List<string> users, List<string> hashtags, bool isContract, bool isOffer)
+        {
+            DataTable dt = new DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = GetHashtagReportQuery(users, hashtags, isContract, isOffer);
+
+                dt.TableName = "Hashtags";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                da.Fill(dt);
+            }
+
+            return dt;
         }
     }
 }

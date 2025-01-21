@@ -247,6 +247,7 @@
     <Compile Include="Models\SortedByColumnCollection.cs" />
     <Compile Include="Models\Statistics.cs" />
     <Compile Include="Models\ViewCsvParser.cs" />
+    <Compile Include="Models\view_Hashtag.cs" />
     <Compile Include="Models\view_HashtagReport.cs" />
     <Compile Include="Models\view_Exception.cs" />
     <Compile Include="Models\FileLocationMapping.cs" />
