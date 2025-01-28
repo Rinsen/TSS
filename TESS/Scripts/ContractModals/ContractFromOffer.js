@@ -27,6 +27,18 @@
         }
     });
 
+    $("#contractFromOfferModal #check-all-hashtags").click(function () {
+        var $inputs = $("#hashtags-from-open-offer").find(":input");
+        if (this.innerHTML == "Check all") {
+            $inputs.prop('checked', true);
+            this.innerHTML = "Uncheck all";
+        }
+        else {
+            $inputs.prop('checked', false);
+            this.innerHTML = "Check all";
+        }
+    });
+
     $("#contractFromOfferModal #choose-selected-things").click(function () {
         var $inputs = $("#contractFromOfferModal #modules-from-open-offer").find("input:checked");
         var length = $inputs.length;
@@ -50,12 +62,21 @@
             serviceList.push(id);
         }
 
+        $inputs = $("#contractFromOfferModal #hashtags-from-open-offer").find("input:checked");
+        length = $inputs.length;
+        var hashtagList = [];
+        for (var j = 0; j < length; j++) {
+            id = $($inputs[j]).attr("data-id");
+            hashtagList.push(id);
+        }
+
         $.ajax({
             "url": serverPrefix + "CustomerContract/SaveContractFromOffer/",
             "type": "POST",
             "data": {
                 "modules": JSON.stringify(moduleList),
                 "services": JSON.stringify(serviceList),
+                "hashtags": JSON.stringify(hashtagList),
                 "customer": customerName,
                 "contract-id": contractId
             },

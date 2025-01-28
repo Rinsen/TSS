@@ -20,6 +20,7 @@ namespace TietoCRM.Models
         public string Contract_id { get; set; }
         public string Contract_customer { get; set; }
         public string Contract_title { get; set; }
+        public DateTime Contract_valid_from { get; set; }
         public string Contract_sign { get; set; }
         public string Hashtag { get; set; }
 
@@ -69,7 +70,7 @@ namespace TietoCRM.Models
         {
             var first = true;
 
-            var query = "SELECT Offer_number, Offer_customer, Offer_title, Offer_created, Offer_valid, Offer_sign, Contract_id, Contract_customer, Contract_title, Contract_sign, Hashtag " +
+            var query = "SELECT Offer_number, Offer_customer, Offer_title, Offer_created, Offer_valid, Offer_sign, Contract_id, Contract_customer, Contract_title, Contract_valid_from, Contract_sign, Hashtag " +
             "FROM " + databasePrefix + "HashtagReport";
 
             if (users != null && users.Count > 0)

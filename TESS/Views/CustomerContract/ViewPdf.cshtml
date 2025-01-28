@@ -190,7 +190,7 @@
                 <form class="form-inline modal-select-items" id="service-form">
                     <table>
                         <tr>
-                            <td style=" width:50%;">
+                            <td style="width:40%;">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -231,7 +231,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td valign="top">
+                            <td style="width:40%;" valign="top">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -259,8 +259,40 @@
                                                             @s.Module
                                                         </span>
                                                         <!--
-                                                        -->
+                                -->
                                                         <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@jsObj" type="checkbox" /></div>
+                                                    </li>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td valign="top">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" class="form-control" id="check-all-hashtags">Check all</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Hashtags from open offer</h3>
+                                    </div>
+                                    <div class="panel-body" style="overflow-y: scroll; height:52vh;">
+                                        <div id="hashtags-from-open-offer" class="list-group">
+                                            @{
+                                                foreach (string hashtag in ViewBag.OpenOfferHashtags)
+                                                {
+                                                    <li class="list-group-item">
+                                                        <span class="list-inline" style="width:95%; display:inline-block">
+                                                            @hashtag
+                                                        </span>
+                                                        <!--
+                -->
+                                                        <div class="pull-right list-inline" style="width:5%; display:inline-block;"><input data-id="@hashtag" type="checkbox" /></div>
                                                     </li>
                                                 }
                                             }

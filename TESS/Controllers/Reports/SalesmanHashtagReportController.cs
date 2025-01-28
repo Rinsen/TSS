@@ -36,7 +36,7 @@ namespace TietoCRM.Controllers
             ViewData.Add("Hashtags", view_Hashtag.getAllHashTags());
             ViewData.Add("Properties", typeof(view_HashtagReport).GetProperties());
 
-            this.ViewData["Title"] = "Salesman Hashtag Report";
+            this.ViewData["Title"] = "Hashtag Report";
 
             return View();
         }
@@ -80,6 +80,7 @@ namespace TietoCRM.Controllers
                 dict.Add("Contract_id", hashtagReportRow.Contract_id.ToString());
                 dict.Add("Contract_customer", hashtagReportRow.Contract_customer);
                 dict.Add("Contract_title", hashtagReportRow.Contract_title);
+                dict.Add("Contract_valid_from", hashtagReportRow.Contract_valid_from);
                 dict.Add("Contract_sign", hashtagReportRow.Contract_sign);
                 dict.Add("Hashtag", hashtagReportRow.Hashtag);
 
@@ -121,7 +122,7 @@ namespace TietoCRM.Controllers
 
             ViewData.Add("Properties", typeof(view_HashtagReport).GetProperties());
             ViewData.Add("IgnoredPropertiesExtended", ignoredProperties.ToList());
-            ViewData["Title"] = "Salesman Hashtag Report";
+            ViewData["Title"] = "Hashtag Report";
 
             ViewAsPdf pdf = new ViewAsPdf("Pdf");
             pdf.RotativaOptions.PageMargins = new Rotativa.Core.Options.Margins(5, 10, 10, 10);
@@ -237,7 +238,7 @@ namespace TietoCRM.Controllers
             
             TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
             
-            return ex.Export(dt, "SalesmanHashtagReport.xlsx");
+            return ex.Export(dt, "HashtagReport.xlsx");
         }
     }
 }

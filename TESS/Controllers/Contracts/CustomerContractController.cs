@@ -662,6 +662,7 @@ namespace TietoCRM.Controllers.Contracts
 
             List<view_OfferRow> modules = new List<view_OfferRow>();
             List<view_ConsultantRow> services = new List<view_ConsultantRow>();
+            List<string> hashtags = new List<string>();
 
             foreach (view_CustomerOffer offer in openOffers)
             {
@@ -675,10 +676,16 @@ namespace TietoCRM.Controllers.Contracts
                     if (!services.Contains(consultantRow))
                         services.Add(consultantRow);
                 }
+                
+                if(!string.IsNullOrEmpty(offer.HashtagsAsString()))
+                {
+                    hashtags.AddRange(offer._HashtagList);
+                }
             }
 
             ViewData.Add("OpenOfferModules", modules);
             ViewData.Add("OpenOfferServices", services);
+            ViewData.Add("OpenOfferHashtags", hashtags);
             //Gör om GetContracts att hämta med status som inparameter.. detta är inte effektivt...
             ViewData.Add("ActiveContracts", view_Contract.GetContracts(customer.Customer, false, "Giltigt"));
 
@@ -1188,6 +1195,7 @@ namespace TietoCRM.Controllers.Contracts
                 String urlContractId = Request.Form["contract-id"];
                 view_Contract contract = new view_Contract("Customer = '" + urlCustomer + "' AND Contract_id = '" + urlContractId + "'");
                 List<dynamic> modules = (List<dynamic>)(new JavaScriptSerializer()).Deserialize(Request.Form["modules"], typeof(List<dynamic>));
+                List<string> hashtags = (List<string>)(new JavaScriptSerializer()).Deserialize(Request.Form["hashtags"], typeof(List<string>));
                 List<Dictionary<String, dynamic>> services = (List<Dictionary<String, dynamic>>)(new JavaScriptSerializer()).Deserialize(Request.Form["services"], typeof(List<Dictionary<String, dynamic>>));
 
                 foreach(dynamic article in modules)
@@ -1251,6 +1259,12 @@ namespace TietoCRM.Controllers.Contracts
                         contractModuleText.Delete("Type = 'A' AND TypeId = " + contract._ID + " AND ModuleId = " + service.Article_number.ToString());
                         InsertModuleText(offerModuleText.Description, "K", contract._ID, int.Parse(service.Article_number.ToString()));
                     }
+                }
+
+                if(hashtags != null && hashtags.Count() > 0)
+                {
+                    var stringToInsert = string.Join(" ", hashtags.Select(s => "#" + s));
+                    contract.ParseHashtags(stringToInsert);
                 }
 
                 contract.Updated = System.DateTime.Now;
