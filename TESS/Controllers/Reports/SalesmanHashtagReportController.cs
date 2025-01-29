@@ -80,7 +80,7 @@ namespace TietoCRM.Controllers
                 dict.Add("Contract_id", hashtagReportRow.Contract_id.ToString());
                 dict.Add("Contract_customer", hashtagReportRow.Contract_customer);
                 dict.Add("Contract_title", hashtagReportRow.Contract_title);
-                dict.Add("Contract_valid_from", hashtagReportRow.Contract_valid_from);
+                dict.Add("Contract_valid_from", hashtagReportRow.Contract_valid_from.ToShortDateString());
                 dict.Add("Contract_sign", hashtagReportRow.Contract_sign);
                 dict.Add("Hashtag", hashtagReportRow.Hashtag);
 
