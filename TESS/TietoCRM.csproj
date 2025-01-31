@@ -195,6 +195,7 @@
     <Compile Include="Controllers\List Management\PopulationController.cs" />
     <Compile Include="Controllers\List Management\SaasFormulaController.cs" />
     <Compile Include="Controllers\Reports\CustomerProductGrowthReportController.cs" />
+    <Compile Include="Controllers\Reports\MissingModuleReportController.cs" />
     <Compile Include="Controllers\Reports\SalesmanHashtagReportController.cs" />
     <Compile Include="Controllers\Reports\ExportExcelController.cs" />
     <Compile Include="Controllers\Installations\FeatureMappingController.cs" />
@@ -235,6 +236,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\MissingModuleReportRow.cs" />
     <Compile Include="Models\TransactionHelper.cs" />
     <Compile Include="Models\CustomerStatistics.cs" />
     <Compile Include="Models\EmailSender.cs" />
@@ -1013,6 +1015,8 @@
     <Content Include="Views\SaasFormula\Index.cshtml" />
     <Content Include="Views\SalesmanHashtagReport\Index.cshtml" />
     <Content Include="Views\SalesmanHashtagReport\Pdf.cshtml" />
+    <Content Include="Views\MissingModuleReport\Index.cshtml" />
+    <Content Include="Views\MissingModuleReport\Pdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

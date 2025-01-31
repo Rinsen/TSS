@@ -1,7 +1,11 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using NPOI.SS.Formula.Functions;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web;
 using TietoCRM.UD_Exceptions;
 
@@ -465,8 +469,79 @@ namespace TietoCRM.Models
             return getCustomerNames(null);
         }
 
+        internal static List<MissingModuleReportRow> GetMissingModuleCustomerRows(List<int> articleNumbers)
+        {
+            List<MissingModuleReportRow> list = new List<MissingModuleReportRow>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
 
+                var articleNumberss = string.Join(",", articleNumbers.Select(s => s.ToString()));
 
+                string query = GetMissingModuleQuery(articleNumberss);
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Prepare();
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        MissingModuleReportRow row = new MissingModuleReportRow();
+
+                        row.Customer = reader.GetValue(0).ToString();
+                        row.Article_number = reader.GetValue(1).ToString();
+                        row.Module = reader.GetValue(2).ToString();
+                        row.System = reader.GetValue(3).ToString();
+                        row.Classification = reader.GetValue(4).ToString();
+
+                        list.Add(row);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        internal static System.Data.DataTable ExportMissingModuleRowsToExcel(string articleNumbers)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                // Default query
+                string query = GetMissingModuleQuery(articleNumbers);
+
+                dt.TableName = "MissingModuleReport_Selection";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                da.Fill(dt);
+            }
+
+            return dt;
+        }
+
+        private static string GetMissingModuleQuery(string articleNumbers)
+        {
+            return "WITH Articles AS (" + //Lista alla sökta article_numbers
+                "SELECT DISTINCT Article_number, Module, System, Classification " +
+                "FROM view_Module " +
+                "WHERE Article_number IN (" + articleNumbers + ") " + //Lägg till fler om du vill
+            ") " +
+            "SELECT C.Customer, A.Article_number, A.Module, A.System, A.Classification " +
+            "FROM view_Customer C " +
+            "CROSS JOIN Articles A " +
+            "WHERE NOT EXISTS (" + //Filtrera bort kunder som redan har den aktuella artikeln
+            "SELECT 1 " +
+            "FROM view_ContractRow CR " +
+            "WHERE CR.Customer = C.Customer " +
+            "AND CR.Article_number = A.Article_number" +
+            ")" +
+            "ORDER BY Customer";
+        }
     }
 
 }
