@@ -495,6 +495,7 @@ namespace TietoCRM.Models
                         row.Module = reader.GetValue(2).ToString();
                         row.System = reader.GetValue(3).ToString();
                         row.Classification = reader.GetValue(4).ToString();
+                        row.Representative = reader.GetValue(5).ToString();
 
                         list.Add(row);
                     }
@@ -526,22 +527,28 @@ namespace TietoCRM.Models
 
         private static string GetMissingModuleQuery(string articleNumbers)
         {
-            return "WITH Articles AS (" + //Lista alla sökta article_numbers
+            return "WITH Articles AS (" +
                 "SELECT DISTINCT Article_number, Module, System, Classification " +
                 "FROM view_Module " +
-                "WHERE Article_number IN (" + articleNumbers + ") " + //Lägg till fler om du vill
-            ") " +
-            "SELECT C.Customer, A.Article_number, A.Module, A.System, A.Classification " +
-            "FROM view_Customer C " +
-            "CROSS JOIN Articles A " +
-            "WHERE NOT EXISTS (" + //Filtrera bort kunder som redan har den aktuella artikeln
-            "SELECT 1 " +
-            "FROM view_ContractRow CR " +
-            "WHERE CR.Customer = C.Customer " +
-            "AND CR.Article_number = A.Article_number" +
-            ")" +
-            "ORDER BY Customer";
+                "WHERE Article_number IN (" + articleNumbers + ") " +
+                ") " +
+                "SELECT C.Customer, A.Article_number, A.Module, A.System, A.Classification, STRING_AGG(CD.Representative,', ') as Representative " +
+                "FROM view_Customer C " +
+                "JOIN view_CustomerDivision CD on CD.CustomerID = C.ID " +
+                "CROSS JOIN Articles A " +
+                "WHERE NOT EXISTS ( " +
+                "SELECT 1 " +
+                "FROM view_ContractRow CR " +
+                "WHERE CR.Customer = C.Customer AND " +
+                "CR.Article_number = A.Article_number" +
+                ") AND " +
+                "Exists(" +
+                "SELECT 1 " +
+                "FROM view_Contract Co " +
+                "WHERE Co.Customer = C.Customer AND " +
+                "Co.status = 'Giltigt') " +
+                "GROUP BY C.Customer, A.Article_number, A.Module, A.System, A.Classification " +
+                "ORDER BY Customer";
         }
     }
-
 }

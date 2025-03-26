@@ -7,5 +7,6 @@
         public string Module { get; set; }
         public string System { get; set; }
         public string Classification { get; set; }
+        public string Representative { get; set; }
     }        
 }

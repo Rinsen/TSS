@@ -10,26 +10,29 @@
 }
 
 <div class="crm-print-block">
+    @{
+        var handledModules = new List<string>();
+    }
     @foreach (var module in ViewBag.Modules)
     {
-        if (module.Customer != oldModule)
+        if (!handledModules.Contains(module.Module))
         {
-            oldModule = module.Customer;
-            <h2>@module.Customer</h2>
+            handledModules.Add(module.Module);
+            <h2>@module.Article_number - @module.Module</h2>
 
             <table class="table table-striped table-bordered contract-supervision-table">
-                <th style="width: 10em">Article number</th>
-                <th>Module</th>
-                <th style="width: 20em">System</th>
+                <th>Customer</th>
+                <th style="width: 15em">Module</th>
+                <th style="width: 15em">Representative</th>
                 <th>Classification</th>
                 @foreach (TietoCRM.Models.MissingModuleReportRow row in ViewBag.Modules)
                 {
-                    if (row.Customer == module.Customer)
+                    if (row.Module == module.Module)
                     {
                         <tr class="" style="page-break-inside:avoid">
-                            <td>@row.Article_number</td>
+                            <td>@row.Customer</td>
                             <td>@row.Module</td>
-                            <td>@row.System</td>
+                            <td>@row.Representative</td>
                             <td>@row.Classification</td>
                         </tr>
                     }
