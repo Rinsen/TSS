@@ -469,7 +469,7 @@ namespace TietoCRM.Models
             return getCustomerNames(null);
         }
 
-        internal static List<MissingModuleReportRow> GetMissingModuleCustomerRows(List<int> articleNumbers)
+        internal static List<MissingModuleReportRow> GetMissingModuleCustomerRows(List<string> users, List<int> articleNumbers)
         {
             List<MissingModuleReportRow> list = new List<MissingModuleReportRow>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -477,8 +477,9 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 var articleNumberss = string.Join(",", articleNumbers.Select(s => s.ToString()));
+                var userss = string.Join(",", users.Select(s => "'"+s+"'"));
 
-                string query = GetMissingModuleQuery(articleNumberss);
+                string query = GetMissingModuleQuery(userss, articleNumberss);
 
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -505,7 +506,7 @@ namespace TietoCRM.Models
             return list;
         }
 
-        internal static System.Data.DataTable ExportMissingModuleRowsToExcel(string articleNumbers)
+        internal static System.Data.DataTable ExportMissingModuleRowsToExcel(string users, string articleNumbers)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
@@ -514,7 +515,7 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 // Default query
-                string query = GetMissingModuleQuery(articleNumbers);
+                string query = GetMissingModuleQuery(users, articleNumbers);
 
                 dt.TableName = "MissingModuleReport_Selection";
 
@@ -525,18 +526,21 @@ namespace TietoCRM.Models
             return dt;
         }
 
-        private static string GetMissingModuleQuery(string articleNumbers)
+        private static string GetMissingModuleQuery(string users, string articleNumbers)
         {
             return "WITH Articles AS (" +
                 "SELECT DISTINCT Article_number, Module, System, Classification " +
                 "FROM view_Module " +
-                "WHERE Article_number IN (" + articleNumbers + ") " +
+                (!string.IsNullOrEmpty(articleNumbers) ? "WHERE Article_number IN (" + articleNumbers + ") " : "") +
                 ") " +
                 "SELECT C.Customer, A.Article_number, A.Module, A.System, A.Classification, STRING_AGG(CD.Representative,', ') as Representative " +
                 "FROM view_Customer C " +
                 "JOIN view_CustomerDivision CD on CD.CustomerID = C.ID " +
                 "CROSS JOIN Articles A " +
-                "WHERE NOT EXISTS ( " +
+                "WHERE " +
+                (!string.IsNullOrEmpty(users) ?
+                "EXISTS (SELECT 1 FROM view_CustomerDivision CD2 WHERE CD2.CustomerID = C.ID AND CD2.Representative IN (" + users + ")) AND " : "") +
+                "NOT EXISTS ( " +
                 "SELECT 1 " +
                 "FROM view_ContractRow CR " +
                 "WHERE CR.Customer = C.Customer AND " +
@@ -548,7 +552,7 @@ namespace TietoCRM.Models
                 "WHERE Co.Customer = C.Customer AND " +
                 "Co.status = 'Giltigt') " +
                 "GROUP BY C.Customer, A.Article_number, A.Module, A.System, A.Classification " +
-                "ORDER BY Customer";
+                "ORDER BY C.Customer";
         }
     }
 }
