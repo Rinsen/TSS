@@ -1129,6 +1129,23 @@ namespace TietoCRM.Controllers.Contracts
 
             return (new JavaScriptSerializer()).Serialize(l);
         }
+
+        public String GetContracts()
+        {
+            String customer = Request.Form["customer"];
+            var customerContracts = view_Contract.GetContracts(customer).OrderByDescending(o=>o.Valid_from);
+
+            foreach (view_Contract contract in customerContracts)
+            {
+                contract.Customer = System.Web.HttpUtility.HtmlEncode(contract.Customer);
+                contract.Contact_person = System.Web.HttpUtility.HtmlEncode(contract.Contact_person);
+                contract.Contract_id = System.Web.HttpUtility.HtmlEncode(contract.Contract_id);
+                contract.Status = System.Web.HttpUtility.HtmlEncode(contract.Status);
+            }
+
+            return new JavaScriptSerializer().Serialize(customerContracts);
+        }
+
         public String SaveContact()
         {
 
@@ -1734,6 +1751,38 @@ namespace TietoCRM.Controllers.Contracts
                 return (new JavaScriptSerializer()).Serialize(contactPersons);
             }
             catch
+            {
+                return "0";
+            }
+        }
+
+        public String UpdateContractsFromDialog()
+        {
+            try
+            {
+                string selectedContracts = HttpContext.Request.Unvalidated.Form["contractIds"];
+                string selectedCustomer = HttpContext.Request.Unvalidated.Form["customer"];
+                string contractStatus = Request.Form["contractStatus"];
+
+                var selectedContractIdList = (List<string>) new JavaScriptSerializer().Deserialize(selectedContracts, typeof(List<string>));
+
+                if (selectedContractIdList != null)
+                {
+                    foreach (var contractId in selectedContractIdList)
+                    {
+                        var contractToUpdate = new view_Contract("Customer = '" + selectedCustomer + "' AND Contract_id = '" + contractId + "'");
+
+                        if(contractToUpdate != null)
+                        {
+                            contractToUpdate.Status = contractStatus;
+                            contractToUpdate.Update("Customer = '" + selectedCustomer + "' AND Contract_id = '" + contractId + "'");
+                        }
+                    }
+                }
+
+                return "1";
+            }
+            catch (Exception e)
             {
                 return "0";
             }

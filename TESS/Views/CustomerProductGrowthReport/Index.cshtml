@@ -27,7 +27,7 @@
     <div class="col-md-12 mb-1">
         <form method="get" target="_blank" class="form-inline">
             <div class="form-group">
-                <label for="crm-select-user">Customers:</label>
+                <label for="crm-select-customer">Customers:</label>
                 <select name="customer" id="crm-select-customer" multiple class="form-control selectpicker" data-show-subtext="true">
                     @foreach (TietoCRM.Models.view_Customer Customer in ViewBag.Customers)
                     {
@@ -36,7 +36,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="crm-select-user">Modules:</label>
+                <label for="crm-select-module">Modules:</label>
                 <select name="module" id="crm-select-module" multiple class="form-control selectpicker" data-show-subtext="true">
                     @foreach (TietoCRM.Models.view_Module Module in ViewBag.Modules)
                     {

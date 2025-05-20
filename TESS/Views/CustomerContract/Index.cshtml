@@ -13,12 +13,12 @@
                         @foreach (TietoCRM.Models.view_User User in ViewBag.Users)
                         {
                             @*if (ViewBag.CurrentUser == User.Sign)
-                            {
-                                <option selected value="@User.Sign">@User.Name</option>
-                            }
-                            else
-                            {*@
-                                <option value="@User.Sign">@User.Name</option>
+                    {
+                        <option selected value="@User.Sign">@User.Name</option>
+                    }
+                    else
+                    {*@
+                            <option value="@User.Sign">@User.Name</option>
                             @*}*@
                         }
                     </select>
@@ -34,11 +34,12 @@
                         }
                     </select>
                 </div>
-                    <button type='button' style="margin-top: 1.7em;" class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
-                    <div id='crm-edit-contact' class='crm-table-btn'>
-                        <button type='button' style="margin-top: 1.7em;" class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
-                    </div>
-                    <button type='button' style="margin-top: 1.7em; display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+                <button type='button' style="margin-top: 1.7em;" class='btn btn-default form-inline' data-toggle="modal" id='appointment-modal-button' onclick="openModal();">Appointment</button>
+                <div id='crm-edit-contact' class='crm-table-btn'>
+                    <button type='button' style="margin-top: 1.7em;" class='btn btn-default' data-toggle="modal" id="contact-modal-button" onclick="loadContactData()">Edit contact</button>
+                </div>
+                <button type='button' style="margin-top: 1.7em; display:none" class='btn btn-warning form-inline' data-toggle="modal" id='remind-modal-button' onclick="loadReminders()">Reminder</button>
+                <button type='button' style="margin-top: 1.7em" class='btn btn-default' data-toggle="modal" id='update-contracts-modal-button' onclick="loadContractsData()">Update contracts</button>                
             </form>
         </div>
 </row>
@@ -160,6 +161,58 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" id="save-contact-changes" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" data-backdrop="static" id="updateContractsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog contract-modal" style="width:40%" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Update Contracts</h4>
+            </div>
+            <div id="contract-modal" class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-inline">
+                            <label for="crm-contracts-select">Contracts:</label>
+                            <select id="crm-contracts-select" multiple class="form-control selectpicker" data-live-search="true"></select>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <table id="contracts-table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Chosen contracts to update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <form>
+                    <div class="row mb-2">
+                        <div class="col-md-3">
+                            <div class="form-inline">
+                                <label for="crm-contract-status">New status:</label>
+                                <select id="crm-contract-status" class="form-control selectpicker" data-live-search="true">
+                                    <option value="Avslutat">Avslutat</option>
+                                    <option value="Giltigt">Giltigt</option>
+                                    <option value="Makulerat">Makulerat</option>
+                                    <option value="Omskrivet">Omskrivet</option>
+                                    <option value="Sänt">Sänt</option>
+                                    <option value="Uppsagt">Uppsagt</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="save-contract-changes" class="btn btn-primary">Update contracts</button>
             </div>
         </div>
     </div>
@@ -784,10 +837,76 @@
 <script>
     var currentPerson;
     var $customerSelect = $("#crm-select-customer");
+
     $("#contact-modal-button").click(function(){
         $("#contactModal").appendTo("body").modal("show").draggable();
     });
-    var loadContactData = function()
+
+    $("#update-contracts-modal-button").click(function () {
+        var $tableBody = $('#contracts-table tbody');
+        $tableBody.empty();
+
+        var $select = $('#crm-contracts-select');
+        $select.empty();
+
+        $("#updateContractsModal").appendTo("body").modal("show").draggable();
+    });
+
+    $('#crm-contracts-select').on('change', function () {
+        var selectedOptions = $('#crm-contracts-select option:selected')
+            .map(function () {
+                return $(this).text();
+            }).get();
+
+        var hasSelection = $(this).val() !== null && $(this).val().length > 0;
+        $('#save-contract-changes').prop('disabled', !(selectedOptions.length > 0));
+
+        var $tableBody = $('#contracts-table tbody');
+
+        // Rensa alla rader
+        $tableBody.empty();
+
+        // Lägg till en rad för varje valt alternativ
+        selectedOptions.forEach(function (value) {
+            //var optionText = $('#crm-contracts-select option[value="' + value + '"]').text();
+            var row = '<tr data-value="' + value + '"><td>' + value + '</td></tr>';
+            $tableBody.append(row);
+        });
+    });
+
+    var loadContractsData = function () {
+        $.ajax({
+            "url": "@Url.Content("~/CustomerContract/GetContracts/")",
+            "type": "POST",
+            "data": {
+                "customer": $("#crm-select-customer").val()
+            },
+            "success": function(data){
+                contracts = JSON.parse(data);
+                $select = $("#crm-contracts-select");
+                $select.html("");
+
+                $button = $("#create-contact-button");
+
+
+                for (var i = 0; i < contracts.length; i++)
+                {
+                    var contract = contracts[i];
+                    $select.append($("<option></option>").attr("value", contract.Contract_id).html(contract.Contract_id + " " + contract.Title + " - Status: " + contract.Status));
+                }
+
+                if ($select.children().length > 1) {
+                    $button.hide();
+                } else {
+                    $button.show();
+                }                    
+
+                $select.selectpicker('refresh');
+            }
+        });
+    }
+
+    var loadContactData = function ()
     {
         $.ajax({
             "url": "@Url.Content("~/CustomerContract/GetContacts/")",
@@ -823,6 +942,7 @@
             }
         });
     }
+
     $("#crm-contact-select").change(function(){
         $option = $(this).find("option:selected");
         if(typeof $option.attr("new-person") == "undefined")
@@ -839,6 +959,7 @@
     $("#remind-modal-button").click(function(){
         $("#reminderModal").appendTo("body").modal("show").draggable();
     });
+
     var loadReminders = function()
     {
         $.ajax({
@@ -941,6 +1062,34 @@
             insertContact();
         }
     });
+
+    $("#save-contract-changes").click(function () {
+        if ($("#updateContractsModal form").valid())
+        {
+            $.ajax({
+                "url": "@Url.Content("~/CustomerContract/UpdateContractsFromDialog/")",
+                "type": "POST",
+                "data": {
+                    "customer": $customerSelect.val(),
+                    "contractIds": JSON.stringify($('#crm-contracts-select').val()),
+                    "contractStatus": $('#crm-contract-status').val()
+                },
+                "success": function(data){
+                    if(data > 0)
+                    {
+                        updateDataTable($("#crm-select-customer").val(),$("#crm-select-user").val());
+                        selectedId = null;
+                        triggerAlert("Successfully updated contact.", "success");
+                        $("#updateContractsModal").modal("toggle");
+                    }
+                    else
+                    {
+                        triggerAlert("Failed to update contact.", "warning");
+                    }
+                }
+            });
+        }
+    });    
 
     var updateContact = function(){
         if ($("#contactModal form").valid())
@@ -1395,6 +1544,7 @@
 
         drawButtonsExtension($selRowContainer, "bottom");
     }
+
     $(document).ready(function () {
 
         //$('.selectpicker').val('@Request["customer"]');
@@ -1427,6 +1577,8 @@
                 }
             }
         });
+
+        $('#crm-contracts-select').trigger('change');
 
         //Set default org checkbox depending on OrgInfo-select
         var sel = document.getElementById("orginfoid-select");
