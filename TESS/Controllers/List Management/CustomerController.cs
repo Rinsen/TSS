@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Web.Security;
+using TietoCRM.Extensions;
 using TietoCRM.Models;
 using TietoCRM.UD_Exceptions;
 
@@ -52,6 +53,15 @@ namespace TietoCRM.Controllers
                 properties = properties.Where(w => w.Name != "UseSaasFormula").ToList();
             }
 
+            var area = System.Web.HttpContext.Current.GetUser().Area;
+
+            if (area == "EDU")
+            {
+                properties = properties.Where(w => w.Name != "KirOnly" && w.Name != "FcOnly").ToList();
+            }
+
+            this.ViewData.Add("Area", area);
+
             this.ViewData.Add("Properties", properties);
 
             String select = "[";
@@ -72,17 +82,12 @@ namespace TietoCRM.Controllers
             this.ViewData.Add("Representatives", view_User.getAllUsers());
             this.ViewData.Add("Population", view_Population.getAllPopulations());
             this.ViewData["Title"] = "Customer";
-            //this.ViewBag.Tile = "Customer";
-            
-            
-
-            
+            //this.ViewBag.Tile = "Customer";            
 
             GlobalVariables.MostVisitedSites = this.getMostVisitedSite();
 
             return View();
         }
-
 
         public void createCookie()
         {
@@ -154,6 +159,10 @@ namespace TietoCRM.Controllers
                 else
                 {
                     dic = dic.Where(w => w.Key != "UseSaasFormula").ToDictionary(w => w.Key, w => w.Value);
+                    if (System.Web.HttpContext.Current.GetUser().Area == "EDU")
+                    {
+                        dic = dic.Where(w => w.Key != "KirOnly" && w.Key != "FcOnly").ToDictionary(w => w.Key, w => w.Value);
+                    }
                 }
 
                 list.Add(dic);

@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Office.Word;
 using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
@@ -104,6 +105,12 @@ namespace TietoCRM.Models
         private int? useSaasFormula;
         public int? UseSaasFormula { get { return useSaasFormula; } set { useSaasFormula = value; } }
 
+        private int? kirOnly;
+        public int? KirOnly { get { return kirOnly; } set { kirOnly = value; } }
+
+        private int? fcOnly;
+        public int? FcOnly { get { return fcOnly; } set { fcOnly = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -126,6 +133,7 @@ namespace TietoCRM.Models
             }
             return reps;
         }
+
         public List<string> getLoadedRepresentatives()
         {
             List<string> list = new List<string>();
@@ -469,7 +477,7 @@ namespace TietoCRM.Models
             return getCustomerNames(null);
         }
 
-        internal static List<MissingModuleReportRow> GetMissingModuleCustomerRows(List<string> users, List<int> articleNumbers)
+        internal static List<MissingModuleReportRow> GetMissingModuleCustomerRows(List<string> users, List<int> articleNumbers, bool kironly, bool fconly)
         {
             List<MissingModuleReportRow> list = new List<MissingModuleReportRow>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -477,15 +485,21 @@ namespace TietoCRM.Models
                 connection.Open();
 
                 var articleNumberss = string.Join(",", articleNumbers.Select(s => s.ToString()));
-                var userss = string.Join(",", users.Select(s => "'"+s+"'"));
+                //var userss = string.Join(",", users.Select(s => "'"+s+"'"));
 
-                string query = GetMissingModuleQuery(userss, articleNumberss);
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
 
-                SqlCommand command = new SqlCommand(query, connection);
+                string inClause = BuildInClause(cmd, "rep", users);
 
-                command.Prepare();
+                string sql = GetMissingModuleQuery(users != null && users.Count() > 0, articleNumberss, kironly, fconly);
 
-                using (SqlDataReader reader = command.ExecuteReader())
+                sql = sql.Replace("{REP_IN}", inClause);
+                cmd.CommandText = sql;
+
+                //cmd.Prepare();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -506,28 +520,69 @@ namespace TietoCRM.Models
             return list;
         }
 
-        internal static System.Data.DataTable ExportMissingModuleRowsToExcel(string users, string articleNumbers)
+        internal static System.Data.DataTable ExportMissingModuleRowsToExcel(List<string> users, string articleNumbers, bool kironly, bool fconly)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
+                connection.Open();                
+
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = connection;
+
+                string inClause = BuildInClause(cmd, "rep", users);
 
                 // Default query
-                string query = GetMissingModuleQuery(users, articleNumbers);
+                string sql = GetMissingModuleQuery(users != null && users.Count() > 0, articleNumbers, kironly, fconly);
+
+                sql = sql.Replace("{REP_IN}", inClause);
+                cmd.CommandText = sql;
 
                 dt.TableName = "MissingModuleReport_Selection";
 
-                SqlDataAdapter da = new SqlDataAdapter(query, connection);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
                 da.Fill(dt);
             }
 
             return dt;
         }
 
-        private static string GetMissingModuleQuery(string users, string articleNumbers)
+        /// <summary>
+        /// Bygger ett SQL IN-filter med parametrar, och lägger till dem i det angivna SqlCommand-objektet.
+        /// </summary>
+        /// <param name="command">SqlCommand som ska få parametrarna tillagd</param>
+        /// <param name="parameterPrefix">Prefix för parameternamn, t.ex. "rep"</param>
+        /// <param name="values">Listan med värden som ska användas i IN-satsen</param>
+        /// <returns>En sträng som kan användas i din SQL: "(@rep0, @rep1, ...)"</returns>
+        public static string BuildInClause(SqlCommand command, string parameterPrefix, IEnumerable<string> values)
         {
+            var parameterNames = new List<string>();
+            int index = 0;
+
+            foreach (var value in values)
+            {
+                string paramName = $"@{parameterPrefix}{index}";
+                parameterNames.Add(paramName);
+                command.Parameters.AddWithValue(paramName, value);
+                index++;
+            }
+
+            return string.Join(", ", parameterNames);
+        }
+
+        private static string GetMissingModuleQuery(bool users, string articleNumbers, bool kironly, bool fconly)
+        {
+            string customerFilter = "";
+            if (kironly)
+            {
+                customerFilter = "AND C.KirOnly = 1 ";
+            }
+            else if (fconly)
+            {
+                customerFilter = "AND C.FcOnly = 1 ";
+            }
+
             return "WITH Articles AS (" +
                 "SELECT DISTINCT Article_number, Module, System, Classification " +
                 "FROM view_Module " +
@@ -538,8 +593,7 @@ namespace TietoCRM.Models
                 "JOIN view_CustomerDivision CD on CD.CustomerID = C.ID " +
                 "CROSS JOIN Articles A " +
                 "WHERE " +
-                (!string.IsNullOrEmpty(users) ?
-                "EXISTS (SELECT 1 FROM view_CustomerDivision CD2 WHERE CD2.CustomerID = C.ID AND CD2.Representative IN (" + users + ")) AND " : "") +
+                (users ? "EXISTS (SELECT 1 FROM view_CustomerDivision CD2 WHERE CD2.CustomerID = C.ID AND CD2.Representative IN ({REP_IN})) AND " : "") +
                 "NOT EXISTS ( " +
                 "SELECT 1 " +
                 "FROM view_ContractRow CR " +
@@ -551,6 +605,7 @@ namespace TietoCRM.Models
                 "FROM view_Contract Co " +
                 "WHERE Co.Customer = C.Customer AND " +
                 "Co.status = 'Giltigt') " +
+                customerFilter +
                 "GROUP BY C.Customer, A.Article_number, A.Module, A.System, A.Classification " +
                 "ORDER BY C.Customer";
         }

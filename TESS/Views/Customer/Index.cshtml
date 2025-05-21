@@ -28,6 +28,14 @@
                     {
                         <th data-field="@PropertyInfo.Name" data-sortable="true">SaaS Formula</th>
                     }
+                    else if (PropertyInfo.Name == "KirOnly")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">KIR only</th>
+                    }
+                    else if (PropertyInfo.Name == "FcOnly")
+                    {
+                        <th data-field="@PropertyInfo.Name" data-sortable="true">FC only</th>
+                    }
                     else if (PropertyInfo.Name == "Short_name")
                     {
                         <th data-field="@PropertyInfo.Name" data-sortable="true">Buyer</th>
@@ -251,7 +259,7 @@
                                     <label for="useSaasFormula" class="col-sm-3 control-label">SaaS Formula</label>
                                     <div class="col-sm-1">
                                         <div class="checkbox">
-                                            <input id="useSaasFormula" name="UseSaasFormula" type="checkbox" style="margin-left:0px" checked="checked"/>
+                                            <input id="useSaasFormula" name="UseSaasFormula" type="checkbox" style="margin-left:0px" checked="checked" />
                                         </div>
                                     </div>
                                     <div class="col-sm-8" style="display: flex; align-items: center;">
@@ -262,6 +270,21 @@
                                     </div>
                                 </div>
                             }
+
+                        <div class="form-group" id="welfare-checkboxes" style="display: none;" data-area="@ViewBag.Area">
+                            <label for="kirOnly" class="col-sm-3 control-label">KIR only</label>
+                            <div class="col-sm-1">
+                                <div class="checkbox">
+                                    <input id="kirOnly" name="KirOnly" type="checkbox" style="margin-left:0px" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2 checkbox">
+                                <label for="fcOnly" class="col-sm-12">
+                                    <strong>FC only</strong>
+                                    <input id="fcOnly" name="FcOnly" type="checkbox" style="margin-left:16px" />
+                                </label>
+                            </div>
+                        </div>
                         </div>
                     </form>
                 </div>
@@ -328,6 +351,12 @@
 
         var uniqueRowNumber = 0;
         var $delBtns;
+
+        var area = $('#welfare-checkboxes').data('area');
+
+        if (area !== 'EDU') {
+            $('#welfare-checkboxes').show();
+        }
 
         @{String DataObject =  "\r\n\t\t\t\t\t{ \"data\": \"" + "#" + "\"  },\r\n";}
         @foreach (var PropertyInfo in ViewBag.Properties)
@@ -426,6 +455,19 @@
                 }
             });
         }
+
+        $('#kirOnly').on('change', function () {
+            if (this.checked) {
+                $('#fcOnly').prop('checked', false);
+            }
+        });
+
+        $('#fcOnly').on('change', function () {
+            if (this.checked) {
+                $('#kirOnly').prop('checked', false);
+            }
+        });
+
         var drawButtons = function(){
             var $selRowContainer = $("#@ViewBag.ControllerName-table_length");
             $selRowContainer.append("<div id='crm-add-row' class='crm-table-btn'><button type='button' class='btn btn-default'>Create</button></div>");
@@ -584,6 +626,20 @@
                         }
                     }
                     else if (isSaasActive == "True" && $tdProp == "UseSaasFormula") {
+                        if ($td.text() == "true" || $td.text() == "1") {
+                            $currentInput.prop("checked", true);
+                        } else {
+                            $currentInput.prop("checked", false);
+                        }
+                    }
+                    else if ($tdProp == "KirOnly") {
+                        if ($td.text() == "true" || $td.text() == "1") {
+                            $currentInput.prop("checked", true);
+                        } else {
+                            $currentInput.prop("checked", false);
+                        }
+                    }
+                    else if ($tdProp == "FcOnly") {
                         if ($td.text() == "true" || $td.text() == "1") {
                             $currentInput.prop("checked", true);
                         } else {

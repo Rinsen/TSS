@@ -32,6 +32,17 @@
                     }
                 </select>
             </div>
+            <div id="welfare-checkboxes" style="display: none;" data-area="@ViewBag.Area" class="form-group">
+                <div class="checkbox" style="margin-top: 1.7em; margin-left: 0.5em; margin-right:0.5em;">
+                    <label>
+                        <input type="checkbox" id="kir-only"> KIR customers only
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="fc-only"> FC customers only
+                    </label>
+                </div>
+            </div>
             <button id="search-modules" style="margin-top: 1.7em" class="btn btn-default" type="button">Search</button>
             <button id="fetch-pdf" style="margin-top: 1.7em" class="btn btn-default" type="button">PDF</button>
             <button id="export-excel" style="margin-top: 1.7em;" class="btn" type="button">Excel</button>
@@ -73,7 +84,8 @@
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "Classification" + "\"  },\r\n";}
     @{DataObject += "\t\t\t\t\t\t\t\t\t\t{ \"data\": \"" + "System" + "\"  },\r\n";}
     @{DataObject = DataObject.Remove(DataObject.Length - 3);}
-    var updateDataTable = function(user, module)
+
+    var updateDataTable = function(user, module, kirOnly, fcOnly)
     {
         $('#report-table').DataTable({
             "destroy": true,
@@ -87,6 +99,8 @@
                 "data": {
                     "user": user,
                     "module": module,
+                    "kironly": kirOnly,
+                    "fconly": fcOnly
                 },
                 "dataSrc": function (res) {
                     rowLength = res.data != null ? res.data.length : 0;
@@ -106,14 +120,22 @@
 
         $moduleContainer = $("#crm-select-module");
         $userContainer = $("#crm-select-user");
+        $kirOnlyContainer = $("#kir-only");
+        $fcOnlyContainer = $("#fc-only");
 
         var selectedValue = "";
 
-        updateDataTable($userContainer.val(), $moduleContainer.val());
+        var area = $('#welfare-checkboxes').data('area');
+
+        if (area !== 'EDU') {
+            $('#welfare-checkboxes').show();
+        }
+
+        updateDataTable($userContainer.val(), $moduleContainer.val(), $kirOnlyContainer.is(':checked') ? true : false, $fcOnlyContainer.is(':checked') ? true : false);
 
         $("#search-modules").click(function () {
             if (selectedValue != "") {
-                updateDataTable(JSON.stringify($userContainer.val()), JSON.stringify($moduleContainer.val()));
+                updateDataTable(JSON.stringify($userContainer.val()), JSON.stringify($moduleContainer.val()), JSON.stringify($kirOnlyContainer.is(':checked') ? true : false), JSON.stringify($fcOnlyContainer.is(':checked') ? true : false));
             }
         });
 
@@ -122,9 +144,23 @@
             $('#report-table').DataTable().clear().draw();
         });
 
+        $('#kir-only').on('change', function () {
+            if (this.checked) {
+                $('#fc-only').prop('checked', false);
+            }
+        });
+
+        $('#fc-only').on('change', function () {
+            if (this.checked) {
+                $('#kir-only').prop('checked', false);
+            }
+        });
+
         $('#fetch-pdf').click(function () {
             var module = $('#crm-select-module').val();
             var user = $('#crm-select-user').val();
+            var kirOnly = $('#kir-only').is(':checked') ? true : false;
+            var fcOnly = $('#fc-only').is(':checked') ? true : false;
 
             module = JSON.stringify(module);
             user = JSON.stringify(user);
@@ -135,7 +171,7 @@
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            var url = "MissingModuleReport/Pdf?user=" + user + "&module=" + module + sort;
+            var url = "MissingModuleReport/Pdf?user=" + user + "&module=" + module + "&kironly=" + kirOnly + "&fconly=" + fcOnly + sort;
             if ($('#desc').is(':checked')) {
                 url += "&showDesc=1";
             }
@@ -151,12 +187,14 @@
         $('#export-excel').click(function () {
             var module = $moduleContainer.val();
             var user = $userContainer.val();
+            var kirOnly = $kirOnlyContainer.is(':checked') ? true : false;
+            var fcOnly = $fcOnlyContainer.is(':checked') ? true : false;
 
             var $dt = $('.dataTable').DataTable();
             var sortArr = $dt.order();
             var sort = "&sort=" + sortArr[0][1] + "&prop=" + $($dt.columns(sortArr[0][0]).header()).attr("data-field");
 
-            var url = 'MissingModuleReport/ExportExcel?user=' + user + '&module=' + module + sort;
+            var url = 'MissingModuleReport/ExportExcel?user=' + user + '&module=' + module + "&kironly=" + kirOnly + "&fconly=" + fcOnly + sort;
 
             if ($('#exportall').is(':checked')) {
                 url += "&exportAll=1";

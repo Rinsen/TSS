@@ -29,6 +29,7 @@ namespace TietoCRM.Controllers.Reports
 
             ViewData.Add("Modules", modules);
             ViewData.Add("Users", view_User.getAllUsers());
+            ViewData.Add("Area", System.Web.HttpContext.Current.GetUser().Area);
             //ViewData.Add("Properties", typeof(view_Module).GetProperties());
             this.ViewData["Title"] = "Missing Module Report";
 
@@ -43,6 +44,9 @@ namespace TietoCRM.Controllers.Reports
         {
             string articleNumbers = Request["module"];
             string users = Request["user"];
+            bool kironly = bool.Parse(Request["kironly"]);
+            bool fconly = bool.Parse(Request["fconly"]);
+
             var articleNumbersList = (List<int>)new JavaScriptSerializer().Deserialize(articleNumbers, typeof(List<int>));
             var usersList = (List<string>)new JavaScriptSerializer().Deserialize(users, typeof(List<string>));
 
@@ -50,7 +54,7 @@ namespace TietoCRM.Controllers.Reports
             String sortKey = Request["prop"];
             String exportAll = Request["exportAll"];
 
-            List<MissingModuleReportRow> list = generateModuleInfo(usersList, articleNumbersList);
+            List<MissingModuleReportRow> list = generateModuleInfo(usersList, articleNumbersList, kironly, fconly);
 
             this.ViewData["Modules"] = list;
 
@@ -102,13 +106,13 @@ namespace TietoCRM.Controllers.Reports
             return fs;
         }
 
-        public List<MissingModuleReportRow> generateModuleInfo(List<string> users, List<int> articleNumbers)
+        public List<MissingModuleReportRow> generateModuleInfo(List<string> users, List<int> articleNumbers, bool kironly, bool fconly)
         {
 
             List<MissingModuleReportRow> rows = new List<MissingModuleReportRow>();
             if(articleNumbers != null)
             {
-                rows = view_Customer.GetMissingModuleCustomerRows(users, articleNumbers);                    
+                rows = view_Customer.GetMissingModuleCustomerRows(users, articleNumbers, kironly, fconly);                    
             }
 
             return rows;
@@ -120,10 +124,13 @@ namespace TietoCRM.Controllers.Reports
             {
                 string articleNumbers = Request.Form["module"];
                 string users = Request.Form["user"];
+                bool kironly = bool.Parse(Request.Form["kironly"]);
+                bool fconly = bool.Parse(Request.Form["fconly"]);
+
                 var articleNumbersDic = (List<int>) new JavaScriptSerializer().Deserialize(articleNumbers, typeof(List<int>));
                 var usersDic = (List<string>)new JavaScriptSerializer().Deserialize(users, typeof(List<string>));
 
-                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(usersDic, articleNumbersDic)) + "}";
+                return "{\"data\":" + (new JavaScriptSerializer()).Serialize(generateModuleInfo(usersDic, articleNumbersDic, kironly, fconly)) + "}";
             }
             catch(Exception ex)
             {
@@ -134,9 +141,18 @@ namespace TietoCRM.Controllers.Reports
         public string ExportExcel()
         {
             var articleNumbers = Request["module"];
-            var users = Request.Form["user"];
+            var users = Request["user"];
+            bool kironly = bool.Parse(Request["kironly"]);
+            bool fconly = bool.Parse(Request["fconly"]);
 
-            System.Data.DataTable dt = view_Customer.ExportMissingModuleRowsToExcel(users, articleNumbers);
+            var usersDic = new List<string>();
+            
+            if(!string.IsNullOrEmpty(users))
+            {
+                usersDic = users.Split(',').ToList();
+            }
+
+            System.Data.DataTable dt = view_Customer.ExportMissingModuleRowsToExcel(usersDic, articleNumbers, kironly, fconly);
             TietoCRM.ExportExcel ex = new TietoCRM.ExportExcel();
             try
             {
