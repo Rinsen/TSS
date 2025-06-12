@@ -127,6 +127,7 @@
                 <div class="signature-container">
                     @{
                         String url = "../Content/img/Signatures/" + ViewBag.Representative.Sign + ".png";
+                        //String absoluteUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Url.Content("~/Content/img/Signatures/" + ViewBag.Representative.Sign + ".png");
                         if (System.IO.File.Exists(Request.MapPath(url)))
                         {
                             <img src="@GetWorkingUrl(url)" alt="" />
