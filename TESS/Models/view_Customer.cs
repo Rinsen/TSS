@@ -597,7 +597,8 @@ namespace TietoCRM.Models
                 "NOT EXISTS ( " +
                 "SELECT 1 " +
                 "FROM view_ContractRow CR " +
-                "WHERE CR.Customer = C.Customer AND " +
+                "JOIN view_Contract Con on Con.Customer = CR.Customer and Con.Contract_id = CR.Contract_id " +
+                "WHERE Con.status = 'Giltigt' AND CR.Customer = C.Customer AND " +
                 "CR.Article_number = A.Article_number" +
                 ") AND " +
                 "Exists(" +
