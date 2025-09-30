@@ -459,6 +459,7 @@ namespace TietoCRM.Models
                     FROM " + databasePrefix + @"ContractRow 
                     INNER JOIN " + databasePrefix + @"Contract ON 
                     view_Contract.Customer=view_ContractRow.Customer and 
+                    view_Contract.Contract_type != 'Modulavslut' and
                     view_Contract.Contract_id=view_ContractRow.Contract_id WHERE
                     view_Contract.Valid_from >= @startDate AND
                     view_Contract.Valid_from <= @stopDate AND

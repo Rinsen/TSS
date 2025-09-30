@@ -1,11 +1,7 @@
 ﻿using Rotativa.MVC;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Dynamic;
-using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using TietoCRM.Extensions;
@@ -98,8 +94,8 @@ namespace TietoCRM.Controllers.Reports
             {
                 ViewData.Add("ValidDate", false);
             }
-            return pdf;
- 
+
+            return pdf; 
         }
 
         private List<Dictionary<String, object>> GetFilteredModules(DateTime Start, DateTime Stop)
@@ -122,8 +118,10 @@ namespace TietoCRM.Controllers.Reports
                 {
                     if(m.Article_number == cr.Article_number && System.Web.HttpContext.Current.GetUser().IfSameArea(m.Area))
                     {
-                        Dictionary<String, object> SortedModule = new Dictionary<String, object>();
-                        SortedModule.Add("Count", 1);
+                        Dictionary<String, object> SortedModule = new Dictionary<String, object>
+                        {
+                            { "Count", 1 }
+                        };
                       
                         foreach(System.Reflection.PropertyInfo pi in m.GetType().GetProperties())
                         {
@@ -138,16 +136,13 @@ namespace TietoCRM.Controllers.Reports
                         else
                         {
                             ReturnModules.Add(Convert.ToInt32(m.Article_number),SortedModule);
-                        }
-                       
+                        }                       
                     }
                 }
             }
-            return ReturnModules.Values.ToList();
 
-           
+            return ReturnModules.Values.ToList();           
         }
-
 
         public String FilteredModules()
         {
