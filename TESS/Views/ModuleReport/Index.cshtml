@@ -32,6 +32,9 @@
         </form>
 
     </div>
+    <div class="col-md-1" style="margin-top: 0.5em">
+        <button type="button" id="btn-clear-modules" class="btn btn-default">Clear selected</button>
+    </div>
     <div class="col-md-12">
         <table draggable="true" id="report-table" class="table table-bordered table-hover" data-sort-name="name" data-sort-order="desc">
             <thead>
@@ -45,7 +48,7 @@
             </thead>
         </table>
     </div>
-
+</row>
 <script>
     var serverPrefix = "@Url.Content("~/")";
     @{String DataObject = "\r\n";}
@@ -81,6 +84,10 @@
         });
 
     }
+
+    $('#btn-clear-modules').on('click', function () {
+        $('#crm-select-module').selectpicker('deselectAll');   // eller .selectpicker('val', [])
+    });
 
     $('document').ready(function () {
         $('.selectpicker').selectpicker();
@@ -142,4 +149,3 @@
         })
     });
 </script>
-</row>
