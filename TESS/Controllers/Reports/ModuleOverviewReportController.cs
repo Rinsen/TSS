@@ -23,15 +23,6 @@ namespace TietoCRM.Controllers.Reports
         /// <returns></returns>
         public ActionResult Index()
         {
-            var Printable = new List<string> {
-                "Article_number",
-                "Module",
-                "Price_category",
-                "System",
-                "Classification"
-            };
-
-            ViewData.Add("Printable", Printable);
             ViewData.Add("Properties", typeof(view_Module).GetProperties());
 
             List<String> OrderedCustomerNames = view_Customer.getCustomerNames(System.Web.HttpContext.Current.GetUser().Sign);
@@ -231,7 +222,7 @@ namespace TietoCRM.Controllers.Reports
 
                     if (contract.Status == "Giltigt")
                     {
-                        Customers.Add("Customer", cr.Customer);
+                        Customers.Add("Exclude", module.Exclude_from_report);
                         Customers.Add("Contract_id", cr.Contract_id);
                         Customers.Add("Module", module.Read_name_from_module == 1 ? module.Module : cr.Alias);
                         Customers.Add("ArticleNumber", cr.Article_number);
@@ -290,7 +281,7 @@ namespace TietoCRM.Controllers.Reports
                         //Not found, add to rest-list
                         rows.Add(new Dictionary<string, object>
                         {
-                            { "Customer", "" },
+                            { "Exclude", module.Exclude_from_report },
                             { "Contract_id", "" },
                             { "Module", module.Module },
                             { "ArticleNumber", module.Article_number },

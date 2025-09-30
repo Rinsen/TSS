@@ -136,35 +136,44 @@
             //        $(row).addClass('redClass');
             //    }
             //}
-            "fnRowCallback": drawCallBack
+            "fnRowCallback": rowCallback
         });
 
     }
 
-    var drawCallBack = function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    var rowCallback = function (nRow, aData) {
+        // 1) Bestäm om checkboxen ska vara ikryssad
+        var isChecked =
+            aData.Exclude === true ||
+            aData.Exclude === 1 ||
+            aData.Exclude === '1' ||
+            aData.Exclude === 'true' ||
+            aData.Exclude === 'True';
 
-        var i = 0;
-        for (var name in aData) {
-            var i = 0;
+        // 2) Skriv checkboxen i första cellen
+        $('td:eq(0)', nRow).html(
+            `<input type="checkbox" name="selected-row"
+                data-avtalsid="${aData.Contract_id ?? ''}"
+                data-kund="${aData.Customer ?? ''}"
+                data-module="${aData.ArticleNumber ?? ''}"
+                ${isChecked ? 'checked' : ''} />`
+        );
 
-            for (var name in aData) {
-                var $td;
-                if (i == 0) {
-                    $td = $('td:eq(' + i + ')', nRow);
-                    $td.html("<input style='margin-top: -1px; z-index: -1999; vertical-align: top' type='checkbox' name='selected-row' \
-                    data-avtalsid='" + aData["Contract_id"] + "' data-kund='" + aData["Customer"] + "' data-module=" + aData["ArticleNumber"] + "/>");
-                }
-                else {
-                    if (i < 14) {
-                        $td = $('td:eq(' + i + ')', nRow);
-                        $td.attr("data-property", name);
-                        $td.html(aData[name]);
-                        i++;
-                    }
-                }
+        // 3) Fyll övriga celler (exempelvis upp till kolumn 13)
+        var i = 1;
+        for (const name in aData) {
+            if(name != "Exclude")
+            {
+                if (i >= 14) break; // samma gräns som du hade
+                const $td = $('td:eq(' + i + ')', nRow);
+                $td.attr('data-property', name).text(aData[name] ?? '');
+                i++;
             }
         }
-    }
+
+        return nRow;
+    };
+
 
     $('document').ready(function () {
         $('.selectpicker').selectpicker();

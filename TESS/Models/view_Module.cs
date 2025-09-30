@@ -71,7 +71,10 @@ namespace TietoCRM.Models
 
         private int? sort_order;
         public int? Sort_order { get { return sort_order; } set { sort_order = value; } }
-        
+
+        private int? exclude_from_report;
+        public int? Exclude_from_report { get { return exclude_from_report; } set { exclude_from_report = value; } }
+
         private long ssma_timestamp;
         public long SSMA_timestamp { get { return ssma_timestamp; } set { ssma_timestamp = value; } }
 
@@ -98,7 +101,7 @@ namespace TietoCRM.Models
                 {
                     query = "SELECT [Article_number], [Module], [Description], [Price_category], [Area], ";
                     query += "[System], [Classification], [Fixed_price], [Expired], [Comment], Discount, Discount_type, Multiple_type, ";
-                    query += "offer_description, contract_description, Module_status, Read_name_from_module, Maint_price_category, Module_type, Sort_order, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
+                    query += "offer_description, contract_description, Module_status, Read_name_from_module, Maint_price_category, Module_type, Sort_order, Exclude_from_report, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
                     if(moduleType > 0)
                         query += "WHERE Module_type = @moduleType";
                 }
@@ -107,7 +110,7 @@ namespace TietoCRM.Models
                     query = "SELECT [Article_number], [Module], [Description], [Price_category], [Area], ";
                     query += "[System], [Classification], [Fixed_price], [Expired], [Comment], Discount, Discount_type, Multiple_type, ";
                     query += "Case When isnull(offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption, ";
-                    query += "Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, Module_status, Read_name_from_module, Maint_price_category, Module_type, Sort_order,";
+                    query += "Case When isnull(contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, Module_status, Read_name_from_module, Maint_price_category, Module_type, Sort_order, Exclude_from_report, ";
                     query += "CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp FROM " + databasePrefix + "Module ";
                     if (moduleType > 0) 
                         query += "WHERE Module_type = @moduleType";
@@ -147,7 +150,7 @@ namespace TietoCRM.Models
                 query = "select M.Article_number, M.Module, M.Description, M.Price_category, M.Area, M.System, M.Classification, M.Fixed_price, " +
                         "M.Expired, M.Comment, M.Discount, M.Discount_type, M.Multiple_type, Case When isnull(M.offer_description,'') = '' Then '' Else 'Ifyllt' End As Offer_descritption, " +
                         "Case When isnull(M.contract_description,'') = '' Then '' Else 'Ifyllt' End As Contract_descritption, M.Module_status, M.Read_name_from_module, M.Maint_price_category, " +
-                        "M.Module_type, S.SortNo, CAST(M.SSMA_timestamp AS BIGINT) AS SSMA_timestamp from view_Module M " +
+                        "M.Module_type, S.SortNo, M.Exclude_from_report, CAST(M.SSMA_timestamp AS BIGINT) AS SSMA_timestamp from view_Module M " +
                         "join View_Sector S on S.System = M.System and S.Classification = M.Classification " +
                         "where M.Module_type = 1 " + GetExpiredSearchString(includeExpired) + getSystemString(systems) + getClassificationString(classifications) +
                         "order by S.SortNo, S.System, S.Classification, CASE WHEN isnull(M.Sort_order, 0) = 0 THEN 255 ELSE M.Sort_order END, M.Module"; //Sortering i första hand på Sort_order, sen i bokstavsordning om sort_order inte finns (eller är mindre än 1)

@@ -576,11 +576,11 @@ namespace TietoCRM.Models
             string customerFilter = "";
             if (kironly)
             {
-                customerFilter = "AND (C.KirOnly = 1 OR C.KirOnly IS NULL) AND (FcOnly is null or FcOnly = 0) ";
+                customerFilter = "AND (C.KirOnly = 1 OR C.KirOnly IS NULL OR C.KirOnly = 0) AND (FcOnly IS NULL OR FcOnly = 0) ";
             }
             else if (fconly)
             {
-                customerFilter = "AND (C.FcOnly = 1 OR C.FcOnly IS NULL) AND (KirOnly is null or KirOnly = 0) ";
+                customerFilter = "AND (C.FcOnly = 1 OR C.FcOnly IS NULL OR C.FcOnly = 0) AND (KirOnly IS NULL OR KirOnly = 0) ";
             }
 
             return "WITH Articles AS (" +
