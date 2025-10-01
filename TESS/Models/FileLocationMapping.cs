@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -101,11 +102,13 @@ namespace TietoCRM.Models
                 String Customer = "";
                 String Title = "";
                 String Type = "";
+                String Buyer = "";
                 if(Document.GetType() == typeof(view_CustomerOffer))
                 {
                     ID = ((view_CustomerOffer)Document)._Offer_number.ToString();
                     Customer = ((view_CustomerOffer)Document).Customer;
                     Title = ((view_CustomerOffer)Document).Title;
+                    Buyer = ((view_CustomerOffer)Document).Buyer;
                 }
                 else // contract
                 {
@@ -113,6 +116,10 @@ namespace TietoCRM.Models
                     Customer = ((view_Contract)Document).Customer;
                     Title = ((view_Contract)Document).Title;
                     Type = ((view_Contract)Document).Contract_type;
+
+                    view_ContractHead contractHead = new view_ContractHead();
+                    contractHead.Select("Customer = '" + Customer + "' AND Contract_id = '" + ID + "'");
+                    Buyer = contractHead.Buyer;
                 }
 
                 if (LM == "@ID" || LM == "@NR")
@@ -133,6 +140,8 @@ namespace TietoCRM.Models
                     ReturnDic.Add(LM, Title ?? "");
                 else if (LM == "@CUSTOMER")
                     ReturnDic.Add(LM, Customer ?? "");
+                else if (LM == "@BUYER")
+                    ReturnDic.Add(LM, Buyer ?? "");
                 else if (LM == "@TYPE")
                 {
                     if (Document.GetType() == typeof(view_Contract))
