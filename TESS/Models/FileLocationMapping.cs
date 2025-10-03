@@ -147,11 +147,13 @@ namespace TietoCRM.Models
                     if (Document.GetType() == typeof(view_Contract))
                         ReturnDic.Add(LM, Type ?? "");
                 }
-                     
-
             }
 
-            return CombineFilePath(ReturnDic);
+            var resultString = CombineFilePath(ReturnDic);
+
+            resultString = resultString.Replace("&", "och");
+
+            return resultString;
         }
     }
 }

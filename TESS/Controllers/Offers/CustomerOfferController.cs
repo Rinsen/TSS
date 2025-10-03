@@ -2111,7 +2111,7 @@ namespace TietoCRM.Controllers
 
                     co.Offer_created = DateTime.Today;
 
-                    co.Update("Offer_number = '" + offerNumber + "'");
+                    co.Update("Offer_number = " + offerNumber + "");
 
                     view_OrganisationInformation.UpdateOrganisationInformationDefaultValue(co.OrgInfoId, (bool)offerVariables["DefaultOrg"]);
                 }
