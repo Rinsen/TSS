@@ -1884,17 +1884,26 @@ namespace TietoCRM.Controllers.Contracts
                             dict["Discount_type"] = (string)dict["Discount_type"] == "undefined" ? 0 : dict["Discount_type"];
                         }
 
-                        if ((int)dict["Discount_type"] != 1)
+                        if (System.Web.HttpContext.Current.GetUser().Area != "EDU" && (Article_number == 5099 || Article_number == 9999)) //Rabatt-hantering (FC/EC)
                         {
-                            if (dict.Keys.Contains("License"))
-                                License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
-                            Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                            //Beräkna % av alla artiklar (utom rabatt)
+                            License = CalculateLicenseDiscountFromArticleList(list, decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
+                            Maintenance = CalculateMaintenanceDiscountFromArticleList(list, decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
                         }
                         else
                         {
-                            if (dict.Keys.Contains("License"))
-                                License = Decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
-                            Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
+                            if ((int)dict["Discount_type"] != 1)
+                            {
+                                if (dict.Keys.Contains("License"))
+                                    License = decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                                Maintenance = decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                            }
+                            else
+                            {
+                                if (dict.Keys.Contains("License"))
+                                    License = decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
+                                Maintenance = decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
+                            }
                         }
                         int RowType = Convert.ToInt32(dict["Rowtype"]);
 
@@ -2050,11 +2059,43 @@ namespace TietoCRM.Controllers.Contracts
             }
         }
 
-        public String UpdateContractOptions()
+        private decimal CalculateMaintenanceDiscountFromArticleList(List<dynamic> list, decimal maintPercent)
+        {
+            decimal totalMaintenance = 0;
+            foreach (Dictionary<string, object> dict in list)
+            {
+                int article = Convert.ToInt32(dict["Article_number"]);
+                decimal maintSum = 0;
+                if (article != 5099 && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
+                {
+                    totalMaintenance += (maintSum * maintPercent) / 100;
+                }
+            }
+
+            return totalMaintenance*-1;
+        }
+
+        private decimal CalculateLicenseDiscountFromArticleList(List<dynamic> list, decimal licPercent)
+        {
+            decimal totalLicense = 0;
+            foreach (Dictionary<string, object> dict in list)
+            {
+                int article = Convert.ToInt32(dict["Article_number"]);
+                decimal licSum = 0;
+                if (article != 5099 && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
+                {
+                    totalLicense += (licSum * licPercent) / 100;
+                }
+            }
+
+            return totalLicense*-1;
+        }
+
+        public string UpdateContractOptions()
         {
             try
             {
-                String selectedArticles = Request.Form["Object"];
+                string selectedArticles = Request.Form["Object"];
                 //int ssma_timestamp = Convert.ToInt32(Request.Form["ssma_timestamp"]);
 
                 List<dynamic> list = null;
@@ -2067,8 +2108,8 @@ namespace TietoCRM.Controllers.Contracts
                     return "0";
                 }
 
-                String urlCustomer = Request.Form["customer"];
-                String urlContractId = Request.Form["contract-id"];
+                string urlCustomer = Request.Form["customer"];
+                string urlContractId = Request.Form["contract-id"];
                 view_Contract contract = new view_Contract("Customer = '" + urlCustomer + "' AND Contract_id = '" + urlContractId + "'");
                 // remove all consultant row to later insert the new ones
                 foreach (view_ContractOption co in contract._ContractOptions)
@@ -2076,7 +2117,7 @@ namespace TietoCRM.Controllers.Contracts
                     co.Delete("Customer = '" + co.Customer + "' AND Contract_id = '" + co.Contract_id + "' AND Article_number = " + co.Article_number);
                 }
 
-                foreach (Dictionary<String, Object> dict in list)
+                foreach (Dictionary<string, object> dict in list)
                 {
                     int Article_number = Convert.ToInt32(dict["Article_number"]);
                     double License = 0;

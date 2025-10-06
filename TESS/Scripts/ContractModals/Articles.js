@@ -180,17 +180,83 @@ var editArticle = function(editButton){
                             </div>  ";
     }
     var aliasText = " <div class='form-group'>                                                                                                          \
-                                <label for='license-text' class='col-sm-2 control-label'>Alias</label>                                                  \
+                                <label for='alias-text' class='col-sm-2 control-label'>Alias</label>                                                  \
                                 <div class='col-sm-10'>                                                                                                 \
                                     <input class='form-control' id='alias-text' name='Alias' value='" + oldAlias + "'>                                  \
                                 </div>                                                                                                                  \
                             </div>  ";
-    bootbox.dialog({
-        backdrop: false,
-        closebutton: false,
-        className: "small-modal",
-        title: "Edit Article:  " + articleNr + " " + articleName,
-        message: "<form class='form-horizontal'>                                                                                                \                                                                                                                    \
+    var discountMaintText = " <div class='form-group'>                                                                                                  \
+                                <label for='maint-discount-text' class='col-sm-3 control-label'>Maintenance Discount</label>                            \
+                                <div class='col-sm-2'>                                                                                                  \
+                                    <input class='form-control' id='maint-discount-text' name='MaintDiscount' value=''>                                 \
+                                </div><div class='col-sm-1' style='margin-top:10px'>%</div>                                                             \
+                            </div>  ";
+    var discountLicText = " <div class='form-group'>                                                                                                    \
+                                <label for='lic-discount-text' class='col-sm-3 control-label'>License Discount</label>                                  \
+                                <div class='col-sm-2'>                                                                                                  \
+                                    <input class='form-control' id='lic-discount-text' name='LicDiscount' value=''>                                     \
+                                </div><div class='col-sm-1' style='margin-top:10px'>%</div>                                                             \
+                            </div>  ";
+    var discountAliasText = " <div class='form-group' width='100px'>                                                                                                          \
+                                <label for='alias-discount-text' class='col-sm-3 control-label'>Alias</label>                                                  \
+                                <div class='col-sm-8'>                                                                                                 \
+                                    <input class='form-control' id='alias-discount-text' name='AliasDiscount' value='" + oldAlias + "'>                                  \
+                                </div>                                                                                                                  \
+                            </div>  ";
+    if (articleNr == 5099 || articleNr = 9999) { //5099 (FC) 9999 (EC)
+        bootbox.dialog({
+            backdrop: false,
+            closebutton: false,
+            className: "small-modal",
+            title: "Edit Article:  " + articleNr + " " + articleName,
+            message: "<form class='form-horizontal'> " + discountMaintText + discountLicText + discountAliasText + " </form>",
+            buttons: {
+                close: {
+                    label: "Close",
+                    className: "btn-default",
+                    callback: function () {
+                        $(".small-modal").remove();
+                    }
+                },
+                success: {
+                    label: "Save",
+                    className: "btn-primary",
+                    callback: function () {
+                        var $maintDiscountEl = $("#maint-discount-text");
+                        var $licDiscountEl = $("#lic-discount-text");
+                        var $aliasDiscountEl = $("#alias-discount-text");
+
+                        if ($maintDiscountEl.val() == "") { $maintDiscountEl.val("0") };
+                        if ($licDiscountEl.val() == "") { $licDiscountEl.val("0") };
+
+                        // Update article data attrs
+                        if (typeof $licDiscountEl != "undefined" && typeof $licDiscountEl != false) {
+                            $articleBtn.attr("data-license", $licDiscountEl.val());
+                            $articleBtn.data("license", $licDiscountEl.val());
+                            $articleBtn.find(".license").html($licDiscountEl.val() + "%");
+                        }
+
+                        $articleBtn.attr("data-maintenance", $maintDiscountEl.val());
+                        $articleBtn.data("maintenance", $maintDiscountEl.val());
+                        $articleBtn.find(".maintenance").html($maintDiscountEl.val() + "%");
+                        
+                        $articleBtn.attr("data-alias", $aliasDiscountEl.val());
+                        $articleBtn.data("alias", $aliasDiscountEl.val());
+                        $articleBtn.find(".alias").html($aliasDiscountEl.val());
+
+
+                        $(".small-modal").remove();
+                    },
+                },
+            }
+        });
+    } else {
+        bootbox.dialog({
+            backdrop: false,
+            closebutton: false,
+            className: "small-modal",
+            title: "Edit Article:  " + articleNr + " " + articleName,
+            message: "<form class='form-horizontal'>                                                                                                \                                                                                                                    \
                         <div class='form-group'>                                                                                                    \
                             <label for='maintenance-text' class='col-sm-2 control-label'>Maintenance</label>                                        \
                             <div class='col-sm-10'>                                                                   \
@@ -202,49 +268,53 @@ var editArticle = function(editButton){
                         " + licenseText + "                                                                                                        \
                       " + aliasText + " </form>"
             ,
-        buttons: {
-            close: {
-                label: "Close",
-                className: "btn-default",
-                callback: function () {
-                    $(".small-modal").remove();
-                }
-            },
-            success: {
-                label: "Save",
-                className: "btn-primary",
-                callback: function () {
-                    var $licenseEl = $("#license-text");
-                    var $maintenanceEl = $("#maintenance-text");
-                    var $aliasEl = $("#alias-text");
-                    if ($licenseEl.val() == "") { $licenseEl.val("0") };
-                    if ($maintenanceEl.val() == "") {$maintenanceEl.val("0")};
-                    // Update article data attrs
-                    if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
-                        $articleBtn.attr("data-license", $licenseEl.val());
-                        $articleBtn.data("license", $licenseEl.val());
-                        if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
-                            $articleBtn.find(".license").html(formatCurrencyNoKr($licenseEl.val()));
-                        else
-                            $articleBtn.find(".license").html($licenseEl.val() + "%");
+            buttons: {
+                close: {
+                    label: "Close",
+                    className: "btn-default",
+                    callback: function () {
+                        $(".small-modal").remove();
                     }
-                    $articleBtn.attr("data-maintenance", $maintenanceEl.val());
-                    $articleBtn.data("maintenance", $maintenanceEl.val());
-                    if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
-                        $articleBtn.find(".maintenance").html(formatCurrencyNoKr($maintenanceEl.val()));
-                    else
-                        $articleBtn.find(".maintenance").html($maintenanceEl.val() + "%");
-
-                    $articleBtn.attr("data-alias", $aliasEl.val());
-                    $articleBtn.data("alias", $aliasEl.val());
-                    $articleBtn.find(".alias").html($aliasEl.val());
-
-
-                    $(".small-modal").remove();
                 },
-            },
-        }
-    });
+                success: {
+                    label: "Save",
+                    className: "btn-primary",
+                    callback: function () {
+                        var $licenseEl = $("#license-text");
+                        var $maintenanceEl = $("#maintenance-text");
+                        var $aliasEl = $("#alias-text");
+                        if ($licenseEl.val() == "") { $licenseEl.val("0") };
+                        if ($maintenanceEl.val() == "") { $maintenanceEl.val("0") };
+                        // Update article data attrs
+                        if (typeof $licenseEl != "undefined" && typeof $licenseEl != false) {
+                            $articleBtn.attr("data-license", $licenseEl.val());
+                            $articleBtn.data("license", $licenseEl.val());
+                            if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
+                                $articleBtn.find(".license").html(formatCurrencyNoKr($licenseEl.val()));
+                            else
+                                $articleBtn.find(".license").html($licenseEl.val() + "%");
+                        }
+                        $articleBtn.attr("data-maintenance", $maintenanceEl.val());
+                        $articleBtn.data("maintenance", $maintenanceEl.val());
+                        if ($articleBtn.data("discount") != '1' || $articleBtn.data("discount-type") == '0')
+                            $articleBtn.find(".maintenance").html(formatCurrencyNoKr($maintenanceEl.val()));
+                        else
+                            $articleBtn.find(".maintenance").html($maintenanceEl.val() + "%");
+
+                        $articleBtn.attr("data-alias", $aliasEl.val());
+                        $articleBtn.data("alias", $aliasEl.val());
+                        $articleBtn.find(".alias").html($aliasEl.val());
+
+
+                        $(".small-modal").remove();
+                    },
+                },
+            }
+        });
+    }
+    
+
+    
 
     $("#maintenance-percent-button").click(function () {
         var $maintenanceEl = $("#maintenance-text");
@@ -758,7 +828,7 @@ var moveItem = function (event, element) {
         $newButton.attr("data-rowtype", "3");
         $newButton.attr("type", "button");
 
-        if ($button.data("discount") != '1' || $button.data("discount-type") == '0') {
+        if (buttonArt != 5099 && buttonArt != 9999 && ($button.data("discount") != '1' || $button.data("discount-type") == '0')) {
             $newButton.find('.license').html(formatCurrency(buttonLicense));
             $newButton.find('.maintenance').html(formatCurrency(buttonMaintenance));
         }

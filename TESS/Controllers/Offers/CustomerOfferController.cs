@@ -166,154 +166,161 @@ namespace TietoCRM.Controllers
             if (!String.IsNullOrEmpty(request) && request != "undefined")
             {
                 offerID = int.Parse(request);
-            }
-            view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
 
-            foreach (var consultantRow in co._ConsultantRows)
-            {
-                view_Module module = new view_Module();
-                module.Select("Article_number = " + consultantRow.Code);
+                view_CustomerOffer co = new view_CustomerOffer("Offer_number = " + offerID);
 
-                if(module.Read_name_from_module == 1)
+                if (co._ConsultantRows != null)
                 {
-                    consultantRow.Alias = module.Module;
+                    foreach (var consultantRow in co._ConsultantRows)
+                    {
+                        view_Module module = new view_Module();
+                        module.Select("Article_number = " + consultantRow.Code);
+
+                        if (module.Read_name_from_module == 1)
+                        {
+                            consultantRow.Alias = module.Module;
+                        }
+                    }
+
+                    co._ConsultantRows = co._ConsultantRows.OrderBy(o => o.Alias).ToList();
+                    ViewData.Add("CustomerOffer", co);
                 }
-            }
 
-            co._ConsultantRows = co._ConsultantRows.OrderBy(o => o.Alias).ToList();
-            ViewData.Add("CustomerOffer", co);
+                view_OrganisationInformation orgInfo = new view_OrganisationInformation();
+                orgInfo.Select("ID = " + co.OrgInfoId);
 
-            view_OrganisationInformation orgInfo = new view_OrganisationInformation();
-            orgInfo.Select("ID = " + co.OrgInfoId);
+                ViewData.Add("OrganisationInformation", orgInfo);
 
-            ViewData.Add("OrganisationInformation", orgInfo);
+                var customer = new view_Customer();
+                customer.Select("Customer = '" + co.Customer.ToString() + "'");
+                ViewData.Add("Customer", customer);
 
-            var customer = new view_Customer();
-            customer.Select("Customer = '" + co.Customer.ToString() + "'");
-            ViewData.Add("Customer", customer);
+                ViewData.Add("UseShortNameAsReceiver", customer.UseShortNameAsReceiver == 1 ? true : false);
 
-            ViewData.Add("UseShortNameAsReceiver", customer.UseShortNameAsReceiver == 1 ? true : false);
+                List<dynamic> articles = new List<dynamic>();
+                List<dynamic> educationPortals = new List<dynamic>();
 
-            List<dynamic> articles = new List<dynamic>();
-            List<dynamic> educationPortals = new List<dynamic>();
+                SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
 
-            SortedList<String, List<dynamic>> articleSystemDic = new SortedList<String, List<dynamic>>();
-
-            foreach (view_OfferRow offerRow in co._OfferRows)
-            {
-                view_Module module = new view_Module();
-                module.Select("Article_number = " + offerRow.Article_number);
-                dynamic offerInfo = new ExpandoObject();
-                offerInfo.Article_number = module.Article_number;
-                if(module.Read_name_from_module==1)
+                if (co._OfferRows != null)
                 {
-                    offerInfo.Module = module.Module;
+                    foreach (view_OfferRow offerRow in co._OfferRows)
+                    {
+                        view_Module module = new view_Module();
+                        module.Select("Article_number = " + offerRow.Article_number);
+                        dynamic offerInfo = new ExpandoObject();
+                        offerInfo.Article_number = module.Article_number;
+                        if (module.Read_name_from_module == 1)
+                        {
+                            offerInfo.Module = module.Module;
+                        }
+                        else
+                        {
+                            if (offerRow.Alias == null || offerRow.Alias == "")
+                                offerInfo.Module = module.Module;
+                            else
+                                offerInfo.Module = offerRow.Alias;
+                        }
+                        offerInfo.System = module.System;
+                        offerInfo.Classification = module.Classification;
+
+                        view_Sector sector = new view_Sector();
+                        sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
+
+                        offerInfo.Price_category = module.Price_category;
+                        offerInfo.Maint_price_category = module.Maint_price_category;
+                        offerInfo.Discount_type = module.Discount_type;
+                        offerInfo.Discount = module.Discount;
+                        offerInfo.Price_type = sector.Price_type;
+                        offerInfo.License = offerRow.License;
+                        offerInfo.Maintenance = offerRow.Maintenance;
+                        offerInfo.Fixed_price = offerRow.Fixed_price;
+                        offerInfo.Sort_number = sector.SortNo;
+                        offerInfo.Article_Sort_number = module.Sort_order;
+                        offerInfo.IncludeDependencies = offerRow.IncludeDependencies ? "true" : "false"; //Appears to be case sensitive and a bool turns into "True/False" on javascript side.
+
+                        articles.Add(offerInfo);
+                        if (!articleSystemDic.ContainsKey(offerInfo.System))
+                        {
+                            articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
+                        }
+                        else
+                        {
+                            articleSystemDic[offerInfo.System].Add(offerInfo);
+                        }
+                    }
                 }
+
+                articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
+
+                view_User usr = System.Web.HttpContext.Current.GetUser();
+
+                if (usr.AvtalSortera == 3) //System, Article_number
+                {
+                    //Endast tjänster, artiklar sorteras i view_OfferRow.
+                    co._ConsultantRows = co._ConsultantRows.OrderBy(a => a.Code).ToList();
+                }
+                else if (usr.AvtalSortera == 4) //Classification, Sort order
+                {
+                    foreach (var system in articleSystemDic)
+                    {
+                        //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
+                        var sortedList = new List<dynamic>();
+                        sortedList.AddRange(system.Value);
+                        system.Value.Clear();
+                        //Sorterar moduler inom classification i rätt ordning efter sortno på artikel
+                        system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
+                    }
+
+                    co._ConsultantRows = co._ConsultantRows.OrderByDescending(a => a._SortOrder > 0).ThenBy(a => a._SortOrder).ToList();
+                }
+
+                //Sorterar System/Classification i rätt ordning efter sortno
+                ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
+
+                ViewData.Add("EducationPortals", educationPortals);
+                ViewData.Add("Articles", articles);
+
+                ViewData.Add("ServicesCount", co._ConsultantRows.Count);
+
+                view_CustomerContact cc = new view_CustomerContact();
+                cc.Select("Customer = '" + co.Customer + "' AND Contact_person = '" + co.Contact_person + "'");
+                ViewData.Add("CustomerContact", cc);
+
+                view_Reminder vR = new view_Reminder();
+                var remindExist = vR.checkIfReminderPerCustomer(co.Customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
+                ViewData.Add("ShowReminderButton", remindExist.CompareTo("-1") == 0 ? false : true);
+
+                view_User user = new view_User();
+                if (System.Web.HttpContext.Current.GetUser().User_level > 1)
+                    user = System.Web.HttpContext.Current.GetUser();
                 else
                 {
-                    if (offerRow.Alias == null || offerRow.Alias == "")
-                        offerInfo.Module = module.Module;
-                    else
-                        offerInfo.Module = offerRow.Alias;
-                }
-                offerInfo.System = module.System;
-                offerInfo.Classification = module.Classification;
-
-                view_Sector sector = new view_Sector();
-                sector.Select("System=" + module.System + " AND Classification=" + module.Classification);
-
-                offerInfo.Price_category = module.Price_category;
-                offerInfo.Maint_price_category = module.Maint_price_category;
-                offerInfo.Discount_type = module.Discount_type;
-                offerInfo.Discount = module.Discount;
-                offerInfo.Price_type = sector.Price_type;
-                offerInfo.License = offerRow.License;
-                offerInfo.Maintenance = offerRow.Maintenance;
-                offerInfo.Fixed_price = offerRow.Fixed_price;
-                offerInfo.Sort_number = sector.SortNo;
-                offerInfo.Article_Sort_number = module.Sort_order;
-                offerInfo.IncludeDependencies = offerRow.IncludeDependencies ? "true" : "false"; //Appears to be case sensitive and a bool turns into "True/False" on javascript side.
-
-                articles.Add(offerInfo);
-                if (!articleSystemDic.ContainsKey(offerInfo.System))
-                {
-                    articleSystemDic.Add(offerInfo.System, new List<dynamic> { offerInfo });
-                }
-                else
-                {
-                    articleSystemDic[offerInfo.System].Add(offerInfo);
-                }
-            }
-
-            articles = articles.OrderBy(a => a.Price_type).ThenBy(a => a.Sort_number).ThenBy(m => m.Classification).ThenBy(m => m.Module).ToList(); ;
-
-            view_User usr = System.Web.HttpContext.Current.GetUser();
-
-            if (usr.AvtalSortera == 3) //System, Article_number
-            {
-                //Endast tjänster, artiklar sorteras i view_OfferRow.
-                co._ConsultantRows = co._ConsultantRows.OrderBy(a => a.Code).ToList();
-            }
-            else if (usr.AvtalSortera == 4) //Classification, Sort order
-            {
-                foreach (var system in articleSystemDic)
-                {
-                    //.ThenByDescending(a => a.Article_Sort_number > 0) => Vi vill ha null- och 0-poster sist i sorteringen
-                    var sortedList = new List<dynamic>();
-                    sortedList.AddRange(system.Value);
-                    system.Value.Clear();
-                    //Sorterar moduler inom classification i rätt ordning efter sortno på artikel
-                    system.Value.AddRange(sortedList.OrderBy(a => a.Sort_number).ThenBy(a => a.Classification).ThenByDescending(a => a.Article_Sort_number > 0).ThenBy(a => a.Article_Sort_number).ToList());
-                }
-
-                co._ConsultantRows = co._ConsultantRows.OrderByDescending(a => a._SortOrder > 0).ThenBy(a => a._SortOrder).ToList();
-            }
-
-            //Sorterar System/Classification i rätt ordning efter sortno
-            ViewData.Add("ArticleSystemDictionary", articleSystemDic.OrderBy(d => d.Value.First().Price_type).ThenBy(d => d.Value.First().Sort_number).ThenBy(d => d.Value.First().Classification).ThenBy(d => d.Value.First().Module).ToList());
-
-            ViewData.Add("EducationPortals", educationPortals);
-            ViewData.Add("Articles", articles);
-
-            ViewData.Add("ServicesCount", co._ConsultantRows.Count);
-
-            view_CustomerContact cc = new view_CustomerContact();
-            cc.Select("Customer = '" + co.Customer + "' AND Contact_person = '" + co.Contact_person + "'");
-            ViewData.Add("CustomerContact", cc);
-
-            view_Reminder vR = new view_Reminder();
-            var remindExist = vR.checkIfReminderPerCustomer(co.Customer, System.Web.HttpContext.Current.GetUser().Area, System.Web.HttpContext.Current.GetUser().Sign);
-            ViewData.Add("ShowReminderButton", remindExist.CompareTo("-1") == 0 ? false : true);
-
-            view_User user = new view_User();
-            if (System.Web.HttpContext.Current.GetUser().User_level > 1)
-                user = System.Web.HttpContext.Current.GetUser();
-            else
-            {
-                List<view_User> users = new List<view_User>();
-                foreach (String name in customer._Representatives)
-                {
-                    view_User rep = new view_User();
-                    rep.Select("Sign=" + name);
-                    users.Add(rep);
-                }
-                if (users.Count > 0)
-                {
-                    List<view_User> tempUsers = users.Where(u => u.Area == co.Area).ToList();
-                    if (tempUsers.Count > 0)
-                        user = tempUsers.First();
+                    List<view_User> users = new List<view_User>();
+                    foreach (String name in customer._Representatives)
+                    {
+                        view_User rep = new view_User();
+                        rep.Select("Sign=" + name);
+                        users.Add(rep);
+                    }
+                    if (users.Count > 0)
+                    {
+                        List<view_User> tempUsers = users.Where(u => u.Area == co.Area).ToList();
+                        if (tempUsers.Count > 0)
+                            user = tempUsers.First();
+                        else
+                            user = System.Web.HttpContext.Current.GetUser();
+                    }
                     else
                         user = System.Web.HttpContext.Current.GetUser();
                 }
-                else
-                    user = System.Web.HttpContext.Current.GetUser();
-            }
 
-            view_User repr = new view_User();
-            repr.Select("Sign = '" + co.Our_sign + "'");
-            ViewData.Add("Representative", repr);
+                view_User repr = new view_User();
+                repr.Select("Sign = '" + co.Our_sign + "'");
+                ViewData.Add("Representative", repr);
 
-            ViewData.Add("UseLogo", repr.Use_logo);
+                ViewData.Add("UseLogo", repr.Use_logo);
+            }            
 
             this.ViewData["Title"] = "Customer Offer";
 
@@ -1522,18 +1529,28 @@ namespace TietoCRM.Controllers
                 int Article_number = Convert.ToInt32(dict["Article_number"]);
                 decimal License = 0;
                 decimal Maintenance = 0;
-                if (Convert.ToInt32(dict["Discount_type"]) != 1)
+
+                if (System.Web.HttpContext.Current.GetUser().Area != "EDU" && (Article_number == 5099 || Article_number == 9999)) //Rabatt-hantering (FC/EC)
                 {
-                    if (dict.Keys.Contains("License"))
-                        License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
-                    Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    //Beräkna % av alla artiklar (utom rabatt)
+                    License = CalculateLicenseDiscountFromArticleList(list, decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
+                    Maintenance = CalculateMaintenanceDiscountFromArticleList(list, decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
                 }
                 else
                 {
-                    if (dict.Keys.Contains("License"))
-                        License = Decimal.Parse(dict["License"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
-                    //License = Decimal.Parse(0.ToString().Replace(".", ",").Replace("%", ""));
-                    Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
+                    if (Convert.ToInt32(dict["Discount_type"]) != 1)
+                    {
+                        if (dict.Keys.Contains("License"))
+                            License = Decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                    }
+                    else
+                    {
+                        if (dict.Keys.Contains("License"))
+                            License = Decimal.Parse(dict["License"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
+                        //License = Decimal.Parse(0.ToString().Replace(".", ",").Replace("%", ""));
+                        Maintenance = Decimal.Parse(dict["Maintenance"].ToString().Replace(",", ".").Replace("%", ""), NumberFormatInfo.InvariantInfo);
+                    }
                 }
 
                 String Alias = dict["Alias"].ToString();
@@ -1630,6 +1647,39 @@ namespace TietoCRM.Controllers
 
             return "1";
         }
+
+        private decimal CalculateMaintenanceDiscountFromArticleList(List<dynamic> list, decimal maintPercent)
+        {
+            decimal totalMaintenance = 0;
+            foreach (Dictionary<string, object> dict in list)
+            {
+                int article = Convert.ToInt32(dict["Article_number"]);
+                decimal maintSum = 0;
+                if (article != 5099 && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
+                {
+                    totalMaintenance += (maintSum * maintPercent) / 100;
+                }
+            }
+
+            return totalMaintenance * -1;
+        }
+
+        private decimal CalculateLicenseDiscountFromArticleList(List<dynamic> list, decimal licPercent)
+        {
+            decimal totalLicense = 0;
+            foreach (Dictionary<string, object> dict in list)
+            {
+                int article = Convert.ToInt32(dict["Article_number"]);
+                decimal licSum = 0;
+                if (article != 5099 && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
+                {
+                    totalLicense += (licSum * licPercent) / 100;
+                }
+            }
+
+            return totalLicense * -1;
+        }
+
 
         private String Json_GetModulesAll()
         {
