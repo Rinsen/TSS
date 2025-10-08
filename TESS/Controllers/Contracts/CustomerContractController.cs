@@ -366,7 +366,9 @@ namespace TietoCRM.Controllers.Contracts
                 contractInfo.System = module.System;
                 contractInfo.Classification = module.Classification;
                 contractInfo.License = contractRow.License;
+                contractInfo.LicenseDiscount = contractRow.LicenseDiscount;
                 contractInfo.Maintenance = contractRow.Maintenance;
+                contractInfo.MaintenanceDiscount = contractRow.MaintenanceDiscount;
                 contractInfo.Price_category = module.Price_category;
                 contractInfo.Maint_price_category = module.Maint_price_category;
                 contractInfo.Discount_type = module.Discount_type;
@@ -1879,16 +1881,58 @@ namespace TietoCRM.Controllers.Contracts
                         int Article_number = Convert.ToInt32(dict["Article_number"]);
                         decimal License = 0;
                         decimal Maintenance = 0;
-                        if(dict["Discount_type"].GetType() == typeof(string))
+                        decimal licensePercent = 0;
+                        decimal.TryParse(dict["LicenseDiscount"].ToString().Replace(",", "."), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out licensePercent); //Possible old values
+                        decimal maintenancePercent = 0;
+                        decimal.TryParse(dict["MaintenanceDiscount"].ToString().Replace(",", "."), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out maintenancePercent); //Possible old values
+
+                        if (dict["Discount_type"].GetType() == typeof(string))
                         {
                             dict["Discount_type"] = (string)dict["Discount_type"] == "undefined" ? 0 : dict["Discount_type"];
                         }
 
-                        if (System.Web.HttpContext.Current.GetUser().Area != "EDU" && (Article_number == 5099 || Article_number == 9999)) //Rabatt-hantering (FC/EC)
+                        view_ContractRow contractRow = new view_ContractRow();
+
+                        //Discount calculations (EC/FC)
+                        if (System.Web.HttpContext.Current.GetUser().Area != "EDU" && (Article_number == 5099 || Article_number == 9999))
                         {
-                            //Beräkna % av alla artiklar (utom rabatt)
-                            License = CalculateLicenseDiscountFromArticleList(list, decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
-                            Maintenance = CalculateMaintenanceDiscountFromArticleList(list, decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
+                            if(licensePercent == 0)
+                            {
+                                //Beräkna % av alla artiklar (utom rabatt)
+                                licensePercent = decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                                License = CalculateLicenseDiscountFromArticleList(list, licensePercent);
+                            }
+                            else
+                            {
+                                //Keep old calculated value
+                                if ((int)dict["Discount_type"] != 1)
+                                {
+                                    if (dict.Keys.Contains("License"))
+                                        License = decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                                }
+                                else
+                                {
+                                    if (dict.Keys.Contains("License"))
+                                        License = decimal.Parse(dict["License"].ToString().Replace(".", ",").Replace("%", ""));
+                                }
+                            }
+
+                            if (maintenancePercent == 0)
+                            {
+                                maintenancePercent = decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                                Maintenance = CalculateMaintenanceDiscountFromArticleList(list, maintenancePercent);
+                            }
+                            else
+                            {
+                                if ((int)dict["Discount_type"] != 1)
+                                {
+                                    Maintenance = decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo);
+                                }
+                                else
+                                {
+                                    Maintenance = decimal.Parse(dict["Maintenance"].ToString().Replace(".", ",").Replace("%", ""));
+                                }
+                            }
                         }
                         else
                         {
@@ -1909,7 +1953,6 @@ namespace TietoCRM.Controllers.Contracts
 
                         var automapping = dict["Automapping"] != null ? Convert.ToBoolean(dict["Automapping"]) : false;
 
-                        view_ContractRow contractRow = new view_ContractRow();
                         contractRow.Customer = contract.Customer;
                         contractRow.Contract_id = contract.Contract_id;
                         contractRow.Article_number = Article_number;
@@ -1951,6 +1994,11 @@ namespace TietoCRM.Controllers.Contracts
                         //    offerRow.Rewritten = false;
                         //}
                         contractRow.Insert();
+
+                        if(licensePercent > 0 || maintenancePercent > 0)
+                        {
+                            contractRow.UpdateLicensAndMaintenancePercentage(licensePercent, maintenancePercent);
+                        }
 
                         //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
                         view_ModuleText moduleText = new view_ModuleText();
@@ -2059,32 +2107,32 @@ namespace TietoCRM.Controllers.Contracts
             }
         }
 
-        private decimal CalculateMaintenanceDiscountFromArticleList(List<dynamic> list, decimal maintPercent)
+        private decimal CalculateMaintenanceDiscountFromArticleList(List<dynamic> list, decimal? maintPercent)
         {
             decimal totalMaintenance = 0;
             foreach (Dictionary<string, object> dict in list)
             {
                 int article = Convert.ToInt32(dict["Article_number"]);
                 decimal maintSum = 0;
-                if (article != 5099 && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
+                if (article != 5099 && maintPercent.HasValue && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
                 {
-                    totalMaintenance += (maintSum * maintPercent) / 100;
+                    totalMaintenance += (maintSum * maintPercent.Value) / 100;
                 }
             }
 
             return totalMaintenance*-1;
         }
 
-        private decimal CalculateLicenseDiscountFromArticleList(List<dynamic> list, decimal licPercent)
+        private decimal CalculateLicenseDiscountFromArticleList(List<dynamic> list, decimal? licPercent)
         {
             decimal totalLicense = 0;
             foreach (Dictionary<string, object> dict in list)
             {
                 int article = Convert.ToInt32(dict["Article_number"]);
                 decimal licSum = 0;
-                if (article != 5099 && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
+                if (article != 5099 && licPercent.HasValue && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
                 {
-                    totalLicense += (licSum * licPercent) / 100;
+                    totalLicense += (licSum * licPercent.Value) / 100;
                 }
             }
 

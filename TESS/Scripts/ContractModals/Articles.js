@@ -203,7 +203,7 @@ var editArticle = function(editButton){
                                     <input class='form-control' id='alias-discount-text' name='AliasDiscount' value='" + oldAlias + "'>                                  \
                                 </div>                                                                                                                  \
                             </div>  ";
-    if (articleNr == 5099 || articleNr = 9999) { //5099 (FC) 9999 (EC)
+    if (articleNr == 5099 || articleNr == 9999) { //5099 (FC) 9999 (EC)
         bootbox.dialog({
             backdrop: false,
             closebutton: false,
@@ -435,8 +435,10 @@ var handleExistingArticle = function(availableArticles, $availableList, $selecte
                                             data-selected='false'                                                   \
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
+                                            data-license-discount='" + article.LicenseDiscount + "'                 \
                                             data-license='" + article.License + "'                                  \
                                             data-maintenance='" + article.Maintenance + "'                          \
+                                            data-maintenance-discount='" + article.MaintenanceDiscount + "'         \
                                             data-status='" + article.Module_status + "'                             \
                                             data-status-text='" + article.Module_status_txt + "'                    \
                                             data-alias='" + article.Module + "'                                     \
@@ -709,8 +711,10 @@ var updateSelectedItems = function () {
                                 class='list-group-item'                                             \
                                 data-selected='true'                                                \
                                 data-alias='" + module.Module + "'                                  \
+                                data-license-discount='" + module.LicenseDiscount + "'              \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
+                                data-maintenance-discount='" + module.MaintenanceDiscount + "'      \
                                 data-status='" + module.Module_status + "'                          \
                                 data-discount='" + module.Discount + "'                             \
                                 data-discount-type='" + module.Discount_type + "'                   \
@@ -1025,8 +1029,10 @@ var getModuleByArticleNumber = function (article_number, customer, contract_id) 
                                 class='list-group-item art-nr-" + module.Article_number + "'       \
                                 data-selected='true'                                                \
                                 data-alias='" + module.Module + "'                                  \
+                                data-license-discount='" + module.LicenseDiscount + "'              \
                                 data-license='" + module.License + "'                               \
                                 data-maintenance='" + module.Maintenance + "'                       \
+                                data-maintenance-discount='" + module.MaintenanceDiscount + "'      \
                                 data-status='" + module.Module_status + "'                          \
                                 data-discount='" + module.Discount + "'                             \
                                 data-discount-type='" + module.Discount_type + "'                   \
@@ -1129,6 +1135,8 @@ var saveArticlesFunction = function () {
         var buttonArt = $button.find(".art-nr").html();
         var buttonLicense = $button.data("license");
         var buttonMaintenance = $button.data("maintenance");
+        var buttonLicenseDiscount = $button.data("license-discount");
+        var buttonMaintenanceDiscount = $button.data("maintenance-discount");
         var buttonAlias = $button.data("alias");
         var buttonRowtype = $button.data("rowtype");
         var buttonDiscount = $button.data("discount");
@@ -1146,6 +1154,8 @@ var saveArticlesFunction = function () {
             "Alias": buttonAlias,
             "License": buttonLicense,
             "Maintenance": buttonMaintenance,
+            "LicenseDiscount": buttonLicenseDiscount,
+            "MaintenanceDiscount": buttonMaintenanceDiscount,
             "Rowtype": buttonRowtype,
             "Discount_type": buttonDiscount,
             "Contract_description": buttonContractDescription,

@@ -702,8 +702,9 @@
                                                         data-selected="true"
                                                         data-discount="@module.Discount"
                                                         data-discount-type="@module.Discount_type"
-                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
+                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")); @Html.Raw(" data-license-discount=" + or.LicenseDiscount.ToString().Replace(",", "."))}
                                                         data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
+                                                        data-maintenance-discount="@or.MaintenanceDiscount.ToString().Replace(",", ".")"
                                                         data-alias="@or.Module"
                                                         data-module-text-id="@or.ModuleTextId"
                                                         data-contract-description="@module.Contract_description"

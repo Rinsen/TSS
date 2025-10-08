@@ -320,8 +320,9 @@ else if (Request["modal"] == "articles")
                                             data-module-text-id="@or.ModuleTextId"
                                             data-offer-description="@or.OfferDescription"
                                             data-offer-id="@or.Offer_number"
-                                            @if (or.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")) ; }
+                                            @if (or.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")); @Html.Raw(" data-license-discount=" + or.LicenseDiscount.ToString().Replace(",", "."));}
                                             data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
+                                            data-maintenance-discount="@or.MaintenanceDiscount.ToString().Replace(",", ".")"
                                             data-alias="@or.Module"
                                             data-automapping="@or.IncludeDependencies"
                                             data-status="@or.Module_status">
@@ -782,7 +783,9 @@ else if (Request["modal"] == "articles")
                                             data-discount-type='" + article.Discount_type + "'                      \
                                             data-discount='" + article.Discount + "'                                \
                                             data-license='" + article.License + "'                                  \
+                                            data-license-discount='" + article.LicenseDiscount + "'                 \
                                             data-maintenance='" + article.Maintenance + "'                          \
+                                            data-maintenance-discount='" + article.MaintenanceDiscount + "'         \
                                             data-status='" + article.Module_status + "'                             \
                                             data-status-text='" + article.Module_status_txt + "'                    \
                                             data-alias='" + article.Module + "'                                     \
@@ -1104,7 +1107,9 @@ else if (Request["modal"] == "articles")
                             data-selected='true'                                                \
                             data-alias='" + module.Module + "'                                  \
                             data-license='" + module.License + "'                               \
+                            data-license-discount='" + module.LicenseDiscount + "'              \
                             data-maintenance='" + module.Maintenance + "'                       \
+                            data-maintenance-discount='" + module.MaintenanceDiscount + "'      \
                             data-status='" + module.Module_status + "'                          \
                             data-discount='" + module.Discount + "'                             \
                             data-discount-type='" + module.Discount_type + "'                   \

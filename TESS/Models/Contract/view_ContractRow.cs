@@ -63,6 +63,12 @@ namespace TietoCRM.Models
         private string removedFromContractId;
         public string RemovedFromContractId { get { return removedFromContractId; } set { removedFromContractId = value; } }
 
+        private decimal? licenseDiscount;
+        public decimal? LicenseDiscount { get { return licenseDiscount; } set { licenseDiscount = value; } }
+
+        private decimal? maintenanceDiscount;
+        public decimal? MaintenanceDiscount { get { return maintenanceDiscount; } set { maintenanceDiscount = value; } }
+
         private static int ASort { get; set; }
         //private int ASort;
         private static string OrderBy { get; set; }
@@ -110,7 +116,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT CR.Contract_id, CR.Customer ,CR.Article_number, CR.Offer_number, CR.License, CR.Maintenance,
                                         CR.Delivery_date, CR.Created, CR.Updated, CR.Rewritten, CR.New, CR.Removed, CR.Closure_date, CR.Fixed_price, 
-                                        CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, CR.IncludeDependencies, CR.RemovedFromContractId
+                                        CAST(CR.SSMA_timestamp AS BIGINT) AS SSMA_timestamp, CR.Alias, CR.IncludeDependencies, CR.RemovedFromContractId, CR.LicenseDiscount, CR.MaintenanceDiscount
                                         FROM " + databasePrefix + "ContractRow CR " +
                                         "JOIN " + databasePrefix + "Module M on M.Article_number = CR.Article_number " +
                                         "WHERE " + "(CR.Contract_id = @contractID AND CR.Customer = @customer) OR CR.RemovedFromContractId = @contractID Order By " + GetOrderByForGetAllContractRows();
@@ -1053,6 +1059,26 @@ namespace TietoCRM.Models
                 command.Parameters.AddWithValue("@customer", customer);
                 command.Parameters.AddWithValue("@contract_id", contract_id);
                 command.Parameters.AddWithValue("@article_number", article_number);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        internal void UpdateLicensAndMaintenancePercentage(decimal? licensePercent, decimal? maintenancePercent)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = @"UPDATE [dbo].[A_avtalsrader] SET [LicenseDiscount] = @licensePercent, [MaintenanceDiscount] = @maintenancePercent WHERE [Avtalsid] = @contract_id AND [Kund] = @customer AND [Artnr] = @article_number";
+                command.Prepare();
+                command.Parameters.AddWithValue("@licensePercent", licensePercent);
+                command.Parameters.AddWithValue("@maintenancePercent", maintenancePercent);
+                command.Parameters.AddWithValue("@customer", this.Customer);
+                command.Parameters.AddWithValue("@contract_id", this.Contract_id);
+                command.Parameters.AddWithValue("@article_number", this.Article_number);
 
                 command.ExecuteNonQuery();
             }
