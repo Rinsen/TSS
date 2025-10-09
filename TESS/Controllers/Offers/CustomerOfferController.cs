@@ -631,7 +631,9 @@ namespace TietoCRM.Controllers
 
                 offerInfo.Price_type = sector.Price_type;
                 offerInfo.License = offerRow.License;
+                offerInfo.LicenseDiscount = offerRow.LicenseDiscount;
                 offerInfo.Maintenance = offerRow.Maintenance;
+                offerInfo.MaintenanceDiscount = offerRow.MaintenanceDiscount;
                 offerInfo.Fixed_price = offerRow.Fixed_price;
                 offerInfo.Sort_number = sector.SortNo;
                 offerInfo.Article_Sort_number = module.Sort_order;
@@ -1529,12 +1531,20 @@ namespace TietoCRM.Controllers
                 int Article_number = Convert.ToInt32(dict["Article_number"]);
                 decimal License = 0;
                 decimal Maintenance = 0;
+                decimal licensePercent = 0;
+                object tmp;
+                if (dict.TryGetValue("LicenseDiscount", out tmp))
+                    decimal.TryParse(dict["LicenseDiscount"].ToString().Replace(",", "."), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out licensePercent); //Possible old values
+                decimal maintenancePercent = 0;
+                if (dict.TryGetValue("MaintenanceDiscount", out tmp))
+                    decimal.TryParse(dict["MaintenanceDiscount"].ToString().Replace(",", "."), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out maintenancePercent); //Possible old values
 
-                if (System.Web.HttpContext.Current.GetUser().Area != "EDU" && (Article_number == 5099 || Article_number == 9999)) //Rabatt-hantering (FC/EC)
+                //Discount calculations (EC/FC)
+                if (System.Web.HttpContext.Current.GetUser().Area != "EDU" && (Article_number == 5099 || Article_number == 9999))
                 {
                     //Beräkna % av alla artiklar (utom rabatt)
-                    License = CalculateLicenseDiscountFromArticleList(list, decimal.Parse(dict["License"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
-                    Maintenance = CalculateMaintenanceDiscountFromArticleList(list, decimal.Parse(dict["Maintenance"].ToString().Replace(",", "."), NumberFormatInfo.InvariantInfo));
+                    License = CalculateLicenseDiscountFromArticleList(list, licensePercent);
+                    Maintenance = CalculateMaintenanceDiscountFromArticleList(list, maintenancePercent);
                 }
                 else
                 {
@@ -1566,6 +1576,11 @@ namespace TietoCRM.Controllers
                 offerRow.Alias = Alias;
                 offerRow.IncludeDependencies = automapping;
                 offerRow.Insert();
+
+                if (System.Web.HttpContext.Current.GetUser().Area != "EDU")
+                {
+                    offerRow.UpdateLicensAndMaintenancePercentage(licensePercent, maintenancePercent);
+                }
 
                 //Eventuellt ska vi ta tillbaka en tidigare deletad Modultext
                 view_ModuleText moduleText = new view_ModuleText();

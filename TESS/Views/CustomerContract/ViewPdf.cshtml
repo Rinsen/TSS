@@ -656,64 +656,64 @@
                                                 CultureInfo se = CultureInfo.CreateSpecificCulture("sv-SE");
 
                                             }
-                                            @foreach (dynamic or in ViewBag.Articles)
+                                            @foreach (dynamic cr in ViewBag.Articles)
                                             {
                                                 // Fetch modules
                                                 view_Module module = new view_Module();
-                                                module.Select("Article_number = " + or.Article_number);
+                                                module.Select("Article_number = " + cr.Article_number);
                                                 if (module.Discount == 1)
                                                 {
                                                     if (module.Discount_type == 1)
                                                     {
-                                                        discountMP += or.License ?? 0;
-                                                        discountLP += or.Maintenance ?? 0;
+                                                        discountMP += cr.License ?? 0;
+                                                        discountLP += cr.Maintenance ?? 0;
                                                     }
                                                     else
                                                     {
-                                                        discountLM += or.License ?? 0;
-                                                        discountMM += or.Maintenance ?? 0;
+                                                        discountLM += cr.License ?? 0;
+                                                        discountMM += cr.Maintenance ?? 0;
                                                     }
 
                                                 }
                                                 String License;
                                                 String Maintenance;
                                                 // Format currency
-                                                if (module.Discount != 1 || module.Discount_type == 0)
+                                                if (cr.Article_number != 5099 && cr.Article_number != 9999 && (module.Discount != 1 || module.Discount_type == 0))
                                                 {
-                                                    License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
-                                                    Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
-                                                    if (or.Removed == false)
+                                                    License = string.Format(se, "{0:C2}", cr.License).Replace(".", " ");
+                                                    Maintenance = string.Format(se, "{0:C2}", cr.Maintenance).Replace(".", " ");
+                                                    if (cr.Removed == false)
                                                     {
-                                                        LicenseTotal += Convert.ToDecimal(or.License);
-                                                        MaintenanceTotal += Convert.ToDecimal(or.Maintenance);
+                                                        LicenseTotal += Convert.ToDecimal(cr.License);
+                                                        MaintenanceTotal += Convert.ToDecimal(cr.Maintenance);
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    String l = ((int)or.License).ToString();
-                                                    String m = ((int)or.Maintenance).ToString();
+                                                    String l = string.Format(se, "{0:F2}", ((int) cr.LicenseDiscount > 0 ? cr.LicenseDiscount : cr.License));
+                                                    String m = string.Format(se, "{0:F2}", ((int)cr.MaintenanceDiscount > 0 ? cr.MaintenanceDiscount : cr.Maintenance));
                                                     License = l + "%";
                                                     Maintenance = m + "%";
                                                 }
 
-                                                <button id="selart-@or.Article_number"
+                                                <button id="selart-@cr.Article_number"
                                                         type="button"
-                                                        class="list-group-item art-nr-@or.Article_number"
+                                                        class="list-group-item art-nr-@cr.Article_number"
                                                         data-selected="true"
                                                         data-discount="@module.Discount"
                                                         data-discount-type="@module.Discount_type"
-                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + or.License.ToString().Replace(",", ".")); @Html.Raw(" data-license-discount=" + or.LicenseDiscount.ToString().Replace(",", "."))}
-                                                        data-maintenance="@or.Maintenance.ToString().Replace(",", ".")"
-                                                        data-maintenance-discount="@or.MaintenanceDiscount.ToString().Replace(",", ".")"
-                                                        data-alias="@or.Module"
-                                                        data-module-text-id="@or.ModuleTextId"
+                                                        @if (module.System != "Lärportal") { @Html.Raw("data-license=" + cr.License.ToString().Replace(",", ".")); @Html.Raw(" data-license-discount=" + cr.LicenseDiscount.ToString().Replace(",", "."))}
+                                                        data-maintenance="@cr.Maintenance.ToString().Replace(",", ".")"
+                                                        data-maintenance-discount="@cr.MaintenanceDiscount.ToString().Replace(",", ".")"
+                                                        data-alias="@cr.Module"
+                                                        data-module-text-id="@cr.ModuleTextId"
                                                         data-contract-description="@module.Contract_description"
-                                                        data-contract-id="@or.Id"
-                                                        data-contract-id-key="@or.Contract_id"
-                                                        data-automapping="@or.IncludeDependencies"
-                                                        data-removed-from-contract-id="@or.RemovedFromContractId"
-                                                        @if (or.Removed == true) { @Html.Raw("data-rowtype=" + 2); }
-                                                         else if (or.Rewritten == true) { @Html.Raw("data-rowtype=" + 1); }
+                                                        data-contract-id="@cr.Id"
+                                                        data-contract-id-key="@cr.Contract_id"
+                                                        data-automapping="@cr.IncludeDependencies"
+                                                        data-removed-from-contract-id="@cr.RemovedFromContractId"
+                                                        @if (cr.Removed == true) { @Html.Raw("data-rowtype=" + 2); }
+                                                         else if (cr.Rewritten == true) { @Html.Raw("data-rowtype=" + 1); }
                                                          else { @Html.Raw("data-rowtype=" + 3); }>
 
                                                         @*@if (or.Rewritten == true) { if (or.Removed == false) { @Html.Raw("data-rowtype=" + 1) ; }; }
@@ -721,54 +721,54 @@
                                                         @if (or.Rewritten == false) { @Html.Raw("data-rowtype=" + 3) ; }>*@
                                                     <table>
                                                         <tr>
-                                                            <td class="art-nr">@or.Article_number</td>
-                                                            @if (or.Rewritten == true)
+                                                            <td class="art-nr">@cr.Article_number</td>
+                                                            @if (cr.Rewritten == true)
                                                             {
-                                                                if (or.Removed == true)
+                                                                if (cr.Removed == true)
                                                                 {
-                                                                    if (or.Module == "")
+                                                                    if (cr.Module == "")
                                                                     {
                                                                         <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Module</td>
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@cr.Module</td>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (or.Module == "")
+                                                                    if (cr.Module == "")
                                                                     {
                                                                         <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@or.Module</td>
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRewritten" title="Befintlig modul">@cr.Module</td>
                                                                     }
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (or.Removed == true)
+                                                                if (cr.Removed == true)
                                                                 {
-                                                                    if (or.Module == "")
+                                                                    if (cr.Module == "")
                                                                     {
                                                                         <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@or.Module</td>
+                                                                        <td onclick="moveItem(event, this)" class="RewrittenRemoved" title="Avslutad modul">@cr.Module</td>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (or.Module == "")
+                                                                    if (cr.Module == "")
                                                                     {
                                                                     <td onclick="moveItem(event, this)" title="Ny modul">@module.Module</td>
                                                                     }
                                                                     else
                                                                     {
-                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@or.Module</td>
+                                                                    <td onclick="moveItem(event, this)" title="Ny modul">@cr.Module</td>
                                                                     }
                                                                 }
                                                             }

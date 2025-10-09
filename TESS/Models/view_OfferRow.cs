@@ -40,6 +40,12 @@ namespace TietoCRM.Models
         private bool includeDependencies;
         public bool IncludeDependencies { get { return includeDependencies; } set { includeDependencies = value; } }
 
+        private decimal? licenseDiscount;
+        public decimal? LicenseDiscount { get { return licenseDiscount; } set { licenseDiscount = value; } }
+
+        private decimal? maintenanceDiscount;
+        public decimal? MaintenanceDiscount { get { return maintenanceDiscount; } set { maintenanceDiscount = value; } }
+
         private static int ASort { get; set; }
         //private int ASort;
         private static string OrderBy { get; set; }
@@ -106,7 +112,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, O.Article_number, License, 
                                         Maintenance, Include_status, O.Fixed_price, CAST(O.SSMA_timestamp AS BIGINT) AS SSMA_timestamp
-                                        , Alias, O.Area, IncludeDependencies FROM " + databasePrefix + "OfferRow O " +
+                                        , Alias, O.Area, IncludeDependencies, LicenseDiscount, MaintenanceDiscount FROM " + databasePrefix + "OfferRow O " +
                                         "JOIN " + databasePrefix + "Module M ON M.Article_number = O.Article_number " +
                                         "WHERE Offer_number = @offerNumber AND O.Area = @area Order By " + GetOrderByForGetAllOfferRows();
 
@@ -168,7 +174,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,Alias, Area, IncludeDependencies FROM " + databasePrefix + "OfferRow Order By " + GetOrderBy();
+                                        ,Alias, Area, IncludeDependencies, LicenseDiscount, MaintenanceDiscount FROM " + databasePrefix + "OfferRow Order By " + GetOrderBy();
 
                 command.Prepare();
 
@@ -291,7 +297,7 @@ namespace TietoCRM.Models
                 // Default query
                 command.CommandText = @"SELECT Offer_number, Article_number, License, 
                                         Maintenance, Include_status, Fixed_price, CAST(SSMA_timestamp AS BIGINT) AS SSMA_timestamp 
-                                        ,alias, Area, IncludeDependencies FROM " + databasePrefix + "OfferRow where Offer_number = @offerNumber Order By " + GetOrderBy();
+                                        ,alias, Area, IncludeDependencies, LicenseDiscount, MaintenanceDiscount FROM " + databasePrefix + "OfferRow where Offer_number = @offerNumber Order By " + GetOrderBy();
 
                 command.Prepare();
                 command.Parameters.AddWithValue("@offerNumber", offerId);
@@ -329,6 +335,24 @@ namespace TietoCRM.Models
             }
             return list;
         }
-    }
 
+        internal void UpdateLicensAndMaintenancePercentage(decimal? licensePercent, decimal? maintenancePercent)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                connection.Open();
+
+                // Default query
+                command.CommandText = @"UPDATE [dbo].[Offertrader] SET [LicenseDiscount] = @licensePercent, [MaintenanceDiscount] = @maintenancePercent WHERE [OffertNr] = @offerNo AND [Artikelnr] = @article_number";
+                command.Prepare();
+                command.Parameters.AddWithValue("@licensePercent", licensePercent);
+                command.Parameters.AddWithValue("@maintenancePercent", maintenancePercent);
+                command.Parameters.AddWithValue("@article_number", this.Article_number);
+                command.Parameters.AddWithValue("@offerNo", this.Offer_number);
+
+                command.ExecuteNonQuery();
+            }
+        }
+    }
 }

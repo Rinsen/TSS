@@ -232,11 +232,13 @@ var editArticle = function(editButton){
                         // Update article data attrs
                         if (typeof $licDiscountEl != "undefined" && typeof $licDiscountEl != false) {
                             $articleBtn.attr("data-license", $licDiscountEl.val());
+                            $articleBtn.attr("data-license-discount", $licDiscountEl.val());
                             $articleBtn.data("license", $licDiscountEl.val());
                             $articleBtn.find(".license").html($licDiscountEl.val() + "%");
                         }
 
                         $articleBtn.attr("data-maintenance", $maintDiscountEl.val());
+                        $articleBtn.attr("data-maintenance-discount", $maintDiscountEl.val());
                         $articleBtn.data("maintenance", $maintDiscountEl.val());
                         $articleBtn.find(".maintenance").html($maintDiscountEl.val() + "%");
                         
@@ -613,14 +615,16 @@ var calculateSums = function(){
         var $btn = $($selectedArticleButtons[i]);
         var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
         var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
-        if ($btn.data("discount") == '1'){
-            var type = $btn.data("discount-type");
-            var discountObj = { "License": license, "Maintenance": maintenance, "Discount_type": type };
-            discountArr.push(discountObj);
-        }
-        else {
-            LicenseTotal += parseFloat(license);
-            MaintenanceTotal += parseFloat(maintenance);
+        if (!$btn.text().includes('5099') && !$btn.text().includes('9999')) {
+            if ($btn.data("discount") == '1') {
+                var type = $btn.data("discount-type");
+                var discountObj = { "License": license, "Maintenance": maintenance, "Discount_type": type };
+                discountArr.push(discountObj);
+            }
+            else {
+                LicenseTotal += parseFloat(license);
+                MaintenanceTotal += parseFloat(maintenance);
+            }
         }
     }
     var daLenght = discountArr.length;

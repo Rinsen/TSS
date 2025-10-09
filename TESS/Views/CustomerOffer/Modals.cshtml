@@ -296,7 +296,7 @@ else if (Request["modal"] == "articles")
                                     String License;
                                     String Maintenance;
                                     // Format currency
-                                    if (or.Discount != 1 || or.Discount_type == 0)
+                                    if (or.Article_number != 5099 && or.Article_number != 9999 && (or.Discount != 1 || or.Discount_type == 0))
                                     {
                                         License = string.Format(se, "{0:C2}", or.License).Replace(".", " ");
                                         Maintenance = string.Format(se, "{0:C2}", or.Maintenance).Replace(".", " ");
@@ -305,8 +305,8 @@ else if (Request["modal"] == "articles")
                                     }
                                     else
                                     {
-                                        String l = ((int)or.License).ToString();
-                                        String m = ((int)or.Maintenance).ToString();
+                                        String l = string.Format(se, "{0:F2}", ((int)or.LicenseDiscount > 0 ? or.LicenseDiscount : or.License));
+                                        String m = string.Format(se, "{0:F2}", ((int)or.MaintenanceDiscount > 0 ? or.MaintenanceDiscount : or.Maintenance));
                                         License = l + "%";
                                         Maintenance = m + "%";
                                     }
@@ -573,11 +573,13 @@ else if (Request["modal"] == "articles")
                             // Update article data attrs
                             if (typeof $licDiscountEl != "undefined" && typeof $licDiscountEl != false) {
                                 $articleBtn.attr("data-license", $licDiscountEl.val());
+                                $articleBtn.attr("data-license-discount", $licDiscountEl.val());
                                 $articleBtn.data("license", $licDiscountEl.val());
                                 $articleBtn.find(".license").html($licDiscountEl.val() + "%");
                             }
 
                             $articleBtn.attr("data-maintenance", $maintDiscountEl.val());
+                            $articleBtn.attr("data-maintenance-discount", $maintDiscountEl.val());
                             $articleBtn.data("maintenance", $maintDiscountEl.val());
                             $articleBtn.find(".maintenance").html($maintDiscountEl.val() + "%");
 
@@ -889,14 +891,16 @@ else if (Request["modal"] == "articles")
             var $btn = $($selectedArticleButtons[i]);
             var license = (typeof $btn.data("license") != 'undefined' ? $btn.data("license") : 0);
             var maintenance = (typeof $btn.data("maintenance") != 'undefined' ? $btn.data("maintenance") : 0);
-            if($btn.data("discount") == '1'){
-                var type = $btn.data("discount-type");
-                var discountObj = { "License": license, "Maintenance": maintenance, "Discount_type": type };
-                discountArr.push(discountObj);
-            }
-            else{
-                LicenseTotal += parseFloat(license);
-                MaintenanceTotal += parseFloat(maintenance);
+            if (!$btn.text().includes('5099') && !$btn.text().includes('9999')) {
+                if ($btn.data("discount") == '1') {
+                    var type = $btn.data("discount-type");
+                    var discountObj = { "License": license, "Maintenance": maintenance, "Discount_type": type };
+                    discountArr.push(discountObj);
+                }
+                else {
+                    LicenseTotal += parseFloat(license);
+                    MaintenanceTotal += parseFloat(maintenance);
+                }
             }
         }
         var daLenght = discountArr.length;
@@ -1155,7 +1159,9 @@ else if (Request["modal"] == "articles")
             var $button = $($selectedList[i]);
             var buttonArt = $button.find(".art-nr").html();
             var buttonLicense = $button.data("license");
+            var buttonLicenseDiscount = $button.data("license-discount");
             var buttonMaintenance = $button.data("maintenance");
+            var buttonMaintenanceDiscount = $button.data("maintenance-discount");
             var buttonAlias = $button.data("alias");
             var buttonDiscount = $button.data("discount");
             var buttonOfferDescription = $button.data("offer-description");
@@ -1169,7 +1175,9 @@ else if (Request["modal"] == "articles")
                 "Article_number":  buttonArt,
                 "Alias": buttonAlias,
                 "License": buttonLicense,
+                "LicenseDiscount": buttonLicenseDiscount,
                 "Maintenance": buttonMaintenance,
+                "MaintenanceDiscount": buttonMaintenanceDiscount,
                 "Discount_type": buttonDiscount,
                 "Offer_description": buttonOfferDescription,
                 "Module_text_id": buttonModuleTextId,
