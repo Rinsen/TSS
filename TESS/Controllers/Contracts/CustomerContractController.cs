@@ -2083,13 +2083,13 @@ namespace TietoCRM.Controllers.Contracts
             {
                 int article = Convert.ToInt32(dict["Article_number"]);
                 decimal maintSum = 0;
-                if (article != 5099 && maintPercent.HasValue && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
+                if (article != 5099 && article != 9999 && maintPercent.HasValue && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
                 {
                     totalMaintenance += (maintSum * maintPercent.Value) / 100;
                 }
             }
 
-            return totalMaintenance*-1;
+            return decimal.Round(totalMaintenance * -1, 0, MidpointRounding.AwayFromZero);
         }
 
         private decimal CalculateLicenseDiscountFromArticleList(List<dynamic> list, decimal? licPercent)
@@ -2099,13 +2099,13 @@ namespace TietoCRM.Controllers.Contracts
             {
                 int article = Convert.ToInt32(dict["Article_number"]);
                 decimal licSum = 0;
-                if (article != 5099 && licPercent.HasValue && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
+                if (article != 5099 && article != 9999 && licPercent.HasValue && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
                 {
                     totalLicense += (licSum * licPercent.Value) / 100;
                 }
             }
 
-            return totalLicense*-1;
+            return decimal.Round(totalLicense * -1, 0, MidpointRounding.AwayFromZero);
         }
 
         public string UpdateContractOptions()

@@ -1532,10 +1532,12 @@ namespace TietoCRM.Controllers
                 decimal License = 0;
                 decimal Maintenance = 0;
                 decimal licensePercent = 0;
+                decimal maintenancePercent = 0;
                 object tmp;
+                
                 if (dict.TryGetValue("LicenseDiscount", out tmp))
                     decimal.TryParse(dict["LicenseDiscount"].ToString().Replace(",", "."), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out licensePercent); //Possible old values
-                decimal maintenancePercent = 0;
+                
                 if (dict.TryGetValue("MaintenanceDiscount", out tmp))
                     decimal.TryParse(dict["MaintenanceDiscount"].ToString().Replace(",", "."), NumberStyles.Number, NumberFormatInfo.InvariantInfo, out maintenancePercent); //Possible old values
 
@@ -1670,13 +1672,13 @@ namespace TietoCRM.Controllers
             {
                 int article = Convert.ToInt32(dict["Article_number"]);
                 decimal maintSum = 0;
-                if (article != 5099 && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
+                if (article != 5099 && article != 9999 && decimal.TryParse(dict["Maintenance"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out maintSum))
                 {
                     totalMaintenance += (maintSum * maintPercent) / 100;
                 }
             }
 
-            return totalMaintenance * -1;
+            return decimal.Round(totalMaintenance * -1, 0, MidpointRounding.AwayFromZero);
         }
 
         private decimal CalculateLicenseDiscountFromArticleList(List<dynamic> list, decimal licPercent)
@@ -1686,13 +1688,13 @@ namespace TietoCRM.Controllers
             {
                 int article = Convert.ToInt32(dict["Article_number"]);
                 decimal licSum = 0;
-                if (article != 5099 && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
+                if (article != 5099 && article != 9999 && decimal.TryParse(dict["License"].ToString().Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out licSum))
                 {
                     totalLicense += (licSum * licPercent) / 100;
                 }
             }
 
-            return totalLicense * -1;
+            return decimal.Round(totalLicense * -1, 0, MidpointRounding.AwayFromZero);
         }
 
 
